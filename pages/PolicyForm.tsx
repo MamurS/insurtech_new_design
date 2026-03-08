@@ -10,6 +10,7 @@ import { EntitySearchInput } from '../components/EntitySearchInput';
 import { formatSICDisplay } from '../data/sicCodes';
 import { Save, ArrowLeft, Building2, FileText, DollarSign, ShieldCheck, ArrowRightLeft, Upload, CheckCircle, XCircle, AlertCircle, Loader2, ChevronDown, Search, Users, Briefcase, Globe, Plus, Trash2, RefreshCw, CreditCard, Calendar } from 'lucide-react';
 import { DatePickerInput, parseDate, toISODateString } from '../components/DatePickerInput';
+import { useTheme } from '../theme/useTheme';
 
 // --- DATASETS FOR AUTOCOMPLETE ---
 const UZBEK_REGIONS = [
@@ -54,7 +55,8 @@ interface CurrencyInputProps {
 }
 
 const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nationalValue, currency, exchangeRate, onValueChange, disabled }) => {
-    // Determine the initial view mode. 
+    const { t } = useTheme();
+    // Determine the initial view mode.
     const [viewCurrency, setViewCurrency] = useState(currency);
 
     // Sync local view mode with the parent Policy Currency if it changes (and we aren't explicitly viewing UZS)
@@ -90,13 +92,13 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
 
     return (
         <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
-            <div className="flex rounded-lg shadow-sm">
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
+            <div className="flex" style={{ borderRadius: 8, boxShadow: t.shadow }}>
                 <select
                     value={viewCurrency}
                     onChange={(e) => setViewCurrency(e.target.value)}
                     disabled={disabled}
-                    className="inline-flex items-center px-3 py-2 border border-r-0 border-gray-300 rounded-l-lg bg-gray-50 text-gray-600 sm:text-sm focus:ring-blue-500 focus:border-blue-500 outline-none font-bold min-w-[80px]"
+                    style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRight: 'none', borderRadius: '8px 0 0 8px', background: t.bgInput, color: t.text3, fontSize: 13, outline: 'none', fontWeight: 700, minWidth: 80, fontFamily: 'inherit' }}
                 >
                     {currencyOptions.map(opt => (
                         <option key={opt} value={opt}>{opt}</option>
@@ -108,7 +110,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
                     onChange={handleAmountChange}
                     disabled={disabled}
                     onWheel={(e) => e.currentTarget.blur()} // Prevent accidental scroll changes
-                    className="flex-1 min-w-0 block w-full px-3 py-2.5 rounded-r-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900 disabled:bg-gray-100"
+                    style={{ flex: 1, minWidth: 0, width: '100%', padding: '10px 12px', borderRadius: '0 8px 8px 0', border: `1px solid ${t.border}`, background: disabled ? t.bgInput : t.bgPanel, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                 />
             </div>
         </div>
@@ -126,6 +128,7 @@ interface SearchableInputProps {
 }
 
 const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, options, onChange, placeholder, required }) => {
+  const { t } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -155,7 +158,7 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
 
   return (
     <div className="relative w-full" ref={wrapperRef}>
-      <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>
+      <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
       <div className="relative">
         <input
           type="text"
@@ -166,20 +169,23 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
           required={required}
           placeholder={placeholder || "Type to search..."}
           autoComplete="off"
-          className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900 pr-8"
+          style={{ width: '100%', padding: '10px 32px 10px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
         />
-        <div className="absolute right-2 top-1/2 -translate-x-1/2 text-gray-400 pointer-events-none">
+        <div className="absolute right-2 top-1/2 -translate-x-1/2 pointer-events-none" style={{ color: t.text5 }}>
           {isOpen ? <Search size={14}/> : <ChevronDown size={14}/>}
         </div>
       </div>
-      
+
       {isOpen && filteredOptions.length > 0 && (
-        <ul className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+        <ul className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filteredOptions.map((opt) => (
-            <li 
+            <li
               key={opt}
               onClick={() => handleSelect(opt)}
-              className="px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer border-b border-gray-50 last:border-0"
+              className="px-3 py-2 cursor-pointer"
+              style={{ fontSize: 13, color: t.text2, borderBottom: `1px solid ${t.borderL}` }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; e.currentTarget.style.color = t.accent; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text2; }}
             >
               {opt}
             </li>
@@ -195,6 +201,7 @@ const PolicyForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useTheme();
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(true);
   const [showActivateConfirm, setShowActivateConfirm] = useState(false);
@@ -512,12 +519,13 @@ const PolicyForm: React.FC = () => {
   const totalInstallmentsDue = formData.installments?.reduce((acc, curr) => acc + (curr.dueAmount || 0), 0) || 0;
   const totalInstallmentsPaid = formData.installments?.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0) || 0;
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const sectionTitleClass = "text-lg font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2";
-  const labelClass = "block text-sm font-medium text-gray-600 mb-1.5";
-  const inputClass = "w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900";
-  const selectClass = "w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all text-sm text-gray-900";
+  const sectionTitleStyle: React.CSSProperties = { fontSize: 18, fontWeight: 700, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
+  const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' };
+  const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' };
+  const selectStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' };
+  const cardStyle: React.CSSProperties = { background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 24, boxShadow: t.shadow };
 
   // Priority Currencies Sort
   const priorityCurrencies = ['UZS', 'USD', 'EUR'];
@@ -532,16 +540,16 @@ const PolicyForm: React.FC = () => {
       <form onSubmit={handleSubmit}>
         
         {/* Sticky Header - Use z-index 50 to ensure it is above other content and use negative margins to span width */}
-        <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 flex items-center justify-between shadow-sm z-50 top-0">
+        <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 backdrop-blur-md flex items-center justify-between z-50 top-0" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
             <div className="flex items-center gap-4">
-                <button type="button" onClick={() => navigate('/')} className="text-gray-500 hover:text-gray-800 transition-colors">
+                <button type="button" onClick={() => navigate('/')} className="transition-colors" style={{ color: t.text4 }}>
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h2 className="text-xl font-bold text-gray-800">{isEdit ? 'Edit Policy' : 'New Policy Record'}</h2>
-                    <p className="text-xs text-gray-500 flex items-center gap-1">
+                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{isEdit ? 'Edit Policy' : 'New Policy Record'}</h2>
+                    <p className="text-xs flex items-center gap-1" style={{ color: t.text4 }}>
                        Ref: {formData.policyNumber} 
-                       <span className={`ml-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase ${formData.status === PolicyStatus.ACTIVE ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                       <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase" style={{ background: formData.status === PolicyStatus.ACTIVE ? t.successBg : t.warningBg, color: formData.status === PolicyStatus.ACTIVE ? t.success : t.warning }}>
                            {formData.status}
                        </span>
                     </p>
@@ -552,7 +560,8 @@ const PolicyForm: React.FC = () => {
                 <button
                     type="submit"
                     disabled={!!processingAction}
-                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-lg shadow-sm transition-all disabled:opacity-70"
+                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all disabled:opacity-70"
+                    style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
                 >
                     {processingAction === 'save' ? <Loader2 className="animate-spin" size={18}/> : <Save size={18} />}
                     Save
@@ -569,18 +578,18 @@ const PolicyForm: React.FC = () => {
             <div className="xl:col-span-8 space-y-6">
                 
                 {/* 1. Channel & Intermediary */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><ArrowRightLeft size={18} className="text-blue-500"/> Business Channel & Source</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><ArrowRightLeft size={18} className="text-blue-500"/> Business Channel & Source</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                         {/* Channel Selector */}
                         <div>
-                            <label className={labelClass}>Business Channel</label>
-                            <div className="flex bg-gray-100 p-1 rounded-lg">
-                                <button type="button" onClick={() => handleChannelChange('Direct')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${formData.channel === 'Direct' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500'}`}>
+                            <label style={labelStyle}>Business Channel</label>
+                            <div className="flex p-1 rounded-lg" style={{ background: t.bgInput }}>
+                                <button type="button" onClick={() => handleChannelChange('Direct')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none' }}>
                                     Direct Insurance
                                 </button>
-                                <button type="button" onClick={() => handleChannelChange('Inward')} className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${formData.channel === 'Inward' ? 'bg-white text-purple-600 shadow-sm' : 'text-gray-500'}`}>
+                                <button type="button" onClick={() => handleChannelChange('Inward')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none' }}>
                                     Inward Reinsurance
                                 </button>
                             </div>
@@ -588,11 +597,11 @@ const PolicyForm: React.FC = () => {
 
                          {/* Intermediary Selector */}
                         <div>
-                            <label className={labelClass}>Intermediary Source</label>
+                            <label style={labelStyle}>Intermediary Source</label>
                             <select 
                                 value={formData.intermediaryType} 
                                 onChange={(e) => handleIntermediaryChange(e.target.value as IntermediaryType)}
-                                className={selectClass}
+                                style={selectStyle}
                             >
                                 <option value="Direct">Direct Client (No Intermediary)</option>
                                 <option value="Broker">Insurance Broker</option>
@@ -620,16 +629,16 @@ const PolicyForm: React.FC = () => {
                         
                         {formData.channel === 'Inward' && (
                             <div className="animate-in fade-in slide-in-from-top-1">
-                                <label className={labelClass}>Cedant (Reinsured) Name</label>
-                                <input type="text" name="cedantName" value={formData.cedantName || ''} onChange={handleChange} className={`${inputClass} border-purple-300 bg-purple-50`} placeholder="Company sending the risk"/>
+                                <label style={labelStyle}>Cedant (Reinsured) Name</label>
+                                <input type="text" name="cedantName" value={formData.cedantName || ''} onChange={handleChange} style={{ ...inputStyle, borderColor: '#d8b4fe', background: '#faf5ff' }} placeholder="Company sending the risk"/>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* 2. Risk & Core Details */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><Building2 size={18} className="text-blue-500"/> Risk Details</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><Building2 size={18} className="text-blue-500"/> Risk Details</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="md:col-span-2">
@@ -653,9 +662,9 @@ const PolicyForm: React.FC = () => {
                                 required
                             />
                             {formData.insuredSicCode && (
-                              <div className="mt-1.5 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">
-                                <span className="text-gray-400">Industry:</span>
-                                <span className="text-gray-600">{formatSICDisplay(formData.insuredSicCode)}</span>
+                              <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                                <span style={{ color: t.text5 }}>Industry:</span>
+                                <span style={{ color: t.text3 }}>{formatSICDisplay(formData.insuredSicCode)}</span>
                               </div>
                             )}
                         </div>
@@ -677,8 +686,8 @@ const PolicyForm: React.FC = () => {
                         />
 
                         <div>
-                            <label className={labelClass}>Industry / Business</label>
-                            <input type="text" name="industry" value={formData.industry || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Industry / Business</label>
+                            <input type="text" name="industry" value={formData.industry || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
 
                         <div>
@@ -703,66 +712,66 @@ const PolicyForm: React.FC = () => {
                          
                         {/* New Risk Fields */}
                         <div>
-                             <label className={labelClass}>Risk Code</label>
-                             <input type="text" name="riskCode" value={formData.riskCode || ''} onChange={handleChange} className={inputClass} placeholder="e.g. 03.11"/>
+                             <label style={labelStyle}>Risk Code</label>
+                             <input type="text" name="riskCode" value={formData.riskCode || ''} onChange={handleChange} style={inputStyle} placeholder="e.g. 03.11"/>
                         </div>
                         <div>
-                             <label className={labelClass}>Jurisdiction</label>
-                             <input type="text" name="jurisdiction" value={formData.jurisdiction || 'Uzbekistan'} onChange={handleChange} className={inputClass}/>
+                             <label style={labelStyle}>Jurisdiction</label>
+                             <input type="text" name="jurisdiction" value={formData.jurisdiction || 'Uzbekistan'} onChange={handleChange} style={inputStyle}/>
                         </div>
                          <div className="md:col-span-2">
-                             <label className={labelClass}>Insured Risk / Object</label>
-                             <input type="text" name="insuredRisk" value={formData.insuredRisk || ''} onChange={handleChange} className={inputClass} placeholder="Detailed description of the risk"/>
+                             <label style={labelStyle}>Insured Risk / Object</label>
+                             <input type="text" name="insuredRisk" value={formData.insuredRisk || ''} onChange={handleChange} style={inputStyle} placeholder="Detailed description of the risk"/>
                         </div>
                     </div>
                 </div>
 
                 {/* 3. Extended Parties */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><Users size={18} className="text-blue-500"/> Additional Parties</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><Users size={18} className="text-blue-500"/> Additional Parties</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                          <div>
-                            <label className={labelClass}>Insured Address</label>
-                            <input type="text" name="insuredAddress" value={formData.insuredAddress || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Insured Address</label>
+                            <input type="text" name="insuredAddress" value={formData.insuredAddress || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                          <div>
-                            <label className={labelClass}>Borrower (Loan)</label>
-                            <input type="text" name="borrower" value={formData.borrower || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Borrower (Loan)</label>
+                            <input type="text" name="borrower" value={formData.borrower || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                          <div>
-                            <label className={labelClass}>Retrocedent</label>
-                            <input type="text" name="retrocedent" value={formData.retrocedent || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Retrocedent</label>
+                            <input type="text" name="retrocedent" value={formData.retrocedent || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                          <div>
-                            <label className={labelClass}>Performer</label>
-                            <input type="text" name="performer" value={formData.performer || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Performer</label>
+                            <input type="text" name="performer" value={formData.performer || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                     </div>
                 </div>
                 
                 {/* 4. Financials (NEW LAYOUT WITH PER-FIELD CURRENCY TOGGLE) */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><DollarSign size={18} className="text-blue-500"/> Financials & Premiums</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><DollarSign size={18} className="text-blue-500"/> Financials & Premiums</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <div>
-                            <label className={labelClass}>Policy Currency</label>
+                            <label style={labelStyle}>Policy Currency</label>
                             <div className="flex gap-1">
-                                <select name="currency" value={formData.currency} onChange={handleChange} className={selectClass}>
+                                <select name="currency" value={formData.currency} onChange={handleChange} style={selectStyle}>
                                     {sortedCurrencies.map(c => <option key={c} value={c}>{c}</option>)}
                                 </select>
-                                <button type="button" onClick={handleFetchRate} title="Fetch Latest Rate" className="px-3 bg-blue-50 text-blue-600 rounded border border-blue-200 hover:bg-blue-100">
+                                <button type="button" onClick={handleFetchRate} title="Fetch Latest Rate" className="px-3 rounded" style={{ background: t.accentMuted, color: t.accent, border: `1px solid ${t.accent}` }}>
                                     <RefreshCw size={14}/>
                                 </button>
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1.5">Exchange Rate (to UZS)</label>
-                            <input type="number" step="0.01" name="exchangeRate" value={formData.exchangeRate || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Exchange Rate (to UZS)</label>
+                            <input type="number" step="0.01" name="exchangeRate" value={formData.exchangeRate || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
                          <div>
-                            <label className={labelClass}>Equivalent in USD</label>
-                            <input type="number" name="equivalentUSD" value={formData.equivalentUSD || ''} onChange={handleChange} className={inputClass} placeholder="Auto or Manual"/>
+                            <label style={labelStyle}>Equivalent in USD</label>
+                            <input type="number" name="equivalentUSD" value={formData.equivalentUSD || ''} onChange={handleChange} style={inputStyle} placeholder="Auto or Manual"/>
                         </div>
                     </div>
 
@@ -805,33 +814,33 @@ const PolicyForm: React.FC = () => {
                     </div>
 
                      {/* Additional Rates */}
-                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 border-t border-gray-100 pt-5">
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
                           <div>
-                            <label className={labelClass}>Premium Rate (%)</label>
-                            <input type="number" step="0.0001" name="premiumRate" value={formData.premiumRate || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Premium Rate (%)</label>
+                            <input type="number" step="0.0001" name="premiumRate" value={formData.premiumRate || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                      </div>
                 </div>
 
                 {/* 5. Income / Costs */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><Briefcase size={18} className="text-blue-500"/> Income & Costs</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><Briefcase size={18} className="text-blue-500"/> Income & Costs</h3>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
                          <div>
-                             <label className={labelClass}>Our Share (%)</label>
-                             <input type="number" step="0.01" name="ourShare" value={formData.ourShare || ''} onChange={handleChange} className={`${inputClass} font-bold text-blue-700`}/>
+                             <label style={labelStyle}>Our Share (%)</label>
+                             <input type="number" step="0.01" name="ourShare" value={formData.ourShare || ''} onChange={handleChange} style={{ ...inputStyle, fontWeight: 700, color: t.accent }}/>
                          </div>
                          <div>
-                             <label className={labelClass}>Commission %</label>
-                             <input type="number" step="0.01" name="commissionPercent" value={formData.commissionPercent || ''} onChange={handleChange} className={inputClass}/>
+                             <label style={labelStyle}>Commission %</label>
+                             <input type="number" step="0.01" name="commissionPercent" value={formData.commissionPercent || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                          <div>
-                             <label className={labelClass}>Tax %</label>
-                             <input type="number" step="0.01" name="taxPercent" value={formData.taxPercent || ''} onChange={handleChange} className={inputClass}/>
+                             <label style={labelStyle}>Tax %</label>
+                             <input type="number" step="0.01" name="taxPercent" value={formData.taxPercent || ''} onChange={handleChange} style={inputStyle}/>
                          </div>
                          <div>
-                             <label className={labelClass}>Net Premium ({formData.currency})</label>
-                             <div className={`${inputClass} bg-gray-100 font-bold flex items-center`}>
+                             <label style={labelStyle}>Net Premium ({formData.currency})</label>
+                             <div className="flex items-center" style={{ ...inputStyle, background: t.bgInput, fontWeight: 700 }}>
                                  {formData.netPremium?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                              </div>
                          </div>
@@ -839,16 +848,16 @@ const PolicyForm: React.FC = () => {
                 </div>
 
                 {/* 6. INSTALLMENTS SECTION */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><CreditCard size={18} className="text-blue-500"/> Payment Schedule & Collection</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><CreditCard size={18} className="text-blue-500"/> Payment Schedule & Collection</h3>
                     
-                    <div className="mb-4 text-sm text-gray-500">
+                    <div className="mb-4 text-sm" style={{ color: t.text4 }}>
                         Add installments below. The system tracks Due Date vs Actual Paid Date.
                     </div>
 
-                    <div className="border border-gray-200 rounded-lg mb-4">
+                    <div className="rounded-lg mb-4" style={{ border: `1px solid ${t.border}` }}>
                         <table className="w-full text-sm text-left">
-                            <thead className="bg-gray-50 text-gray-700">
+                            <thead style={{ background: t.bgInput, color: t.text2 }}>
                                 <tr>
                                     <th className="px-4 py-2 w-10 text-center">#</th>
                                     <th className="px-4 py-2">Due Date</th>
@@ -859,12 +868,12 @@ const PolicyForm: React.FC = () => {
                                     <th className="px-4 py-2 w-10"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody style={{ borderTop: `1px solid ${t.borderL}` }}>
                                 {formData.installments?.map((inst, idx) => {
                                     const balance = (inst.dueAmount || 0) - (inst.paidAmount || 0);
                                     return (
-                                        <tr key={inst.id} className="bg-white">
-                                            <td className="px-4 py-2 text-center text-gray-400">{idx + 1}</td>
+                                        <tr key={inst.id} style={{ background: t.bgPanel, borderBottom: `1px solid ${t.borderL}` }}>
+                                            <td className="px-4 py-2 text-center" style={{ color: t.text5 }}>{idx + 1}</td>
                                             <td className="px-4 py-2 min-w-[160px]">
                                                 <DatePickerInput
                                                     value={parseDate(inst.dueDate)}
@@ -930,11 +939,11 @@ const PolicyForm: React.FC = () => {
                 {/* 7. Treaty / Inward Specifics */}
                 {formData.channel === 'Inward' && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 border-l-4 border-l-purple-500">
-                    <h3 className={sectionTitleClass}><Globe size={18} className="text-purple-500"/> Treaty & AIC Details</h3>
+                    <h3 style={sectionTitleStyle}><Globe size={18} className="text-purple-500"/> Treaty & AIC Details</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
                         <div>
-                             <label className={labelClass}>Treaty Placement</label>
-                             <input type="text" name="treatyPlacement" value={formData.treatyPlacement || ''} onChange={handleChange} className={inputClass}/>
+                             <label style={labelStyle}>Treaty Placement</label>
+                             <input type="text" name="treatyPlacement" value={formData.treatyPlacement || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
                         <CurrencyInput 
                             label="Treaty Premium"
@@ -1065,7 +1074,7 @@ const PolicyForm: React.FC = () => {
                             {/* Aggregates Display */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-amber-50 p-4 rounded-lg">
                                  <div>
-                                    <label className={labelClass}>Total Premium Ceded ({formData.currency})</label>
+                                    <label style={labelStyle}>Total Premium Ceded ({formData.currency})</label>
                                     <div className="font-bold text-gray-900 bg-white p-2 rounded border border-amber-200">
                                         {formData.cededPremiumForeign?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
@@ -1074,7 +1083,7 @@ const PolicyForm: React.FC = () => {
                                     </div>
                                  </div>
                                  <div className="md:col-span-2">
-                                    <label className={labelClass}>Net Payable to Reinsurers ({formData.currency})</label>
+                                    <label style={labelStyle}>Net Payable to Reinsurers ({formData.currency})</label>
                                     <div className="font-bold text-amber-900 bg-amber-100 p-2 rounded border border-amber-300">
                                         {formData.netReinsurancePremium?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
@@ -1201,32 +1210,32 @@ const PolicyForm: React.FC = () => {
                 </div>
 
                 {/* References */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className={sectionTitleClass}><FileText size={18} className="text-blue-500"/> References & Dates</h3>
+                <div className="p-6" style={cardStyle}>
+                    <h3 style={sectionTitleStyle}><FileText size={18} className="text-blue-500"/> References & Dates</h3>
                     
                     <div className="space-y-4">
                         <div>
-                            <label className={labelClass}>Policy / Ref Number</label>
-                            <input type="text" name="policyNumber" value={formData.policyNumber || ''} onChange={handleChange} className={`${inputClass} font-mono font-bold text-gray-700`}/>
+                            <label style={labelStyle}>Policy / Ref Number</label>
+                            <input type="text" name="policyNumber" value={formData.policyNumber || ''} onChange={handleChange} style={{ ...inputStyle, fontFamily: 'monospace', fontWeight: 700, color: t.text2 }}/>
                         </div>
                         <div>
-                            <label className={labelClass}>Secondary Policy Ref</label>
-                            <input type="text" name="secondaryPolicyNumber" value={formData.secondaryPolicyNumber || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Secondary Policy Ref</label>
+                            <input type="text" name="secondaryPolicyNumber" value={formData.secondaryPolicyNumber || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
 
                         <div>
-                            <label className={labelClass}>Agreement / Slip No</label>
-                            <input type="text" name="agreementNumber" value={formData.agreementNumber || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Agreement / Slip No</label>
+                            <input type="text" name="agreementNumber" value={formData.agreementNumber || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
                         
                          <div>
-                            <label className={labelClass}>Bordereau No</label>
-                            <input type="text" name="bordereauNo" value={formData.bordereauNo || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Bordereau No</label>
+                            <input type="text" name="bordereauNo" value={formData.bordereauNo || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
 
                          <div>
-                            <label className={labelClass}>Cover Note Ref</label>
-                            <input type="text" name="coverNote" value={formData.coverNote || ''} onChange={handleChange} className={inputClass}/>
+                            <label style={labelStyle}>Cover Note Ref</label>
+                            <input type="text" name="coverNote" value={formData.coverNote || ''} onChange={handleChange} style={inputStyle}/>
                         </div>
                          
                          <div className="flex items-center gap-2 py-2">
@@ -1255,16 +1264,16 @@ const PolicyForm: React.FC = () => {
                 </div>
 
                 {/* Additional Settings */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                     <h3 className={sectionTitleClass}><ShieldCheck size={18} className="text-blue-500"/> Conditions</h3>
-                     <label className={labelClass}>Deductible</label>
-                     <textarea rows={2} name="deductible" value={formData.deductible || ''} onChange={handleChange} className={inputClass} placeholder="e.g. 10% of claim amount"></textarea>
+                <div className="p-6" style={cardStyle}>
+                     <h3 style={sectionTitleStyle}><ShieldCheck size={18} className="text-blue-500"/> Conditions</h3>
+                     <label style={labelStyle}>Deductible</label>
+                     <textarea rows={2} name="deductible" value={formData.deductible || ''} onChange={handleChange} style={inputStyle} placeholder="e.g. 10% of claim amount"></textarea>
                      
-                     <label className={labelClass + ' mt-3'}>Warranty Period (Days)</label>
-                     <input type="number" name="warrantyPeriod" value={formData.warrantyPeriod || ''} onChange={handleChange} className={inputClass}/>
+                     <label style={{ ...labelStyle, marginTop: 12 }}>Warranty Period (Days)</label>
+                     <input type="number" name="warrantyPeriod" value={formData.warrantyPeriod || ''} onChange={handleChange} style={inputStyle}/>
                      
-                     <label className={labelClass + ' mt-3'}>Number of Slips</label>
-                     <input type="number" name="numberOfSlips" value={formData.numberOfSlips || ''} onChange={handleChange} className={inputClass}/>
+                     <label style={{ ...labelStyle, marginTop: 12 }}>Number of Slips</label>
+                     <input type="number" name="numberOfSlips" value={formData.numberOfSlips || ''} onChange={handleChange} style={inputStyle}/>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DB } from '../services/db';
 import { Policy, PolicyStatus, Currency, PaymentStatus } from '../types';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import { ContextBar } from './ContextBar';
 import { DatePickerInput } from './DatePickerInput';
 import { EntitySearchInput } from './EntitySearchInput';
@@ -54,6 +55,7 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
   onCancel
 }) => {
   const toast = useToast();
+  const { t } = useTheme();
   const isEditMode = Boolean(id);
 
   const [loading, setLoading] = useState(isEditMode);
@@ -201,7 +203,7 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin text-blue-600" size={32} />
+        <Loader2 className="animate-spin" size={32} style={{ color: t.accent }} />
       </div>
     );
   }
@@ -223,28 +225,26 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
         {/* Left Column - Basic Info */}
         <div className="space-y-6">
-          <div className="bg-slate-50 rounded-xl p-5 space-y-4">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-              <FileText size={18} className="text-blue-600" />
+          <div className="space-y-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 20, boxShadow: t.shadow }}>
+            <h3 className="font-semibold flex items-center gap-2" style={{ color: t.text1 }}>
+              <FileText size={18} style={{ color: t.accent }} />
               Policy Information
             </h3>
 
             {/* Policy Number */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Policy Number <span className="text-red-500">*</span>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+                Policy Number <span style={{ color: t.danger }}>*</span>
               </label>
               <input
                 type="text"
                 value={formData.policyNumber || ''}
                 onChange={(e) => handleChange('policyNumber', e.target.value)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                  errors.policyNumber ? 'border-red-300 bg-red-50' : 'border-slate-200'
-                }`}
+                style={{ width: '100%', padding: '10px 12px', background: errors.policyNumber ? t.dangerBg : t.bgInput, border: `1px solid ${errors.policyNumber ? t.danger : t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                 placeholder="POL-2026-001"
               />
               {errors.policyNumber && (
-                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                <p className="text-xs mt-1 flex items-center gap-1" style={{ color: t.danger }}>
                   <AlertCircle size={12} /> {errors.policyNumber}
                 </p>
               )}
@@ -252,11 +252,11 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Status</label>
               <select
                 value={formData.status || 'Draft'}
                 onChange={(e) => handleChange('status', e.target.value)}
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
               >
                 <option value="Draft">Draft</option>
                 <option value="Pending Confirmation">Pending Confirmation</option>
@@ -268,11 +268,11 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
             {/* Class of Insurance */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Class of Insurance</label>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Class of Insurance</label>
               <select
                 value={formData.classOfInsurance || ''}
                 onChange={(e) => handleChange('classOfInsurance', e.target.value)}
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
               >
                 <option value="">Select class...</option>
                 {INSURANCE_CLASSES.map(cls => (
@@ -284,8 +284,8 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
             {/* Dates */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Inception Date <span className="text-red-500">*</span>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+                  Inception Date <span style={{ color: t.danger }}>*</span>
                 </label>
                 <DatePickerInput
                   value={formData.inceptionDate || ''}
@@ -294,8 +294,8 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Expiry Date <span className="text-red-500">*</span>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+                  Expiry Date <span style={{ color: t.danger }}>*</span>
                 </label>
                 <DatePickerInput
                   value={formData.expiryDate || ''}
@@ -307,19 +307,19 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
           </div>
 
           {/* Financial Info */}
-          <div className="bg-slate-50 rounded-xl p-5 space-y-4">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-              <DollarSign size={18} className="text-emerald-600" />
+          <div className="space-y-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 20, boxShadow: t.shadow }}>
+            <h3 className="font-semibold flex items-center gap-2" style={{ color: t.text1 }}>
+              <DollarSign size={18} style={{ color: t.success }} />
               Financial Details
             </h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Currency</label>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Currency</label>
                 <select
                   value={formData.currency || Currency.USD}
                   onChange={(e) => handleChange('currency', e.target.value)}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                 >
                   <option value={Currency.USD}>USD</option>
                   <option value={Currency.EUR}>EUR</option>
@@ -327,12 +327,12 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Sum Insured</label>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Sum Insured</label>
                 <input
                   type="number"
                   value={formData.sumInsured || ''}
                   onChange={(e) => handleChange('sumInsured', parseFloat(e.target.value) || 0)}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                   placeholder="0.00"
                 />
               </div>
@@ -340,22 +340,22 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Gross Premium</label>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Gross Premium</label>
                 <input
                   type="number"
                   value={formData.grossPremium || ''}
                   onChange={(e) => handleChange('grossPremium', parseFloat(e.target.value) || 0)}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                   placeholder="0.00"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Net Premium</label>
+                <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Net Premium</label>
                 <input
                   type="number"
                   value={formData.netPremium || ''}
                   onChange={(e) => handleChange('netPremium', parseFloat(e.target.value) || 0)}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                   placeholder="0.00"
                 />
               </div>
@@ -365,16 +365,16 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
         {/* Right Column - Insured Info */}
         <div className="space-y-6">
-          <div className="bg-slate-50 rounded-xl p-5 space-y-4">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-              <Building2 size={18} className="text-purple-600" />
+          <div className="space-y-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 20, boxShadow: t.shadow }}>
+            <h3 className="font-semibold flex items-center gap-2" style={{ color: t.text1 }}>
+              <Building2 size={18} style={{ color: t.accent }} />
               Insured Information
             </h3>
 
             {/* Insured Name */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Insured Name <span className="text-red-500">*</span>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+                Insured Name <span style={{ color: t.danger }}>*</span>
               </label>
               <EntitySearchInput
                 label="Insured Name"
@@ -394,25 +394,23 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
                 required
               />
               {formData.insuredSicCode && (
-                <div className="mt-1.5 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">
-                  <span className="text-gray-400">Industry:</span>
-                  <span className="text-gray-600">{formatSICDisplay(formData.insuredSicCode)}</span>
+                <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                  <span style={{ color: t.text4 }}>Industry:</span>
+                  <span style={{ color: t.text2 }}>{formatSICDisplay(formData.insuredSicCode)}</span>
                 </div>
               )}
             </div>
 
             {/* Country of Registration */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
                 <Globe size={14} className="inline mr-1" />
-                Country of Registration <span className="text-red-500">*</span>
+                Country of Registration <span style={{ color: t.danger }}>*</span>
               </label>
               <select
                 value={formData.insuredCountry || 'Uzbekistan'}
                 onChange={(e) => handleCountryChange(e.target.value)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white ${
-                  errors.insuredCountry ? 'border-red-300' : 'border-slate-200'
-                }`}
+                style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${errors.insuredCountry ? t.danger : t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
               >
                 {COUNTRIES.map(country => (
                   <option key={country} value={country}>
@@ -424,28 +422,26 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
             {/* Uzbekistan-Specific Fields */}
             {isUzbekistan && (
-              <div className="border-t border-slate-200 pt-4 mt-4 space-y-4">
-                <div className="flex items-center gap-2 text-sm text-blue-600 font-medium">
+              <div className="pt-4 mt-4 space-y-4" style={{ borderTop: `1px solid ${t.border}` }}>
+                <div className="flex items-center gap-2 text-sm font-medium" style={{ color: t.accent }}>
                   <MapPin size={16} />
                   Uzbekistan Registration Details
                 </div>
 
                 {/* INN */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    INN (Tax ID) <span className="text-red-500">*</span>
+                  <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+                    INN (Tax ID) <span style={{ color: t.danger }}>*</span>
                   </label>
                   <input
                     type="text"
                     value={formData.insuredINN || ''}
                     onChange={(e) => handleChange('insuredINN', e.target.value)}
-                    className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none ${
-                      errors.insuredINN ? 'border-red-300 bg-red-50' : 'border-slate-200'
-                    }`}
+                    style={{ width: '100%', padding: '10px 12px', background: errors.insuredINN ? t.dangerBg : t.bgInput, border: `1px solid ${errors.insuredINN ? t.danger : t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                     placeholder="123456789"
                   />
                   {errors.insuredINN && (
-                    <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                    <p className="text-xs mt-1 flex items-center gap-1" style={{ color: t.danger }}>
                       <AlertCircle size={12} /> {errors.insuredINN}
                     </p>
                   )}
@@ -453,13 +449,14 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
                 {/* Legal Address */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
                     Legal Address
                   </label>
                   <textarea
                     value={formData.insuredLegalAddress || ''}
                     onChange={(e) => handleChange('insuredLegalAddress', e.target.value)}
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    className="w-full resize-none"
+                    style={{ padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                     rows={2}
                     placeholder="Legal address in Uzbekistan..."
                   />

@@ -4,6 +4,7 @@ import { DB } from '../services/db';
 import { LegalEntity, Currency, PolicyStatus, PaymentStatus } from '../types';
 import { DatePickerInput, toISODateString, parseDate } from './DatePickerInput';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import {
   Search, ChevronDown, Building2, Loader2, Calendar,
   Shield, Users, Layers, DollarSign, Lock, Clock, Save, X, Globe, Check,
@@ -153,22 +154,25 @@ const SectionCard: React.FC<{
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
-}> = ({ number, title, icon, children }) => (
-  <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-    <div className="flex items-center gap-3 px-5 py-3.5 border-b border-slate-100 bg-slate-50/50 rounded-t-xl">
-      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">
-        {number}
+}> = ({ number, title, icon, children }) => {
+  const { t } = useTheme();
+  return (
+    <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow }}>
+      <div className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '12px 12px 0 0' }}>
+        <div className="flex items-center justify-center w-7 h-7 rounded-full" style={{ background: t.accentMuted, color: t.accent, fontSize: 12, fontWeight: 700 }}>
+          {number}
+        </div>
+        <div className="flex items-center gap-2" style={{ color: t.text2 }}>
+          {icon}
+          <h3 className="font-semibold text-sm">{title}</h3>
+        </div>
       </div>
-      <div className="flex items-center gap-2 text-slate-700">
-        {icon}
-        <h3 className="font-semibold text-sm">{title}</h3>
+      <div className="px-5 py-4 space-y-4">
+        {children}
       </div>
     </div>
-    <div className="px-5 py-4 space-y-4">
-      {children}
-    </div>
-  </div>
-);
+  );
+};
 
 // ─── Searchable Dropdown (strict selection only) ────────────────
 const SearchableDropdown: React.FC<{
@@ -182,6 +186,7 @@ const SearchableDropdown: React.FC<{
   loading?: boolean;
   error?: string;
 }> = ({ label, value, options, onSelect, onClear, required, placeholder, loading, error }) => {
+  const { t } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -215,27 +220,26 @@ const SearchableDropdown: React.FC<{
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-medium text-slate-600 mb-1.5">
-        {label} {required && <span className="text-red-500">*</span>}
+      <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+        {label} {required && <span style={{ color: t.danger }}>*</span>}
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          className={`w-full p-2.5 bg-white border rounded-lg text-sm cursor-pointer flex items-center justify-between min-h-[42px] ${
-            error ? 'border-red-400' : 'border-slate-300 hover:border-slate-400'
-          }`}
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
+          className="flex items-center justify-between"
         >
           {value ? (
             <div className="flex items-center justify-between w-full">
-              <span className="text-slate-900">{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="text-slate-400 hover:text-slate-600 ml-2">
+              <span style={{ color: t.text1 }}>{value}</span>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}>
                 <X size={14} />
               </button>
             </div>
           ) : (
-            <span className="text-slate-400">{placeholder || 'Select...'}</span>
+            <span style={{ color: t.text4 }}>{placeholder || 'Select...'}</span>
           )}
-          <ChevronDown size={14} className="text-slate-400 shrink-0 ml-2" />
+          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
         </div>
       ) : (
         <div className="relative">
@@ -246,38 +250,37 @@ const SearchableDropdown: React.FC<{
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={placeholder || 'Type to filter...'}
             autoComplete="off"
-            className="w-full p-2.5 bg-white border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-900 pr-8"
+            style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1 max-h-52 overflow-y-auto">
+        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(opt => (
             <li
               key={opt.id}
               onClick={() => { onSelect(opt.id, opt.label); setIsOpen(false); setSearchTerm(''); }}
-              className={`px-3 py-2 text-sm cursor-pointer border-b border-slate-50 last:border-0 flex items-center gap-2 ${
-                opt.label === value ? 'bg-blue-50 text-blue-700' : 'hover:bg-blue-50'
-              }`}
+              className="px-3 py-2 cursor-pointer flex items-center gap-2"
+              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: opt.label === value ? t.accentMuted : undefined, color: opt.label === value ? t.accent : t.text1 }}
             >
               {opt.icon && <span className="shrink-0">{opt.icon}</span>}
               <div className="min-w-0">
-                <div className="font-medium text-slate-900 truncate">{opt.label}</div>
-                {opt.sublabel && <div className="text-xs text-slate-500 truncate">{opt.sublabel}</div>}
+                <div className="font-medium truncate" style={{ color: t.text1 }}>{opt.label}</div>
+                {opt.sublabel && <div className="truncate" style={{ fontSize: 12, color: t.text4 }}>{opt.sublabel}</div>}
               </div>
-              {opt.label === value && <Check size={14} className="text-blue-600 shrink-0 ml-auto" />}
+              {opt.label === value && <Check size={14} className="shrink-0 ml-auto" style={{ color: t.accent }} />}
             </li>
           )) : (
-            <li className="px-3 py-3 text-sm text-slate-500 text-center">
+            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>
               {loading ? 'Loading...' : 'No results found'}
             </li>
           )}
         </ul>
       )}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -289,6 +292,7 @@ const ProductSearch: React.FC<{
   onClear: () => void;
   error?: string;
 }> = ({ value, onSelect, onClear, error }) => {
+  const { t } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [allProducts, setAllProducts] = useState<InsuranceProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -323,53 +327,53 @@ const ProductSearch: React.FC<{
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-medium text-slate-600 mb-1.5">
-        Type of Insurance Cover <span className="text-red-500">*</span>
+      <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+        Type of Insurance Cover <span style={{ color: t.danger }}>*</span>
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          className={`w-full p-2.5 bg-white border rounded-lg text-sm cursor-pointer flex items-center justify-between min-h-[42px] ${
-            error ? 'border-red-400' : 'border-slate-300 hover:border-slate-400'
-          }`}
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
+          className="flex items-center justify-between"
         >
           {value ? (
             <div className="flex items-center justify-between w-full">
-              <span className="text-slate-900">{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="text-slate-400 hover:text-slate-600 ml-2"><X size={14} /></button>
+              <span style={{ color: t.text1 }}>{value}</span>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}><X size={14} /></button>
             </div>
-          ) : (<span className="text-slate-400">Select insurance product...</span>)}
-          <ChevronDown size={14} className="text-slate-400 shrink-0 ml-2" />
+          ) : (<span style={{ color: t.text4 }}>Select insurance product...</span>)}
+          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
         </div>
       ) : (
         <div className="relative">
           <input ref={inputRef} type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Type to filter products..." autoComplete="off"
-            className="w-full p-2.5 bg-white border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-900 pr-8" />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1 max-h-52 overflow-y-auto">
+        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(p => (
             <li key={p.id} onClick={() => { onSelect(p); setIsOpen(false); setSearchTerm(''); }}
-              className={`px-3 py-2 text-sm cursor-pointer border-b border-slate-50 last:border-0 ${p.name === value ? 'bg-blue-50' : 'hover:bg-blue-50'}`}>
+              className="px-3 py-2 cursor-pointer"
+              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: p.name === value ? t.accentMuted : undefined }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-slate-900">{p.name}</div>
-                  <div className="text-xs text-slate-500">{p.code} · Classes: {(p.class_codes || []).join(', ')}</div>
+                  <div className="font-medium" style={{ color: t.text1 }}>{p.name}</div>
+                  <div style={{ fontSize: 12, color: t.text4 }}>{p.code} · Classes: {(p.class_codes || []).join(', ')}</div>
                 </div>
-                {p.name === value && <Check size={14} className="text-blue-600 shrink-0" />}
+                {p.name === value && <Check size={14} className="shrink-0" style={{ color: t.accent }} />}
               </div>
             </li>
           )) : (
-            <li className="px-3 py-3 text-sm text-slate-500 text-center">{loading ? 'Loading products...' : 'No products found'}</li>
+            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>{loading ? 'Loading products...' : 'No products found'}</li>
           )}
         </ul>
       )}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -379,6 +383,7 @@ const CurrencyInput: React.FC<{
   value: number; onChange: (v: number) => void; currency: string; placeholder?: string;
   bold?: boolean; bgClass?: string; borderClass?: string;
 }> = React.memo(({ value, onChange, currency, placeholder = '0', bold, bgClass = '', borderClass = 'border-slate-300' }) => {
+  const { t } = useTheme();
   const [localValue, setLocalValue] = useState(value ? fmtNum(value) : '');
   const inputRef = useRef<HTMLInputElement>(null);
 
