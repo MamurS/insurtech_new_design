@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { PermissionProvider } from './context/PermissionContext';
 import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './theme/ThemeContext';
 import Dashboard from './pages/Dashboard';
 import PolicyForm from './pages/PolicyForm';
 import PolicyWording from './pages/PolicyWording';
@@ -65,21 +66,19 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
 
-      {/* Standalone Admin Platform */}
-      <Route path="/admin" element={
-        <ProtectedRoute>
-          <AdminRoute>
-            <AdminConsole />
-          </AdminRoute>
-        </ProtectedRoute>
-      } />
-
       {/* Main Application - Wrapped in Layout */}
       <Route path="/*" element={
         <ProtectedRoute>
           <Layout>
             <Routes>
               <Route path="/" element={<Dashboard />} />
+
+              {/* Admin Console — inside Layout for v15 tab bar */}
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <AdminConsole />
+                </AdminRoute>
+              } />
 
               {/* Direct Insurance Routes */}
               <Route path="/direct-insurance" element={<DirectInsuranceList />} />
@@ -139,15 +138,17 @@ const AppRoutes = () => {
 
 const App: React.FC = () => {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <PermissionProvider>
-          <HashRouter>
-            <AppRoutes />
-          </HashRouter>
-        </PermissionProvider>
-      </AuthProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <PermissionProvider>
+            <HashRouter>
+              <AppRoutes />
+            </HashRouter>
+          </PermissionProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 };
 
