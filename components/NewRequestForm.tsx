@@ -1178,20 +1178,22 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       </SectionCard>
 
       {/* ══════ Sticky Footer ══════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-50" style={{ background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="text-xs text-slate-400 flex items-center gap-4">
+          <div className="flex items-center gap-4" style={{ fontSize: 12, color: t.text4 }}>
             {form.productName && <span>Product: {form.productName}</span>}
             {form.totalSumInsured > 0 && <span>SI: {fmtNum(form.totalSumInsured)} {form.currency}</span>}
             {form.grossPremium > 0 && <span>Premium: {fmtNum(form.grossPremium)} {form.currency}</span>}
           </div>
           <div className="flex items-center gap-3">
             <button onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+              className="px-4 py-2 font-medium rounded-lg transition-colors"
+              style={{ fontSize: 13, color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}` }}>
               Cancel
             </button>
             <button onClick={handleSave} disabled={saving}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 shadow-sm transition-colors">
+              className="flex items-center gap-2 px-5 py-2 font-semibold rounded-lg disabled:opacity-50 transition-colors"
+              style={{ fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow }}>
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               Save as Draft
             </button>
