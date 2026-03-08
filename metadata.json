@@ -1,0 +1,5 @@
+{
+  "name": "InsurTech Policy Manager",
+  "description": "A comprehensive browser-based tool for managing insurance policies, data entry, and generating policy wordings with dynamic clause management.",
+  "requestFramePermissions": []
+}

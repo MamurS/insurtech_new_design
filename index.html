@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Mosaic ERP - Enterprise Insurance Management System by Mosaic Insurance Group" />
+    <title>Mosaic ERP | Insurance Management System</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Using Tailwind CDN for simplicity in this setup -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/react-datepicker@6.9.0/dist/react-datepicker.css">
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
+      /* Force stable scrollbar space on the actual scrolling container */
+      .main-content-area {
+        overflow-y: scroll !important;
+        scrollbar-gutter: stable !important;
+      }
+
+      /* Blur fade for sticky filter bars — content fades as it scrolls behind */
+      .sticky-filter-blur {
+        position: relative;
+      }
+      .sticky-filter-blur::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        height: 20px;
+        pointer-events: none;
+        z-index: 29;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        background: linear-gradient(to bottom, rgba(249,250,251,0.9), rgba(249,250,251,0));
+        mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      }
+
+      /* Custom Scrollbar — Webkit (Chrome, Edge, Safari) */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.0);
+        border-radius: 99px;
+        transition: background 0.3s ease;
+      }
+      *:hover::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.4);
+      }
+      *:hover::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 0.7);
+      }
+      *:active::-webkit-scrollbar-thumb {
+        background: rgba(71, 85, 105, 0.8);
+      }
+
+      /* Firefox */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+      }
+      *:hover {
+        scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .font-serif {
+        font-family: 'Merriweather', serif;
+      }
+
+      /* Print Specific Styles */
+      @media print {
+        @page {
+          margin: 0;
+          size: auto;
+        }
+        body {
+          background: white;
+        }
+      }
+
+      /* Custom Datepicker Overrides */
+      .react-datepicker-wrapper {
+        width: 100%;
+      }
+      .react-datepicker__input-container input {
+        width: 100%;
+        outline: none;
+      }
+      .react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+        background-color: #2563eb !important;
+      }
+      .react-datepicker__header {
+        background-color: #f3f4f6;
+        border-bottom: 1px solid #e5e7eb;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.22.3?deps=react@18.3.1,react-dom@18.3.1",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@5.24.1?deps=react@18.3.1,react-dom@18.3.1",
+    "lucide-react": "https://esm.sh/lucide-react@0.344.0?deps=react@18.3.1",
+    "react-datepicker": "https://esm.sh/react-datepicker@6.9.0?deps=react@18.3.1,react-dom@18.3.1",
+    "@google/genai": "https://esm.sh/@google/genai@0.1.1",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.7",
+    "exceljs": "https://esm.sh/exceljs@4.4.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  </body>
+</html>

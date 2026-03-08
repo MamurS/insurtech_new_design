@@ -1,0 +1,29 @@
+{
+  "name": "insurtech-desktop",
+  "version": "1.0.0",
+  "description": "InsurTech Policy Manager - Desktop Application",
+  "main": "main.js",
+  "author": "Mosaic Insurance Group",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.mosaic.insurtech",
+    "productName": "InsurTech Policy Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
