@@ -464,13 +464,14 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
 
                 {/* Bank Details */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
                     Bank Details
                   </label>
                   <textarea
                     value={formData.insuredBankDetails || ''}
                     onChange={(e) => handleChange('insuredBankDetails', e.target.value)}
-                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                    className="w-full resize-none"
+                    style={{ padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
                     rows={3}
                     placeholder="Bank name, account number, MFO..."
                   />
@@ -480,12 +481,13 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
           </div>
 
           {/* Notes */}
-          <div className="bg-slate-50 rounded-xl p-5">
-            <label className="block text-sm font-medium text-slate-700 mb-2">Notes</label>
+          <div className="space-y-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 20, boxShadow: t.shadow }}>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Notes</label>
             <textarea
               value={formData.conditions || ''}
               onChange={(e) => handleChange('conditions', e.target.value)}
-              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+              className="w-full resize-none"
+              style={{ padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
               rows={4}
               placeholder="Additional notes..."
             />
@@ -494,17 +496,19 @@ export const DirectInsuranceFormContent: React.FC<DirectInsuranceFormContentProp
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+      <div className="flex items-center justify-end gap-3 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
         <button
           onClick={onCancel}
-          className="px-6 py-2.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors font-medium"
+          className="px-6 py-2.5 rounded-lg transition-colors font-medium"
+          style={{ border: `1px solid ${t.border}`, color: t.text2, background: t.bgPanel }}
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2 disabled:opacity-50"
+          className="px-6 py-2.5 rounded-lg transition-colors font-medium flex items-center gap-2 disabled:opacity-50"
+          style={{ background: t.accent, color: '#fff' }}
         >
           {saving ? (
             <>

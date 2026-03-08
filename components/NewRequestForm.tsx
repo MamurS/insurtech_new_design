@@ -382,7 +382,7 @@ const ProductSearch: React.FC<{
 const CurrencyInput: React.FC<{
   value: number; onChange: (v: number) => void; currency: string; placeholder?: string;
   bold?: boolean; bgClass?: string; borderClass?: string;
-}> = React.memo(({ value, onChange, currency, placeholder = '0', bold, bgClass = '', borderClass = 'border-slate-300' }) => {
+}> = React.memo(({ value, onChange, currency, placeholder = '0', bold }) => {
   const { t } = useTheme();
   const [localValue, setLocalValue] = useState(value ? fmtNum(value) : '');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -408,11 +408,13 @@ const CurrencyInput: React.FC<{
         onBlur={() => setLocalValue(value ? fmtNum(value) : '')}
         onWheel={(e) => (e.target as HTMLInputElement).blur()}
         placeholder={placeholder}
-        className={`w-full p-2 pr-16 border rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${bold ? 'font-bold' : ''} ${bgClass} ${borderClass}`}
+        className={`w-full text-right ${bold ? 'font-bold' : ''}`}
+        style={{ padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
       />
-      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium px-1.5 py-0.5 rounded select-none pointer-events-none ${
-        bold ? 'text-blue-600 bg-blue-100 font-bold' : 'text-slate-500 bg-slate-100'
-      }`}>
+      <span
+        className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none"
+        style={{ fontSize: 11, fontWeight: bold ? 700 : 500, color: bold ? t.accent : t.text4, background: bold ? t.accentMuted : t.bgHover }}
+      >
         {currency}
       </span>
     </div>
@@ -421,6 +423,7 @@ const CurrencyInput: React.FC<{
 
 // ─── Main Component ─────────────────────────────────────────────
 export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel }) => {
+  const { t } = useTheme();
   const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -454,13 +457,13 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
   }, []);
 
   const insuredOptions = useMemo(() =>
-    entities.map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} className="text-slate-400" /> })), [entities]);
+    entities.map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} style={{ color: t.text4 }} /> })), [entities]);
 
   const intermediaryOptions = useMemo(() =>
-    entities.filter(e => e.type === form.channel).map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} className="text-slate-400" /> })), [entities, form.channel]);
+    entities.filter(e => e.type === form.channel).map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} style={{ color: t.text4 }} /> })), [entities, form.channel]);
 
   const countryOptions = useMemo(() =>
-    COUNTRIES.map(c => ({ id: c, label: c, icon: <Globe size={14} className="text-slate-400" /> })), []);
+    COUNTRIES.map(c => ({ id: c, label: c, icon: <Globe size={14} style={{ color: t.text4 }} /> })), []);
 
   // ─── FX Rate ────────────────────────────────────────────────
   useEffect(() => {
@@ -740,10 +743,10 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         />
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Sector / Industry</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Sector / Industry</label>
             <input type="text" value={form.sector} onChange={(e) => updateForm({ sector: e.target.value })}
               placeholder="e.g. Oil & Gas, Agriculture..."
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+              style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
           </div>
           <SearchableDropdown
             label="Country" value={form.insuredCountry} options={countryOptions}
@@ -761,10 +764,10 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           error={errors.productName} />
         {form.classCodes.length > 0 && (
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Class of Insurance</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Class of Insurance</label>
             <div className="flex flex-wrap gap-2">
               {form.classCodes.map(code => (
-                <span key={code} className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium border border-blue-200">
+                <span key={code} className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: t.accentMuted, color: t.accent, border: `1px solid ${t.accentMuted}` }}>
                   Class {code} — {INSURANCE_CLASSES[code] || 'Unknown'}
                 </span>
               ))}
@@ -776,9 +779,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       {/* ══════ Section 3: Channel & Intermediary ══════ */}
       <SectionCard number={3} title="Channel & Intermediary" icon={<Layers size={16} />}>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1.5">Channel <span className="text-red-500">*</span></label>
+          <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Channel <span style={{ color: t.danger }}>*</span></label>
           <select value={form.channel} onChange={(e) => updateForm({ channel: e.target.value as any, intermediaryName: '', intermediaryEntityId: undefined })}
-            className="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}>
             <option value="Direct">Direct</option>
             <option value="Broker">Broker</option>
             <option value="Agent">Agent</option>
@@ -799,14 +802,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       <SectionCard number={4} title="Sums Insured" icon={<DollarSign size={16} />}>
         <div className="flex items-center gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Currency</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Currency</label>
             <select value={form.currency} onChange={(e) => updateForm({ currency: e.target.value })}
-              className="p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[100px]">
+              style={{ padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit', minWidth: 100 }}>
               {Object.values(Currency).map(c => (<option key={c} value={c}>{c}</option>))}
             </select>
           </div>
           {fxDisplay && (
-            <div className="mt-5 text-xs text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+            <div className="mt-5 px-3 py-1.5 rounded-lg" style={{ fontSize: 12, color: t.text4, background: t.bgInput, border: `1px solid ${t.border}` }}>
               Exchange rate: {fxDisplay}
             </div>
           )}
@@ -817,21 +820,21 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {sumInsuredFields.map(field => (
               <div key={field.key} className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <label className="text-sm text-slate-600 w-48 shrink-0">{field.label}</label>
+                  <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{field.label}</label>
                   <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[field.key] || 0} onChange={(v) => setAmount(field.key, v)} />
                 </div>
                 {field.toggles?.map(toggle => (
                   <div key={toggle.key} className="ml-6 space-y-1">
-                    <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center gap-2 cursor-pointer" style={{ fontSize: 13, color: t.text2 }}>
                       <input type="checkbox" checked={form.sumInsuredToggles[toggle.key] || false}
                         onChange={(e) => setToggle(toggle.key, e.target.checked)}
-                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                        className="rounded" style={{ borderColor: t.border }} />
                       {toggle.label}
                     </label>
                     {form.sumInsuredToggles[toggle.key] && (
                       <div className="flex items-center gap-3 ml-6">
-                        <span className="text-slate-300 text-xs">├</span>
-                        <label className="text-sm text-slate-600 w-48 shrink-0">{toggle.label}</label>
+                        <span style={{ color: t.text5, fontSize: 12 }}>├</span>
+                        <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{toggle.label}</label>
                         <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[toggle.key] || 0} onChange={(v) => setAmount(toggle.key, v)} />
                       </div>
                     )}
@@ -839,8 +842,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 ))}
                 {field.hasSubLimits && field.subLimits?.map(sub => (
                   <div key={sub.key} className="flex items-center gap-3 ml-6">
-                    <span className="text-slate-300 text-xs">├</span>
-                    <label className="text-sm text-slate-600 w-48 shrink-0">{sub.label}</label>
+                    <span style={{ color: t.text5, fontSize: 12 }}>├</span>
+                    <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{sub.label}</label>
                     <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[sub.key] || 0} onChange={(v) => setAmount(sub.key, v)} />
                   </div>
                 ))}
@@ -849,13 +852,13 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <label className="text-sm text-slate-600 w-48 shrink-0">Sum Insured</label>
+            <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Sum Insured</label>
             <CurrencyInput currency={form.currency} value={form.totalSumInsured} onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })} />
           </div>
         )}
 
-        <div className="flex items-center gap-3 pt-3 border-t border-slate-200">
-          <label className="text-sm font-semibold text-slate-700 w-48 shrink-0">Total Sum Insured</label>
+        <div className="flex items-center gap-3 pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="font-semibold w-48 shrink-0" style={{ fontSize: 13, color: t.text1 }}>Total Sum Insured</label>
           <CurrencyInput currency={form.currency} value={form.totalSumInsured}
             onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })}
             bold bgClass="bg-blue-50/50" borderClass="border-2 border-blue-200" />
@@ -865,7 +868,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       {/* ══════ Section 5: Limit of Liability ══════ */}
       <SectionCard number={5} title="Limit of Liability" icon={<Lock size={16} />}>
         <div className="flex items-center gap-3">
-          <label className="text-sm text-slate-600 w-48 shrink-0">Limit of Liability</label>
+          <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Limit of Liability</label>
           <CurrencyInput currency={form.currency} value={form.limitOfLiability} onChange={(v) => updateForm({ limitOfLiability: v })} />
         </div>
       </SectionCard>
@@ -879,14 +882,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             onChange={(d) => updateForm({ expiryDate: toISODateString(d) || '' })} required
             minDate={parseDate(form.inceptionDate) || undefined} />
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Duration</label>
-            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 font-medium">
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Duration</label>
+            <div className="p-2.5 rounded-lg font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {durationDays ? `${durationDays} days` : '—'}
             </div>
           </div>
         </div>
-        {errors.inceptionDate && <p className="text-red-500 text-xs">{errors.inceptionDate}</p>}
-        {errors.expiryDate && <p className="text-red-500 text-xs">{errors.expiryDate}</p>}
+        {errors.inceptionDate && <p className="text-xs" style={{ color: t.danger }}>{errors.inceptionDate}</p>}
+        {errors.expiryDate && <p className="text-xs" style={{ color: t.danger }}>{errors.expiryDate}</p>}
       </SectionCard>
 
       {/* ══════ Section 7: Deductibles ══════ */}
@@ -894,19 +897,19 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         <div className="space-y-3">
           {/* Column headers */}
           <div className="grid grid-cols-12 gap-3 px-3">
-            <div className="col-span-5 text-xs font-medium text-slate-500">Type / Description</div>
-            <div className="col-span-3 text-xs font-medium text-slate-500">Percentage</div>
-            <div className="col-span-4 text-xs font-medium text-slate-500">Amount</div>
+            <div className="col-span-5 text-xs font-medium" style={{ color: t.text4 }}>Type / Description</div>
+            <div className="col-span-3 text-xs font-medium" style={{ color: t.text4 }}>Percentage</div>
+            <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
           </div>
           {form.deductibles.map((ded) => (
             <div key={ded.id} className="flex items-center gap-2">
-              <div className="flex-1 grid grid-cols-12 gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="flex-1 grid grid-cols-12 gap-3 p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
                 {/* Description */}
                 <div className="col-span-5">
                   <input type="text" value={ded.description}
                     onChange={(e) => updateDeductible(ded.id, 'description', e.target.value)}
                     placeholder="e.g. All Perils, Fire, Flood..."
-                    className="w-full p-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                    style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
                 </div>
                 {/* Percentage */}
                 <div className="col-span-3">
@@ -915,8 +918,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                       value={ded.percentage || ''}
                       onChange={(e) => updateDeductible(ded.id, 'percentage', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full p-2 pr-8 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+                      className="w-full text-right"
+                      style={{ padding: '8px 32px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
                   </div>
                 </div>
                 {/* Amount */}
@@ -927,7 +931,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
               {/* Remove button */}
               {form.deductibles.length > 1 ? (
                 <button onClick={() => removeDeductible(ded.id)}
-                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  className="p-1.5 rounded-lg transition-colors shrink-0" style={{ color: t.text4 }}>
                   <Trash2 size={14} />
                 </button>
               ) : <div className="w-8 shrink-0" />}
@@ -935,11 +939,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           ))}
         </div>
         <button onClick={addDeductible}
-          className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium mt-1">
+          className="flex items-center gap-1.5 font-medium mt-1" style={{ fontSize: 13, color: t.accent }}>
           <Plus size={14} /> Add Deductible
         </button>
         {(form.totalSumInsured > 0 || form.limitOfLiability > 0) && (
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>
             Auto-calculation basis: {form.totalSumInsured > 0 ? `Total SI ${fmtNum(form.totalSumInsured)}` : `LoL ${fmtNum(form.limitOfLiability)}`} {form.currency}
           </p>
         )}
@@ -950,32 +954,33 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {/* Sub-premiums (if cover sections have amounts) */}
         {form.subPremiums.length > 0 && (
           <div className="space-y-2 mb-4">
-            <label className="block text-sm font-medium text-slate-600">Sub-Premiums</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, display: 'block' }}>Sub-Premiums</label>
             {/* Header row */}
             <div className="grid grid-cols-12 gap-3 px-3">
-              <div className="col-span-4 text-xs font-medium text-slate-500">Cover Section</div>
-              <div className="col-span-2 text-xs font-medium text-slate-500">Rate</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Cover Section</div>
+              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Rate</div>
               <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium text-slate-500">Premium Amount</div>
-              <div className="col-span-1 text-xs font-medium text-slate-500">Basis</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Premium Amount</div>
+              <div className="col-span-1 text-xs font-medium" style={{ color: t.text4 }}>Basis</div>
             </div>
             <div className="space-y-2">
               {form.subPremiums.map(sub => (
-                <div key={sub.key} className="grid grid-cols-12 gap-3 items-center p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                  <label className="col-span-4 text-sm text-slate-600 truncate" title={sub.label}>{sub.label}</label>
+                <div key={sub.key} className="grid grid-cols-12 gap-3 items-center p-2.5 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                  <label className="col-span-4 truncate" style={{ fontSize: 13, color: t.text2 }} title={sub.label}>{sub.label}</label>
                   <div className="col-span-2 relative">
                     <input type="text" inputMode="numeric"
                       value={sub.rate || ''}
                       onChange={(e) => updateSubPremium(sub.key, 'rate', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+                      className="w-full text-right"
+                      style={{ padding: '8px 28px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
                   </div>
-                  <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+                  <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
                   <div className="col-span-4">
                     <CurrencyInput currency={form.currency} value={sub.amount} onChange={(v) => updateSubPremium(sub.key, 'amount', v)} />
                   </div>
-                  <span className="col-span-1 text-xs text-slate-400 truncate" title={`of ${fmtNum(sub.basis)}`}>
+                  <span className="col-span-1 text-xs truncate" style={{ color: t.text4 }} title={`of ${fmtNum(sub.basis)}`}>
                     of {fmtNum(sub.basis)}
                   </span>
                 </div>
@@ -986,7 +991,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
         {/* Gross Premium */}
         <div className="grid grid-cols-12 gap-3 items-center">
-          <label className="col-span-4 text-sm font-semibold text-slate-700">Gross Premium</label>
+          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Gross Premium</label>
           <div className="col-span-2 relative">
             <input type="text" inputMode="numeric"
               value={form.premiumRate || ''}
@@ -997,10 +1002,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 updateForm({ premiumRate: rate, grossPremium: amount, grossPremiumManual: false });
               }}
               placeholder="0"
-              className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+              className="w-full text-right"
+              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
           <div className="col-span-5">
             <CurrencyInput currency={form.currency} value={form.grossPremium}
               onChange={(v) => {
@@ -1013,37 +1019,38 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         </div>
 
         {/* Commission */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3 border-t border-slate-100">
-          <label className="col-span-4 text-sm text-slate-600">Commission</label>
+        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="col-span-4" style={{ fontSize: 13, color: t.text2 }}>Commission</label>
           <div className="col-span-2 relative">
             <input type="text" inputMode="numeric"
               value={form.commissionPercent || ''}
               onChange={(e) => updateForm({ commissionPercent: parseNum(e.target.value) })}
               placeholder="0"
-              className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+              className="w-full text-right"
+              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
           <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 border border-slate-200 bg-slate-50 rounded-lg text-sm text-right text-slate-700">
+            <div className="w-full p-2 pr-16 rounded-lg text-right" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {fmtNum(form.commissionAmount) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
               {form.currency}
             </span>
           </div>
         </div>
 
         {/* Net Premium */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3 border-t border-slate-200">
-          <label className="col-span-4 text-sm font-semibold text-slate-700">Net Premium</label>
+        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Net Premium</label>
           <div className="col-span-2" />
           <span className="col-span-1" />
           <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 border-2 border-emerald-200 bg-emerald-50/50 rounded-lg text-sm text-right font-bold text-emerald-800">
+            <div className="w-full p-2 pr-16 rounded-lg text-right font-bold" style={{ background: t.successBg, border: `2px solid ${t.success}`, fontSize: 13, color: t.success }}>
               {fmtNum(form.netPremium) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 700, color: t.success, background: t.successBg }}>
               {form.currency}
             </span>
           </div>
@@ -1054,13 +1061,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       <SectionCard number={9} title="Payment Terms" icon={<CreditCard size={16} />}>
         {/* Payment type toggle */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">Payment Type</label>
-          <div className="inline-flex rounded-lg border border-slate-300 overflow-hidden">
+          <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 8, display: 'block' }}>Payment Type</label>
+          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
             <button
               onClick={() => updateForm({ paymentType: 'lump_sum', installments: [] })}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                form.paymentType === 'lump_sum' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-              }`}
+              className="px-4 py-2 font-medium transition-colors"
+              style={{ fontSize: 13, background: form.paymentType === 'lump_sum' ? t.accent : t.bgPanel, color: form.paymentType === 'lump_sum' ? '#fff' : t.text2 }}
             >
               Lump Sum
             </button>
@@ -1079,9 +1085,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                   updateForm({ paymentType: 'installments' });
                 }
               }}
-              className={`px-4 py-2 text-sm font-medium transition-colors border-l border-slate-300 ${
-                form.paymentType === 'installments' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-              }`}
+              className="px-4 py-2 font-medium transition-colors"
+              style={{ fontSize: 13, borderLeft: `1px solid ${t.border}`, background: form.paymentType === 'installments' ? t.accent : t.bgPanel, color: form.paymentType === 'installments' ? '#fff' : t.text2 }}
             >
               Installments
             </button>
@@ -1091,12 +1096,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {form.paymentType === 'lump_sum' ? (
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1.5">Amount</label>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Amount</label>
               <div className="relative">
-                <div className="w-full p-2.5 pr-16 border border-slate-200 bg-slate-50 rounded-lg text-sm text-right font-medium text-slate-700">
+                <div className="w-full p-2.5 pr-16 rounded-lg text-right font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
                   {fmtNum(form.grossPremium) || '0'}
                 </div>
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
                   {form.currency}
                 </span>
               </div>
@@ -1109,16 +1114,16 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {/* Column headers */}
             <div className="grid grid-cols-12 gap-3 px-3">
               <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium text-slate-500">Amount</div>
-              <div className="col-span-4 text-xs font-medium text-slate-500">Due Date</div>
-              <div className="col-span-2 text-xs font-medium text-slate-500">Status</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Due Date</div>
+              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Status</div>
               <div className="col-span-1" />
             </div>
 
             {/* Installment rows */}
             {form.installments.map((inst) => (
-              <div key={inst.id} className="grid grid-cols-12 gap-3 items-center p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="col-span-1 text-xs font-bold text-slate-500 text-center">#{inst.number}</span>
+              <div key={inst.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                <span className="col-span-1 text-xs font-bold text-center" style={{ color: t.text4 }}>#{inst.number}</span>
                 <div className="col-span-4">
                   <CurrencyInput currency={form.currency} value={inst.amount}
                     onChange={(v) => updateInstallment(inst.id, 'amount', v)} />
@@ -1130,14 +1135,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 <div className="col-span-2">
                   <select value={inst.status}
                     onChange={(e) => updateInstallment(inst.id, 'status', e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}>
                     <option value="Pending">Pending</option>
                     <option value="Paid">Paid</option>
                   </select>
                 </div>
                 <div className="col-span-1 flex justify-center">
                   <button onClick={() => removeInstallment(inst.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    className="p-1.5 rounded-lg transition-colors" style={{ color: t.text4 }}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -1147,12 +1152,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {/* Actions row */}
             <div className="flex items-center gap-3">
               <button onClick={addInstallment}
-                className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                className="flex items-center gap-1.5 font-medium" style={{ fontSize: 13, color: t.accent }}>
                 <Plus size={14} /> Add Installment
               </button>
               {form.installments.length >= 2 && form.grossPremium > 0 && (
                 <button onClick={splitEqual}
-                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 font-medium ml-4">
+                  className="flex items-center gap-1.5 font-medium ml-4" style={{ fontSize: 13, color: t.text4 }}>
                   Split Equally
                 </button>
               )}
@@ -1160,7 +1165,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
             {/* Mismatch warning */}
             {installmentMismatch && (
-              <div className="flex items-center gap-2 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+              <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: t.warningBg, border: `1px solid ${t.warning}`, fontSize: 13, color: t.warning }}>
                 <AlertTriangle size={14} className="shrink-0" />
                 <span>
                   Installments total <strong>{fmtNum(installmentTotal)} {form.currency}</strong> ≠ Gross Premium <strong>{fmtNum(form.grossPremium)} {form.currency}</strong>

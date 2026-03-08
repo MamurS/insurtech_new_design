@@ -579,7 +579,7 @@ const PolicyForm: React.FC = () => {
                 
                 {/* 1. Channel & Intermediary */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><ArrowRightLeft size={18} className="text-blue-500"/> Business Channel & Source</h3>
+                    <h3 style={sectionTitleStyle}><ArrowRightLeft size={18} style={{ color: t.accent }}/> Business Channel & Source</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                         {/* Channel Selector */}
@@ -638,7 +638,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* 2. Risk & Core Details */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><Building2 size={18} className="text-blue-500"/> Risk Details</h3>
+                    <h3 style={sectionTitleStyle}><Building2 size={18} style={{ color: t.accent }}/> Risk Details</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="md:col-span-2">
@@ -728,7 +728,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* 3. Extended Parties */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><Users size={18} className="text-blue-500"/> Additional Parties</h3>
+                    <h3 style={sectionTitleStyle}><Users size={18} style={{ color: t.accent }}/> Additional Parties</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                          <div>
                             <label style={labelStyle}>Insured Address</label>
@@ -751,7 +751,7 @@ const PolicyForm: React.FC = () => {
                 
                 {/* 4. Financials (NEW LAYOUT WITH PER-FIELD CURRENCY TOGGLE) */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><DollarSign size={18} className="text-blue-500"/> Financials & Premiums</h3>
+                    <h3 style={sectionTitleStyle}><DollarSign size={18} style={{ color: t.accent }}/> Financials & Premiums</h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <div>
@@ -824,7 +824,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* 5. Income / Costs */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><Briefcase size={18} className="text-blue-500"/> Income & Costs</h3>
+                    <h3 style={sectionTitleStyle}><Briefcase size={18} style={{ color: t.accent }}/> Income & Costs</h3>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
                          <div>
                              <label style={labelStyle}>Our Share (%)</label>
@@ -849,7 +849,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* 6. INSTALLMENTS SECTION */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><CreditCard size={18} className="text-blue-500"/> Payment Schedule & Collection</h3>
+                    <h3 style={sectionTitleStyle}><CreditCard size={18} style={{ color: t.accent }}/> Payment Schedule & Collection</h3>
                     
                     <div className="mb-4 text-sm" style={{ color: t.text4 }}>
                         Add installments below. The system tracks Due Date vs Actual Paid Date.
@@ -886,7 +886,8 @@ const PolicyForm: React.FC = () => {
                                                     type="number" 
                                                     value={inst.dueAmount || ''} 
                                                     onChange={(e) => handleInstallmentChange(idx, 'dueAmount', Number(e.target.value))}
-                                                    className="w-full border-gray-200 rounded px-2 py-1 text-sm font-medium"
+                                                    className="w-full rounded px-2 py-1 text-sm font-medium"
+                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
                                                     placeholder="0.00"
                                                 />
                                             </td>
@@ -898,21 +899,22 @@ const PolicyForm: React.FC = () => {
                                                 />
                                             </td>
                                             <td className="px-4 py-2">
-                                                <input 
-                                                    type="number" 
-                                                    value={inst.paidAmount || ''} 
+                                                <input
+                                                    type="number"
+                                                    value={inst.paidAmount || ''}
                                                     onChange={(e) => handleInstallmentChange(idx, 'paidAmount', Number(e.target.value))}
-                                                    className="w-full border-gray-200 rounded px-2 py-1 text-sm text-green-700 font-medium"
+                                                    className="w-full rounded px-2 py-1 text-sm font-medium"
+                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.success }}
                                                     placeholder="0.00"
                                                 />
                                             </td>
                                             <td className="px-4 py-2">
-                                                <div className={`font-mono font-bold ${balance > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                                <div className="font-mono font-bold" style={{ color: balance > 0 ? t.danger : t.success }}>
                                                     {balance.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                                 </div>
                                             </td>
                                             <td className="px-4 py-2 text-center">
-                                                <button type="button" onClick={() => removeInstallment(idx)} className="text-red-400 hover:text-red-600">
+                                                <button type="button" onClick={() => removeInstallment(idx)} style={{ color: t.danger }}>
                                                     <Trash2 size={14}/>
                                                 </button>
                                             </td>
@@ -920,26 +922,26 @@ const PolicyForm: React.FC = () => {
                                     );
                                 })}
                             </tbody>
-                            <tfoot className="bg-gray-50 font-bold text-gray-700">
+                            <tfoot style={{ background: t.bgInput, fontWeight: 700, color: t.text2 }}>
                                 <tr>
                                     <td colSpan={2} className="px-4 py-2 text-right">TOTAL:</td>
                                     <td className="px-4 py-2">{totalInstallmentsDue.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
                                     <td className="px-4 py-2 text-right">PAID:</td>
-                                    <td className="px-4 py-2 text-green-700">{totalInstallmentsPaid.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                                    <td className="px-4 py-2" style={{ color: t.success }}>{totalInstallmentsPaid.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
                                     <td colSpan={2}></td>
                                 </tr>
                             </tfoot>
                         </table>
                     </div>
-                    <button type="button" onClick={addInstallment} className="text-xs font-bold text-blue-600 flex items-center gap-1 hover:text-blue-800">
+                    <button type="button" onClick={addInstallment} className="text-xs font-bold flex items-center gap-1" style={{ color: t.accent }}>
                         <Plus size={12}/> Add Installment
                     </button>
                 </div>
 
                 {/* 7. Treaty / Inward Specifics */}
                 {formData.channel === 'Inward' && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 border-l-4 border-l-purple-500">
-                    <h3 style={sectionTitleStyle}><Globe size={18} className="text-purple-500"/> Treaty & AIC Details</h3>
+                <div className="p-6" style={{ ...cardStyle, borderLeft: '4px solid #a855f7' }}>
+                    <h3 style={sectionTitleStyle}><Globe size={18} style={{ color: '#a855f7' }}/> Treaty & AIC Details</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
                         <div>
                              <label style={labelStyle}>Treaty Placement</label>
@@ -993,18 +995,19 @@ const PolicyForm: React.FC = () => {
                 )}
 
                 {/* 8. OUTWARD REINSURANCE (MULTI-ROW) */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 border-l-4 border-l-amber-400">
-                     <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100">
-                         <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                             <ArrowRightLeft size={18} className="text-amber-500"/> Outward Reinsurance
+                <div className="p-6" style={{ ...cardStyle, borderLeft: `4px solid ${t.warning}` }}>
+                     <div className="flex justify-between items-center mb-4 pb-2" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                         <h3 className="text-lg font-bold flex items-center gap-2" style={{ color: t.text1 }}>
+                             <ArrowRightLeft size={18} style={{ color: t.warning }}/> Outward Reinsurance
                          </h3>
                          <div className="flex items-center gap-2">
-                             <label className="text-sm font-medium text-gray-600">Applicable?</label>
+                             <label className="text-sm font-medium" style={{ color: t.text3 }}>Applicable?</label>
                              <input 
                                 type="checkbox" 
                                 checked={formData.hasOutwardReinsurance || false} 
                                 onChange={(e) => setFormData({...formData, hasOutwardReinsurance: e.target.checked})}
-                                className="w-5 h-5 text-amber-600 rounded focus:ring-amber-500"
+                                className="w-5 h-5 rounded"
+                                style={{ accentColor: t.warning }}
                              />
                          </div>
                      </div>
@@ -1013,9 +1016,9 @@ const PolicyForm: React.FC = () => {
                         <div className="animate-in fade-in slide-in-from-top-2 space-y-4">
                             
                             {/* Reinsurers Panel Table */}
-                            <div className="border border-gray-200 rounded-lg overflow-hidden">
+                            <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
                                 <table className="w-full text-sm text-left">
-                                    <thead className="bg-amber-50 text-amber-900">
+                                    <thead style={{ background: t.warningBg, color: t.warning }}>
                                         <tr>
                                             <th className="px-4 py-2 w-1/2">Reinsurer Name</th>
                                             <th className="px-4 py-2 w-20">Share %</th>
@@ -1023,46 +1026,49 @@ const PolicyForm: React.FC = () => {
                                             <th className="px-4 py-2 w-10"></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100">
+                                    <tbody>
                                         {formData.reinsurers?.map((reinsurer, idx) => (
-                                            <tr key={reinsurer.id} className="bg-white">
+                                            <tr key={reinsurer.id} style={{ background: t.bgPanel, borderBottom: `1px solid ${t.borderL}` }}>
                                                 <td className="px-4 py-2">
-                                                    <input 
-                                                        type="text" 
+                                                    <input
+                                                        type="text"
                                                         value={reinsurer.name}
                                                         onChange={(e) => handleReinsurerChange(idx, 'name', e.target.value)}
-                                                        className="w-full border-none focus:ring-0 text-sm"
+                                                        className="w-full text-sm"
+                                                        style={{ border: 'none', outline: 'none', background: 'transparent', color: t.text1 }}
                                                         placeholder="Reinsurer Name"
                                                     />
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    <input 
-                                                        type="number" 
+                                                    <input
+                                                        type="number"
                                                         value={reinsurer.share || ''}
                                                         onChange={(e) => handleReinsurerChange(idx, 'share', Number(e.target.value))}
-                                                        className="w-full border-none focus:ring-0 text-sm"
+                                                        className="w-full text-sm"
+                                                        style={{ border: 'none', outline: 'none', background: 'transparent', color: t.text1 }}
                                                     />
                                                 </td>
                                                 <td className="px-4 py-2">
-                                                    <input 
-                                                        type="number" 
+                                                    <input
+                                                        type="number"
                                                         value={reinsurer.commission || ''}
                                                         onChange={(e) => handleReinsurerChange(idx, 'commission', Number(e.target.value))}
-                                                        className="w-full border-none focus:ring-0 text-sm"
+                                                        className="w-full text-sm"
+                                                        style={{ border: 'none', outline: 'none', background: 'transparent', color: t.text1 }}
                                                     />
                                                 </td>
                                                 <td className="px-4 py-2 text-center">
-                                                    <button type="button" onClick={() => removeReinsurer(idx)} className="text-red-400 hover:text-red-600">
+                                                    <button type="button" onClick={() => removeReinsurer(idx)} style={{ color: t.danger }}>
                                                         <Trash2 size={14}/>
                                                     </button>
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
-                                    <tfoot className="bg-gray-50">
+                                    <tfoot style={{ background: t.bgInput }}>
                                         <tr>
                                             <td colSpan={4} className="px-4 py-2">
-                                                <button type="button" onClick={addReinsurer} className="text-xs font-bold text-blue-600 flex items-center gap-1 hover:text-blue-800">
+                                                <button type="button" onClick={addReinsurer} className="text-xs font-bold flex items-center gap-1" style={{ color: t.accent }}>
                                                     <Plus size={12}/> Add Reinsurer
                                                 </button>
                                             </td>
@@ -1072,28 +1078,28 @@ const PolicyForm: React.FC = () => {
                             </div>
                             
                             {/* Aggregates Display */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-amber-50 p-4 rounded-lg">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-4 rounded-lg" style={{ background: t.warningBg }}>
                                  <div>
                                     <label style={labelStyle}>Total Premium Ceded ({formData.currency})</label>
-                                    <div className="font-bold text-gray-900 bg-white p-2 rounded border border-amber-200">
+                                    <div className="font-bold p-2 rounded" style={{ color: t.text1, background: t.bgPanel, border: `1px solid ${t.warning}` }}>
                                         {formData.cededPremiumForeign?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-1">
+                                    <div className="text-xs mt-1" style={{ color: t.text4 }}>
                                         Total Share: {formData.cededShare}%
                                     </div>
                                  </div>
                                  <div className="md:col-span-2">
                                     <label style={labelStyle}>Net Payable to Reinsurers ({formData.currency})</label>
-                                    <div className="font-bold text-amber-900 bg-amber-100 p-2 rounded border border-amber-300">
+                                    <div className="font-bold p-2 rounded" style={{ color: t.warning, background: t.warningBg, border: `1px solid ${t.warning}` }}>
                                         {formData.netReinsurancePremium?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-1">
+                                    <div className="text-xs mt-1" style={{ color: t.text4 }}>
                                         Avg Commission: {formData.reinsuranceCommission}%
                                     </div>
                                  </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-5 text-xs text-gray-600 border-t pt-4">
+                            <div className="grid grid-cols-2 gap-5 text-xs pt-4" style={{ color: t.text3, borderTop: `1px solid ${t.borderL}` }}>
                                 <CurrencyInput 
                                     label="Sum Reinsured"
                                     originalValue={formData.sumReinsuredForeign || 0}
@@ -1113,7 +1119,7 @@ const PolicyForm: React.FC = () => {
                             </div>
                         </div>
                      ) : (
-                         <div className="text-sm text-gray-400 italic">No reinsurance ceded for this policy. Check the box to add details.</div>
+                         <div className="text-sm italic" style={{ color: t.text5 }}>No reinsurance ceded for this policy. Check the box to add details.</div>
                      )}
                 </div>
             </div>
@@ -1123,16 +1129,14 @@ const PolicyForm: React.FC = () => {
                 
                 {/* VALIDATION WORKFLOW */}
                 {isEdit && (
-                    <div className={`rounded-xl shadow-sm border p-6 transition-all ${
-                        formData.status === PolicyStatus.ACTIVE ? 'bg-green-50 border-green-200' :
-                        formData.status === PolicyStatus.NTU ? 'bg-red-50 border-red-200' :
-                        'bg-amber-50 border-amber-200'
-                    }`}>
-                        <h3 className={`text-lg font-bold mb-4 flex items-center gap-2 ${
-                            formData.status === PolicyStatus.ACTIVE ? 'text-green-800' :
-                            formData.status === PolicyStatus.NTU ? 'text-red-800' :
-                            'text-amber-800'
-                        }`}>
+                    <div className="rounded-xl p-6 transition-all" style={{
+                        background: formData.status === PolicyStatus.ACTIVE ? t.successBg : formData.status === PolicyStatus.NTU ? t.dangerBg : t.warningBg,
+                        border: `1px solid ${formData.status === PolicyStatus.ACTIVE ? t.success : formData.status === PolicyStatus.NTU ? t.danger : t.warning}`,
+                        boxShadow: t.shadow
+                    }}>
+                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{
+                            color: formData.status === PolicyStatus.ACTIVE ? t.success : formData.status === PolicyStatus.NTU ? t.danger : t.warning
+                        }}>
                             {formData.status === PolicyStatus.ACTIVE ? <CheckCircle size={20}/> :
                             formData.status === PolicyStatus.NTU ? <XCircle size={20}/> :
                             <AlertCircle size={20}/>}
@@ -1141,12 +1145,12 @@ const PolicyForm: React.FC = () => {
 
                         {formData.status === PolicyStatus.PENDING && (
                             <div className="space-y-4">
-                                <div className="border-t border-dashed border-amber-200 pt-4">
-                                    <label className="block text-sm font-bold text-amber-900 mb-2">
+                                <div className="pt-4" style={{ borderTop: `1px dashed ${t.warning}` }}>
+                                    <label className="block text-sm font-bold mb-2" style={{ color: t.warning }}>
                                         Upload Signed Document
                                     </label>
                                     <div className="flex items-center gap-2">
-                                        <label className="flex-1 cursor-pointer bg-white border border-amber-300 rounded-lg px-4 py-2 text-amber-700 hover:bg-amber-50 transition-colors flex items-center justify-center gap-2 text-sm">
+                                        <label className="flex-1 cursor-pointer rounded-lg px-4 py-2 transition-colors flex items-center justify-center gap-2 text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.warning}`, color: t.warning }}>
                                             <Upload size={16} /> {selectedFile ? selectedFile.name : 'Select File...'}
                                             <input type="file" accept=".pdf" className="hidden" onChange={handleFileChange} />
                                         </label>
@@ -1154,19 +1158,21 @@ const PolicyForm: React.FC = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-2 pt-2">
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={handleNTU}
-                                        className="w-full py-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 text-sm font-bold transition-colors"
+                                        className="w-full py-2 rounded-lg text-sm font-bold transition-colors"
+                                        style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger }}
                                     >
                                         Mark NTU
                                     </button>
                                     
-                                    <button 
-                                        type="button" 
+                                    <button
+                                        type="button"
                                         onClick={handleActivate}
                                         disabled={!!processingAction}
-                                        className="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-bold shadow-sm transition-colors flex items-center justify-center gap-2"
+                                        className="w-full py-2 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                                        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
                                     >
                                         {processingAction === 'activate' ? <Loader2 className="animate-spin" size={16}/> : 'Activate'}
                                     </button>
@@ -1175,11 +1181,12 @@ const PolicyForm: React.FC = () => {
                         )}
                         
                         {formData.status === PolicyStatus.ACTIVE && (
-                             <div className="mt-4 pt-4 border-t border-green-200">
-                                <button 
+                             <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${t.success}` }}>
+                                <button
                                     onClick={handleCancel}
-                                    type="button" 
-                                    className="w-full py-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 text-sm font-bold flex items-center justify-center gap-2"
+                                    type="button"
+                                    className="w-full py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2"
+                                    style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger }}
                                 >
                                     <XCircle size={16}/> Cancel Policy
                                 </button>
@@ -1189,29 +1196,29 @@ const PolicyForm: React.FC = () => {
                 )}
 
                 {/* Key Dates Summary (New) */}
-                <div className="bg-blue-50 rounded-xl shadow-sm border border-blue-100 p-6">
-                    <h3 className="text-lg font-bold text-blue-900 mb-4 pb-2 border-b border-blue-200 flex items-center gap-2">
+                <div className="rounded-xl p-6" style={{ background: t.accentMuted, border: `1px solid ${t.accent}`, boxShadow: t.shadow }}>
+                    <h3 className="text-lg font-bold mb-4 pb-2 flex items-center gap-2" style={{ color: t.accent, borderBottom: `1px solid ${t.accent}` }}>
                         <Calendar size={18}/> Key Dates Summary
                     </h3>
                     <div className="space-y-3 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-blue-700">Inception:</span>
-                            <span className="font-mono font-bold text-blue-900">{formatDate(formData.inceptionDate)}</span>
+                            <span style={{ color: t.accent }}>Inception:</span>
+                            <span className="font-mono font-bold" style={{ color: t.text1 }}>{formatDate(formData.inceptionDate)}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-blue-700">Expiry:</span>
-                            <span className="font-mono font-bold text-blue-900">{formatDate(formData.expiryDate)}</span>
+                            <span style={{ color: t.accent }}>Expiry:</span>
+                            <span className="font-mono font-bold" style={{ color: t.text1 }}>{formatDate(formData.expiryDate)}</span>
                         </div>
-                        <div className="flex justify-between border-t border-blue-200 pt-2 mt-2">
-                            <span className="text-blue-700">Payment Due:</span>
-                            <span className="font-mono font-bold text-red-700">{formatDate(formData.paymentDate)}</span>
+                        <div className="flex justify-between pt-2 mt-2" style={{ borderTop: `1px solid ${t.accent}` }}>
+                            <span style={{ color: t.accent }}>Payment Due:</span>
+                            <span className="font-mono font-bold" style={{ color: t.danger }}>{formatDate(formData.paymentDate)}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* References */}
                 <div className="p-6" style={cardStyle}>
-                    <h3 style={sectionTitleStyle}><FileText size={18} className="text-blue-500"/> References & Dates</h3>
+                    <h3 style={sectionTitleStyle}><FileText size={18} style={{ color: t.accent }}/> References & Dates</h3>
                     
                     <div className="space-y-4">
                         <div>
@@ -1240,10 +1247,10 @@ const PolicyForm: React.FC = () => {
                          
                          <div className="flex items-center gap-2 py-2">
                              <input type="checkbox" name="invoiceIssued" checked={formData.invoiceIssued || false} onChange={e => setFormData({...formData, invoiceIssued: e.target.checked})} />
-                             <label className="text-sm">Invoice Issued?</label>
+                             <label className="text-sm" style={{ color: t.text2 }}>Invoice Issued?</label>
                          </div>
                         
-                        <div className="grid grid-cols-2 gap-3 border-t pt-3">
+                        <div className="grid grid-cols-2 gap-3 pt-3" style={{ borderTop: `1px solid ${t.borderL}` }}>
                             <div>
                                 <DatePickerInput label="Inception" value={parseDate(formData.inceptionDate)} onChange={(date) => handleDateChange('inceptionDate', date)} />
                             </div>
@@ -1265,7 +1272,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* Additional Settings */}
                 <div className="p-6" style={cardStyle}>
-                     <h3 style={sectionTitleStyle}><ShieldCheck size={18} className="text-blue-500"/> Conditions</h3>
+                     <h3 style={sectionTitleStyle}><ShieldCheck size={18} style={{ color: t.accent }}/> Conditions</h3>
                      <label style={labelStyle}>Deductible</label>
                      <textarea rows={2} name="deductible" value={formData.deductible || ''} onChange={handleChange} style={inputStyle} placeholder="e.g. 10% of claim amount"></textarea>
                      
