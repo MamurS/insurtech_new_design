@@ -382,9 +382,12 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
           {tab === 'bordereaux' && (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-semibold text-slate-700">Bordereaux Entries</h3>
+                <h3 className="text-sm font-semibold" style={{ color: t.text1 }}>Bordereaux Entries</h3>
                 <button onClick={() => setShowBdxForm(true)}
-                  className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-1.5">
+                  className="px-3 py-1.5 text-sm rounded-lg flex items-center gap-1.5"
+                  style={{ background: t.accent, color: '#fff' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
                   <Plus size={14} /> Add Bordereaux
                 </button>
               </div>
@@ -399,33 +402,35 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
 
               {bdxLoading ? (
                 <div className="flex items-center justify-center py-12">
-                  <RefreshCw className="animate-spin text-blue-600" size={24} />
+                  <RefreshCw className="animate-spin" size={24} style={{ color: t.accent }} />
                 </div>
               ) : bdxEntries.length === 0 ? (
-                <div className="text-center py-12 text-slate-400">
+                <div className="text-center py-12" style={{ color: t.text5 }}>
                   <ClipboardList size={36} className="mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No bordereaux entries yet</p>
                 </div>
               ) : (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50">
-                      <th className="text-left px-3 py-2 text-xs font-semibold text-slate-500 uppercase">Period</th>
-                      <th className="text-left px-3 py-2 text-xs font-semibold text-slate-500 uppercase">Submitted</th>
-                      <th className="text-left px-3 py-2 text-xs font-semibold text-slate-500 uppercase">Type</th>
-                      <th className="text-right px-3 py-2 text-xs font-semibold text-slate-500 uppercase">GWP</th>
-                      <th className="text-right px-3 py-2 text-xs font-semibold text-slate-500 uppercase">Policies</th>
-                      <th className="text-center px-3 py-2 text-xs font-semibold text-slate-500 uppercase">Status</th>
+                    <tr style={{ background: t.bgInput }}>
+                      <th className="text-left px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Period</th>
+                      <th className="text-left px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Submitted</th>
+                      <th className="text-left px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Type</th>
+                      <th className="text-right px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>GWP</th>
+                      <th className="text-right px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Policies</th>
+                      <th className="text-center px-3 py-2 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody style={{ borderColor: t.borderL }} className="divide-y">
                     {bdxEntries.map(bdx => (
-                      <tr key={bdx.id} className="hover:bg-slate-50">
-                        <td className="px-3 py-2 text-slate-700">{formatDate(bdx.periodFrom)} - {formatDate(bdx.periodTo)}</td>
-                        <td className="px-3 py-2 text-slate-600">{formatDate(bdx.submissionDate)}</td>
-                        <td className="px-3 py-2"><span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">{bdx.bordereauType}</span></td>
-                        <td className="px-3 py-2 text-right font-medium text-slate-800">{formatCurrency(bdx.totalGwp)}</td>
-                        <td className="px-3 py-2 text-right text-slate-600">{bdx.totalPolicies}</td>
+                      <tr key={bdx.id}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
+                        <td className="px-3 py-2" style={{ color: t.text1 }}>{formatDate(bdx.periodFrom)} - {formatDate(bdx.periodTo)}</td>
+                        <td className="px-3 py-2" style={{ color: t.text2 }}>{formatDate(bdx.submissionDate)}</td>
+                        <td className="px-3 py-2"><span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: t.bgInput, color: t.text2 }}>{bdx.bordereauType}</span></td>
+                        <td className="px-3 py-2 text-right font-medium" style={{ color: t.text1 }}>{formatCurrency(bdx.totalGwp)}</td>
+                        <td className="px-3 py-2 text-right" style={{ color: t.text2 }}>{bdx.totalPolicies}</td>
                         <td className="px-3 py-2 text-center">{getBdxStatusBadge(bdx.status)}</td>
                       </tr>
                     ))}
@@ -436,14 +441,14 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
           )}
 
           {tab === 'claims' && (
-            <div className="text-center py-16 text-slate-400">
+            <div className="text-center py-16" style={{ color: t.text5 }}>
               <AlertCircle size={36} className="mx-auto mb-2 opacity-50" />
               <p className="text-sm font-medium">Claims bordereaux tracking coming soon</p>
             </div>
           )}
 
           {tab === 'documents' && (
-            <div className="text-center py-16 text-slate-400">
+            <div className="text-center py-16" style={{ color: t.text5 }}>
               <FileText size={36} className="mx-auto mb-2 opacity-50" />
               <p className="text-sm font-medium">Document management coming soon</p>
             </div>
@@ -482,27 +487,32 @@ const getScoreStars = (utilization: number): number => {
   return 1;
 };
 
-const StarRating: React.FC<{ score: number }> = ({ score }) => (
-  <div className="flex gap-0.5">
-    {[1, 2, 3, 4, 5].map(i => (
-      <Star key={i} size={14} className={i <= score ? 'text-amber-400 fill-amber-400' : 'text-slate-200'} />
-    ))}
-  </div>
-);
+const StarRating: React.FC<{ score: number }> = ({ score }) => {
+  const { t } = useTheme();
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map(i => (
+        <Star key={i} size={14} style={i <= score ? { color: t.warning, fill: t.warning } : { color: t.borderL }} />
+      ))}
+    </div>
+  );
+};
 
 const TrendIndicator: React.FC<{ bdxEntries: BordereauxEntry[] }> = ({ bdxEntries }) => {
+  const { t } = useTheme();
   const accepted = bdxEntries
     .filter(b => b.status === 'ACCEPTED' && b.totalGwp > 0)
     .sort((a, b) => (a.periodFrom || '').localeCompare(b.periodFrom || ''));
-  if (accepted.length < 2) return <Minus size={14} className="text-slate-300" />;
+  if (accepted.length < 2) return <Minus size={14} style={{ color: t.borderL }} />;
   const recent = accepted[accepted.length - 1].totalGwp;
   const prev = accepted[accepted.length - 2].totalGwp;
-  if (recent > prev) return <TrendingUp size={14} className="text-emerald-500" />;
-  if (recent < prev) return <TrendingDown size={14} className="text-red-500" />;
-  return <Minus size={14} className="text-slate-300" />;
+  if (recent > prev) return <TrendingUp size={14} style={{ color: t.success }} />;
+  if (recent < prev) return <TrendingDown size={14} style={{ color: t.danger }} />;
+  return <Minus size={14} style={{ color: t.borderL }} />;
 };
 
 const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, bdxMap, loading }) => {
+  const { t } = useTheme();
   // Build performance rows
   const perfRows = useMemo(() => {
     return agreements.map(ag => {
@@ -591,7 +601,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <RefreshCw className="animate-spin text-blue-600" size={32} />
+        <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
       </div>
     );
   }
@@ -600,39 +610,39 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-slate-500 text-xs uppercase tracking-wide mb-1">
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wide mb-1" style={{ color: t.text4 }}>
             <BarChart3 size={14} />
             Avg Utilization
           </div>
-          <p className={`text-2xl font-bold ${avgUtilization >= 75 ? 'text-emerald-600' : avgUtilization >= 50 ? 'text-amber-600' : 'text-red-600'}`}>
+          <p className="text-2xl font-bold" style={{ color: avgUtilization >= 75 ? t.success : avgUtilization >= 50 ? t.warning : t.danger }}>
             {avgUtilization.toFixed(1)}%
           </p>
-          <p className="text-xs text-slate-400 mt-0.5">{activeRows.length} active agreements</p>
+          <p className="text-xs mt-0.5" style={{ color: t.text5 }}>{activeRows.length} active agreements</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-emerald-500 text-xs uppercase tracking-wide mb-1">
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wide mb-1" style={{ color: t.success }}>
             <Star size={14} />
             Best Performer
           </div>
-          <p className="text-sm font-bold text-slate-800 truncate">{bestPerformer?.agreement.mgaName || '-'}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{bestPerformer ? `${bestPerformer.utilization.toFixed(0)}% utilization` : 'No active agreements'}</p>
+          <p className="text-sm font-bold truncate" style={{ color: t.text1 }}>{bestPerformer?.agreement.mgaName || '-'}</p>
+          <p className="text-xs mt-0.5" style={{ color: t.text5 }}>{bestPerformer ? `${bestPerformer.utilization.toFixed(0)}% utilization` : 'No active agreements'}</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-red-500 text-xs uppercase tracking-wide mb-1">
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wide mb-1" style={{ color: t.danger }}>
             <AlertCircle size={14} />
             Underperformers
           </div>
-          <p className="text-2xl font-bold text-red-600">{underperformerCount}</p>
-          <p className="text-xs text-slate-400 mt-0.5">Below 50% utilization</p>
+          <p className="text-2xl font-bold" style={{ color: t.danger }}>{underperformerCount}</p>
+          <p className="text-xs mt-0.5" style={{ color: t.text5 }}>Below 50% utilization</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <div className="flex items-center gap-2 text-blue-500 text-xs uppercase tracking-wide mb-1">
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wide mb-1" style={{ color: t.accent }}>
             <ClipboardList size={14} />
             Total Bordereaux
           </div>
-          <p className="text-2xl font-bold text-blue-600">{totalBdxCount}</p>
-          <p className="text-xs text-slate-400 mt-0.5">All submissions</p>
+          <p className="text-2xl font-bold" style={{ color: t.accent }}>{totalBdxCount}</p>
+          <p className="text-xs mt-0.5" style={{ color: t.text5 }}>All submissions</p>
         </div>
       </div>
 
@@ -788,6 +798,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
 
 const MGADashboard: React.FC = () => {
   const toast = useToast();
+  const { t } = useTheme();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
 
   // Page-level tab
