@@ -384,7 +384,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
              </div>
              {policy.hasOutwardReinsurance && (
                  <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
-                     <h5 className="font-bold text-xs uppercase mb-2" style={{ color: t.warning }}>Outward Reinsurance</h5>
+                     <h5 className="text-xs uppercase mb-2" style={{ color: t.warning, fontWeight: 700 }}>Outward Reinsurance</h5>
                      <div className="grid grid-cols-2 gap-4 text-sm">
                          <div><div style={{ color: t.text4 }}>Market</div><div className="font-medium">{policy.reinsurers && policy.reinsurers.length > 0 ? 'Panel Placement' : policy.reinsurerName || '-'}</div></div>
                          <div><div style={{ color: t.text4 }}>Ceded Share</div><div className="font-medium">{policy.cededShare}%</div></div>
