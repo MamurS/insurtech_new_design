@@ -634,18 +634,18 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         <div className="px-5 py-3 flex-shrink-0" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgPanel }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              <span className="px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0" style={getStatusBadgeStyle(row.status, row.isDeleted)}>
+              <span className="px-2.5 py-1 rounded-full text-xs flex-shrink-0" style={{ fontWeight: 700, ...getStatusBadgeStyle(row.status, row.isDeleted) }}>
                 {row.isDeleted ? 'DELETED' : row.status}
               </span>
               <h2 className="truncate font-mono" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{row.referenceNumber}</h2>
               <span style={{ color: t.text4 }}>—</span>
-              <span className="font-medium truncate" style={{ color: t.text2 }}>{row.insuredName || row.cedantName || '-'}</span>
+              <span className="truncate" style={{ color: t.text2, fontWeight: 500 }}>{row.insuredName || row.cedantName || '-'}</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0 ml-4">
               {onEdit && (
                 <button
                   onClick={() => onEdit(row)}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg"
+                  className="px-3 py-1.5 text-sm rounded-lg"
                   style={{ color: t.accent, border: `1px solid ${t.accent}40` }}
                 >
                   Edit
