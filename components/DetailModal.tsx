@@ -346,7 +346,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     {policy.secondaryPolicyNumber && <div><div style={{ color: t.text4 }}>Secondary Ref</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.secondaryPolicyNumber}</div></div>}
                     {policy.agreementNumber && <div><div style={{ color: t.text4 }}>Agreement No</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.agreementNumber}</div></div>}
 
-                    {policy.channel === 'Inward' && <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: '1px solid #a855f720' }}><div className="text-xs uppercase font-bold" style={{ color: '#a855f7' }}>Cedant</div><div className="font-medium" style={{ color: '#a855f7' }}>{policy.cedantName || '-'}</div></div>}
+                    {policy.channel === 'Inward' && <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: '1px solid #a855f720' }}><div className="text-xs uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Cedant</div><div style={{ color: '#a855f7', fontWeight: 500 }}>{policy.cedantName || '-'}</div></div>}
                     <div className="col-span-2 p-2 rounded" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}><div className="text-xs uppercase" style={{ color: t.text4 }}>Intermediary ({policy.intermediaryType})</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.intermediaryName || 'Direct'}</div></div>
 
                     {policy.borrower && <div><div style={{ color: t.text4 }}>Borrower</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.borrower}</div></div>}
@@ -375,7 +375,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
         {/* Financials */}
         <div className="p-6 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-             <h4 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
+             <h4 className="mb-4 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
                  <div><div style={{ color: t.text4 }}>Sum Insured</div><div style={{ color: t.text1, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.sumInsured, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Limit of Liability</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatMoney(policy.limitForeignCurrency, policy.currency)}</div></div>
