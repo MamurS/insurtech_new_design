@@ -439,7 +439,7 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
                 onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? t.bgApp : 'transparent'; }}
               >
                 <span style={{ color: active ? t.accent : t.text4, display: 'flex', alignItems: 'center' }}>{tab.icon}</span>
-                <span style={{ fontSize: 12, fontWeight: active ? 600 : 400, color: active ? t.text1 : t.text3, whiteSpace: 'nowrap' }}>{tab.label}</span>
+                <span style={{ fontSize: 13, fontWeight: active ? 600 : 400, color: active ? t.text1 : t.text3, whiteSpace: 'nowrap' }}>{tab.label}</span>
               </div>
             );
           })}
@@ -470,7 +470,7 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
               onMouseLeave={e => { if (activeTab !== 'admin') e.currentTarget.style.background = 'transparent'; }}
             >
               <Settings size={13} style={{ color: activeTab === 'admin' ? t.text1 : t.text4 }} />
-              <span style={{ fontSize: 12, fontWeight: activeTab === 'admin' ? 600 : 400, color: activeTab === 'admin' ? t.text1 : t.text3 }}>Admin</span>
+              <span style={{ fontSize: 13, fontWeight: activeTab === 'admin' ? 600 : 400, color: activeTab === 'admin' ? t.text1 : t.text3 }}>Admin</span>
             </div>
           </div>
         )}
@@ -492,7 +492,7 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
         }}>
           <div style={{ width: 190, padding: '14px 0', display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
             <div style={{
-              fontSize: 9, fontWeight: 700, color: t.sideGroup,
+              fontSize: 10, fontWeight: 700, color: t.sideGroup,
               textTransform: 'uppercase', letterSpacing: 1.2,
               padding: '6px 16px 8px', whiteSpace: 'nowrap',
             }}>
@@ -519,7 +519,7 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
                 onMouseLeave={e => { if (item.path !== location.pathname) e.currentTarget.style.background = item.path === location.pathname ? t.bgActive : 'transparent'; }}
               >
                 <span style={{ color: item.accent ? t.accent : t.text4, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
-                <span style={{ fontSize: 12, color: item.accent ? t.accent : t.text3, fontWeight: item.accent ? 600 : 400 }}>{item.label}</span>
+                <span style={{ fontSize: 13, color: item.accent ? t.accent : (item.path === location.pathname ? t.accent : t.text2), fontWeight: (item.path === location.pathname || item.accent) ? 500 : 400 }}>{item.label}</span>
               </Link>
             ))}
           </div>

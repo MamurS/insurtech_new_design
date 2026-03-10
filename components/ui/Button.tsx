@@ -19,24 +19,24 @@ const Button: React.FC<ButtonProps> = ({
   const t = useThemeTokens();
 
   const sizes = {
-    sm: { padding: '5px 10px', fontSize: 11 },
-    md: { padding: '7px 14px', fontSize: 12 },
-    lg: { padding: '10px 20px', fontSize: 13 },
+    sm: { padding: '6px 12px', fontSize: 12 },
+    md: { padding: '10px 18px', fontSize: 13 },
+    lg: { padding: '12px 24px', fontSize: 14 },
   };
 
   const variants: Record<string, React.CSSProperties> = {
     primary: { background: t.accent, color: '#fff' },
     ghost: { background: 'transparent', color: t.text2, border: `1px solid ${t.border}` },
-    danger: { background: t.dangerBg, color: t.danger },
-    success: { background: t.successBg, color: t.success },
+    danger: { background: `${t.danger}18`, color: t.danger },
+    success: { background: `${t.success}18`, color: t.success },
   };
 
   const base: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: 6,
-    borderRadius: 7,
-    fontWeight: 600,
+    borderRadius: 8,
+    fontWeight: variant === 'primary' ? 600 : 500,
     cursor: 'pointer',
     border: 'none',
     transition: 'all 0.15s',

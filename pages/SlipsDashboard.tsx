@@ -10,6 +10,7 @@ import { SlipFormContent } from '../components/SlipFormContent';
 import { formatDate } from '../utils/dateUtils';
 import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
+import SidePanel, { PanelField } from '../components/ui/SidePanel';
 import { Search, Edit, Trash2, Plus, FileSpreadsheet, ArrowUp, ArrowDown, ArrowUpDown, Download, FileText, CheckCircle, AlertCircle, XCircle, AlertTriangle, MoreVertical, Eye, RefreshCw } from 'lucide-react';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
@@ -58,6 +59,7 @@ const SlipsDashboard: React.FC = () => {
 
   // Selection State
   const [selectedSlip, setSelectedSlip] = useState<ReinsuranceSlip | null>(null);
+  const [selectedSlipForPanel, setSelectedSlipForPanel] = useState<ReinsuranceSlip | null>(null);
 
   // Sticky offset measurement
   const filterRef = useRef<HTMLDivElement>(null);
@@ -423,8 +425,11 @@ const SlipsDashboard: React.FC = () => {
       </div>
       </div>{/* end sticky filter bar */}
 
+      {/* Grid: table + optional side panel */}
+      <div style={{ display: 'grid', gridTemplateColumns: selectedSlipForPanel ? '1fr 360px' : '1fr', transition: 'grid-template-columns 0.2s ease' }}>
+
       {/* Slips Table */}
-      <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow }}>
+      <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow, overflow: 'hidden', minWidth: 0 }}>
         <table className="w-full text-sm text-left">
             <thead className="sticky z-20" style={{ background: t.bgApp, boxShadow: t.shadow, top: `${filterHeight}px` }}>
                 <tr>
@@ -442,9 +447,11 @@ const SlipsDashboard: React.FC = () => {
                 {visibleSlips.map((slip, index) => (
                     <tr
                       key={slip.id}
-                      onClick={() => setSelectedSlip(slip)}
+                      onClick={() => setSelectedSlipForPanel(prev => prev?.id === slip.id ? null : slip)}
                       className="transition-colors cursor-pointer"
-                      style={slip.isDeleted ? { background: t.bgInput, opacity: 0.6, filter: 'grayscale(1)', cursor: 'not-allowed', borderBottom: `1px solid ${t.border}` } : { borderBottom: `1px solid ${t.border}` }}
+                      style={slip.isDeleted
+                        ? { background: t.bgInput, opacity: 0.6, filter: 'grayscale(1)', cursor: 'not-allowed', borderBottom: `1px solid ${t.border}` }
+                        : { borderBottom: `1px solid ${t.border}`, background: selectedSlipForPanel?.id === slip.id ? t.bgActive : 'transparent' }}
                     >
                         <td className="px-4 py-4" style={{ color: t.text4 }}>{index + 1}</td>
                         <td className="px-4 py-4">
@@ -503,6 +510,50 @@ const SlipsDashboard: React.FC = () => {
             </div>
         )}
       </div>
+
+      {/* Inline Side Panel */}
+      <SidePanel
+        open={!!selectedSlipForPanel}
+        onClose={() => setSelectedSlipForPanel(null)}
+        title={selectedSlipForPanel ? getDisplaySlipNumber(selectedSlipForPanel) : ''}
+        subtitle="Slip Summary"
+        footer={selectedSlipForPanel ? (
+          <>
+            <button
+              onClick={() => { setSelectedSlip(selectedSlipForPanel); }}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
+              style={{ background: t.accent, color: '#fff' }}
+            >
+              <Eye size={14} /> View Full Detail
+            </button>
+            <button
+              onClick={() => { setEditingSlipId(selectedSlipForPanel.id); setShowSlipModal(true); }}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
+              style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
+            >
+              <Edit size={14} /> Edit
+            </button>
+          </>
+        ) : undefined}
+      >
+        {selectedSlipForPanel && (
+          <>
+            <PanelField label="Slip Number" value={getDisplaySlipNumber(selectedSlipForPanel)} />
+            <PanelField label="Status" value={getStatusBadge((selectedSlipForPanel.status as any) || 'DRAFT', selectedSlipForPanel.isDeleted)} />
+            <PanelField label="Date" value={formatDate(selectedSlipForPanel.date)} />
+            <PanelField label="Type / Class" value={(selectedSlipForPanel as any).type || (selectedSlipForPanel as any).classOfBusiness || undefined} />
+            <PanelField label="Cedent / Insured" value={getDisplayInsured(selectedSlipForPanel)} />
+            <PanelField label="Broker / Reinsurer" value={getDisplayBroker(selectedSlipForPanel)} />
+            <PanelField label="Treaty Type" value={(selectedSlipForPanel as any).treatyType || undefined} />
+            <PanelField label="Currency" value={(selectedSlipForPanel.currency as string) || undefined} />
+            <PanelField label="GWP" value={formatMoney((selectedSlipForPanel as any).gwp, selectedSlipForPanel.currency as string)} />
+            <PanelField label="Limit of Liability" value={formatMoney(selectedSlipForPanel.limitOfLiability, selectedSlipForPanel.currency as string)} />
+            <PanelField label="Retention" value={formatMoney((selectedSlipForPanel as any).retention, selectedSlipForPanel.currency as string)} />
+          </>
+        )}
+      </SidePanel>
+
+      </div>{/* end grid */}
 
       <ConfirmDialog
         isOpen={!!deleteId}

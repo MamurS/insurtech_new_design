@@ -6,9 +6,10 @@ interface CardProps {
   style?: React.CSSProperties;
   className?: string;
   onClick?: () => void;
+  padding?: number | string;
 }
 
-const Card: React.FC<CardProps> = ({ children, style: sx, className, onClick }) => {
+const Card: React.FC<CardProps> = ({ children, style: sx, className, onClick, padding = 22 }) => {
   const t = useThemeTokens();
 
   return (
@@ -20,6 +21,7 @@ const Card: React.FC<CardProps> = ({ children, style: sx, className, onClick }) 
         border: `1px solid ${t.border}`,
         borderRadius: 10,
         boxShadow: t.shadow,
+        padding,
         ...sx,
       }}
     >

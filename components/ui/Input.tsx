@@ -32,12 +32,12 @@ const Input: React.FC<InputProps> = ({
       disabled={disabled}
       style={{
         width: '100%',
-        padding: '8px 12px',
-        borderRadius: 7,
+        padding: '10px 14px',
+        borderRadius: 8,
         background: disabled ? t.bgInputDis : t.bgInput,
         border: `1px solid ${t.border}`,
         color: disabled ? t.text4 : t.text1,
-        fontSize: 12,
+        fontSize: 13,
         outline: 'none',
         boxSizing: 'border-box',
         transition: 'border-color 0.15s',
