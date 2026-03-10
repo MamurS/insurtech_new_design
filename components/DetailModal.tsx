@@ -386,8 +386,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                  <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
                      <h5 className="text-xs uppercase mb-2" style={{ color: t.warning, fontWeight: 700 }}>Outward Reinsurance</h5>
                      <div className="grid grid-cols-2 gap-4 text-sm">
-                         <div><div style={{ color: t.text4 }}>Market</div><div className="font-medium">{policy.reinsurers && policy.reinsurers.length > 0 ? 'Panel Placement' : policy.reinsurerName || '-'}</div></div>
-                         <div><div style={{ color: t.text4 }}>Ceded Share</div><div className="font-medium">{policy.cededShare}%</div></div>
+                         <div><div style={{ color: t.text4 }}>Market</div><div style={{ fontWeight: 500 }}>{policy.reinsurers && policy.reinsurers.length > 0 ? 'Panel Placement' : policy.reinsurerName || '-'}</div></div>
+                         <div><div style={{ color: t.text4 }}>Ceded Share</div><div style={{ fontWeight: 500 }}>{policy.cededShare}%</div></div>
                      </div>
                  </div>
              )}
@@ -414,13 +414,13 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
       return (
       <div className="space-y-6">
           <div className="flex gap-3 mb-4 items-center">
-              <span className="px-3 py-1 rounded-full text-sm font-bold" style={{ background: t.warning + '18', color: t.warning }}>Reinsurance Slip</span>
+              <span className="px-3 py-1 rounded-full text-sm" style={{ background: t.warning + '18', color: t.warning, fontWeight: 700 }}>Reinsurance Slip</span>
               {getSlipStatusBadge(currentStatus)}
           </div>
 
           {/* Slip Workflow Actions */}
           <div className="rounded-lg p-4 mb-4" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-            <h3 className="font-bold mb-3 flex items-center gap-2 text-xs uppercase tracking-wide" style={{ color: t.text1 }}>
+            <h3 className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wide" style={{ color: t.text1, fontWeight: 700 }}>
                 <Settings size={14} />
                 Workflow Actions
             </h3>
