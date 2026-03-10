@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { BindingAgreement, Currency } from '../types';
 import { DB } from '../services/db';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import {
   FileText, DollarSign, Globe, Hash, Save, AlertCircle
 } from 'lucide-react';
 
 // Form Section Card
-const FormSection: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode }> = ({ title, icon, children }) => (
-  <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-    <div className="px-5 py-3 border-b border-slate-100">
-      <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
+const FormSection: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode; t: any }> = ({ title, icon, children, t }) => (
+  <div style={{ background: t.bgPanel, borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+    <div className="px-5 py-3" style={{ borderBottom: `1px solid ${t.bgInput}` }}>
+      <h3 className="flex items-center gap-2 uppercase tracking-wide" style={{ color: t.text4, fontSize: 11, fontWeight: 600 }}>
         {icon}
         {title}
       </h3>
@@ -19,10 +20,10 @@ const FormSection: React.FC<{ title: string; icon: React.ReactNode; children: Re
   </div>
 );
 
-const FieldError: React.FC<{ error?: string }> = ({ error }) => {
+const FieldError: React.FC<{ error?: string; t: any }> = ({ error, t }) => {
   if (!error) return null;
   return (
-    <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
+    <p className="mt-1 flex items-center gap-1" style={{ color: t.danger, fontSize: 12 }}>
       <AlertCircle size={12} />
       {error}
     </p>
@@ -39,6 +40,7 @@ interface MGAFormContentProps {
 
 export const MGAFormContent: React.FC<MGAFormContentProps> = ({ id, onSave, onCancel }) => {
   const toast = useToast();
+  const { t } = useTheme();
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(Boolean(id));
   const [saving, setSaving] = useState(false);
@@ -154,12 +156,11 @@ export const MGAFormContent: React.FC<MGAFormContentProps> = ({ id, onSave, onCa
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const labelClass = "block text-xs font-medium text-slate-500 mb-1.5";
-  const inputClass = "w-full h-10 px-3 rounded-lg border border-slate-300 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow";
-  const inputErrorClass = "border-red-500 ring-2 ring-red-500/20";
-  const selectClass = "w-full h-10 px-3 rounded-lg border border-slate-300 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow bg-white";
+  const inputStyle: React.CSSProperties = { background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 13 };
+  const inputErrorStyle: React.CSSProperties = { border: `1px solid ${t.danger}`, boxShadow: `0 0 0 2px ${t.dangerBg}` };
+  const selectStyle: React.CSSProperties = { background: t.bgPanel, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text2, fontSize: 13 };
 
   const priorityCurrencies = ['USD', 'EUR', 'GBP'];
   const allCurrencies = Object.values(Currency);
@@ -173,28 +174,28 @@ export const MGAFormContent: React.FC<MGAFormContentProps> = ({ id, onSave, onCa
       <div className="space-y-5">
 
         {/* Agreement Details */}
-        <FormSection icon={<FileText className="w-4 h-4" />} title="Agreement Details">
+        <FormSection icon={<FileText className="w-4 h-4" />} title="Agreement Details" t={t}>
           <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
-              <label className={labelClass}>Agreement Number<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Agreement Number<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
               <div className="relative">
-                <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
                 <input type="text" name="agreementNumber" value={formData.agreementNumber || ''} onChange={handleChange}
-                  placeholder="BA-2026-001" className={`${inputClass} pl-8 ${errors.agreementNumber ? inputErrorClass : ''}`} />
+                  placeholder="BA-2026-001" className="w-full h-10 pl-8 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={{ ...inputStyle, ...(errors.agreementNumber ? inputErrorStyle : {}) }} />
               </div>
-              <FieldError error={errors.agreementNumber} />
+              <FieldError error={errors.agreementNumber} t={t} />
             </div>
             <div>
-              <label className={labelClass}>Agreement Type</label>
-              <select name="agreementType" value={formData.agreementType} onChange={handleChange} className={selectClass}>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Agreement Type</label>
+              <select name="agreementType" value={formData.agreementType} onChange={handleChange} className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={selectStyle}>
                 <option value="BINDING_AUTHORITY">Binding Authority</option>
                 <option value="LINESLIP">Lineslip</option>
                 <option value="TREATY">Treaty</option>
               </select>
             </div>
             <div>
-              <label className={labelClass}>Status</label>
-              <select name="status" value={formData.status} onChange={handleChange} className={selectClass}>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Status</label>
+              <select name="status" value={formData.status} onChange={handleChange} className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={selectStyle}>
                 <option value="DRAFT">Draft</option>
                 <option value="ACTIVE">Active</option>
                 <option value="EXPIRED">Expired</option>
@@ -205,123 +206,123 @@ export const MGAFormContent: React.FC<MGAFormContentProps> = ({ id, onSave, onCa
           </div>
           <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
-              <label className={labelClass}>MGA / Partner Name<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>MGA / Partner Name<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
               <input type="text" name="mgaName" value={formData.mgaName || ''} onChange={handleChange}
-                placeholder="Coverholder name" className={`${inputClass} ${errors.mgaName ? inputErrorClass : ''}`} />
-              <FieldError error={errors.mgaName} />
+                placeholder="Coverholder name" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={{ ...inputStyle, ...(errors.mgaName ? inputErrorStyle : {}) }} />
+              <FieldError error={errors.mgaName} t={t} />
             </div>
             <div>
-              <label className={labelClass}>Broker Name</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Broker Name</label>
               <input type="text" name="brokerName" value={formData.brokerName || ''} onChange={handleChange}
-                placeholder="Broker (if any)" className={inputClass} />
+                placeholder="Broker (if any)" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Underwriter</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Underwriter</label>
               <input type="text" name="underwriter" value={formData.underwriter || ''} onChange={handleChange}
-                placeholder="Underwriter at Mosaic" className={inputClass} />
+                placeholder="Underwriter at Mosaic" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-5">
             <div>
-              <label className={labelClass}>Inception Date<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Inception Date<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
               <input type="date" name="inceptionDate" value={formData.inceptionDate || ''} onChange={handleChange}
-                className={`${inputClass} ${errors.inceptionDate ? inputErrorClass : ''}`} />
-              <FieldError error={errors.inceptionDate} />
+                className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={{ ...inputStyle, ...(errors.inceptionDate ? inputErrorStyle : {}) }} />
+              <FieldError error={errors.inceptionDate} t={t} />
             </div>
             <div>
-              <label className={labelClass}>Expiry Date<span className="text-red-500 ml-0.5">*</span></label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Expiry Date<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
               <input type="date" name="expiryDate" value={formData.expiryDate || ''} onChange={handleChange}
-                className={`${inputClass} ${errors.expiryDate ? inputErrorClass : ''}`} />
-              <FieldError error={errors.expiryDate} />
+                className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={{ ...inputStyle, ...(errors.expiryDate ? inputErrorStyle : {}) }} />
+              <FieldError error={errors.expiryDate} t={t} />
             </div>
           </div>
         </FormSection>
 
         {/* Financial Terms */}
-        <FormSection icon={<DollarSign className="w-4 h-4" />} title="Financial Terms">
+        <FormSection icon={<DollarSign className="w-4 h-4" />} title="Financial Terms" t={t}>
           <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
-              <label className={labelClass}>Currency</label>
-              <select name="currency" value={formData.currency} onChange={handleChange} className={selectClass}>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Currency</label>
+              <select name="currency" value={formData.currency} onChange={handleChange} className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={selectStyle}>
                 {sortedCurrencies.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className={labelClass}>EPI (Estimated Premium Income)</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>EPI (Estimated Premium Income)</label>
               <input type="number" name="epi" value={formData.epi ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="0.00" className={inputClass} />
+                min={0} step="0.01" placeholder="0.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Our Share (decimal 0-1)</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Our Share (decimal 0-1)</label>
               <input type="number" name="ourShare" value={formData.ourShare ?? ''} onChange={handleChange}
-                min={0} max={1} step="0.01" placeholder="1.00" className={inputClass} />
+                min={0} max={1} step="0.01" placeholder="1.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-5 mb-5">
             <div>
-              <label className={labelClass}>Commission %</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Commission %</label>
               <input type="number" name="commissionPercent" value={formData.commissionPercent ?? ''} onChange={handleChange}
-                min={0} max={100} step="0.01" placeholder="0.00" className={inputClass} />
+                min={0} max={100} step="0.01" placeholder="0.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Deposit Premium</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Deposit Premium</label>
               <input type="number" name="depositPremium" value={formData.depositPremium ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="0.00" className={inputClass} />
+                min={0} step="0.01" placeholder="0.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Minimum Premium</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Minimum Premium</label>
               <input type="number" name="minimumPremium" value={formData.minimumPremium ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="0.00" className={inputClass} />
+                min={0} step="0.01" placeholder="0.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-5">
             <div>
-              <label className={labelClass}>Max Limit Per Risk</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Max Limit Per Risk</label>
               <input type="number" name="maxLimitPerRisk" value={formData.maxLimitPerRisk ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="Optional" className={inputClass} />
+                min={0} step="0.01" placeholder="Optional" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Aggregate Limit</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Aggregate Limit</label>
               <input type="number" name="aggregateLimit" value={formData.aggregateLimit ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="Optional" className={inputClass} />
+                min={0} step="0.01" placeholder="Optional" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Claims Authority Limit</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Claims Authority Limit</label>
               <input type="number" name="claimsAuthorityLimit" value={formData.claimsAuthorityLimit ?? ''} onChange={handleChange}
-                min={0} step="0.01" placeholder="0.00" className={inputClass} />
+                min={0} step="0.01" placeholder="0.00" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
           </div>
         </FormSection>
 
         {/* Scope */}
-        <FormSection icon={<Globe className="w-4 h-4" />} title="Scope">
+        <FormSection icon={<Globe className="w-4 h-4" />} title="Scope" t={t}>
           <div className="grid grid-cols-2 gap-5 mb-5">
             <div>
-              <label className={labelClass}>Territory (comma separated)</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Territory (comma separated)</label>
               <input type="text" name="territoryScope" value={formData.territoryScope || ''} onChange={handleChange}
-                placeholder="UK, US, EU" className={inputClass} />
+                placeholder="UK, US, EU" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
             <div>
-              <label className={labelClass}>Class of Business (comma separated)</label>
+              <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Class of Business (comma separated)</label>
               <input type="text" name="classOfBusiness" value={formData.classOfBusiness || ''} onChange={handleChange}
-                placeholder="Property, Casualty" className={inputClass} />
+                placeholder="Property, Casualty" className="w-full h-10 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
             </div>
           </div>
           <div>
-            <label className={labelClass}>Notes</label>
+            <label className="block mb-1.5" style={{ color: t.text3, fontSize: 13, fontWeight: 500 }}>Notes</label>
             <textarea name="notes" value={formData.notes || ''} onChange={handleChange} rows={3}
-              placeholder="Additional notes..." className={`${inputClass} h-auto resize-none`} />
+              placeholder="Additional notes..." className="w-full px-3 h-auto resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow" style={inputStyle} />
           </div>
         </FormSection>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+        <div className="flex justify-end gap-3 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
           <button type="button" onClick={onCancel}
-            className="px-4 py-2.5 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 font-medium text-sm">
+            className="px-4 py-2.5 rounded-lg font-medium text-sm" style={{ color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}` }}>
             Cancel
           </button>
           <button type="submit" disabled={saving}
-            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="px-6 py-2.5 rounded-lg font-medium text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" style={{ background: t.accent, color: '#fff' }}>
             <Save size={16} />
             {saving ? 'Saving...' : (isEdit ? 'Update Agreement' : 'Create Agreement')}
           </button>

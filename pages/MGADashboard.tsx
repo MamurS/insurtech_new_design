@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { DB } from '../services/db';
 import { BindingAgreement, BordereauxEntry } from '../types';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import { formatDate } from '../utils/dateUtils';
 import { FormModal } from '../components/FormModal';
 import { MGAFormContent } from '../components/MGAFormContent';
@@ -34,6 +35,7 @@ interface BdxFormProps {
 
 const BordereauxEntryForm: React.FC<BdxFormProps> = ({ agreementId, entry, onSave, onCancel }) => {
   const toast = useToast();
+  const { t } = useTheme();
   const [saving, setSaving] = useState(false);
   const [parsing, setParsing] = useState(false);
   const [parseResult, setParseResult] = useState<ParsedBordereaux | null>(null);
@@ -131,18 +133,18 @@ const BordereauxEntryForm: React.FC<BdxFormProps> = ({ agreementId, entry, onSav
     return parts.length > 0 ? `Detected: ${parts.join(', ')}` : 'No matching columns detected';
   };
 
-  const labelClass = "block text-xs font-medium text-slate-500 mb-1";
-  const inputClass = "w-full h-9 px-3 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white";
+  const labelStyle: React.CSSProperties = { color: t.text4, fontSize: 12, fontWeight: 500 };
+  const inputStyle: React.CSSProperties = { background: t.bgPanel, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 13 };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
-      <h4 className="text-sm font-semibold text-slate-700">{isEdit ? 'Edit Bordereaux Entry' : 'New Bordereaux Entry'}</h4>
+    <form onSubmit={handleSubmit} className="rounded-xl p-4 space-y-4" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+      <h4 className="text-sm font-semibold" style={{ color: t.text2 }}>{isEdit ? 'Edit Bordereaux Entry' : 'New Bordereaux Entry'}</h4>
 
       {/* File Upload */}
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+      <div className="rounded-lg p-4 text-center" style={{ border: `2px dashed ${t.borderL}` }}>
         <label className="cursor-pointer inline-flex flex-col items-center gap-1">
-          <Upload size={20} className={parsing ? 'text-blue-500 animate-pulse' : 'text-gray-400'} />
-          <span className="text-sm text-gray-600">{parsing ? 'Parsing...' : 'Upload Excel/CSV bordereaux to auto-fill'}</span>
+          <Upload size={20} style={{ color: parsing ? t.accent : t.text5 }} className={parsing ? 'animate-pulse' : ''} />
+          <span className="text-sm" style={{ color: t.text3 }}>{parsing ? 'Parsing...' : 'Upload Excel/CSV bordereaux to auto-fill'}</span>
           <input
             type="file"
             accept=".xlsx,.xls,.csv"
@@ -150,75 +152,75 @@ const BordereauxEntryForm: React.FC<BdxFormProps> = ({ agreementId, entry, onSav
             className="hidden"
             disabled={parsing}
           />
-          <span className="text-xs text-blue-600 hover:underline">Choose file</span>
+          <span className="text-xs hover:underline" style={{ color: t.accent }}>Choose file</span>
         </label>
       </div>
 
       {/* Parse Result Info */}
       {parseResult && Object.keys(parseResult.detectedColumns).length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
-          <Info size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
-          <div className="text-xs text-blue-800">
+        <div className="rounded-lg p-3 flex items-start gap-2" style={{ background: t.accentMuted, border: `1px solid ${t.accent}30` }}>
+          <Info size={16} className="mt-0.5 flex-shrink-0" style={{ color: t.accent }} />
+          <div className="text-xs" style={{ color: t.text1 }}>
             <p className="font-medium">Parsed {parseResult.fileName}: {parseResult.rowCount} rows found.</p>
-            <p className="mt-0.5 text-blue-600">{formatDetected(parseResult)}</p>
+            <p className="mt-0.5" style={{ color: t.accent }}>{formatDetected(parseResult)}</p>
           </div>
         </div>
       )}
 
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className={labelClass}>Type</label>
-          <select name="bordereauType" value={form.bordereauType} onChange={handleChange} className={inputClass}>
+          <label className="block mb-1" style={labelStyle}>Type</label>
+          <select name="bordereauType" value={form.bordereauType} onChange={handleChange} className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle}>
             <option value="PREMIUM">Premium</option>
             <option value="CLAIMS">Claims</option>
             <option value="ADJUSTMENT">Adjustment</option>
           </select>
         </div>
         <div>
-          <label className={labelClass}>Period From</label>
-          <input type="date" name="periodFrom" value={form.periodFrom || ''} onChange={handleChange} className={inputClass} />
+          <label className="block mb-1" style={labelStyle}>Period From</label>
+          <input type="date" name="periodFrom" value={form.periodFrom || ''} onChange={handleChange} className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
         </div>
         <div>
-          <label className={labelClass}>Period To</label>
-          <input type="date" name="periodTo" value={form.periodTo || ''} onChange={handleChange} className={inputClass} />
+          <label className="block mb-1" style={labelStyle}>Period To</label>
+          <input type="date" name="periodTo" value={form.periodTo || ''} onChange={handleChange} className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className={labelClass}>Submission Date</label>
-          <input type="date" name="submissionDate" value={form.submissionDate || ''} onChange={handleChange} className={inputClass} />
+          <label className="block mb-1" style={labelStyle}>Submission Date</label>
+          <input type="date" name="submissionDate" value={form.submissionDate || ''} onChange={handleChange} className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
         </div>
         <div>
-          <label className={labelClass}>Total GWP</label>
-          <input type="number" name="totalGwp" value={form.totalGwp ?? ''} onChange={handleChange} min={0} step="0.01" className={inputClass} />
+          <label className="block mb-1" style={labelStyle}>Total GWP</label>
+          <input type="number" name="totalGwp" value={form.totalGwp ?? ''} onChange={handleChange} min={0} step="0.01" className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
         </div>
         <div>
-          <label className={labelClass}>Total Policies</label>
-          <input type="number" name="totalPolicies" value={form.totalPolicies ?? ''} onChange={handleChange} min={0} className={inputClass} />
+          <label className="block mb-1" style={labelStyle}>Total Policies</label>
+          <input type="number" name="totalPolicies" value={form.totalPolicies ?? ''} onChange={handleChange} min={0} className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
         </div>
       </div>
       {form.bordereauType === 'CLAIMS' && (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Total Claims Paid</label>
-            <input type="number" name="totalClaimsPaid" value={form.totalClaimsPaid ?? ''} onChange={handleChange} min={0} step="0.01" className={inputClass} />
+            <label className="block mb-1" style={labelStyle}>Total Claims Paid</label>
+            <input type="number" name="totalClaimsPaid" value={form.totalClaimsPaid ?? ''} onChange={handleChange} min={0} step="0.01" className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
           </div>
           <div>
-            <label className={labelClass}>Total Claims Reserved</label>
-            <input type="number" name="totalClaimsReserved" value={form.totalClaimsReserved ?? ''} onChange={handleChange} min={0} step="0.01" className={inputClass} />
+            <label className="block mb-1" style={labelStyle}>Total Claims Reserved</label>
+            <input type="number" name="totalClaimsReserved" value={form.totalClaimsReserved ?? ''} onChange={handleChange} min={0} step="0.01" className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
           </div>
         </div>
       )}
       <div>
-        <label className={labelClass}>Notes</label>
-        <input type="text" name="notes" value={form.notes || ''} onChange={handleChange} placeholder="Optional notes" className={inputClass} />
+        <label className="block mb-1" style={labelStyle}>Notes</label>
+        <input type="text" name="notes" value={form.notes || ''} onChange={handleChange} placeholder="Optional notes" className="w-full h-9 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={inputStyle} />
       </div>
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onCancel} className="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
+        <button type="button" onClick={onCancel} className="px-3 py-1.5 text-sm rounded-lg" style={{ color: t.text3, background: t.bgPanel, border: `1px solid ${t.borderL}` }}>
           Cancel
         </button>
         <button type="submit" disabled={saving}
-          className="px-4 py-1.5 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 flex items-center gap-1.5 disabled:opacity-50">
+          className="px-4 py-1.5 text-sm rounded-lg flex items-center gap-1.5 disabled:opacity-50" style={{ background: t.accent, color: '#fff' }}>
           <Save size={14} />
           {saving ? 'Saving...' : 'Save'}
         </button>
@@ -238,6 +240,7 @@ interface DetailModalProps {
 }
 
 const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose, onEdit, onDelete }) => {
+  const { t } = useTheme();
   const [tab, setTab] = useState<'summary' | 'bordereaux' | 'claims' | 'documents'>('summary');
   const [bdxEntries, setBdxEntries] = useState<BordereauxEntry[]>([]);
   const [bdxLoading, setBdxLoading] = useState(false);
@@ -262,48 +265,57 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
   const utilization = agreement.epi > 0 ? (actualGwp / agreement.epi) * 100 : 0;
 
   const getBdxStatusBadge = (status: string) => {
-    const s: Record<string, string> = {
-      'PENDING': 'bg-amber-100 text-amber-700',
-      'UNDER_REVIEW': 'bg-blue-100 text-blue-700',
-      'ACCEPTED': 'bg-emerald-100 text-emerald-700',
-      'DISPUTED': 'bg-red-100 text-red-700',
-      'REJECTED': 'bg-slate-100 text-slate-500',
+    const s: Record<string, { bg: string; color: string }> = {
+      'PENDING': { bg: t.warningBg, color: t.warning },
+      'UNDER_REVIEW': { bg: t.accentMuted, color: t.accent },
+      'ACCEPTED': { bg: t.successBg, color: t.success },
+      'DISPUTED': { bg: t.dangerBg, color: t.danger },
+      'REJECTED': { bg: t.bgInput, color: t.text4 },
     };
-    return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s[status] || 'bg-slate-100 text-slate-600'}`}>{status.replace('_', ' ')}</span>;
+    const st = s[status] || { bg: t.bgInput, color: t.text3 };
+    return <span className="px-2 py-0.5 text-xs font-medium" style={{ background: st.bg, color: st.color, borderRadius: 20 }}>{status.replace('_', ' ')}</span>;
   };
 
-  const tabClass = (t: string) =>
-    `px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors cursor-pointer ${tab === t ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`;
+  const tabClass = (tabName: string) => {
+    const isActive = tab === tabName;
+    return {
+      className: 'px-4 py-2 text-sm font-medium rounded-t-lg transition-colors cursor-pointer',
+      style: {
+        borderBottom: `2px solid ${isActive ? t.accent : 'transparent'}`,
+        color: isActive ? t.accent : t.text4,
+      } as React.CSSProperties,
+    };
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-6 pb-6 overflow-y-auto">
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl mx-4 my-auto">
+      <div className="fixed inset-0 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose} />
+      <div className="relative w-full max-w-5xl mx-4 my-auto" style={{ background: t.bgPanel, borderRadius: 16, boxShadow: t.shadowLg }}>
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white rounded-t-2xl border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: t.bgPanel, borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottom: `1px solid ${t.border}` }}>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">{agreement.agreementNumber}</h2>
-            <p className="text-sm text-slate-500">{agreement.mgaName} &middot; {agreement.agreementType.replace('_', ' ')}</p>
+            <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{agreement.agreementNumber}</h2>
+            <p className="text-sm" style={{ color: t.text4 }}>{agreement.mgaName} &middot; {agreement.agreementType.replace('_', ' ')}</p>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={onEdit} className="px-3 py-1.5 text-sm text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 flex items-center gap-1">
+            <button onClick={onEdit} className="px-3 py-1.5 text-sm rounded-lg flex items-center gap-1" style={{ color: t.accent, border: `1px solid ${t.accent}30` }}>
               <Edit size={14} /> Edit
             </button>
-            <button onClick={onDelete} className="px-3 py-1.5 text-sm text-red-600 border border-red-200 rounded-lg hover:bg-red-50 flex items-center gap-1">
+            <button onClick={onDelete} className="px-3 py-1.5 text-sm rounded-lg flex items-center gap-1" style={{ color: t.danger, border: `1px solid ${t.danger}30` }}>
               <Trash2 size={14} /> Delete
             </button>
-            <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
+            <button onClick={onClose} className="p-2 rounded-lg" style={{ color: t.text5 }}>
               <X size={20} />
             </button>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 border-b border-slate-200">
-          <button className={tabClass('summary')} onClick={() => setTab('summary')}>Summary</button>
-          <button className={tabClass('bordereaux')} onClick={() => setTab('bordereaux')}>Bordereaux</button>
-          <button className={tabClass('claims')} onClick={() => setTab('claims')}>Claims</button>
-          <button className={tabClass('documents')} onClick={() => setTab('documents')}>Documents</button>
+        <div className="flex gap-1 px-6" style={{ borderBottom: `1px solid ${t.border}` }}>
+          <button {...tabClass('summary')} onClick={() => setTab('summary')}>Summary</button>
+          <button {...tabClass('bordereaux')} onClick={() => setTab('bordereaux')}>Bordereaux</button>
+          <button {...tabClass('claims')} onClick={() => setTab('claims')}>Claims</button>
+          <button {...tabClass('documents')} onClick={() => setTab('documents')}>Documents</button>
         </div>
 
         {/* Content */}
@@ -312,23 +324,23 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
             <div className="space-y-6">
               {/* Key metrics row */}
               <div className="grid grid-cols-4 gap-4">
-                <div className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">EPI</p>
-                  <p className="text-xl font-bold text-slate-800">{formatCurrency(agreement.epi)}</p>
+                <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>EPI</p>
+                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{formatCurrency(agreement.epi)}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">Actual GWP</p>
-                  <p className={`text-xl font-bold ${actualGwp > 0 ? 'text-emerald-600' : 'text-slate-400'}`}>{formatCurrency(actualGwp)}</p>
+                <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Actual GWP</p>
+                  <p className="text-xl font-bold" style={{ color: actualGwp > 0 ? t.success : t.text5 }}>{formatCurrency(actualGwp)}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">Utilization</p>
-                  <p className={`text-xl font-bold ${utilization > 80 ? 'text-emerald-600' : utilization > 50 ? 'text-amber-600' : 'text-red-600'}`}>
+                <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Utilization</p>
+                  <p className="text-xl font-bold" style={{ color: utilization > 80 ? t.success : utilization > 50 ? t.warning : t.danger }}>
                     {agreement.epi > 0 ? `${utilization.toFixed(1)}%` : 'N/A'}
                   </p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4">
-                  <p className="text-xs text-slate-500 uppercase tracking-wide">Our Share</p>
-                  <p className="text-xl font-bold text-slate-800">{(agreement.ourShare * 100).toFixed(1)}%</p>
+                <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
+                  <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Our Share</p>
+                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{(agreement.ourShare * 100).toFixed(1)}%</p>
                 </div>
               </div>
 
@@ -351,17 +363,17 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
                   ['Minimum Premium', formatCurrency(agreement.minimumPremium)],
                   ['Claims Authority', formatCurrency(agreement.claimsAuthorityLimit)],
                 ].map(([label, value]) => (
-                  <div key={label} className="flex justify-between py-2 border-b border-slate-100">
-                    <span className="text-sm text-slate-500">{label}</span>
-                    <span className="text-sm font-medium text-slate-800">{value}</span>
+                  <div key={label} className="flex justify-between py-2" style={{ borderBottom: `1px solid ${t.bgInput}` }}>
+                    <span className="text-sm" style={{ color: t.text4 }}>{label}</span>
+                    <span className="text-sm font-medium" style={{ color: t.text1 }}>{value}</span>
                   </div>
                 ))}
               </div>
 
               {agreement.notes && (
                 <div>
-                  <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Notes</p>
-                  <p className="text-sm text-slate-700 bg-slate-50 rounded-lg p-3">{agreement.notes}</p>
+                  <p className="text-xs uppercase tracking-wide mb-1" style={{ color: t.text4 }}>Notes</p>
+                  <p className="text-sm rounded-lg p-3" style={{ color: t.text2, background: t.bgInput }}>{agreement.notes}</p>
                 </div>
               )}
             </div>

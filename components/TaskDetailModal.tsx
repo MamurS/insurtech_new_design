@@ -6,6 +6,7 @@ import { formatDate } from '../utils/dateUtils';
 import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from './ConfirmDialog';
 import { useUpdateTaskStatus, useDeleteTask, useTaskAttachments, useUploadAttachment, useDeleteAttachment } from '../hooks/useAgenda';
+import { useTheme } from '../theme/useTheme';
 
 interface TaskDetailModalProps {
     task: AgendaTask | null;
@@ -18,7 +19,8 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
     const [deleteTaskConfirm, setDeleteTaskConfirm] = useState(false);
     const [deleteAttachmentConfirm, setDeleteAttachmentConfirm] = useState<string | null>(null);
     const toast = useToast();
-    
+    const { t } = useTheme();
+
     // Hooks
     const updateStatusMutation = useUpdateTaskStatus();
     const deleteTaskMutation = useDeleteTask();
@@ -79,23 +81,23 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
     };
 
     const getPriorityBadge = (p: TaskPriority) => {
-        const colors = {
-            'LOW': 'bg-gray-100 text-gray-700',
-            'MEDIUM': 'bg-blue-100 text-blue-700',
-            'HIGH': 'bg-orange-100 text-orange-700',
-            'URGENT': 'bg-red-100 text-red-700'
+        const styles: Record<string, React.CSSProperties> = {
+            'LOW': { background: t.bgInput, color: t.text3, border: `1px solid ${t.border}` },
+            'MEDIUM': { background: `${t.accent}18`, color: t.accent, border: `1px solid ${t.accent}40` },
+            'HIGH': { background: t.warningBg, color: t.warning, border: `1px solid ${t.warning}40` },
+            'URGENT': { background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}40` }
         };
-        return <span className={`px-2 py-1 rounded text-xs font-bold ${colors[p]}`}>{p}</span>;
+        return <span className="px-2 py-1 text-xs font-bold" style={{ ...styles[p], borderRadius: 20 }}>{p}</span>;
     };
 
     const getStatusBadge = (s: TaskStatus) => {
-        const colors = {
-            'PENDING': 'bg-yellow-50 text-yellow-700 border-yellow-200',
-            'IN_PROGRESS': 'bg-blue-50 text-blue-700 border-blue-200',
-            'COMPLETED': 'bg-green-50 text-green-700 border-green-200',
-            'CANCELLED': 'bg-gray-50 text-gray-700 border-gray-200'
+        const styles: Record<string, React.CSSProperties> = {
+            'PENDING': { background: t.warningBg, color: t.warning, border: `1px solid ${t.warning}40` },
+            'IN_PROGRESS': { background: `${t.accent}18`, color: t.accent, border: `1px solid ${t.accent}40` },
+            'COMPLETED': { background: t.successBg, color: t.success, border: `1px solid ${t.success}40` },
+            'CANCELLED': { background: t.bgInput, color: t.text3, border: `1px solid ${t.border}` }
         };
-        return <span className={`px-3 py-1 rounded-full text-xs font-bold border ${colors[s]}`}>{s.replace('_', ' ')}</span>;
+        return <span className="px-3 py-1 text-xs font-bold" style={{ ...styles[s], borderRadius: 20 }}>{s.replace('_', ' ')}</span>;
     };
 
     const formatFileSize = (bytes?: number) => {
@@ -106,52 +108,52 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
     };
 
     const getFileIcon = (type?: string) => {
-        if (type?.includes('image')) return <Image size={16} className="text-purple-500"/>;
-        if (type?.includes('pdf')) return <FileText size={16} className="text-red-500"/>;
-        return <FileIcon size={16} className="text-gray-500"/>;
+        if (type?.includes('image')) return <Image size={16} style={{ color: '#9333ea' }}/>;
+        if (type?.includes('pdf')) return <FileText size={16} style={{ color: t.danger }}/>;
+        return <FileIcon size={16} style={{ color: t.text4 }}/>;
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-[80] flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }}>
+            <div className="w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadowLg }}>
                 {/* Header */}
-                <div className="p-6 border-b flex justify-between items-start bg-gray-50 rounded-t-xl">
+                <div className="p-6 flex justify-between items-start" style={{ background: t.bgInput, borderBottom: `1px solid ${t.border}`, borderRadius: '12px 12px 0 0' }}>
                     <div>
                         <div className="flex items-center gap-3 mb-2">
                             {getPriorityBadge(task.priority)}
                             {getStatusBadge(task.status)}
                         </div>
-                        <h2 className="text-xl font-bold text-gray-800">{task.title}</h2>
+                        <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{task.title}</h2>
                     </div>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
+                    <button onClick={onClose} style={{ color: t.text4 }}><X size={20}/></button>
                 </div>
 
                 {/* Body */}
                 <div className="p-6 overflow-y-auto flex-1 space-y-6">
                     {/* Metadata */}
-                    <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <div className="grid grid-cols-2 gap-4 text-sm p-4 rounded-lg" style={{ color: t.text3, background: t.bgInput, border: `1px solid ${t.border}` }}>
                         <div className="flex items-center gap-2">
-                            <User size={16} className="text-gray-400"/>
-                            <span>Assigned to: <strong>{task.assignedToName || 'Unassigned'}</strong></span>
+                            <User size={16} style={{ color: t.text4 }}/>
+                            <span>Assigned to: <strong style={{ color: t.text1 }}>{task.assignedToName || 'Unassigned'}</strong></span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <User size={16} className="text-gray-400"/>
-                            <span>From: <strong>{task.assignedByName || 'System'}</strong></span>
+                            <User size={16} style={{ color: t.text4 }}/>
+                            <span>From: <strong style={{ color: t.text1 }}>{task.assignedByName || 'System'}</strong></span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Calendar size={16} className="text-gray-400"/>
-                            <span>Due: <span className={task.isOverdue ? 'text-red-600 font-bold' : ''}>{formatDate(task.dueDate)}</span></span>
+                            <Calendar size={16} style={{ color: t.text4 }}/>
+                            <span>Due: <span style={task.isOverdue ? { color: t.danger, fontWeight: 700 } : undefined}>{formatDate(task.dueDate)}</span></span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Calendar size={16} className="text-gray-400"/>
+                            <Calendar size={16} style={{ color: t.text4 }}/>
                             <span>Created: {formatDate(task.createdAt)}</span>
                         </div>
                     </div>
 
                     {/* Description */}
                     <div>
-                        <h3 className="font-bold text-gray-800 mb-2 text-sm uppercase tracking-wide">Description</h3>
-                        <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
+                        <h3 className="font-bold mb-2 text-sm uppercase tracking-wide" style={{ color: t.text1 }}>Description</h3>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: t.text2 }}>
                             {task.description || "No description provided."}
                         </p>
                     </div>
@@ -159,48 +161,50 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                     {/* Attachments */}
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <h3 className="font-bold text-gray-800 text-sm uppercase tracking-wide flex items-center gap-2">
+                            <h3 className="font-bold text-sm uppercase tracking-wide flex items-center gap-2" style={{ color: t.text1 }}>
                                 <Paperclip size={16}/> Attachments
                             </h3>
-                            <label className={`cursor-pointer text-xs font-bold text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                            <label className={`cursor-pointer text-xs font-bold px-2 py-1 rounded transition-colors flex items-center gap-1 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`} style={{ color: t.accent }}>
                                 {isUploading ? <Loader2 size={12} className="animate-spin"/> : <div className="flex items-center gap-1">+ Add File</div>}
                                 <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={isUploading}/>
                             </label>
                         </div>
 
                         {loadingAttachments ? (
-                            <div className="text-center py-4 text-gray-400 text-xs"><Loader2 className="animate-spin inline mr-1"/> Loading files...</div>
+                            <div className="text-center py-4 text-xs" style={{ color: t.text4 }}><Loader2 className="animate-spin inline mr-1"/> Loading files...</div>
                         ) : (!attachments || attachments.length === 0) ? (
-                            <div className="text-center py-6 border-2 border-dashed border-gray-100 rounded-lg text-gray-400 text-xs">
+                            <div className="text-center py-6 rounded-lg text-xs" style={{ border: `2px dashed ${t.borderL}`, color: t.text4 }}>
                                 No attachments found.
                             </div>
                         ) : (
                             <div className="space-y-2">
                                 {attachments.map(file => (
-                                    <div key={file.id} className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:border-blue-200 transition-colors group">
+                                    <div key={file.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
                                         <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="p-2 bg-white rounded border border-gray-200 shrink-0">
+                                            <div className="p-2 rounded shrink-0" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
                                                 {getFileIcon(file.fileType)}
                                             </div>
                                             <div className="min-w-0">
-                                                <div className="text-sm font-medium text-gray-800 truncate" title={file.fileName}>{file.fileName}</div>
-                                                <div className="text-xs text-gray-500">{formatFileSize(file.fileSize)} • {formatDate(file.uploadedAt)}</div>
+                                                <div className="text-sm font-medium truncate" style={{ color: t.text1 }} title={file.fileName}>{file.fileName}</div>
+                                                <div className="text-xs" style={{ color: t.text4 }}>{formatFileSize(file.fileSize)} • {formatDate(file.uploadedAt)}</div>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-1">
-                                            <a 
-                                                href={file.fileUrl} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-white rounded transition-colors"
+                                            <a
+                                                href={file.fileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="p-2 rounded transition-colors"
                                                 title="Download"
+                                                style={{ color: t.text4 }}
                                             >
                                                 <Download size={16}/>
                                             </a>
-                                            <button 
+                                            <button
                                                 onClick={() => handleDeleteFile(file.id)}
-                                                className="p-2 text-gray-400 hover:text-red-600 hover:bg-white rounded transition-colors"
+                                                className="p-2 rounded transition-colors"
                                                 title="Delete"
+                                                style={{ color: t.text4 }}
                                             >
                                                 <Trash2 size={16}/>
                                             </button>
@@ -213,26 +217,29 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t bg-gray-50 flex justify-between items-center rounded-b-xl">
-                    <button 
+                <div className="p-4 flex justify-between items-center" style={{ borderTop: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '0 0 12px 12px' }}>
+                    <button
                         onClick={handleDeleteTask}
-                        className="text-red-500 hover:bg-red-50 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+                        style={{ color: t.danger }}
                     >
                         <Trash2 size={16}/> Delete Task
                     </button>
-                    
+
                     <div className="flex gap-2">
                         {task.status !== 'COMPLETED' ? (
-                            <button 
+                            <button
                                 onClick={() => handleStatusChange('COMPLETED')}
-                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm flex items-center gap-2"
+                                className="px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2"
+                                style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
                             >
                                 <CheckCircle size={16}/> Mark Complete
                             </button>
                         ) : (
-                            <button 
+                            <button
                                 onClick={() => handleStatusChange('PENDING')}
-                                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium"
+                                className="px-4 py-2 rounded-lg text-sm font-medium"
+                                style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }}
                             >
                                 Reopen Task
                             </button>
