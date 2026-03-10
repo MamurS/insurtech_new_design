@@ -646,7 +646,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                 <button
                   onClick={() => onEdit(row)}
                   className="px-3 py-1.5 text-sm rounded-lg"
-                  style={{ color: t.accent, border: `1px solid ${t.accent}40` }}
+                  style={{ color: t.accent, border: `1px solid ${t.accent}40`, fontWeight: 500 }}
                 >
                   Edit
                 </button>
@@ -658,14 +658,14 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           </div>
           {/* Sub-header metadata */}
           <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: t.text4 }}>
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold" style={sourceColorStyle[row.source] || defaultSourceStyle}>
+            <span className="px-2 py-0.5 rounded text-[10px]" style={{ fontWeight: 700, ...(sourceColorStyle[row.source] || defaultSourceStyle) }}>
               {sourceLabel[row.source] || row.source}
             </span>
             <span>{currency}</span>
             <span>Inception: {formatDate(row.inceptionDate)}</span>
             <span>— Expiry: {formatDate(row.expiryDate)}</span>
             {(row.installmentCount || 0) > 1 && (
-              <span className="px-1.5 py-0.5 rounded-full font-bold" style={{ background: t.accent + '30', color: t.accent }}>
+              <span className="px-1.5 py-0.5 rounded-full" style={{ background: t.accent + '30', color: t.accent, fontWeight: 700 }}>
                 {row.installmentCount} installments
               </span>
             )}
@@ -679,7 +679,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-sm"
                 style={
                   activeTab === tab.key
                     ? { borderBottom: `2px solid ${t.accent}`, color: t.accent, background: t.bgPanel }
