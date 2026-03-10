@@ -9,6 +9,7 @@ import {
 import { supabase } from '../services/supabase';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -71,6 +72,7 @@ const CHART_COLORS = [
 
 const RiskAccumulation: React.FC = () => {
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
+  const { t } = useTheme();
   const [rows, setRows] = useState<PortfolioRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -168,12 +170,15 @@ const RiskAccumulation: React.FC = () => {
     setHeaderActions(
       <div className="flex items-center gap-2">
         <button onClick={handleExport} disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm disabled:opacity-50">
+          className="flex items-center gap-1.5 px-3 py-1.5 text-white text-sm font-semibold rounded-lg disabled:opacity-50"
+          style={{ background: t.success, boxShadow: t.shadow }}>
           <Download size={14} /> Export
         </button>
         <button onClick={fetchData} disabled={loading}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg disabled:opacity-50" title="Refresh">
-          <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+          className="p-2 rounded-lg disabled:opacity-50"
+          style={{ color: t.text3 }}
+          title="Refresh">
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
         </button>
       </div>
     );
@@ -200,35 +205,41 @@ const RiskAccumulation: React.FC = () => {
   const renderAggTable = (data: AggRow[], labelHeader: string, threshold: number) => (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="sticky top-0 bg-slate-50 z-10">
-          <tr className="border-b border-slate-200">
-            <th className="text-left py-3 px-4 font-semibold text-slate-600">{labelHeader}</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">Count</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">Total Limit (USD)</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">Total GWP (USD)</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">% of Portfolio</th>
+        <thead className="sticky top-0 z-10" style={{ background: t.bgCard }}>
+          <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+            <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>{labelHeader}</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Count</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Total Limit (USD)</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Total GWP (USD)</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>% of Portfolio</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row) => {
             const overThreshold = row.pctOfPortfolio >= threshold;
             return (
-              <tr key={row.name} className={`border-b border-slate-100 hover:bg-slate-50 ${overThreshold ? 'bg-red-50' : ''}`}>
-                <td className="py-2.5 px-4 text-slate-800">
+              <tr key={row.name}
+                style={{
+                  borderBottom: `1px solid ${t.borderS}`,
+                  background: overThreshold ? t.dangerBg : undefined,
+                }}>
+                <td className="py-2.5 px-4" style={{ color: t.text1 }}>
                   <span className="flex items-center gap-2">
                     {row.name}
                     {overThreshold && (
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-red-600 bg-red-100 px-1.5 py-0.5 rounded">
+                      <span className="inline-flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded"
+                        style={{ color: t.danger, background: t.dangerBg }}>
                         <AlertTriangle size={12} />
                         {formatPercent(row.pctOfPortfolio)}
                       </span>
                     )}
                   </span>
                 </td>
-                <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{row.count}</td>
-                <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.totalLimit)}</td>
-                <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.totalGwp)}</td>
-                <td className={`py-2.5 px-4 text-right font-mono font-medium ${overThreshold ? 'text-red-600' : 'text-slate-700'}`}>
+                <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{row.count}</td>
+                <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.totalLimit)}</td>
+                <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.totalGwp)}</td>
+                <td className="py-2.5 px-4 text-right font-mono font-medium"
+                  style={{ color: overThreshold ? t.danger : t.text2 }}>
                   {formatPercent(row.pctOfPortfolio)}
                 </td>
               </tr>
@@ -248,23 +259,23 @@ const RiskAccumulation: React.FC = () => {
     return (
       <ResponsiveContainer width="100%" height={Math.max(280, chartData.length * 36)}>
         <BarChart data={chartData} layout="vertical" margin={{ left: 10, right: 30 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
           <XAxis
             type="number"
             tick={{ fontSize: 12 }}
-            stroke="#94a3b8"
+            stroke={t.text4}
             tickFormatter={(v) => `$${(v / 1_000_000).toFixed(1)}M`}
           />
           <YAxis
             type="category"
             dataKey="name"
             tick={{ fontSize: 11 }}
-            stroke="#94a3b8"
+            stroke={t.text4}
             width={160}
           />
           <Tooltip
             formatter={((value: number) => [formatCurrency(value), 'Limit']) as any}
-            contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+            contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
           />
           <Bar dataKey="value" name="Total Limit" radius={[0, 4, 4, 0]}>
             {chartData.map((entry, index) => (
@@ -279,29 +290,29 @@ const RiskAccumulation: React.FC = () => {
   const renderTopRisks = () => (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="sticky top-0 bg-slate-50 z-10">
-          <tr className="border-b border-slate-200">
-            <th className="text-left py-3 px-4 font-semibold text-slate-600 w-12">#</th>
-            <th className="text-left py-3 px-4 font-semibold text-slate-600">Ref #</th>
-            <th className="text-left py-3 px-4 font-semibold text-slate-600">Insured / Cedant</th>
-            <th className="text-left py-3 px-4 font-semibold text-slate-600">Class</th>
-            <th className="text-left py-3 px-4 font-semibold text-slate-600">Territory</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">Limit (USD)</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">GWP (USD)</th>
-            <th className="text-right py-3 px-4 font-semibold text-slate-600">Our Share</th>
+        <thead className="sticky top-0 z-10" style={{ background: t.bgCard }}>
+          <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+            <th className="text-left py-3 px-4 font-semibold w-12" style={{ color: t.text2 }}>#</th>
+            <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Ref #</th>
+            <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Insured / Cedant</th>
+            <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Class</th>
+            <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Territory</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Limit (USD)</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>GWP (USD)</th>
+            <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Our Share</th>
           </tr>
         </thead>
         <tbody>
           {topRisks.map((r, i) => (
-            <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50">
-              <td className="py-2.5 px-4 text-slate-400 font-mono">{i + 1}</td>
-              <td className="py-2.5 px-4 text-blue-600 font-medium">{r.reference_number}</td>
-              <td className="py-2.5 px-4 text-slate-800 max-w-[200px] truncate">{r.cedant_name || r.insured_name || '-'}</td>
-              <td className="py-2.5 px-4 text-slate-600 max-w-[150px] truncate">{r.class_of_business || '-'}</td>
-              <td className="py-2.5 px-4 text-slate-600">{r.territory || '-'}</td>
-              <td className="py-2.5 px-4 text-right text-slate-800 font-mono font-medium">{formatCurrency(toUSD(r.sum_insured_national, r.currency))}</td>
-              <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(toUSD(r.gross_premium, r.currency))}</td>
-              <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{r.our_share ? formatPercent(r.our_share) : '-'}</td>
+            <tr key={r.id} style={{ borderBottom: `1px solid ${t.borderS}` }}>
+              <td className="py-2.5 px-4 font-mono" style={{ color: t.text4 }}>{i + 1}</td>
+              <td className="py-2.5 px-4 font-medium" style={{ color: t.accent }}>{r.reference_number}</td>
+              <td className="py-2.5 px-4 max-w-[200px] truncate" style={{ color: t.text1 }}>{r.cedant_name || r.insured_name || '-'}</td>
+              <td className="py-2.5 px-4 max-w-[150px] truncate" style={{ color: t.text2 }}>{r.class_of_business || '-'}</td>
+              <td className="py-2.5 px-4" style={{ color: t.text2 }}>{r.territory || '-'}</td>
+              <td className="py-2.5 px-4 text-right font-mono font-medium" style={{ color: t.text1 }}>{formatCurrency(toUSD(r.sum_insured_national, r.currency))}</td>
+              <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(toUSD(r.gross_premium, r.currency))}</td>
+              <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{r.our_share ? formatPercent(r.our_share) : '-'}</td>
             </tr>
           ))}
         </tbody>
@@ -315,10 +326,11 @@ const RiskAccumulation: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-800">Failed to load data</h3>
-          <p className="text-slate-500 mt-1">{error}</p>
-          <button onClick={fetchData} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
+          <button onClick={fetchData} className="mt-4 px-4 py-2 text-white rounded-lg"
+            style={{ background: t.accent }}>
             Retry
           </button>
         </div>
@@ -332,36 +344,37 @@ const RiskAccumulation: React.FC = () => {
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Total Exposure</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '-' : formatCurrency(totalExposure)}</p>
-          <p className="text-xs text-slate-400 mt-1">{rows.length} active policies</p>
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <p className="text-sm font-medium" style={{ color: t.text3 }}>Total Exposure</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : formatCurrency(totalExposure)}</p>
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>{rows.length} active policies</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Largest Single Risk</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '-' : formatCurrency(largestSingleRisk)}</p>
-          <p className="text-xs text-slate-400 mt-1">
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <p className="text-sm font-medium" style={{ color: t.text3 }}>Largest Single Risk</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : formatCurrency(largestSingleRisk)}</p>
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>
             {totalExposure > 0 ? formatPercent((largestSingleRisk / totalExposure) * 100) : '0%'} of total
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Territory Count</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '-' : distinctTerritories}</p>
-          <p className="text-xs text-slate-400 mt-1">Distinct territories</p>
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <p className="text-sm font-medium" style={{ color: t.text3 }}>Territory Count</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : distinctTerritories}</p>
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>Distinct territories</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-          <p className="text-sm font-medium text-slate-500">Class Count</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{loading ? '-' : distinctClasses}</p>
-          <p className="text-xs text-slate-400 mt-1">Distinct classes</p>
+        <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+          <p className="text-sm font-medium" style={{ color: t.text3 }}>Class Count</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : distinctClasses}</p>
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>Distinct classes</p>
         </div>
       </div>
 
       {/* Filter Bar */}
-      <div className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgCard }}>
+        <div className="rounded-xl p-3" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
           <div className="flex items-center gap-3">
             <select value={activeTab} onChange={(e) => setActiveTab(e.target.value as TabKey)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white font-medium">
+              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium"
+              style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}>
               {TABS.map((tab) => (
                 <option key={tab.key} value={tab.key}>{tab.label}</option>
               ))}
@@ -373,23 +386,23 @@ const RiskAccumulation: React.FC = () => {
       {/* Loading */}
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="animate-spin text-blue-600" size={32} />
+          <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
         </div>
       ) : (
         <>
           {/* Territory Tab */}
           {activeTab === 'territory' && (
             <div className="space-y-6">
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-                <div className="px-5 py-4 border-b border-slate-100">
-                  <h3 className="font-semibold text-slate-800">Exposure by Territory</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+              <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                  <h3 className="font-semibold" style={{ color: t.text1 }}>Exposure by Territory</h3>
+                  <p className="text-xs mt-0.5" style={{ color: t.text3 }}>
                     Territories exceeding 25% of total exposure are flagged
                   </p>
                 </div>
                 <div className="p-5">{renderChart(byTerritory)}</div>
               </div>
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
                 {renderAggTable(byTerritory, 'Territory', THRESHOLDS.territory)}
               </div>
             </div>
@@ -398,16 +411,16 @@ const RiskAccumulation: React.FC = () => {
           {/* Class Tab */}
           {activeTab === 'class' && (
             <div className="space-y-6">
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-                <div className="px-5 py-4 border-b border-slate-100">
-                  <h3 className="font-semibold text-slate-800">Exposure by Class</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+              <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                  <h3 className="font-semibold" style={{ color: t.text1 }}>Exposure by Class</h3>
+                  <p className="text-xs mt-0.5" style={{ color: t.text3 }}>
                     Classes exceeding 30% of total exposure are flagged
                   </p>
                 </div>
                 <div className="p-5">{renderChart(byClass)}</div>
               </div>
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
                 {renderAggTable(byClass, 'Class of Business', THRESHOLDS.class)}
               </div>
             </div>
@@ -416,16 +429,16 @@ const RiskAccumulation: React.FC = () => {
           {/* Cedant Tab */}
           {activeTab === 'cedant' && (
             <div className="space-y-6">
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-                <div className="px-5 py-4 border-b border-slate-100">
-                  <h3 className="font-semibold text-slate-800">Exposure by Cedant / Insured</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+              <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                  <h3 className="font-semibold" style={{ color: t.text1 }}>Exposure by Cedant / Insured</h3>
+                  <p className="text-xs mt-0.5" style={{ color: t.text3 }}>
                     Cedants exceeding 15% of total exposure are flagged
                   </p>
                 </div>
                 <div className="p-5">{renderChart(byCedant)}</div>
               </div>
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
                 {renderAggTable(byCedant, 'Cedant / Insured', THRESHOLDS.cedant)}
               </div>
             </div>
@@ -433,10 +446,10 @@ const RiskAccumulation: React.FC = () => {
 
           {/* Top Risks Tab */}
           {activeTab === 'top-risks' && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
-                <h3 className="font-semibold text-slate-800">Top 25 Risks by Limit</h3>
-                <p className="text-xs text-slate-500 mt-0.5">Largest individual policies and contracts</p>
+            <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+              <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                <h3 className="font-semibold" style={{ color: t.text1 }}>Top 25 Risks by Limit</h3>
+                <p className="text-xs mt-0.5" style={{ color: t.text3 }}>Largest individual policies and contracts</p>
               </div>
               {renderTopRisks()}
             </div>

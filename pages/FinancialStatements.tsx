@@ -4,6 +4,7 @@ import { useAnalyticsSummary } from '../hooks/useAnalytics';
 import { DB } from '../services/db';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -30,24 +31,40 @@ interface LineItemProps {
 const LineItem: React.FC<LineItemProps> = ({
   label, amount, ratio, indent, bold, subtotal, grandTotal, negative,
 }) => {
+  const { t } = useTheme();
   const isNeg = negative || (amount !== undefined && amount < 0);
   return (
-    <div className={`flex items-baseline justify-between py-1.5 ${
-      subtotal ? 'border-t border-slate-300 mt-1 pt-2' : ''
-    }${grandTotal ? 'border-t-4 border-double border-slate-800 mt-2 pt-3 pb-1' : ''}`}>
-      <span className={`text-sm ${indent ? 'pl-6' : ''} ${bold || grandTotal ? 'font-semibold text-slate-900' : 'text-slate-700'}`}>
+    <div
+      className={`flex items-baseline justify-between py-1.5 ${
+        subtotal ? 'mt-1 pt-2' : ''
+      }${grandTotal ? 'mt-2 pt-3 pb-1' : ''}`}
+      style={{
+        ...(subtotal ? { borderTop: `1px solid ${t.borderL}` } : {}),
+        ...(grandTotal ? { borderTop: `4px double ${t.text1}` } : {}),
+      }}
+    >
+      <span
+        className={`text-sm ${indent ? 'pl-6' : ''} ${bold || grandTotal ? 'font-semibold' : ''}`}
+        style={{ color: bold || grandTotal ? t.text1 : t.text2 }}
+      >
         {label}
       </span>
       <div className="flex items-baseline gap-8">
         {amount !== undefined && (
-          <span className={`font-mono text-sm text-right min-w-[140px] ${
-            grandTotal ? 'text-base font-bold' : bold ? 'font-semibold' : ''
-          } ${isNeg ? 'text-red-600' : 'text-slate-900'}`}>
+          <span
+            className={`font-mono text-sm text-right min-w-[140px] ${
+              grandTotal ? 'text-base font-bold' : bold ? 'font-semibold' : ''
+            }`}
+            style={{ color: isNeg ? t.danger : t.text1 }}
+          >
             {fmt(amount)}
           </span>
         )}
         {ratio !== undefined && (
-          <span className="font-mono text-xs text-right min-w-[60px] text-slate-500">
+          <span
+            className="font-mono text-xs text-right min-w-[60px]"
+            style={{ color: t.text3 }}
+          >
             {fmtPct(ratio)}
           </span>
         )}
@@ -59,15 +76,19 @@ const LineItem: React.FC<LineItemProps> = ({
   );
 };
 
-const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
-  <div className="border-t border-slate-200 mt-6 pt-4 mb-1">
-    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{title}</h4>
-  </div>
-);
+const SectionHeader: React.FC<{ title: string }> = ({ title }) => {
+  const { t } = useTheme();
+  return (
+    <div className="mt-6 pt-4 mb-1" style={{ borderTop: `1px solid ${t.border}` }}>
+      <h4 className="text-xs font-semibold uppercase tracking-widest" style={{ color: t.text4 }}>{title}</h4>
+    </div>
+  );
+};
 
 // ─── Main Component ─────────────────────────────────────────────
 
 const FinancialStatements: React.FC = () => {
+  const { t } = useTheme();
   const { data, loading, error, refetch } = useAnalyticsSummary();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const [period, setPeriod] = useState('all');
@@ -88,10 +109,14 @@ const FinancialStatements: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-800">Failed to load data</h3>
-          <p className="text-slate-500 mt-1">{error}</p>
-          <button onClick={refetch} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
+          <button
+            onClick={refetch}
+            className="mt-4 px-4 py-2 text-white rounded-lg"
+            style={{ background: t.accent }}
+          >
             Retry
           </button>
         </div>
@@ -170,7 +195,8 @@ const FinancialStatements: React.FC = () => {
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+          className="rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
         >
           <option value="current_year">Current Year</option>
           <option value="last_12">Last 12 Months</option>
@@ -179,38 +205,40 @@ const FinancialStatements: React.FC = () => {
         <button
           onClick={() => refetch()}
           disabled={loading}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg disabled:opacity-50"
+          className="p-2 rounded-lg disabled:opacity-50"
+          style={{ color: t.text3 }}
           title="Refresh"
         >
-          <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
         </button>
         <button
           onClick={handleExport}
           disabled={!data}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ boxShadow: t.shadow }}
         >
           <Download size={16} /> Export
         </button>
       </div>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
-  }, [data, loading, period, setHeaderActions, setHeaderLeft]);
+  }, [data, loading, period, setHeaderActions, setHeaderLeft, t]);
 
   return (
     <div className="max-w-3xl mx-auto">
 
       {loading && !data ? (
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="animate-spin text-blue-600" size={32} />
+          <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
         </div>
       ) : data ? (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
           {/* Statement Header */}
-          <div className="px-8 py-5 border-b border-slate-200">
-            <h2 className="text-sm font-semibold text-slate-800 uppercase tracking-wide">
+          <div className="px-8 py-5" style={{ borderBottom: `1px solid ${t.border}` }}>
+            <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: t.text1 }}>
               Technical Account — Profit & Loss
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs mt-1" style={{ color: t.text4 }}>
               Period: {period === 'current_year' ? 'Current Year' : period === 'last_12' ? 'Last 12 Months' : 'All Time'} &nbsp;|&nbsp; Currency: USD
             </p>
           </div>
@@ -267,11 +295,13 @@ const FinancialStatements: React.FC = () => {
             />
 
             <div className="mt-2 text-right">
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                combinedRatio < 100
-                  ? 'bg-emerald-100 text-emerald-700'
-                  : 'bg-red-100 text-red-700'
-              }`}>
+              <span
+                className="text-xs font-medium px-2.5 py-1 rounded-full"
+                style={combinedRatio < 100
+                  ? { background: t.successBg, color: t.success }
+                  : { background: t.dangerBg, color: t.danger }
+                }
+              >
                 Combined Ratio: {fmtPct(combinedRatio)}
               </span>
             </div>
@@ -287,15 +317,22 @@ const FinancialStatements: React.FC = () => {
                 ['Retention Ratio (NWP / GWP)', retentionRatio],
                 ['Earning Ratio (GPE / GWP)', earningRatio],
               ].map(([label, value]) => (
-                <div key={label as string} className="flex justify-between py-1.5 border-b border-slate-100">
-                  <span className="text-sm text-slate-600">{label as string}</span>
-                  <span className={`font-mono text-sm font-medium ${
-                    (label as string).includes('Combined') && (value as number) >= 100
-                      ? 'text-red-600'
-                      : (label as string).includes('Combined') && (value as number) < 100
-                        ? 'text-emerald-600'
-                        : 'text-slate-800'
-                  }`}>
+                <div
+                  key={label as string}
+                  className="flex justify-between py-1.5"
+                  style={{ borderBottom: `1px solid ${t.borderS}` }}
+                >
+                  <span className="text-sm" style={{ color: t.text2 }}>{label as string}</span>
+                  <span
+                    className="font-mono text-sm font-medium"
+                    style={{
+                      color: (label as string).includes('Combined') && (value as number) >= 100
+                        ? t.danger
+                        : (label as string).includes('Combined') && (value as number) < 100
+                          ? t.success
+                          : t.text1,
+                    }}
+                  >
                     {fmtPct(value as number)}
                   </span>
                 </div>

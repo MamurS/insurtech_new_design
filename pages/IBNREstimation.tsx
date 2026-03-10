@@ -6,6 +6,7 @@ import { DB } from '../services/db';
 import { useToast } from '../context/ToastContext';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // ─── Types ──────────────────────────────────────────────────────
 
@@ -50,6 +51,7 @@ const IBNREstimation: React.FC = () => {
   const toast = useToast();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const location = useLocation();
+  const { t } = useTheme();
 
   const activeTab: TabKey = location.pathname.includes('/bf-method') ? 'bf' : 'manual';
   const [ibnrValues, setIbnrValues] = useState<Record<string, number>>({});
@@ -218,26 +220,26 @@ const IBNREstimation: React.FC = () => {
       if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
       return '$' + v.toFixed(0);
     };
-    const lrBg = ultimateLossRatio > 80 ? 'bg-red-50 border-red-200' : ultimateLossRatio > 60 ? 'bg-amber-50 border-amber-200' : 'bg-emerald-50 border-emerald-200';
-    const lrLabel = ultimateLossRatio > 80 ? 'text-red-600' : ultimateLossRatio > 60 ? 'text-amber-600' : 'text-emerald-600';
-    const lrValue = ultimateLossRatio > 80 ? 'text-red-800' : ultimateLossRatio > 60 ? 'text-amber-800' : 'text-emerald-800';
+    const lrBg = ultimateLossRatio > 80 ? t.dangerBg : ultimateLossRatio > 60 ? t.warningBg : t.successBg;
+    const lrBorder = ultimateLossRatio > 80 ? t.danger : ultimateLossRatio > 60 ? t.warning : t.success;
+    const lrColor = ultimateLossRatio > 80 ? t.danger : ultimateLossRatio > 60 ? t.warning : t.success;
     setHeaderLeft(
       <>
-        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-amber-600 font-medium">IBNR</span>
-          <span className="text-sm font-bold text-amber-800">{loading ? '…' : fmtCompact(totalIbnr)}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.warningBg, border: `1px solid ${t.warning}40` }}>
+          <span className="text-xs font-medium" style={{ color: t.warning }}>IBNR</span>
+          <span className="text-sm font-bold" style={{ color: t.warning }}>{loading ? '…' : fmtCompact(totalIbnr)}</span>
         </div>
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-slate-500 font-medium">Reported</span>
-          <span className="text-sm font-bold text-slate-800">{loading ? '…' : fmtCompact(totalReported)}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <span className="text-xs font-medium" style={{ color: t.text3 }}>Reported</span>
+          <span className="text-sm font-bold" style={{ color: t.text1 }}>{loading ? '…' : fmtCompact(totalReported)}</span>
         </div>
-        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-red-600 font-medium">Incurred</span>
-          <span className="text-sm font-bold text-red-800">{loading ? '…' : fmtCompact(totalIncAll)}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.dangerBg, border: `1px solid ${t.danger}` }}>
+          <span className="text-xs font-medium" style={{ color: t.danger }}>Incurred</span>
+          <span className="text-sm font-bold" style={{ color: t.danger }}>{loading ? '…' : fmtCompact(totalIncAll)}</span>
         </div>
-        <div className={`flex items-center gap-2 ${lrBg} border rounded-lg px-3 py-1.5`}>
-          <span className={`text-xs ${lrLabel} font-medium`}>Ult. LR</span>
-          <span className={`text-sm font-bold ${lrValue}`}>{loading ? '…' : formatPercent(ultimateLossRatio)}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: lrBg, border: `1px solid ${lrBorder}` }}>
+          <span className="text-xs font-medium" style={{ color: lrColor }}>Ult. LR</span>
+          <span className="text-sm font-bold" style={{ color: lrColor }}>{loading ? '…' : formatPercent(ultimateLossRatio)}</span>
         </div>
       </>
     );
@@ -245,13 +247,14 @@ const IBNREstimation: React.FC = () => {
       <button
         onClick={() => handleExport()}
         disabled={!data}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 px-4 py-2 text-white text-sm font-semibold rounded-lg transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ background: t.success, boxShadow: t.shadow }}
       >
         <Download size={16} /> Export
       </button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
-  }, [data, loading, totalIbnr, totalReported, totalIncAll, ultimateLossRatio, setHeaderActions, setHeaderLeft]);
+  }, [data, loading, totalIbnr, totalReported, totalIncAll, ultimateLossRatio, setHeaderActions, setHeaderLeft, t]);
 
   // ── Error state ──────────────────────────────────────────────
 
@@ -259,10 +262,14 @@ const IBNREstimation: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-800">Failed to load data</h3>
-          <p className="text-slate-500 mt-1">{error}</p>
-          <button onClick={refetch} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
+          <button
+            onClick={refetch}
+            className="mt-4 px-4 py-2 text-white rounded-lg"
+            style={{ background: t.accent }}
+          >
             Retry
           </button>
         </div>
@@ -277,40 +284,43 @@ const IBNREstimation: React.FC = () => {
       {/* Loading */}
       {loading && !data ? (
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="animate-spin text-blue-600" size={32} />
+          <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
         </div>
       ) : data && classData.length > 0 ? (
         <>
           {/* Manual Entry Tab */}
           {activeTab === 'manual' && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
-                <h3 className="font-semibold text-slate-800">Manual IBNR Entry by Class</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+            <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+              <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                <h3 className="font-semibold" style={{ color: t.text1 }}>Manual IBNR Entry by Class</h3>
+                <p className="text-xs mt-0.5" style={{ color: t.text3 }}>
                   Review reported claims and enter your professional judgment IBNR estimate per class
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 z-10">
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left py-3 px-4 font-semibold text-slate-600">Class of Business</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Earned Premium</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Reported Claims</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Reported LR</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600 bg-amber-50">IBNR Estimate</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Total Incurred</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Ultimate LR</th>
+                  <thead className="sticky top-0 z-10" style={{ background: t.bgCard }}>
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Class of Business</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Earned Premium</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Reported Claims</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Reported LR</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ background: t.warningBg, color: t.text2 }}>IBNR Estimate</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Total Incurred</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Ultimate LR</th>
                     </tr>
                   </thead>
                   <tbody>
                     {manualRows.map((row) => (
-                      <tr key={row.class} className="border-b border-slate-100 hover:bg-slate-50">
-                        <td className="py-2.5 px-4 text-slate-800 font-medium">{row.class}</td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.earnedPremium)}</td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.reportedClaims)}</td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatPercent(row.reportedLossRatio)}</td>
-                        <td className="py-2 px-3 bg-amber-50">
+                      <tr key={row.class} style={{ borderBottom: `1px solid ${t.borderS}` }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = ''; }}
+                      >
+                        <td className="py-2.5 px-4 font-medium" style={{ color: t.text1 }}>{row.class}</td>
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.earnedPremium)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.reportedClaims)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatPercent(row.reportedLossRatio)}</td>
+                        <td className="py-2 px-3" style={{ background: t.warningBg }}>
                           <input
                             type="number"
                             min="0"
@@ -321,43 +331,45 @@ const IBNREstimation: React.FC = () => {
                               [row.class]: Number(e.target.value) || 0,
                             }))}
                             placeholder="0"
-                            className="w-full text-right font-mono text-sm border border-amber-300 rounded px-2 py-1 bg-amber-50 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                            className="w-full text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 outline-none"
+                            style={{ background: t.bgInput, border: `1px solid ${t.warning}40`, color: t.text1 }}
                           />
                         </td>
-                        <td className="py-2.5 px-4 text-right text-slate-800 font-mono font-medium">{formatCurrency(row.totalIncurred)}</td>
-                        <td className={`py-2.5 px-4 text-right font-mono font-medium ${
-                          row.ultimateLossRatio > 80 ? 'text-red-600' : row.ultimateLossRatio > 60 ? 'text-amber-600' : 'text-slate-700'
-                        }`}>
+                        <td className="py-2.5 px-4 text-right font-mono font-medium" style={{ color: t.text1 }}>{formatCurrency(row.totalIncurred)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono font-medium" style={{
+                          color: row.ultimateLossRatio > 80 ? t.danger : row.ultimateLossRatio > 60 ? t.warning : t.text2
+                        }}>
                           {formatPercent(row.ultimateLossRatio)}
                         </td>
                       </tr>
                     ))}
                     {/* Total Row */}
-                    <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
-                      <td className="py-3 px-4 text-slate-900">TOTAL</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(manualRows.reduce((s, r) => s + r.earnedPremium, 0))}</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(manualRows.reduce((s, r) => s + r.reportedClaims, 0))}</td>
-                      <td className="py-3 px-4 text-right text-slate-700 font-mono">-</td>
-                      <td className="py-3 px-4 text-right text-amber-700 font-mono bg-amber-50">{formatCurrency(totalIbnrManual)}</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(manualRows.reduce((s, r) => s + r.totalIncurred, 0))}</td>
-                      <td className={`py-3 px-4 text-right font-mono ${ultimateLossRatio > 80 ? 'text-red-600' : 'text-slate-900'}`}>
+                    <tr className="font-semibold" style={{ borderTop: `2px solid ${t.borderL}`, background: t.bgCard }}>
+                      <td className="py-3 px-4" style={{ color: t.text1 }}>TOTAL</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(manualRows.reduce((s, r) => s + r.earnedPremium, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(manualRows.reduce((s, r) => s + r.reportedClaims, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text2 }}>-</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.warning, background: t.warningBg }}>{formatCurrency(totalIbnrManual)}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(manualRows.reduce((s, r) => s + r.totalIncurred, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: ultimateLossRatio > 80 ? t.danger : t.text1 }}>
                         {formatPercent(ultimateLossRatio)}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div className="px-5 py-4 border-t border-slate-100 flex items-center gap-4">
+              <div className="px-5 py-4 flex items-center gap-4" style={{ borderTop: `1px solid ${t.borderS}` }}>
                 <button
                   onClick={handleSaveManual}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 text-sm font-medium"
+                  style={{ background: t.accent }}
                 >
                   {saving ? <RefreshCw size={16} className="animate-spin" /> : <Save size={16} />}
                   Save Estimates
                 </button>
                 {lastSaved && (
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs" style={{ color: t.text4 }}>
                     Last saved: {new Date(lastSaved).toLocaleString()}
                   </span>
                 )}
@@ -367,37 +379,40 @@ const IBNREstimation: React.FC = () => {
 
           {/* BF Method Tab */}
           {activeTab === 'bf' && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
+            <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+              <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
                 <div className="flex items-center gap-2">
-                  <Calculator size={18} className="text-blue-600" />
-                  <h3 className="font-semibold text-slate-800">Bornhuetter-Ferguson Method</h3>
+                  <Calculator size={18} style={{ color: t.accent }} />
+                  <h3 className="font-semibold" style={{ color: t.text1 }}>Bornhuetter-Ferguson Method</h3>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs mt-1" style={{ color: t.text3 }}>
                   IBNR = Earned Premium &times; ELR &times; (1 - Development Factor).
                   Adjust ELR and Development Factor per class.
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-slate-50 z-10">
-                    <tr className="border-b border-slate-200">
-                      <th className="text-left py-3 px-4 font-semibold text-slate-600">Class</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Earned Premium</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600 bg-amber-50">ELR %</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Expected Ult. Loss</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600 bg-amber-50">Dev Factor</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Reported Claims</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">BF IBNR</th>
-                      <th className="text-right py-3 px-4 font-semibold text-slate-600">Ultimate Incurred</th>
+                  <thead className="sticky top-0 z-10" style={{ background: t.bgCard }}>
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <th className="text-left py-3 px-4 font-semibold" style={{ color: t.text2 }}>Class</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Earned Premium</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ background: t.warningBg, color: t.text2 }}>ELR %</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Expected Ult. Loss</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ background: t.warningBg, color: t.text2 }}>Dev Factor</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Reported Claims</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>BF IBNR</th>
+                      <th className="text-right py-3 px-4 font-semibold" style={{ color: t.text2 }}>Ultimate Incurred</th>
                     </tr>
                   </thead>
                   <tbody>
                     {bfRows.map((row) => (
-                      <tr key={row.class} className="border-b border-slate-100 hover:bg-slate-50">
-                        <td className="py-2.5 px-4 text-slate-800 font-medium">{row.class}</td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.earnedPremium)}</td>
-                        <td className="py-2 px-3 bg-amber-50">
+                      <tr key={row.class} style={{ borderBottom: `1px solid ${t.borderS}` }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = ''; }}
+                      >
+                        <td className="py-2.5 px-4 font-medium" style={{ color: t.text1 }}>{row.class}</td>
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.earnedPremium)}</td>
+                        <td className="py-2 px-3" style={{ background: t.warningBg }}>
                           <input
                             type="number"
                             min="0"
@@ -411,11 +426,12 @@ const IBNREstimation: React.FC = () => {
                                 devFactor: prev[row.class]?.devFactor ?? 0.80,
                               },
                             }))}
-                            className="w-20 text-right font-mono text-sm border border-amber-300 rounded px-2 py-1 bg-amber-50 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                            className="w-20 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 outline-none"
+                            style={{ background: t.bgInput, border: `1px solid ${t.warning}40`, color: t.text1 }}
                           />
                         </td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.expectedUltimateLoss)}</td>
-                        <td className="py-2 px-3 bg-amber-50">
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.expectedUltimateLoss)}</td>
+                        <td className="py-2 px-3" style={{ background: t.warningBg }}>
                           <input
                             type="number"
                             min="0"
@@ -429,39 +445,41 @@ const IBNREstimation: React.FC = () => {
                                 devFactor: Number(e.target.value) || 0,
                               },
                             }))}
-                            className="w-20 text-right font-mono text-sm border border-amber-300 rounded px-2 py-1 bg-amber-50 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none"
+                            className="w-20 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 outline-none"
+                            style={{ background: t.bgInput, border: `1px solid ${t.warning}40`, color: t.text1 }}
                           />
                         </td>
-                        <td className="py-2.5 px-4 text-right text-slate-700 font-mono">{formatCurrency(row.reportedClaims)}</td>
-                        <td className="py-2.5 px-4 text-right text-amber-700 font-mono font-medium">{formatCurrency(row.bfIbnr)}</td>
-                        <td className="py-2.5 px-4 text-right text-slate-800 font-mono font-medium">{formatCurrency(row.ultimateIncurred)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono" style={{ color: t.text2 }}>{formatCurrency(row.reportedClaims)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono font-medium" style={{ color: t.warning }}>{formatCurrency(row.bfIbnr)}</td>
+                        <td className="py-2.5 px-4 text-right font-mono font-medium" style={{ color: t.text1 }}>{formatCurrency(row.ultimateIncurred)}</td>
                       </tr>
                     ))}
                     {/* Total Row */}
-                    <tr className="border-t-2 border-slate-300 bg-slate-50 font-semibold">
-                      <td className="py-3 px-4 text-slate-900">TOTAL</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(bfRows.reduce((s, r) => s + r.earnedPremium, 0))}</td>
-                      <td className="py-3 px-4 text-right text-slate-700 font-mono bg-amber-50">-</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(bfRows.reduce((s, r) => s + r.expectedUltimateLoss, 0))}</td>
-                      <td className="py-3 px-4 text-right text-slate-700 font-mono bg-amber-50">-</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(bfRows.reduce((s, r) => s + r.reportedClaims, 0))}</td>
-                      <td className="py-3 px-4 text-right text-amber-700 font-mono">{formatCurrency(totalIbnrBF)}</td>
-                      <td className="py-3 px-4 text-right text-slate-900 font-mono">{formatCurrency(bfRows.reduce((s, r) => s + r.ultimateIncurred, 0))}</td>
+                    <tr className="font-semibold" style={{ borderTop: `2px solid ${t.borderL}`, background: t.bgCard }}>
+                      <td className="py-3 px-4" style={{ color: t.text1 }}>TOTAL</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(bfRows.reduce((s, r) => s + r.earnedPremium, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text2, background: t.warningBg }}>-</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(bfRows.reduce((s, r) => s + r.expectedUltimateLoss, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text2, background: t.warningBg }}>-</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(bfRows.reduce((s, r) => s + r.reportedClaims, 0))}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.warning }}>{formatCurrency(totalIbnrBF)}</td>
+                      <td className="py-3 px-4 text-right font-mono" style={{ color: t.text1 }}>{formatCurrency(bfRows.reduce((s, r) => s + r.ultimateIncurred, 0))}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div className="px-5 py-4 border-t border-slate-100 flex items-center gap-4">
+              <div className="px-5 py-4 flex items-center gap-4" style={{ borderTop: `1px solid ${t.borderS}` }}>
                 <button
                   onClick={handleSaveBF}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 text-sm font-medium"
+                  style={{ background: t.accent }}
                 >
                   {saving ? <RefreshCw size={16} className="animate-spin" /> : <Save size={16} />}
                   Save Parameters
                 </button>
                 {lastSaved && (
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs" style={{ color: t.text4 }}>
                     Last saved: {new Date(lastSaved).toLocaleString()}
                   </span>
                 )}
@@ -470,10 +488,10 @@ const IBNREstimation: React.FC = () => {
           )}
         </>
       ) : data && classData.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <Calculator className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700">No class data available</h3>
-          <p className="text-sm text-slate-500 mt-1">IBNR estimation requires policy and claims data grouped by class of business.</p>
+        <div className="rounded-xl p-12 text-center" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
+          <Calculator className="w-12 h-12 mx-auto mb-4" style={{ color: t.text4 }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text2 }}>No class data available</h3>
+          <p className="text-sm mt-1" style={{ color: t.text3 }}>IBNR estimation requires policy and claims data grouped by class of business.</p>
         </div>
       ) : null}
     </div>

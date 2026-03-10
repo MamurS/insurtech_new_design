@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { DB } from '../services/db';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../theme/useTheme';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ContextBar } from '../components/ContextBar';
 import EnvironmentSwitcher from '../components/EnvironmentSwitcher';
@@ -42,6 +43,7 @@ const Settings: React.FC = () => {
   const [restoreConfirm, setRestoreConfirm] = useState<{ isOpen: boolean; file: File | null }>({ isOpen: false, file: null });
   const toast = useToast();
   const { user } = useAuth();
+  const { t } = useTheme();
   const isAdmin = user?.role === 'Super Admin' || user?.role === 'Admin';
   const currentEnv = getDbEnvironment();
 
@@ -78,9 +80,9 @@ const Settings: React.FC = () => {
   const handleSave = () => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     setSaveStatus('saved');
-    
+
     // We do NOT reload the page to prevent crashes in some hosting environments.
-    // Since components read settings from localStorage on render, 
+    // Since components read settings from localStorage on render,
     // simply navigating away from this page will reflect changes.
     setTimeout(() => {
         setSaveStatus('idle');
@@ -95,7 +97,7 @@ const Settings: React.FC = () => {
     const policies = await DB.getAllPolicies();
     const slips = await DB.getAllSlips();
     const clauses = await DB.getAllClauses();
-    
+
     const backupData = {
       timestamp: new Date().toISOString(),
       version: '1.0',
@@ -153,6 +155,30 @@ const Settings: React.FC = () => {
     setRestoreConfirm({ isOpen: false, file: null });
   };
 
+  const inputStyle: React.CSSProperties = {
+    background: t.bgInput,
+    border: `1px solid ${t.border}`,
+    color: t.text1,
+  };
+
+  const selectStyle: React.CSSProperties = {
+    background: t.bgInput,
+    border: `1px solid ${t.border}`,
+    color: t.text1,
+  };
+
+  const cardStyle: React.CSSProperties = {
+    background: t.bgPanel,
+    borderColor: t.border,
+    boxShadow: t.shadow,
+  };
+
+  const cardHeaderStyle: React.CSSProperties = {
+    background: t.bgCard,
+    color: t.text2,
+    borderColor: t.border,
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-10">
       {/* Context Bar */}
@@ -166,45 +192,51 @@ const Settings: React.FC = () => {
 
       <div className="flex justify-between items-center">
         <div>
-            <h2 className="text-3xl font-bold text-gray-800">Settings & Tools</h2>
-            <p className="text-gray-500">Configure application preferences and manage data.</p>
+            <h2 className="text-3xl font-bold" style={{ color: t.text1 }}>Settings & Tools</h2>
+            <p style={{ color: t.text3 }}>Configure application preferences and manage data.</p>
         </div>
-        <button 
+        <button
             onClick={handleSave}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-all shadow-sm ${saveStatus === 'saved' ? 'bg-green-600 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-all text-white"
+            style={{
+              background: saveStatus === 'saved' ? t.success : t.accent,
+              boxShadow: t.shadow,
+            }}
         >
             {saveStatus === 'saved' ? <Check size={20} /> : <Save size={20} />}
             {saveStatus === 'saved' ? 'Saved' : 'Save Changes'}
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
+
         {/* General Configuration */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2">
+        <div className="rounded-xl border overflow-hidden" style={cardStyle}>
+            <div className="p-4 border-b font-bold flex items-center gap-2" style={cardHeaderStyle}>
                 <Globe size={18} /> General Configuration
             </div>
             <div className="p-6 space-y-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                    <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Company Name</label>
                     <div className="relative">
-                        <Building size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input 
-                            type="text" 
+                        <Building size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+                        <input
+                            type="text"
                             value={settings.companyName}
                             onChange={(e) => handleChange('companyName', e.target.value)}
-                            className="w-full pl-10 p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                            className="w-full pl-10 p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            style={inputStyle}
                         />
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Default Currency</label>
-                        <select 
+                        <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Default Currency</label>
+                        <select
                             value={settings.currency}
                             onChange={(e) => handleChange('currency', e.target.value)}
-                            className="w-full p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            style={selectStyle}
                         >
                             <option value="USD">USD ($)</option>
                             <option value="EUR">EUR (€)</option>
@@ -213,11 +245,12 @@ const Settings: React.FC = () => {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
-                        <select 
+                        <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Date Format</label>
+                        <select
                             value={settings.dateFormat}
                             onChange={(e) => handleChange('dateFormat', e.target.value)}
-                            className="w-full p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            style={selectStyle}
                         >
                             <option value="dd.mm.yyyy">dd.mm.yyyy</option>
                             <option value="dd/mm/yyyy">dd/mm/yyyy</option>
@@ -229,73 +262,76 @@ const Settings: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex items-center justify-between pt-2">
-                     <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                        <Moon size={16} /> Dark Mode <span className="text-xs text-gray-400 font-normal">(Coming Soon)</span>
+                     <span className="text-sm font-medium flex items-center gap-2" style={{ color: t.text2 }}>
+                        <Moon size={16} /> Dark Mode <span className="text-xs font-normal" style={{ color: t.text4 }}>(Coming Soon)</span>
                      </span>
-                     <div className="w-10 h-6 bg-gray-200 rounded-full relative cursor-not-allowed">
-                        <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                     <div className="w-10 h-6 rounded-full relative cursor-not-allowed" style={{ background: t.border }}>
+                        <div className="absolute left-1 top-1 w-4 h-4 rounded-full" style={{ background: t.bgPanel, boxShadow: t.shadow }}></div>
                      </div>
                 </div>
             </div>
         </div>
 
         {/* Policy Defaults */}
-         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2">
+         <div className="rounded-xl border overflow-hidden" style={cardStyle}>
+            <div className="p-4 border-b font-bold flex items-center gap-2" style={cardHeaderStyle}>
                 <Shield size={18} /> Policy Defaults
             </div>
             <div className="p-6 space-y-4">
-                <p className="text-sm text-gray-500 mb-4">Set default values for new policy records to speed up data entry.</p>
+                <p className="text-sm mb-4" style={{ color: t.text3 }}>Set default values for new policy records to speed up data entry.</p>
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Default Commission %</label>
-                        <input 
-                            type="number" 
+                        <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Default Commission %</label>
+                        <input
+                            type="number"
                             step="0.1"
                             value={settings.defaultCommission}
                             onChange={(e) => handleChange('defaultCommission', parseFloat(e.target.value))}
-                            className="w-full p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            style={inputStyle}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Default Tax %</label>
-                        <input 
-                            type="number" 
+                        <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Default Tax %</label>
+                        <input
+                            type="number"
                             step="0.1"
                             value={settings.defaultTax}
                             onChange={(e) => handleChange('defaultTax', parseFloat(e.target.value))}
-                            className="w-full p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                            style={inputStyle}
                         />
                     </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
-                     <input 
-                        type="checkbox" 
-                        id="notif" 
+                     <input
+                        type="checkbox"
+                        id="notif"
                         checked={settings.enableNotifications}
                         onChange={(e) => handleChange('enableNotifications', e.target.checked)}
                         className="rounded text-blue-600 focus:ring-blue-500"
                      />
-                     <label htmlFor="notif" className="text-sm text-gray-700 flex items-center gap-2">
-                        Enable Expiry Notifications <Bell size={14} className="text-gray-400"/>
+                     <label htmlFor="notif" className="text-sm flex items-center gap-2" style={{ color: t.text2 }}>
+                        Enable Expiry Notifications <Bell size={14} style={{ color: t.text4 }}/>
                      </label>
                 </div>
             </div>
         </div>
 
         {/* Session Timeout */}
-        <div className="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2">
+        <div className="md:col-span-2 rounded-xl border overflow-hidden" style={cardStyle}>
+            <div className="p-4 border-b font-bold flex items-center gap-2" style={cardHeaderStyle}>
                 <Timer size={18} /> Session Timeout
             </div>
             <div className="p-6 space-y-4">
-                <p className="text-sm text-gray-500">Auto-logout after inactivity. Choose a personal override or use the default set by your administrator.</p>
+                <p className="text-sm" style={{ color: t.text3 }}>Auto-logout after inactivity. Choose a personal override or use the default set by your administrator.</p>
                 <div className="flex items-center gap-4">
-                    <label className="block text-sm font-medium text-gray-700">Timeout duration:</label>
+                    <label className="block text-sm font-medium" style={{ color: t.text2 }}>Timeout duration:</label>
                     <select
                         value={userTimeout}
                         onChange={(e) => setUserTimeout(e.target.value)}
-                        className="p-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+                        className="p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                        style={selectStyle}
                     >
                         <option value="default">Use default (from Admin)</option>
                         <option value="15">15 minutes</option>
@@ -309,13 +345,14 @@ const Settings: React.FC = () => {
                             localStorage.setItem(USER_TIMEOUT_KEY, userTimeout);
                             toast.success('Session timeout preference saved');
                         }}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                        className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium"
+                        style={{ background: t.accent }}
                     >
                         <Save size={16} />
                         Save
                     </button>
                 </div>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs" style={{ color: t.text4 }}>
                     {userTimeout === 'default'
                         ? 'Using the global timeout configured by your administrator.'
                         : `Your session will expire after ${userTimeout === '60' ? '1 hour' : userTimeout === '120' ? '2 hours' : userTimeout === '240' ? '4 hours' : `${userTimeout} minutes`} of inactivity.`}
@@ -324,51 +361,51 @@ const Settings: React.FC = () => {
         </div>
 
         {/* Data Tools */}
-        <div className="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2">
+        <div className="md:col-span-2 rounded-xl border overflow-hidden" style={cardStyle}>
+            <div className="p-4 border-b font-bold flex items-center gap-2" style={cardHeaderStyle}>
                 <Database size={18} /> Data Management
             </div>
             <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Backup */}
-                    <div className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                        <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-3">
+                    <div className="border rounded-lg p-4 transition-colors" style={{ borderColor: t.border }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ background: `${t.accent}18`, color: t.accent }}>
                             <Download size={20} />
                         </div>
-                        <h4 className="font-bold text-gray-800">Backup Data</h4>
-                        <p className="text-xs text-gray-500 mb-4 mt-1">Export all policies, slips, and settings to a JSON file.</p>
-                        <button onClick={handleBackup} className="w-full py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-colors">
+                        <h4 className="font-bold" style={{ color: t.text1 }}>Backup Data</h4>
+                        <p className="text-xs mb-4 mt-1" style={{ color: t.text3 }}>Export all policies, slips, and settings to a JSON file.</p>
+                        <button onClick={handleBackup} className="w-full py-2 text-sm font-medium rounded transition-colors" style={{ color: t.accent, background: `${t.accent}18` }}>
                             Download Backup
                         </button>
                     </div>
 
                     {/* Restore */}
-                    <div className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors relative">
-                        <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-3">
+                    <div className="border rounded-lg p-4 transition-colors relative" style={{ borderColor: t.border }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ background: t.bgCard, color: t.accent }}>
                             <Upload size={20} />
                         </div>
-                        <h4 className="font-bold text-gray-800">Restore Data</h4>
-                        <p className="text-xs text-gray-500 mb-4 mt-1">Import data from a backup file. Overwrites current data.</p>
-                        <label className="w-full block text-center py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded hover:bg-purple-100 transition-colors cursor-pointer">
+                        <h4 className="font-bold" style={{ color: t.text1 }}>Restore Data</h4>
+                        <p className="text-xs mb-4 mt-1" style={{ color: t.text3 }}>Import data from a backup file. Overwrites current data.</p>
+                        <label className="w-full block text-center py-2 text-sm font-medium rounded transition-colors cursor-pointer" style={{ color: t.accent, background: t.bgCard }}>
                             Select File
                             <input type="file" accept=".json" onChange={handleRestore} className="hidden" />
                         </label>
                     </div>
 
                     {/* Storage Info */}
-                    <div className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
-                        <div className="w-10 h-10 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center mb-3">
+                    <div className="border rounded-lg p-4 transition-colors" style={{ borderColor: t.border }}>
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center mb-3" style={{ background: t.bgCard, color: t.text2 }}>
                             <HardDrive size={20} />
                         </div>
-                        <h4 className="font-bold text-gray-800">Local Storage</h4>
+                        <h4 className="font-bold" style={{ color: t.text1 }}>Local Storage</h4>
                         <div className="mt-2 space-y-1">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Used Space:</span>
-                                <span className="font-mono font-medium">{storageStats.used}</span>
+                                <span style={{ color: t.text3 }}>Used Space:</span>
+                                <span className="font-mono font-medium" style={{ color: t.text1 }}>{storageStats.used}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Total Items:</span>
-                                <span className="font-mono font-medium">{storageStats.items}</span>
+                                <span style={{ color: t.text3 }}>Total Items:</span>
+                                <span className="font-mono font-medium" style={{ color: t.text1 }}>{storageStats.items}</span>
                             </div>
                         </div>
                     </div>
@@ -378,19 +415,19 @@ const Settings: React.FC = () => {
 
         {/* Database Environment - Admin Only */}
         {isAdmin && (
-          <div className="md:col-span-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex items-center gap-2">
+          <div className="md:col-span-2 rounded-xl border overflow-hidden" style={cardStyle}>
+            <div className="p-4 border-b font-bold flex items-center gap-2" style={cardHeaderStyle}>
               <Server size={18} /> Database Environment
             </div>
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-700 font-medium">Current Environment</p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-sm font-medium" style={{ color: t.text2 }}>Current Environment</p>
+                  <p className="text-xs mt-1" style={{ color: t.text3 }}>
                     Switch between production and staging databases. The page will reload when switching.
                   </p>
                   {currentEnv === 'staging' && (
-                    <p className="text-xs text-amber-600 mt-2 font-medium">
+                    <p className="text-xs mt-2 font-medium" style={{ color: t.warning }}>
                       You are connected to the staging environment. Changes will not affect production.
                     </p>
                   )}

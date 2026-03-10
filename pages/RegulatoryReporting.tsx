@@ -5,6 +5,7 @@ import { DB } from '../services/db';
 import { exportToExcel } from '../services/excelExport';
 import { useToast } from '../context/ToastContext';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // ─── Helpers ────────────────────────────────────────────────────
 
@@ -39,6 +40,7 @@ interface ReinsuranceData {
 // ─── Main Component ─────────────────────────────────────────────
 
 const RegulatoryReporting: React.FC = () => {
+  const { t } = useTheme();
   const { data, loading, error, refetch } = useAnalyticsSummary();
   const { showToast } = useToast();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
@@ -169,10 +171,10 @@ const RegulatoryReporting: React.FC = () => {
   const solvencyRatio = solvency.minCapitalRequirement > 0 ? (netAssets / solvency.minCapitalRequirement) * 100 : 0;
 
   const getSolvencyBadge = () => {
-    if (solvencyRatio <= 0 || solvency.minCapitalRequirement === 0) return { label: 'NO DATA', color: 'bg-slate-100 text-slate-600' };
-    if (solvencyRatio >= 120) return { label: 'SOLVENT', color: 'bg-emerald-100 text-emerald-700' };
-    if (solvencyRatio >= 100) return { label: 'WARNING', color: 'bg-amber-100 text-amber-700' };
-    return { label: 'INSUFFICIENT', color: 'bg-red-100 text-red-700' };
+    if (solvencyRatio <= 0 || solvency.minCapitalRequirement === 0) return { label: 'NO DATA', bg: t.bgCard, color: t.text2 };
+    if (solvencyRatio >= 120) return { label: 'SOLVENT', bg: t.successBg, color: t.success };
+    if (solvencyRatio >= 100) return { label: 'WARNING', bg: t.warningBg, color: t.warning };
+    return { label: 'INSUFFICIENT', bg: t.dangerBg, color: t.danger };
   };
 
   // Reserves by class
@@ -264,16 +266,19 @@ const RegulatoryReporting: React.FC = () => {
     setHeaderActions(
       <div className="flex items-center gap-2">
         <button onClick={handleExport} disabled={!data}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm disabled:opacity-50">
+          style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg disabled:opacity-50">
           <Download size={14} /> Export
         </button>
         <button onClick={handlePrint}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg hover:bg-slate-200">
+          style={{ background: t.bgCard, color: t.text2 }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg">
           <Printer size={14} /> Print
         </button>
         <button onClick={refetch} disabled={loading}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg disabled:opacity-50" title="Refresh">
-          <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+          style={{ color: t.text3 }}
+          className="p-2 rounded-lg disabled:opacity-50" title="Refresh">
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
         </button>
       </div>
     );
@@ -285,10 +290,12 @@ const RegulatoryReporting: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-800">Failed to load data</h3>
-          <p className="text-slate-500 mt-1">{error}</p>
-          <button onClick={refetch} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
+          <button onClick={refetch}
+            style={{ background: t.accent, color: '#fff' }}
+            className="mt-4 px-4 py-2 rounded-lg">
             Retry
           </button>
         </div>
@@ -296,33 +303,66 @@ const RegulatoryReporting: React.FC = () => {
     );
   }
 
+  // Shared inline style helpers
+  const selectStyle: React.CSSProperties = {
+    background: t.bgInput,
+    border: `1px solid ${t.borderL}`,
+    color: t.text1,
+  };
+
+  const inputStyle: React.CSSProperties = {
+    background: t.bgInput,
+    border: `1px solid ${t.borderL}`,
+    color: t.text1,
+  };
+
+  const manualInputStyle: React.CSSProperties = {
+    background: t.warningBg,
+    border: `1px solid ${t.warning}`,
+    color: t.text1,
+  };
+
+  const thStyle: React.CSSProperties = {
+    background: t.bgCard,
+    color: t.text2,
+    borderColor: t.border,
+  };
+
+  const borderRStyle: React.CSSProperties = {
+    borderColor: t.border,
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
       {/* Filter Bar */}
-      <div className="sticky top-0 z-30 bg-gray-50 mb-6 sticky-filter-blur">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div className="sticky top-0 z-30 mb-6 sticky-filter-blur" style={{ background: t.bgApp }}>
+        <div className="rounded-xl p-3" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
           <div className="flex flex-wrap items-center gap-3">
             <select value={activeTab} onChange={(e) => setActiveTab(e.target.value as TabKey)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white font-medium">
+              style={selectStyle}
+              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
               <option value="form1">Form 1: Business Summary</option>
               <option value="form2">Form 2: Solvency</option>
               <option value="form3">Form 3: Reserves</option>
               <option value="form4">Form 4: Reinsurance</option>
             </select>
-            <div className="w-px h-5 bg-gray-300" />
+            <div className="w-px h-5" style={{ background: t.borderL }} />
             <select value={quarter} onChange={(e) => setQuarter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white">
+              style={selectStyle}
+              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
               {QUARTERS.map(q => <option key={q} value={q}>{q}</option>)}
             </select>
             <select value={year} onChange={(e) => setYear(Number(e.target.value))}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white">
+              style={selectStyle}
+              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
               {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <div className="w-px h-5 bg-gray-300" />
+            <div className="w-px h-5" style={{ background: t.borderL }} />
             <div className="flex items-center gap-1 text-sm">
-              <span className="text-slate-500">UZS/USD:</span>
+              <span style={{ color: t.text3 }}>UZS/USD:</span>
               <input type="number" value={exchangeRate} onChange={(e) => setExchangeRate(Number(e.target.value) || 12800)}
-                className="w-20 border border-gray-300 rounded-lg px-2 py-2 text-sm text-right font-mono focus:ring-2 focus:ring-blue-500 outline-none" />
+                style={inputStyle}
+                className="w-20 rounded-lg px-2 py-2 text-sm text-right font-mono focus:ring-2 focus:ring-blue-500 outline-none" />
             </div>
           </div>
         </div>
@@ -330,7 +370,7 @@ const RegulatoryReporting: React.FC = () => {
 
       {loading && !data ? (
         <div className="flex items-center justify-center h-64">
-          <RefreshCw className="animate-spin text-blue-600" size={32} />
+          <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
         </div>
       ) : data ? (
         <div className="print:shadow-none">
@@ -338,15 +378,15 @@ const RegulatoryReporting: React.FC = () => {
           {/* FORM 1: Business Summary                                */}
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form1' && (
-            <div className="bg-white border border-slate-300 shadow-sm print:border-black">
+            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }} className="print:border-black">
               {/* Form header */}
-              <div className="px-8 py-5 border-b border-slate-300 text-center">
-                <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Форма 1 / Form 1</p>
-                <h2 className="text-base font-bold text-slate-900 uppercase tracking-wide">
+              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 1 / Form 1</p>
+                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
                   ОТЧЕТ О СТРАХОВОЙ ДЕЯТЕЛЬНОСТИ
                 </h2>
-                <p className="text-sm text-slate-600 mt-0.5">Insurance Activity Report</p>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Insurance Activity Report</p>
+                <p className="text-xs mt-2" style={{ color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD / UZS
                 </p>
               </div>
@@ -355,36 +395,34 @@ const RegulatoryReporting: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-300">
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 w-12 border-r border-slate-200">Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 border-r border-slate-200">Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-40 border-r border-slate-200">Amount (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-48">Amount (UZS)</th>
+                    <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
+                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-40" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Amount (USD)</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (UZS)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {form1Rows.map((r, i) => (
                       <tr
                         key={r.row}
-                        className={`border-b border-slate-200 ${
-                          r.isGrandTotal ? 'bg-slate-100 border-t-2 border-t-slate-400' :
-                          r.isTotal ? 'bg-slate-50' : ''
-                        } ${i % 2 === 0 && !r.isTotal && !r.isGrandTotal ? '' : ''}`}
+                        style={{
+                          borderBottom: `1px solid ${t.border}`,
+                          background: r.isGrandTotal ? t.bgHover : r.isTotal ? t.bgCard : undefined,
+                          ...(r.isGrandTotal ? { borderTop: `2px solid ${t.text4}` } : {}),
+                        }}
                       >
-                        <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">{r.row}</td>
-                        <td className={`px-4 py-2 border-r border-slate-200 ${
-                          r.indent ? 'pl-10' : ''
-                        } ${r.isTotal || r.isGrandTotal ? 'font-semibold text-slate-900' : 'text-slate-700'}`}>
+                        <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>{r.row}</td>
+                        <td className={`px-4 py-2 ${r.indent ? 'pl-10' : ''} ${r.isTotal || r.isGrandTotal ? 'font-semibold' : ''}`}
+                          style={{ color: r.isTotal || r.isGrandTotal ? t.text1 : t.text2, borderRight: `1px solid ${t.border}` }}>
                           {r.label}
                         </td>
-                        <td className={`px-4 py-2 text-right font-mono border-r border-slate-200 ${
-                          r.usd < 0 ? 'text-red-600' : 'text-slate-900'
-                        } ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}>
+                        <td className={`px-4 py-2 text-right font-mono ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}
+                          style={{ color: r.usd < 0 ? t.danger : t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(r.usd)}
                         </td>
-                        <td className={`px-4 py-2 text-right font-mono ${
-                          r.usd < 0 ? 'text-red-600' : 'text-slate-900'
-                        } ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}>
+                        <td className={`px-4 py-2 text-right font-mono ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}
+                          style={{ color: r.usd < 0 ? t.danger : t.text1 }}>
                           {fmt(toUZS(r.usd))}
                         </td>
                       </tr>
@@ -394,8 +432,8 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Key Ratios */}
-              <div className="px-8 py-5 border-t border-slate-300">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+              <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
+                <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
                   Key Ratios / Ключевые коэффициенты
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
@@ -406,15 +444,15 @@ const RegulatoryReporting: React.FC = () => {
                     ['Combined Ratio / Комбинированный коэффициент', combinedRatio],
                     ['Retention Ratio / Коэффициент удержания', retentionRatio],
                   ].map(([label, value]) => (
-                    <div key={label as string} className="flex justify-between py-1.5 border-b border-slate-100">
-                      <span className="text-sm text-slate-600">{label as string}</span>
-                      <span className={`font-mono text-sm font-medium ${
-                        (label as string).includes('Combined') && (value as number) >= 100
-                          ? 'text-red-600'
+                    <div key={label as string} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                      <span className="text-sm" style={{ color: t.text2 }}>{label as string}</span>
+                      <span className="font-mono text-sm font-medium" style={{
+                        color: (label as string).includes('Combined') && (value as number) >= 100
+                          ? t.danger
                           : (label as string).includes('Combined') && (value as number) < 100
-                            ? 'text-emerald-600'
-                            : 'text-slate-800'
-                      }`}>
+                            ? t.success
+                            : t.text1
+                      }}>
                         {fmtPct(value as number)}
                       </span>
                     </div>
@@ -428,18 +466,19 @@ const RegulatoryReporting: React.FC = () => {
           {/* FORM 2: Solvency Report                                 */}
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form2' && (
-            <div className="bg-white border border-slate-300 shadow-sm">
-              <div className="px-8 py-5 border-b border-slate-300 text-center">
-                <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Форма 2 / Form 2</p>
-                <h2 className="text-base font-bold text-slate-900 uppercase tracking-wide">
+            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
+              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 2 / Form 2</p>
+                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
                   ОТЧЕТ О ПЛАТЕЖЕСПОСОБНОСТИ
                 </h2>
-                <p className="text-sm text-slate-600 mt-0.5">Solvency Report</p>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Solvency Report</p>
+                <p className="text-xs mt-2" style={{ color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
                 <div className="mt-3">
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${getSolvencyBadge().color}`}>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full"
+                    style={{ background: getSolvencyBadge().bg, color: getSolvencyBadge().color }}>
                     {getSolvencyBadge().label} {solvencyRatio > 0 ? `(${fmtPct(solvencyRatio)})` : ''}
                   </span>
                 </div>
@@ -448,17 +487,17 @@ const RegulatoryReporting: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-300">
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 w-12 border-r border-slate-200">Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 border-r border-slate-200">Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-48">Amount (USD)</th>
+                    <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
+                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (USD)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Row 1 - Total Assets (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">1</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Total Assets / Итого активы
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -466,15 +505,16 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={solvency.totalAssets || ''}
                           onChange={(e) => setSolvency({ ...solvency, totalAssets: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 2 - Total Liabilities (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">2</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Total Liabilities / Итого обязательства
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -482,25 +522,26 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={solvency.totalLiabilities || ''}
                           onChange={(e) => setSolvency({ ...solvency, totalLiabilities: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 3 - Net Assets (auto) */}
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">3</td>
-                      <td className="px-4 py-2 font-semibold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
+                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Net Assets (1-2) / Чистые активы
                       </td>
-                      <td className={`px-4 py-2 text-right font-mono font-semibold ${netAssets < 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: netAssets < 0 ? t.danger : t.text1 }}>
                         {fmt(netAssets)}
                       </td>
                     </tr>
                     {/* Row 4 - MCR (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">4</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Minimum Capital Requirement / Минимальный размер уставного капитала
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -508,76 +549,77 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={solvency.minCapitalRequirement || ''}
                           onChange={(e) => setSolvency({ ...solvency, minCapitalRequirement: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 5 - Solvency Margin (auto) */}
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">5</td>
-                      <td className="px-4 py-2 font-semibold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
+                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Solvency Margin (3-4) / Маржа платежеспособности
                       </td>
-                      <td className={`px-4 py-2 text-right font-mono font-semibold ${solvencyMargin < 0 ? 'text-red-600' : 'text-slate-900'}`}>
+                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: solvencyMargin < 0 ? t.danger : t.text1 }}>
                         {fmt(solvencyMargin)}
                       </td>
                     </tr>
                     {/* Row 6 - Solvency Ratio (auto) */}
-                    <tr className="border-b border-slate-200 bg-slate-100 border-t-2 border-t-slate-400">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">6</td>
-                      <td className="px-4 py-2 font-bold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
+                      <td className="px-4 py-2 font-bold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Solvency Ratio (3/4 × 100%) / Коэффициент платежеспособности
                       </td>
-                      <td className={`px-4 py-2 text-right font-mono font-bold text-base ${
-                        solvencyRatio >= 120 ? 'text-emerald-600' :
-                        solvencyRatio >= 100 ? 'text-amber-600' : 'text-red-600'
-                      }`}>
+                      <td className="px-4 py-2 text-right font-mono font-bold text-base" style={{
+                        color: solvencyRatio >= 120 ? t.success :
+                          solvencyRatio >= 100 ? t.warning : t.danger
+                      }}>
                         {solvencyRatio > 0 ? fmtPct(solvencyRatio) : '—'}
                       </td>
                     </tr>
 
                     {/* Separator */}
-                    <tr className="border-b border-slate-300">
-                      <td colSpan={3} className="px-4 py-3 bg-slate-50 text-xs font-semibold text-slate-400 uppercase tracking-widest">
+                    <tr style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                      <td colSpan={3} className="px-4 py-3 text-xs font-semibold uppercase tracking-widest" style={{ background: t.bgCard, color: t.text4 }}>
                         Technical Reserves / Страховые резервы
                       </td>
                     </tr>
 
                     {/* Row 7 - Total Tech Reserves */}
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">7</td>
-                      <td className="px-4 py-2 font-semibold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7</td>
+                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Technical Reserves - Total / Страховые резервы — Итого
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
                         {fmt(upr + claimsReserve + ibnrTotal)}
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">7.1</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.1</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Unearned Premium Reserve (UPR) / Резерв незаработанной премии
                       </td>
-                      <td className="px-4 py-2 text-right font-mono text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
                         {fmt(upr)}
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">7.2</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.2</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Outstanding Claims Reserve / Резерв заявленных убытков
                       </td>
-                      <td className="px-4 py-2 text-right font-mono text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
                         {fmt(claimsReserve)}
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">7.3</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.3</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         IBNR Reserve / Резерв РПНУ (IBNR)
                       </td>
-                      <td className="px-4 py-2 text-right font-mono text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
                         {fmt(ibnrTotal)}
                       </td>
                     </tr>
@@ -586,11 +628,12 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Save button */}
-              <div className="px-8 py-4 border-t border-slate-300 flex justify-end">
+              <div className="px-8 py-4 flex justify-end" style={{ borderTop: `1px solid ${t.borderL}` }}>
                 <button
                   onClick={saveSolvency}
                   disabled={solvencySaving}
-                  className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  style={{ background: t.accent, color: '#fff' }}
+                  className="px-4 py-2 text-sm font-semibold rounded-lg disabled:opacity-50"
                 >
                   {solvencySaving ? 'Saving...' : 'Save Solvency Data'}
                 </button>
@@ -602,14 +645,14 @@ const RegulatoryReporting: React.FC = () => {
           {/* FORM 3: Reserves Report                                 */}
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form3' && (
-            <div className="bg-white border border-slate-300 shadow-sm">
-              <div className="px-8 py-5 border-b border-slate-300 text-center">
-                <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Форма 3 / Form 3</p>
-                <h2 className="text-base font-bold text-slate-900 uppercase tracking-wide">
+            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
+              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 3 / Form 3</p>
+                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
                   ОТЧЕТ О СТРАХОВЫХ РЕЗЕРВАХ
                 </h2>
-                <p className="text-sm text-slate-600 mt-0.5">Insurance Reserves Report</p>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Insurance Reserves Report</p>
+                <p className="text-xs mt-2" style={{ color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
               </div>
@@ -617,44 +660,44 @@ const RegulatoryReporting: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-300">
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 border-r border-slate-200">Class of Business / Вид страхования</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-36 border-r border-slate-200">UPR (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-44 border-r border-slate-200">Outstanding Claims</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-36 border-r border-slate-200">IBNR (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-44">Total Reserves</th>
+                    <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
+                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Class of Business / Вид страхования</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-36" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>UPR (USD)</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-44" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Outstanding Claims</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-36" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>IBNR (USD)</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-44" style={{ color: t.text2 }}>Total Reserves</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reservesByClass.length > 0 ? reservesByClass.map((r, i) => (
-                      <tr key={r.class} className={`border-b border-slate-200 ${i % 2 === 0 ? '' : 'bg-slate-50/50'}`}>
-                        <td className="px-4 py-2 text-slate-700 border-r border-slate-200">{r.class}</td>
-                        <td className="px-4 py-2 text-right font-mono text-slate-900 border-r border-slate-200">{fmt(r.upr)}</td>
-                        <td className="px-4 py-2 text-right font-mono text-slate-900 border-r border-slate-200">{fmt(r.outstandingClaims)}</td>
-                        <td className="px-4 py-2 text-right font-mono text-slate-900 border-r border-slate-200">{fmt(r.ibnr)}</td>
-                        <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">{fmt(r.totalReserves)}</td>
+                      <tr key={r.class} style={{ borderBottom: `1px solid ${t.border}`, background: i % 2 !== 0 ? t.bgRowAlt : undefined }}>
+                        <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>{r.class}</td>
+                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.upr)}</td>
+                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.outstandingClaims)}</td>
+                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.ibnr)}</td>
+                        <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>{fmt(r.totalReserves)}</td>
                       </tr>
                     )) : (
                       <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center text-slate-400 italic">
+                        <td colSpan={5} className="px-4 py-8 text-center italic" style={{ color: t.text4 }}>
                           No class data available. Configure IBNR estimates and ensure claims data is loaded.
                         </td>
                       </tr>
                     )}
                     {/* Total row */}
                     {reservesByClass.length > 0 && (
-                      <tr className="bg-slate-100 border-t-2 border-t-slate-400 font-semibold">
-                        <td className="px-4 py-2.5 text-slate-900 border-r border-slate-200">TOTAL / ИТОГО</td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-900 border-r border-slate-200">
+                      <tr className="font-semibold" style={{ background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
+                        <td className="px-4 py-2.5" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>TOTAL / ИТОГО</td>
+                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.upr, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-900 border-r border-slate-200">
+                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.outstandingClaims, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono text-slate-900 border-r border-slate-200">
+                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.ibnr, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono font-bold text-slate-900">
+                        <td className="px-4 py-2.5 text-right font-mono font-bold" style={{ color: t.text1 }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.totalReserves, 0))}
                         </td>
                       </tr>
@@ -664,8 +707,8 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Additional totals summary */}
-              <div className="px-8 py-5 border-t border-slate-300">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+              <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
+                <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
                   Aggregate Reserves Summary / Сводка резервов
                 </h3>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-2">
@@ -675,9 +718,9 @@ const RegulatoryReporting: React.FC = () => {
                     ['IBNR Reserve', ibnrTotal],
                     ['Total Technical Reserves', upr + claimsReserve + ibnrTotal],
                   ].map(([label, value]) => (
-                    <div key={label as string} className="flex justify-between py-1.5 border-b border-slate-100">
-                      <span className="text-sm text-slate-600">{label as string}</span>
-                      <span className="font-mono text-sm font-medium text-slate-800">${fmt(value as number)}</span>
+                    <div key={label as string} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                      <span className="text-sm" style={{ color: t.text2 }}>{label as string}</span>
+                      <span className="font-mono text-sm font-medium" style={{ color: t.text1 }}>${fmt(value as number)}</span>
                     </div>
                   ))}
                 </div>
@@ -689,14 +732,14 @@ const RegulatoryReporting: React.FC = () => {
           {/* FORM 4: Reinsurance Report                              */}
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form4' && (
-            <div className="bg-white border border-slate-300 shadow-sm">
-              <div className="px-8 py-5 border-b border-slate-300 text-center">
-                <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Форма 4 / Form 4</p>
-                <h2 className="text-base font-bold text-slate-900 uppercase tracking-wide">
+            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
+              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 4 / Form 4</p>
+                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
                   ОТЧЕТ О ПЕРЕСТРАХОВАНИИ
                 </h2>
-                <p className="text-sm text-slate-600 mt-0.5">Reinsurance Report</p>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Reinsurance Report</p>
+                <p className="text-xs mt-2" style={{ color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
               </div>
@@ -704,27 +747,27 @@ const RegulatoryReporting: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-300">
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 w-12 border-r border-slate-200">Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-slate-600 border-r border-slate-200">Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-slate-600 w-48">Amount (USD)</th>
+                    <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
+                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (USD)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Row 1 - Ceded Total (from analytics) */}
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">1</td>
-                      <td className="px-4 py-2 font-semibold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
+                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Reinsurance Premium Ceded - Total / Перестраховочная премия — Итого
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
                         {fmt(ceded)}
                       </td>
                     </tr>
                     {/* Row 1.1 - Proportional (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">1.1</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.1</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Proportional Treaties / Пропорциональное перестрахование
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -732,15 +775,16 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={reinsurance.proportional || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, proportional: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 1.2 - Non-Proportional (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">1.2</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.2</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Non-Proportional (XL) / Непропорциональное перестрахование
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -748,15 +792,16 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={reinsurance.nonProportional || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, nonProportional: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 1.3 - Facultative (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">1.3</td>
-                      <td className="px-4 py-2 text-slate-700 pl-10 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.3</td>
+                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Facultative / Факультативное перестрахование
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -764,15 +809,16 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={reinsurance.facultative || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, facultative: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 2 - Recoveries (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">2</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Reinsurance Recoveries / Возмещение по перестрахованию
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -780,35 +826,36 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={reinsurance.recoveries || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, recoveries: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 3 - Net position (auto) */}
-                    <tr className="border-b border-slate-200 bg-slate-50">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">3</td>
-                      <td className="px-4 py-2 font-semibold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
+                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Net Reinsurance Position (1-2) / Чистая перестраховочная позиция
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
                         {fmt(netReinsPosition)}
                       </td>
                     </tr>
                     {/* Row 4 - Cession Ratio (auto) */}
-                    <tr className="border-b border-slate-200 bg-slate-100 border-t-2 border-t-slate-400">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">4</td>
-                      <td className="px-4 py-2 font-bold text-slate-900 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
+                      <td className="px-4 py-2 font-bold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Cession Ratio (1 / GWP × 100%) / Коэффициент цессии
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-bold text-slate-900">
+                      <td className="px-4 py-2 text-right font-mono font-bold" style={{ color: t.text1 }}>
                         {fmtPct(cessionRatio)}
                       </td>
                     </tr>
                     {/* Row 5 - Contract count (manual) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">5</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Number of Reinsurance Contracts / Количество договоров перестрахования
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -816,15 +863,16 @@ const RegulatoryReporting: React.FC = () => {
                           type="number"
                           value={reinsurance.contractCount || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, contractCount: Number(e.target.value) || 0 })}
-                          className="w-40 text-right font-mono text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 6 - Top Reinsurers (manual text) */}
-                    <tr className="border-b border-slate-200">
-                      <td className="px-4 py-2 font-mono text-xs text-slate-500 border-r border-slate-200">6</td>
-                      <td className="px-4 py-2 text-slate-700 border-r border-slate-200">
+                    <tr style={{ borderBottom: `1px solid ${t.border}` }}>
+                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
+                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Top 5 Reinsurers / Топ-5 перестраховщиков
                       </td>
                       <td className="px-4 py-2 text-right">
@@ -832,7 +880,8 @@ const RegulatoryReporting: React.FC = () => {
                           type="text"
                           value={reinsurance.topReinsurers}
                           onChange={(e) => setReinsurance({ ...reinsurance, topReinsurers: e.target.value })}
-                          className="w-full text-right text-sm bg-amber-50 border border-amber-200 rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={manualInputStyle}
+                          className="w-full text-right text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
                           placeholder="e.g. Swiss Re, Munich Re, ..."
                         />
                       </td>
@@ -843,15 +892,15 @@ const RegulatoryReporting: React.FC = () => {
 
               {/* Outward channel summary from analytics */}
               {outward && outward.topCedants.length > 0 && (
-                <div className="px-8 py-5 border-t border-slate-300">
-                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">
+                <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
                     Top Reinsurers (from data) / Перестраховщики (из данных)
                   </h3>
                   <div className="space-y-1">
                     {outward.topCedants.slice(0, 5).map((r, i) => (
-                      <div key={r.name} className="flex justify-between py-1.5 border-b border-slate-100">
-                        <span className="text-sm text-slate-600">{i + 1}. {r.name}</span>
-                        <span className="font-mono text-sm text-slate-800">${fmt(r.premium)}</span>
+                      <div key={r.name} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+                        <span className="text-sm" style={{ color: t.text2 }}>{i + 1}. {r.name}</span>
+                        <span className="font-mono text-sm" style={{ color: t.text1 }}>${fmt(r.premium)}</span>
                       </div>
                     ))}
                   </div>
@@ -859,10 +908,11 @@ const RegulatoryReporting: React.FC = () => {
               )}
 
               {/* Save button */}
-              <div className="px-8 py-4 border-t border-slate-300 flex justify-end">
+              <div className="px-8 py-4 flex justify-end" style={{ borderTop: `1px solid ${t.borderL}` }}>
                 <button
                   onClick={saveReinsurance}
-                  className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700"
+                  style={{ background: t.accent, color: '#fff' }}
+                  className="px-4 py-2 text-sm font-semibold rounded-lg"
                 >
                   Save Reinsurance Data
                 </button>

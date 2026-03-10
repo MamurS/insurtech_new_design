@@ -6,6 +6,7 @@ import { DB } from '../services/db';
 import { Policy, Clause, ReinsuranceSlip, PolicyTemplate } from '../types';
 import { formatDate, formatDateTime } from '../utils/dateUtils';
 import { Printer, ArrowLeft, Settings2, FileText } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 const DEFAULT_TEMPLATE: PolicyTemplate = {
   id: 'default_sys',
@@ -14,7 +15,7 @@ const DEFAULT_TEMPLATE: PolicyTemplate = {
   content: `
     <div style="font-family: serif; color: #1a202c;">
         <h1 style="text-align: center; text-transform: uppercase; font-size: 24px; margin-bottom: 40px; border-bottom: 2px solid #000; padding-bottom: 20px;">Policy Schedule</h1>
-        
+
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 14px;">
             <tr style="border-bottom: 1px solid #e2e8f0;">
                 <td style="font-weight: bold; padding: 12px 0; width: 30%; color: #4a5568;">Policy Number</td>
@@ -67,6 +68,7 @@ const DEFAULT_TEMPLATE: PolicyTemplate = {
 const PolicyWording: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTheme();
   const [item, setItem] = useState<Policy | ReinsuranceSlip | null>(null);
   const [templates, setTemplates] = useState<PolicyTemplate[]>([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
@@ -81,7 +83,7 @@ const PolicyWording: React.FC = () => {
           setItem(p);
           // If policy, fetch templates and clauses
           const t = await DB.getTemplates();
-          
+
           if (t.length === 0) {
               setTemplates([DEFAULT_TEMPLATE]);
               setSelectedTemplateId(DEFAULT_TEMPLATE.id);
@@ -110,7 +112,7 @@ const PolicyWording: React.FC = () => {
 
   const printDocument = () => window.print();
 
-  if (!item) return <div className="p-8 text-center text-gray-500">Loading document...</div>;
+  if (!item) return <div className="p-8 text-center" style={{ color: t.text3 }}>Loading document...</div>;
 
   const formatMoney = (val: number | undefined, currency: string) => {
       if (val === undefined || val === null) return '-';
@@ -125,7 +127,7 @@ const PolicyWording: React.FC = () => {
   // 1. Dynamic Policy Renderer based on Template
   const renderDynamicPolicy = (policy: Policy) => {
     const template = templates.find(t => t.id === selectedTemplateId);
-    
+
     if (!template) return <div className="p-8 text-red-500">Please select a template to generate the wording.</div>;
 
     // Helper to replace placeholders
@@ -298,48 +300,49 @@ const PolicyWording: React.FC = () => {
   return (
     <div className="flex gap-6 h-[calc(100vh-100px)]">
       <div className="w-72 flex-shrink-0 flex flex-col gap-4 print:hidden">
-         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 hover:text-black"><ArrowLeft size={16}/> Back</button>
-         
-         <div className="bg-white p-4 rounded-lg shadow-sm border space-y-4">
-            <h3 className="font-bold text-gray-800 flex items-center gap-2"><Settings2 size={16}/> Configuration</h3>
-            
+         <button onClick={() => navigate(-1)} className="flex items-center gap-2" style={{ color: t.text2 }}><ArrowLeft size={16}/> Back</button>
+
+         <div className="p-4 rounded-lg space-y-4" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
+            <h3 className="font-bold flex items-center gap-2" style={{ color: t.text1 }}><Settings2 size={16}/> Configuration</h3>
+
             {isPolicy(item) && item.channel === 'Direct' && templates.length > 0 && (
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Select Template</label>
-                    <select 
-                        value={selectedTemplateId} 
+                    <label className="block text-xs font-bold uppercase mb-2" style={{ color: t.text3 }}>Select Template</label>
+                    <select
+                        value={selectedTemplateId}
                         onChange={(e) => setSelectedTemplateId(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-2 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                     >
-                        {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        {templates.map(tmpl => <option key={tmpl.id} value={tmpl.id}>{tmpl.name}</option>)}
                     </select>
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs mt-2" style={{ color: t.text4 }}>
                         Templates are managed in the Admin Console.
                     </p>
                 </div>
             )}
 
             <div>
-                <button onClick={printDocument} className="w-full bg-slate-800 text-white py-3 rounded flex items-center justify-center gap-2 hover:bg-slate-700 font-bold transition-colors shadow-sm">
+                <button onClick={printDocument} className="w-full text-white py-3 rounded flex items-center justify-center gap-2 font-bold transition-colors" style={{ background: t.accent, boxShadow: t.shadow }}>
                     <Printer size={18}/> Print / Save PDF
                 </button>
-                <p className="text-xs text-gray-400 mt-2 text-center">Use the "Save as PDF" option in the print dialog.</p>
+                <p className="text-xs mt-2 text-center" style={{ color: t.text4 }}>Use the "Save as PDF" option in the print dialog.</p>
             </div>
          </div>
-         
+
          {isPolicy(item) && attachedClauses.length > 0 && (
-             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                 <h4 className="font-bold text-blue-800 text-sm mb-2 flex items-center gap-2"><FileText size={14}/> Attached Clauses</h4>
-                 <ul className="list-disc pl-4 text-xs text-blue-700 space-y-1">
+             <div className="p-4 rounded-lg" style={{ background: `${t.accent}18`, border: `1px solid ${t.accent}30` }}>
+                 <h4 className="font-bold text-sm mb-2 flex items-center gap-2" style={{ color: t.accent }}><FileText size={14}/> Attached Clauses</h4>
+                 <ul className="list-disc pl-4 text-xs space-y-1" style={{ color: t.accent }}>
                      {attachedClauses.map(c => <li key={c.id}>{c.title}</li>)}
                  </ul>
              </div>
          )}
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-gray-100 p-8 rounded-xl print:p-0 print:bg-white border border-gray-200">
-        {isPolicy(item) 
-            ? (item.channel === 'Direct' 
+      <div className="flex-1 overflow-y-auto p-8 rounded-xl print:p-0 print:bg-white" style={{ background: t.bgApp, border: `1px solid ${t.border}` }}>
+        {isPolicy(item)
+            ? (item.channel === 'Direct'
                 ? renderDynamicPolicy(item) // New dynamic render
                 : renderReinsuranceSlip(item)) // Legacy render for reinsurance
             : renderRegistrySlipNote(item)

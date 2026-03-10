@@ -6,14 +6,16 @@ import { generateClause } from '../services/geminiService';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ContextBar } from '../components/ContextBar';
 import { Plus, Trash2, Sparkles, Loader2 } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 const ClauseManager: React.FC = () => {
+  const { t } = useTheme();
   const [clauses, setClauses] = useState<Clause[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; id: string }>({ isOpen: false, id: '' });
-  
+
   // New Clause Form State
   const [newClause, setNewClause] = useState<Omit<Clause, 'id'>>({
     title: '',
@@ -63,16 +65,23 @@ const ClauseManager: React.FC = () => {
     }
   };
 
+  const categoryStyle = (category: string) => {
+    if (category === 'Exclusion') return { background: t.dangerBg, color: t.danger };
+    if (category === 'Warranty') return { background: t.warningBg, color: t.warning };
+    return { background: `${t.accent}18`, color: t.accent };
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Clause Library</h2>
-          <p className="text-gray-500">Manage standard clauses and warranties used in policies.</p>
+          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Clause Library</h2>
+          <p style={{ color: t.text3 }}>Manage standard clauses and warranties used in policies.</p>
         </div>
-        <button 
+        <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          style={{ background: t.accent }}
         >
           <Plus size={18} />
           Add Clause
@@ -80,29 +89,33 @@ const ClauseManager: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500">Loading clauses...</div>
+        <div className="text-center py-12" style={{ color: t.text3 }}>Loading clauses...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {clauses.map(clause => (
-            <div key={clause.id} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+            <div
+              key={clause.id}
+              className="p-5 rounded-xl flex flex-col hover:shadow-md transition-shadow"
+              style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}
+            >
               <div className="flex justify-between items-start mb-3">
-                <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                  clause.category === 'Exclusion' ? 'bg-red-100 text-red-700' :
-                  clause.category === 'Warranty' ? 'bg-amber-100 text-amber-700' :
-                  'bg-blue-100 text-blue-700'
-                }`}>
+                <span
+                  className="px-2 py-1 rounded text-xs font-semibold"
+                  style={categoryStyle(clause.category)}
+                >
                   {clause.category}
                 </span>
-                {clause.isStandard && <span className="text-xs text-gray-400 font-medium">Standard</span>}
+                {clause.isStandard && <span className="text-xs font-medium" style={{ color: t.text4 }}>Standard</span>}
               </div>
-              <h3 className="font-bold text-gray-800 mb-2">{clause.title}</h3>
-              <p className="text-sm text-gray-600 flex-1 line-clamp-4 leading-relaxed mb-4">
+              <h3 className="font-bold mb-2" style={{ color: t.text1 }}>{clause.title}</h3>
+              <p className="text-sm flex-1 line-clamp-4 leading-relaxed mb-4" style={{ color: t.text2 }}>
                 {clause.content}
               </p>
-              <div className="flex justify-end pt-3 border-t border-gray-100">
-                <button 
+              <div className="flex justify-end pt-3" style={{ borderTop: `1px solid ${t.borderS}` }}>
+                <button
                   onClick={() => handleDelete(clause.id)}
-                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  className="transition-colors"
+                  style={{ color: t.text4 }}
                 >
                   <Trash2 size={18} />
                 </button>
@@ -115,8 +128,11 @@ const ClauseManager: React.FC = () => {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full animate-in fade-in zoom-in duration-200">
-            <h3 className="text-xl font-bold p-6 pb-0">New Clause Template</h3>
+          <div
+            className="rounded-xl max-w-2xl w-full animate-in fade-in zoom-in duration-200"
+            style={{ background: t.bgPanel, boxShadow: t.shadowLg }}
+          >
+            <h3 className="text-xl font-bold p-6 pb-0" style={{ color: t.text1 }}>New Clause Template</h3>
 
             <ContextBar
               status="NEW"
@@ -129,18 +145,20 @@ const ClauseManager: React.FC = () => {
             <div className="p-6 pt-0 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Title</label>
-                  <input 
-                    className="w-full bg-white border rounded p-2 text-gray-900"
+                  <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Title</label>
+                  <input
+                    className="w-full rounded p-2"
+                    style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                     value={newClause.title}
                     onChange={e => setNewClause({...newClause, title: e.target.value})}
                     placeholder="e.g., War Exclusion"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Category</label>
-                  <select 
-                    className="w-full bg-white border rounded p-2 text-gray-900"
+                  <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Category</label>
+                  <select
+                    className="w-full rounded p-2"
+                    style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                     value={newClause.category}
                     onChange={e => setNewClause({...newClause, category: e.target.value as any})}
                   >
@@ -153,22 +171,24 @@ const ClauseManager: React.FC = () => {
               </div>
 
               {/* AI Assistant Section */}
-              <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-                <div className="flex items-center gap-2 mb-2 text-purple-800 font-medium">
+              <div className="p-4 rounded-lg" style={{ background: `${t.accent}10`, border: `1px solid ${t.accent}20` }}>
+                <div className="flex items-center gap-2 mb-2 font-medium" style={{ color: t.accent }}>
                   <Sparkles size={16} />
                   <span>AI Drafting Assistant</span>
                 </div>
                 <div className="flex gap-2">
-                  <input 
-                    className="flex-1 bg-white border border-purple-200 rounded p-2 text-sm focus:ring-purple-500 focus:border-purple-500 text-gray-900"
+                  <input
+                    className="flex-1 rounded p-2 text-sm"
+                    style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                     placeholder="Describe the clause you need (e.g., 'Exclude damage from nuclear explosions')..."
                     value={aiPrompt}
                     onChange={e => setAiPrompt(e.target.value)}
                   />
-                  <button 
+                  <button
                     onClick={handleAiDraft}
                     disabled={isGenerating || !aiPrompt}
-                    className="bg-purple-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+                    className="text-white px-4 py-2 rounded text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+                    style={{ background: t.accent }}
                   >
                     {isGenerating ? <Loader2 className="animate-spin" size={16}/> : 'Draft'}
                   </button>
@@ -176,9 +196,10 @@ const ClauseManager: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Content</label>
-                <textarea 
-                  className="w-full bg-white border rounded p-2 h-32 font-serif text-gray-900"
+                <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Content</label>
+                <textarea
+                  className="w-full rounded p-2 h-32 font-serif"
+                  style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                   value={newClause.content}
                   onChange={e => setNewClause({...newClause, content: e.target.value})}
                   placeholder="Clause text goes here..."
@@ -186,24 +207,26 @@ const ClauseManager: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   id="standard"
                   checked={newClause.isStandard}
                   onChange={e => setNewClause({...newClause, isStandard: e.target.checked})}
                 />
-                <label htmlFor="standard" className="text-sm">Add to all new policies by default</label>
+                <label htmlFor="standard" className="text-sm" style={{ color: t.text2 }}>Add to all new policies by default</label>
               </div>
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-3 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
                 <button
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 rounded-lg"
+                  style={{ color: t.text2 }}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="px-4 py-2 text-white rounded-lg"
+                  style={{ background: t.accent }}
                 >
                   Save Template
                 </button>
