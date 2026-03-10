@@ -149,8 +149,8 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
               </button>
               <button
                 onClick={() => setActiveTab('history')}
-                className="pb-1 font-medium transition-colors flex items-center gap-1"
-                style={activeTab === 'history' ? { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: t.accent, color: t.accent } : { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: 'transparent', color: t.text4 }}
+                className="pb-1 transition-colors flex items-center gap-1"
+                style={activeTab === 'history' ? { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: t.accent, color: t.accent, fontWeight: 500 } : { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: 'transparent', color: t.text4, fontWeight: 500 }}
               >
                 <History size={16}/> History
               </button>
@@ -161,7 +161,7 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
             {activeTab === 'details' ? renderDetails() : renderHistory()}
         </div>
         <div className="p-3 flex justify-end" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: t.border, background: t.bgCard }}>
-            <button onClick={onClose} className="px-4 py-2 rounded-lg font-medium text-sm" style={{ background: t.bgHover, color: t.text1 }}>Close</button>
+            <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.bgHover, color: t.text1, fontWeight: 500 }}>Close</button>
         </div>
       </div>
     </div>
