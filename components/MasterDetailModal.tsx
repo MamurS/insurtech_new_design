@@ -95,7 +95,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
   const Field: React.FC<{ label: string; value?: string | number | null; mono?: boolean; className?: string }> = ({ label, value, mono, className }) => (
     <div className={className}>
       <div className="text-[11px] uppercase tracking-wide" style={{ color: t.text4 }}>{label}</div>
-      <div className={`text-sm font-medium ${mono ? 'font-mono' : ''}`} style={{ color: t.text1 }}>{value ?? '-'}</div>
+      <div className={`text-sm ${mono ? 'font-mono' : ''}`} style={{ color: t.text1, fontWeight: 500 }}>{value ?? '-'}</div>
     </div>
   );
 
@@ -125,7 +125,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Core Info */}
         <div>
-          <h4 className="font-bold pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}><Building2 size={14} /> Core Information</h4>
+          <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={14} /> Core Information</h4>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Policy / Ref No" value={row.referenceNumber} mono />
             {row.secondaryRef && <Field label="Secondary Ref" value={row.secondaryRef} mono />}
@@ -153,7 +153,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Right: Dates */}
         <div>
-          <h4 className="font-bold pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}><Calendar size={14} /> Key Dates</h4>
+          <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={14} /> Key Dates</h4>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Inception Date" value={formatDate(row.inceptionDate)} />
             <Field label="Expiry Date" value={formatDate(row.expiryDate)} />
@@ -171,7 +171,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           {/* Contract info for inward */}
           {isInward && (
             <div className="mt-5">
-              <h4 className="font-bold pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}><Layers size={14} /> Contract Structure</h4>
+              <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Layers size={14} /> Contract Structure</h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                 {row.contractType && <Field label="Type" value={row.contractType} />}
                 {row.structure && <Field label="Structure" value={row.structure} />}
@@ -185,33 +185,33 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
       {/* Financial Summary */}
       <div className="p-5 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-        <h4 className="font-bold mb-4 flex items-center gap-2 text-sm" style={{ color: t.text1 }}><DollarSign size={14} /> Financial Summary ({currency})</h4>
+        <h4 className="mb-4 flex items-center gap-2 text-sm" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={14} /> Financial Summary ({currency})</h4>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Sum Insured</div>
-            <div className="text-base font-bold font-mono" style={{ color: t.text1 }}>{fmt(row.sumInsured, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.sumInsured, currency)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Limit (FC)</div>
-            <div className="text-base font-bold font-mono" style={{ color: t.text1 }}>{fmt(row.limit, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.limit, currency)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Limit (NC)</div>
-            <div className="text-base font-bold font-mono" style={{ color: t.text1 }}>{fmt(row.limitNational)}</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.limitNational)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Excess</div>
-            <div className="text-base font-medium font-mono" style={{ color: t.text1 }}>{fmt(row.excess, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.excess, currency)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Priority Sum</div>
-            <div className="text-base font-medium font-mono" style={{ color: t.text1 }}>{fmt(row.prioritySum, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.prioritySum, currency)}</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Gross Premium</div>
-            <div className="text-base font-bold font-mono" style={{ color: t.success }}>{fmt(row.grossPremium, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.success, fontWeight: 700 }}>{fmt(row.grossPremium, currency)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Net Premium</div>
