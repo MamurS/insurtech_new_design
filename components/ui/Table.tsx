@@ -60,12 +60,13 @@ function Table<T extends Record<string, any>>({
       <div style={{
         display: 'grid',
         gridTemplateColumns: gridCols,
-        padding: '10px 20px',
+        padding: '12px 20px',
         borderBottom: `1px solid ${t.border}`,
-        color: t.text4,
-        fontSize: 11,
+        color: t.text3,
+        fontSize: 12,
         fontWeight: 600,
-        letterSpacing: '0.4px',
+        letterSpacing: '0.5px',
+        textTransform: 'uppercase',
       }}>
         {columns.map(col => (
           <span
@@ -98,11 +99,12 @@ function Table<T extends Record<string, any>>({
             style={{
               display: 'grid',
               gridTemplateColumns: gridCols,
-              padding: '12px 20px',
+              padding: '14px 20px',
               borderBottom: `1px solid ${t.borderS}`,
               cursor: onRowClick ? 'pointer' : 'default',
               background: isSelected ? t.bgActive : 'transparent',
               transition: 'background 0.12s',
+              fontSize: 13,
             }}
             onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = t.bgHover; }}
             onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'transparent'; }}
@@ -110,7 +112,7 @@ function Table<T extends Record<string, any>>({
             {columns.map(col => (
               <span
                 key={col.key}
-                style={{ textAlign: col.align || 'left' }}
+                style={{ textAlign: col.align || 'left', color: t.text1 }}
               >
                 {col.render ? col.render(row) : row[col.key]}
               </span>

@@ -7,13 +7,18 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   width?: number;
+  size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ open, onClose, title, width = 520, children }) => {
+const Modal: React.FC<ModalProps> = ({ open, onClose, title, width, size = 'md', children, footer }) => {
   const t = useThemeTokens();
 
   if (!open) return null;
+
+  const sizeWidths = { sm: 500, md: 700, lg: 900 };
+  const resolvedWidth = width || sizeWidths[size];
 
   return (
     <div
@@ -32,12 +37,12 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, title, width = 520, childr
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative',
-          width,
+          width: resolvedWidth,
           maxWidth: '90vw',
           maxHeight: '85vh',
           background: t.bgPanel,
           border: `1px solid ${t.borderL}`,
-          borderRadius: 14,
+          borderRadius: 12,
           boxShadow: t.shadowLg,
           overflow: 'hidden',
           display: 'flex',
@@ -46,13 +51,13 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, title, width = 520, childr
       >
         {title && (
           <div style={{
-            padding: '16px 20px',
+            padding: '20px 24px',
             borderBottom: `1px solid ${t.border}`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-            <span style={{ fontWeight: 600, color: t.text1, fontSize: 14 }}>{title}</span>
+            <span style={{ fontWeight: 700, color: t.text1, fontSize: 18 }}>{title}</span>
             <button
               onClick={onClose}
               style={{
@@ -67,13 +72,24 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, title, width = 520, childr
                 justifyContent: 'center',
               }}
             >
-              <X size={16} />
+              <X size={18} />
             </button>
           </div>
         )}
-        <div style={{ overflow: 'auto', flex: 1 }}>
+        <div style={{ overflow: 'auto', flex: 1, padding: 24, maxHeight: '70vh' }}>
           {children}
         </div>
+        {footer && (
+          <div style={{
+            padding: '16px 24px',
+            borderTop: `1px solid ${t.border}`,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 10,
+          }}>
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );

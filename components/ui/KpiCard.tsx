@@ -27,17 +27,17 @@ const KpiCard: React.FC<KpiCardProps> = ({
       background: t.bgPanel,
       border: `1px solid ${t.border}`,
       borderRadius: 10,
-      padding: '18px 20px',
+      padding: '20px 22px',
       position: 'relative',
       overflow: 'hidden',
       boxShadow: t.shadow,
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <div style={{ fontSize: 11, color: t.text3, fontWeight: 500, letterSpacing: '0.5px' }}>{label}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+        <div style={{ fontSize: 12, color: t.text3, fontWeight: 500, letterSpacing: '0.5px' }}>{label}</div>
         {icon && (
           <div style={{
-            width: 32,
-            height: 32,
+            width: 34,
+            height: 34,
             borderRadius: 8,
             background: `${color}12`,
             display: 'flex',
@@ -48,20 +48,20 @@ const KpiCard: React.FC<KpiCardProps> = ({
           </div>
         )}
       </div>
-      <div style={{ fontSize: 24, fontWeight: 700, color: t.text1, marginBottom: 4, fontVariantNumeric: 'tabular-nums' }}>
+      <div style={{ fontSize: 26, fontWeight: 700, color: t.text1, marginBottom: 6, fontVariantNumeric: 'tabular-nums' }}>
         {value}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         {delta && (
           <span style={{
-            fontSize: 11,
+            fontSize: 12,
             color: up === true ? t.success : up === false ? t.danger : t.accent,
             fontWeight: 600,
           }}>
             {up === true ? '↑' : up === false ? '↓' : '→'} {delta}
           </span>
         )}
-        {sub && <span style={{ fontSize: 10, color: t.text5 }}>· {sub}</span>}
+        {sub && <span style={{ fontSize: 11, color: t.text4 }}>· {sub}</span>}
       </div>
       <div style={{
         position: 'absolute',

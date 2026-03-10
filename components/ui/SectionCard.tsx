@@ -18,23 +18,23 @@ const SectionCard: React.FC<SectionCardProps> = ({ title, subtitle, icon, color 
       border: `1px solid ${t.border}`,
       borderRadius: 10,
       overflow: 'hidden',
-      marginBottom: 14,
+      marginBottom: 16,
     }}>
       <div style={{
-        padding: '14px 20px',
+        padding: '16px 22px',
         borderBottom: `1px solid ${t.border}`,
         borderLeft: `3px solid ${color}`,
         display: 'flex',
         alignItems: 'center',
         gap: 10,
       }}>
-        {icon}
+        {icon && <span style={{ color, display: 'flex', alignItems: 'center' }}>{icon}</span>}
         <div>
-          <div style={{ fontWeight: 600, color: t.text1, fontSize: 13 }}>{title}</div>
-          {subtitle && <div style={{ color: t.text4, fontSize: 11, marginTop: 1 }}>{subtitle}</div>}
+          <div style={{ fontWeight: 600, color: t.text1, fontSize: 15 }}>{title}</div>
+          {subtitle && <div style={{ color: t.text4, fontSize: 12, marginTop: 2 }}>{subtitle}</div>}
         </div>
       </div>
-      <div style={{ padding: 20 }}>{children}</div>
+      <div style={{ padding: 22 }}>{children}</div>
     </div>
   );
 };

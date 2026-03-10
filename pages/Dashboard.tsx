@@ -19,6 +19,7 @@ import { Search, Edit, Trash2, Plus, Download, ArrowUpDown, ArrowUp, ArrowDown, 
 import { usePageHeader } from '../context/PageHeaderContext';
 import { parseSearchString } from '../utils/searchParser';
 import { useTheme } from '../theme/useTheme';
+import SidePanel, { PanelField } from '../components/ui/SidePanel';
 
 // --- HELPERS ---
 
@@ -314,6 +315,7 @@ const Dashboard: React.FC = () => {
 
   // Selection State
   const [selectedRow, setSelectedRow] = useState<PortfolioRow | null>(null);
+  const [selectedRowForPanel, setSelectedRowForPanel] = useState<PortfolioRow | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<LegalEntity | null>(null); // State for Entity Modal
 
   // Delete State
@@ -497,6 +499,15 @@ const Dashboard: React.FC = () => {
   };
 
   const handleRowClick = async (row: PortfolioRow) => {
+    // Toggle side panel: clicking same row closes it, different row opens it
+    if (selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source) {
+      setSelectedRowForPanel(null);
+      return;
+    }
+    setSelectedRowForPanel(row);
+  };
+
+  const handleViewFullDetail = async (row: PortfolioRow) => {
     // Open MasterDetailModal for direct and inward rows
     switch (row.source) {
       case 'direct':
@@ -847,11 +858,13 @@ const Dashboard: React.FC = () => {
         </div>
       </div>{/* end sticky group (filter bar + header) */}
 
+      {/* Grid container: table + optional side panel */}
+      <div style={{ display: 'grid', gridTemplateColumns: selectedRowForPanel ? '1fr 360px' : '1fr', transition: 'grid-template-columns 0.2s ease' }}>
       {/* Body table — scrollable, horizontal scroll synced to header */}
       <div
         ref={bodyScrollRef}
         className="overflow-x-auto"
-        style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderTop: 'none', borderRadius: '0 0 10px 10px', boxShadow: t.shadow, marginTop: -1 }}
+        style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderTop: 'none', borderRadius: '0 0 10px 10px', boxShadow: t.shadow, marginTop: -1, minWidth: 0 }}
         onScroll={() => {
           if (headerScrollRef.current && bodyScrollRef.current) {
             headerScrollRef.current.scrollLeft = bodyScrollRef.current.scrollLeft;
@@ -897,9 +910,13 @@ const Dashboard: React.FC = () => {
                             key={`${row.source}-${row.id}`}
                             onClick={() => handleRowClick(row)}
                             className="group transition-colors cursor-pointer"
-                            style={{ borderBottom: `1px solid ${t.borderS}`, opacity: row.isDeleted ? 0.6 : 1 }}
-                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                            style={{
+                              borderBottom: `1px solid ${t.borderS}`,
+                              opacity: row.isDeleted ? 0.6 : 1,
+                              background: selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source ? t.bgActive : undefined,
+                            }}
+                            onMouseEnter={e => { if (!(selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source)) e.currentTarget.style.background = t.bgHover; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source ? t.bgActive : 'transparent'; }}
                         >
                                     <td className="px-2 py-3 text-center overflow-hidden">
                                         <span style={{
@@ -1011,7 +1028,7 @@ const Dashboard: React.FC = () => {
                                                 </button>
                                                 {openMenuId === `${row.source}-${row.id}` && (
                                                     <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
-                                                        <button onClick={() => { setOpenMenuId(null); handleRowClick(row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                                                        <button onClick={() => { setOpenMenuId(null); handleViewFullDetail(row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                                                           onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                             <Eye size={14} /> View
                                                         </button>
@@ -1073,6 +1090,74 @@ const Dashboard: React.FC = () => {
               </div>
             )}
       </div>
+
+      {/* Inline Side Panel */}
+      <SidePanel
+        open={!!selectedRowForPanel}
+        onClose={() => setSelectedRowForPanel(null)}
+        title={selectedRowForPanel?.referenceNumber || ''}
+        subtitle={selectedRowForPanel?.source === 'direct' ? 'Direct Policy' : selectedRowForPanel?.source === 'inward-foreign' ? 'Inward Foreign' : 'Inward Domestic'}
+        footer={
+          <>
+            <button
+              onClick={() => { if (selectedRowForPanel) handleViewFullDetail(selectedRowForPanel); }}
+              style={{ flex: 1, padding: '8px 12px', background: t.accent, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            >
+              <Eye size={14} /> View Full Detail
+            </button>
+            <button
+              onClick={(e) => { if (selectedRowForPanel) handleEdit(e as any, selectedRowForPanel); }}
+              style={{ padding: '8px 12px', background: t.bgInput, color: t.text2, fontSize: 13, fontWeight: 600, borderRadius: 8, border: `1px solid ${t.border}`, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            >
+              <Edit size={14} /> Edit
+            </button>
+          </>
+        }
+      >
+        {selectedRowForPanel && (
+          <>
+            <PanelField label="Policy / Contract No" value={selectedRowForPanel.referenceNumber} />
+            <PanelField label={selectedRowForPanel.cedantName ? 'Cedent Name' : 'Insured Name'} value={selectedRowForPanel.cedantName || selectedRowForPanel.insuredName} />
+            {selectedRowForPanel.cedantName && (
+              <PanelField label="Original Insured" value={selectedRowForPanel.insuredName} />
+            )}
+            <PanelField label="Type" value={
+              selectedRowForPanel.source === 'direct' ? 'Direct' : selectedRowForPanel.source === 'inward-foreign' ? 'Inward Foreign' : 'Inward Domestic'
+            } />
+            <PanelField label="Class of Business" value={selectedRowForPanel.classOfBusiness} />
+            <PanelField label="Period" value={
+              selectedRowForPanel.inceptionDate || selectedRowForPanel.expiryDate
+                ? `${formatDate(selectedRowForPanel.inceptionDate)} — ${formatDate(selectedRowForPanel.expiryDate)}`
+                : undefined
+            } />
+            <PanelField label="Gross Premium" value={
+              selectedRowForPanel.grossPremium
+                ? formatMoney(selectedRowForPanel.grossPremium, selectedRowForPanel.currency)
+                : undefined
+            } />
+            <PanelField label="Status" value={
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20,
+                ...(selectedRowForPanel.normalizedStatus === 'Active' ? { color: t.success, background: t.successBg } :
+                    selectedRowForPanel.normalizedStatus === 'Expired' ? { color: t.warning, background: t.warningBg } :
+                    selectedRowForPanel.normalizedStatus === 'Pending' ? { color: t.warning, background: t.warningBg } :
+                    selectedRowForPanel.normalizedStatus === 'Cancelled' ? { color: t.danger, background: t.dangerBg } :
+                    { color: t.text4, background: t.bgInput })
+              }}>
+                {selectedRowForPanel.normalizedStatus?.toUpperCase()}
+              </span>
+            } />
+            {selectedRowForPanel.brokerName && (
+              <PanelField label="Broker" value={selectedRowForPanel.brokerName} />
+            )}
+            {selectedRowForPanel.territory && (
+              <PanelField label="Territory" value={selectedRowForPanel.territory} />
+            )}
+            <PanelField label="Our Share" value={selectedRowForPanel.ourShare != null ? `${selectedRowForPanel.ourShare}%` : undefined} />
+          </>
+        )}
+      </SidePanel>
+      </div>{/* end grid container */}
 
       <ConfirmDialog
         isOpen={!!deleteTarget}

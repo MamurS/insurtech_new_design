@@ -30,12 +30,12 @@ const Select: React.FC<SelectProps> = ({
       onChange={e => onChange?.(e.target.value)}
       style={{
         width: '100%',
-        padding: '8px 12px',
-        borderRadius: 7,
+        padding: '10px 14px',
+        borderRadius: 8,
         background: t.bgInput,
         border: `1px solid ${t.border}`,
         color: value ? t.text1 : t.text4,
-        fontSize: 12,
+        fontSize: 13,
         outline: 'none',
         fontFamily: 'inherit',
         ...sx,

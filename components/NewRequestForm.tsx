@@ -1178,8 +1178,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       </SectionCard>
 
       {/* ══════ Sticky Footer ══════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50" style={{ background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="sticky bottom-0 z-50" style={{ background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg, margin: '0 -28px', padding: '0 28px' }}>
+        <div className="px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4" style={{ fontSize: 12, color: t.text4 }}>
             {form.productName && <span>Product: {form.productName}</span>}
             {form.totalSumInsured > 0 && <span>SI: {fmtNum(form.totalSumInsured)} {form.currency}</span>}

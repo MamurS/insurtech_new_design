@@ -16,6 +16,7 @@ import { usePageHeader } from '../context/PageHeaderContext';
 import { CompactDateFilter } from '../components/CompactDateFilter';
 import { toISODateString } from '../components/DatePickerInput';
 import { useTheme } from '../theme/useTheme';
+import SidePanel, { PanelField } from '../components/ui/SidePanel';
 
 const InwardReinsuranceList: React.FC = () => {
   const navigate = useNavigate();
@@ -71,6 +72,9 @@ const InwardReinsuranceList: React.FC = () => {
   // Modal state
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingContractId, setEditingContractId] = useState<string | null>(null);
+
+  // Side panel state
+  const [selectedContract, setSelectedContract] = useState<InwardReinsurance | null>(null);
 
   // Fetch contracts
   const fetchContracts = async () => {
@@ -456,6 +460,8 @@ const InwardReinsuranceList: React.FC = () => {
       </div>
       </div>{/* end sticky header block */}
 
+      <div style={{ display: 'grid', gridTemplateColumns: selectedContract ? '1fr 360px' : '1fr', gap: 0, alignItems: 'start' }}>
+      <div style={{ minWidth: 0 }}>
       {/* Migration Required Message */}
       {migrationRequired && (
         <div className="rounded-xl p-6 mt-4" style={{ background: t.warningBg, border: `1px solid ${t.warning}33` }}>
@@ -529,13 +535,12 @@ const InwardReinsuranceList: React.FC = () => {
                   <tr
                     key={contract.id}
                     onClick={() => {
-                      setEditingContractId(contract.id);
-                      setShowFormModal(true);
+                      setSelectedContract(selectedContract?.id === contract.id ? null : contract);
                     }}
                     className="transition-colors cursor-pointer"
-                    style={{ borderBottom: `1px solid ${t.border}` }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = '')}
+                    style={{ borderBottom: `1px solid ${t.border}`, background: selectedContract?.id === contract.id ? t.bgActive : 'transparent' }}
+                    onMouseEnter={(e) => { if (selectedContract?.id !== contract.id) e.currentTarget.style.background = t.bgHover; }}
+                    onMouseLeave={(e) => { if (selectedContract?.id !== contract.id) e.currentTarget.style.background = 'transparent'; }}
                   >
                     <td className="px-3 py-3">
                       <div className="font-medium" style={{ color: t.text1, fontFamily: "'JetBrains Mono', monospace" }}>{contract.contractNumber}</div>
@@ -631,6 +636,69 @@ const InwardReinsuranceList: React.FC = () => {
         )}
       </div>
       )}
+      </div>{/* end main content column */}
+
+      {/* Side Panel */}
+      <SidePanel
+        open={!!selectedContract}
+        onClose={() => setSelectedContract(null)}
+        title={selectedContract?.contractNumber || ''}
+        subtitle={selectedContract?.cedantName || ''}
+        footer={
+          <>
+            <button
+              onClick={() => {
+                if (selectedContract) {
+                  setEditingContractId(selectedContract.id);
+                  setShowFormModal(true);
+                }
+              }}
+              style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.bgInput, color: t.text1, border: `1px solid ${t.border}`, cursor: 'pointer' }}
+            >
+              <Eye size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+              View Full Detail
+            </button>
+            <button
+              onClick={() => {
+                if (selectedContract) {
+                  setEditingContractId(selectedContract.id);
+                  setShowFormModal(true);
+                }
+              }}
+              style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.accent, color: '#fff', border: 'none', cursor: 'pointer' }}
+            >
+              <Edit size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+              Edit
+            </button>
+          </>
+        }
+      >
+        {selectedContract && (
+          <>
+            <PanelField label="Contract Number" value={selectedContract.contractNumber} />
+            <PanelField label="Cedent" value={selectedContract.cedantName} />
+            <PanelField label="Type" value={selectedContract.type} />
+            <PanelField label="Treaty Structure" value={selectedContract.structure === 'PROPORTIONAL' ? 'Proportional' : 'Non-Proportional'} />
+            <PanelField label="Territory" value={selectedContract.territory || undefined} />
+            <PanelField label="Period" value={
+              selectedContract.inceptionDate
+                ? `${formatDate(selectedContract.inceptionDate)} — ${formatDate(selectedContract.expiryDate)}`
+                : undefined
+            } />
+            <PanelField label="UW Year" value={selectedContract.uwYear || undefined} />
+            <PanelField label="Coverage" value={selectedContract.typeOfCover || undefined} />
+            <PanelField label="Class of Cover" value={selectedContract.classOfCover || undefined} />
+            <PanelField label="Currency" value={selectedContract.currency} />
+            <PanelField label="Limit of Liability" value={formatAmount(selectedContract.limitOfLiability, selectedContract.currency)} />
+            <PanelField label="Our Share" value={`${selectedContract.ourShare}%`} />
+            <PanelField label="Gross Premium (GWP)" value={formatAmount(selectedContract.grossPremium || 0, selectedContract.currency)} />
+            <PanelField label="Net Premium" value={selectedContract.netPremium ? formatAmount(selectedContract.netPremium, selectedContract.currency) : undefined} />
+            <PanelField label="Broker" value={selectedContract.brokerName || undefined} />
+            <PanelField label="Status" value={getStatusBadge(selectedContract.status)} />
+          </>
+        )}
+      </SidePanel>
+      </div>{/* end grid container */}
 
       {/* Delete Confirmation */}
       <ConfirmDialog

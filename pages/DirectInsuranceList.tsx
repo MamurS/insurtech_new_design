@@ -12,11 +12,12 @@ import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
 import {
   Plus, Search, FileText, Trash2, Edit, Eye,
-  Building2, RefreshCw, Globe, MapPin, Download, MoreVertical
+  Building2, RefreshCw, Globe, MapPin, Download, MoreVertical, ExternalLink
 } from 'lucide-react';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
+import SidePanel, { PanelField } from '../components/ui/SidePanel';
 
 const DirectInsuranceList: React.FC = () => {
   const navigate = useNavigate();
@@ -79,6 +80,9 @@ const DirectInsuranceList: React.FC = () => {
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id: string; number: string }>({
     show: false, id: '', number: ''
   });
+
+  // Side panel state
+  const [selectedPolicy, setSelectedPolicy] = useState<any | null>(null);
 
   // Load stats (filter-aware count queries)
   const loadStats = useCallback(async () => {
@@ -188,18 +192,27 @@ const DirectInsuranceList: React.FC = () => {
 
   // Handlers
   const handleNewPolicy = () => {
-    setEditingPolicyId(undefined);
-    setShowFormModal(true);
+    navigate('/new');
   };
 
   const handleEditPolicy = (id: string) => {
     setEditingPolicyId(id);
     setShowFormModal(true);
+    setSelectedPolicy(null);
   };
 
   const handleViewPolicy = (id: string) => {
     setEditingPolicyId(id);
     setShowFormModal(true);
+    setSelectedPolicy(null);
+  };
+
+  const handleRowClick = (policy: any) => {
+    if (selectedPolicy?.id === policy.id) {
+      setSelectedPolicy(null);
+    } else {
+      setSelectedPolicy(policy);
+    }
   };
 
   const handleDeletePolicy = async () => {
@@ -239,7 +252,7 @@ const DirectInsuranceList: React.FC = () => {
     };
     const c = colorMap[status] || { color: t.text4, bg: t.bgInput };
     return (
-      <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500, color: c.color, background: c.bg }}>
+      <span style={{ padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 600, color: c.color, background: c.bg }}>
         {status}
       </span>
     );
@@ -308,7 +321,8 @@ const DirectInsuranceList: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ display: 'grid', gridTemplateColumns: selectedPolicy ? '1fr 360px' : '1fr', height: '100%', transition: 'grid-template-columns 0.2s' }}>
+    <div style={{ overflow: 'auto', minWidth: 0 }}>
       {/* Sticky filter bar */}
       <div ref={filterRef} className="sticky top-0 z-30" style={{ background: t.bgApp }}>
       <div style={{ background: t.bgPanel, borderRadius: 10, boxShadow: t.shadow, border: `1px solid ${t.border}`, padding: 12 }}>
@@ -321,7 +335,7 @@ const DirectInsuranceList: React.FC = () => {
               placeholder="Search..."
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
-              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
+              style={{ width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 10, paddingBottom: 10, border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
               onFocus={e => e.target.style.borderColor = t.accent}
               onBlur={e => e.target.style.borderColor = t.border}
             />
@@ -331,7 +345,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={countryFilter}
             onChange={(e) => handleCountryFilterChange(e.target.value)}
-            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
+            style={{ padding: '10px 14px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="all">All Countries</option>
             <option value="uzbekistan">Uzbekistan</option>
@@ -342,7 +356,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => handleStatusFilterChange(e.target.value)}
-            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
+            style={{ padding: '10px 14px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="all">All Statuses</option>
             <option value="Draft">Draft</option>
@@ -356,7 +370,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={dateFilterField}
             onChange={(e) => handleDateFilterChange(e.target.value, dateFrom, dateTo)}
-            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
+            style={{ padding: '10px 14px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="inceptionDate">Inception</option>
             <option value="expiryDate">Expiry</option>
@@ -427,46 +441,46 @@ const DirectInsuranceList: React.FC = () => {
               <thead className="sticky z-20" style={{ top: `${filterHeight}px` }}>
                 <tr>
                   {['Policy #', 'Insured', 'Country', 'Class', 'Period'].map(label => (
-                    <th key={label} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>{label}</th>
+                    <th key={label} style={{ textAlign: 'left', padding: '12px 20px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', color: t.text3, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>{label}</th>
                   ))}
-                  <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>GWP</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>Status</th>
-                  <th className="px-1 py-3 w-10" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}></th>
+                  <th style={{ textAlign: 'right', padding: '12px 20px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', color: t.text3, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>GWP</th>
+                  <th style={{ textAlign: 'center', padding: '12px 20px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', color: t.text3, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>Status</th>
+                  <th style={{ padding: '12px 4px', width: 40, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}></th>
                 </tr>
               </thead>
               <tbody>
                 {policies.map((policy: any) => (
                   <tr
                     key={policy.id}
-                    onClick={() => handleViewPolicy(policy.id)}
+                    onClick={() => handleRowClick(policy)}
                     className="transition-colors cursor-pointer"
-                    style={{ borderBottom: `1px solid ${t.borderS}` }}
-                    onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    style={{ borderBottom: `1px solid ${t.borderS}`, background: selectedPolicy?.id === policy.id ? t.bgActive : 'transparent' }}
+                    onMouseEnter={e => { if (selectedPolicy?.id !== policy.id) e.currentTarget.style.background = t.bgHover; }}
+                    onMouseLeave={e => { if (selectedPolicy?.id !== policy.id) e.currentTarget.style.background = 'transparent'; }}
                   >
-                    <td className="px-4 py-3">
+                    <td style={{ padding: '14px 20px' }}>
                       <span style={{ fontWeight: 500, color: t.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{policy.policy_number}</span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td style={{ padding: '14px 20px' }}>
                       <div className="flex items-center gap-2">
                         <Building2 size={16} style={{ color: t.text4 }} />
                         <span style={{ color: t.text1 }}>{policy.insured_name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td style={{ padding: '14px 20px' }}>
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: policy.territory === 'Uzbekistan' ? t.accent : '#a78bfa' }}>
                         {policy.territory === 'Uzbekistan' ? <MapPin size={14} /> : <Globe size={14} />}
                         {policy.territory || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-4 py-3" style={{ color: t.text3, fontSize: 13 }}>{policy.class_of_business}</td>
-                    <td className="px-4 py-3" style={{ color: t.text3, fontSize: 13 }}>
+                    <td style={{ padding: '14px 20px', color: t.text2, fontSize: 13 }}>{policy.class_of_business}</td>
+                    <td style={{ padding: '14px 20px', color: t.text2, fontSize: 13 }}>
                       {formatDate(policy.inception_date)} - {formatDate(policy.expiry_date)}
                     </td>
-                    <td className="px-4 py-3 text-right" style={{ fontWeight: 500, color: t.text1, fontVariantNumeric: 'tabular-nums' }}>
+                    <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 500, color: t.text1, fontVariantNumeric: 'tabular-nums', fontSize: 13 }}>
                       {formatCurrency(policy.gross_premium || 0)}
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="text-center" style={{ padding: '14px 20px' }}>
                       {getStatusBadge(policy.status)}
                     </td>
                     <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
@@ -508,7 +522,7 @@ const DirectInsuranceList: React.FC = () => {
         )}
       </div>
 
-      {/* Form Modal */}
+      {/* Form Modal (for editing) */}
       <FormModal
         isOpen={showFormModal}
         onClose={handleFormCancel}
@@ -539,6 +553,55 @@ const DirectInsuranceList: React.FC = () => {
         onCancel={() => setDeleteConfirm({ show: false, id: '', number: '' })}
         variant="danger"
       />
+    </div>{/* end left column */}
+
+    {/* Side Panel */}
+    <SidePanel
+      open={!!selectedPolicy}
+      onClose={() => setSelectedPolicy(null)}
+      title={selectedPolicy?.policy_number || ''}
+      subtitle={selectedPolicy?.insured_name || ''}
+      footer={
+        <>
+          <button
+            onClick={() => selectedPolicy && handleViewPolicy(selectedPolicy.id)}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 18px', background: t.accent, color: '#fff', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 600 }}
+          >
+            <ExternalLink size={14} /> View Full Detail
+          </button>
+          <button
+            onClick={() => selectedPolicy && handleEditPolicy(selectedPolicy.id)}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 18px', background: 'transparent', color: t.text2, borderRadius: 8, border: `1px solid ${t.border}`, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 }}
+          >
+            <Edit size={14} /> Edit
+          </button>
+        </>
+      }
+    >
+      {selectedPolicy && (
+        <div>
+          <PanelField label="Status" value={getStatusBadge(selectedPolicy.status)} />
+          <PanelField label="Insured" value={selectedPolicy.insured_name} />
+          <PanelField label="Country" value={
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: selectedPolicy.territory === 'Uzbekistan' ? t.accent : '#a78bfa' }}>
+              {selectedPolicy.territory === 'Uzbekistan' ? <MapPin size={14} /> : <Globe size={14} />}
+              {selectedPolicy.territory || 'N/A'}
+            </span>
+          } />
+          <PanelField label="Class of Business" value={selectedPolicy.class_of_business} />
+          <PanelField label="Inception" value={formatDate(selectedPolicy.inception_date)} />
+          <PanelField label="Expiry" value={formatDate(selectedPolicy.expiry_date)} />
+          <PanelField label="Gross Written Premium" value={
+            <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(selectedPolicy.gross_premium || 0)}</span>
+          } />
+          <PanelField label="Net Premium" value={
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(selectedPolicy.net_premium || 0)}</span>
+          } />
+          <PanelField label="Channel" value={selectedPolicy.channel} />
+          <PanelField label="Broker" value={selectedPolicy.intermediary_name} />
+        </div>
+      )}
+    </SidePanel>
     </div>
   );
 };

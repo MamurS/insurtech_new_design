@@ -30,6 +30,7 @@ import FinancialStatements from './pages/FinancialStatements';
 import RiskAccumulation from './pages/RiskAccumulation';
 import IBNREstimation from './pages/IBNREstimation';
 import RegulatoryReporting from './pages/RegulatoryReporting';
+import NewRequestPage from './pages/NewRequestPage';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: React.PropsWithChildren) => {
@@ -92,7 +93,7 @@ const AppRoutes = () => {
               <Route path="/ibnr/manual" element={<IBNREstimation />} />
               <Route path="/ibnr/bf-method" element={<IBNREstimation />} />
               <Route path="/regulatory" element={<RegulatoryReporting />} />
-              <Route path="/new" element={<PolicyForm />} />
+              <Route path="/new" element={<NewRequestPage />} />
               <Route path="/edit/:id" element={<PolicyForm />} />
               <Route path="/wording/:id" element={<PolicyWording />} />
               <Route path="/clauses" element={<ClauseManager />} />

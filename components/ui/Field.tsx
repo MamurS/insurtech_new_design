@@ -15,9 +15,9 @@ const Field: React.FC<FieldProps> = ({ label, required, hint, col = 1, children 
   return (
     <div style={{ gridColumn: `span ${col}` }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 6 }}>
-        <label style={{ fontSize: 11, color: t.text3, fontWeight: 500, letterSpacing: '0.3px' }}>{label}</label>
-        {required && <span style={{ color: t.danger, fontSize: 11 }}>*</span>}
-        {hint && <span style={{ fontSize: 10, color: t.text5, marginLeft: 4 }}>{hint}</span>}
+        <label style={{ fontSize: 12, color: t.text2, fontWeight: 500, letterSpacing: '0.3px' }}>{label}</label>
+        {required && <span style={{ color: t.danger, fontSize: 12 }}>*</span>}
+        {hint && <span style={{ fontSize: 11, color: t.text4, marginLeft: 4 }}>{hint}</span>}
       </div>
       {children}
     </div>
