@@ -16,11 +16,13 @@ import {
 } from 'lucide-react';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 const DirectInsuranceList: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
+  const { t } = useTheme();
 
   // Infinite scroll state
   const PAGE_SIZE = 20;
@@ -228,15 +230,16 @@ const DirectInsuranceList: React.FC = () => {
   };
 
   const getStatusBadge = (status: PolicyStatus | string) => {
-    const styles: Record<string, string> = {
-      'Draft': 'bg-slate-100 text-slate-600',
-      'Active': 'bg-emerald-100 text-emerald-700',
-      'Expired': 'bg-amber-100 text-amber-700',
-      'Cancelled': 'bg-red-100 text-red-700',
-      'Pending Confirmation': 'bg-blue-100 text-blue-700',
+    const colorMap: Record<string, { color: string; bg: string }> = {
+      'Draft': { color: t.text4, bg: t.bgInput },
+      'Active': { color: t.success, bg: t.successBg },
+      'Expired': { color: t.warning, bg: t.warningBg },
+      'Cancelled': { color: t.danger, bg: t.dangerBg },
+      'Pending Confirmation': { color: t.accent, bg: t.accentMuted },
     };
+    const c = colorMap[status] || { color: t.text4, bg: t.bgInput };
     return (
-      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${styles[status] || 'bg-slate-100 text-slate-600'}`}>
+      <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500, color: c.color, background: c.bg }}>
         {status}
       </span>
     );
@@ -259,34 +262,35 @@ const DirectInsuranceList: React.FC = () => {
 
   // Stats badges in header left, Export button in header right
   useEffect(() => {
+    const badgeStyle = (color: string, bg: string): React.CSSProperties => ({ display: 'flex', alignItems: 'center', gap: 6, background: bg, border: `1px solid ${color}33`, borderRadius: 8, padding: '4px 12px' });
     setHeaderLeft(
       <>
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-slate-500 font-medium">Total</span>
-          <span className="text-sm font-bold text-slate-800">{stats.total}</span>
+        <div style={badgeStyle(t.text4, t.bgInput)}>
+          <span style={{ fontSize: 11, color: t.text4, fontWeight: 500 }}>Total</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.text1 }}>{stats.total}</span>
         </div>
-        <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-blue-600 font-medium">🇺🇿 UZB</span>
-          <span className="text-sm font-bold text-blue-800">{stats.uzbekistan}</span>
+        <div style={badgeStyle(t.accent, t.accentMuted)}>
+          <span style={{ fontSize: 11, color: t.accent, fontWeight: 500 }}>UZB</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>{stats.uzbekistan}</span>
         </div>
-        <div className="flex items-center gap-2 bg-purple-50 border border-purple-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-purple-600 font-medium">🌍 Foreign</span>
-          <span className="text-sm font-bold text-purple-800">{stats.foreign}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: 8, padding: '4px 12px' }}>
+          <span style={{ fontSize: 11, color: '#a78bfa', fontWeight: 500 }}>Foreign</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#a78bfa' }}>{stats.foreign}</span>
         </div>
-        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-emerald-600 font-medium">Active</span>
-          <span className="text-sm font-bold text-emerald-800">{stats.active}</span>
+        <div style={badgeStyle(t.success, t.successBg)}>
+          <span style={{ fontSize: 11, color: t.success, fontWeight: 500 }}>Active</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.success }}>{stats.active}</span>
         </div>
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-slate-400 font-medium">Draft</span>
-          <span className="text-sm font-bold text-slate-500">{stats.draft}</span>
+        <div style={badgeStyle(t.text5, t.bgInput)}>
+          <span style={{ fontSize: 11, color: t.text5, fontWeight: 500 }}>Draft</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.text4 }}>{stats.draft}</span>
         </div>
       </>
     );
     setHeaderActions(
       <button
         onClick={() => handleExport()}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap"
+        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.success, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'inherit' }}
       >
         <Download size={16} /> Export
       </button>
@@ -306,18 +310,20 @@ const DirectInsuranceList: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div ref={filterRef} className="sticky top-0 z-30" style={{ background: t.bgApp }}>
+      <div style={{ background: t.bgPanel, borderRadius: 10, boxShadow: t.shadow, border: `1px solid ${t.border}`, padding: 12 }}>
         <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
           {/* Search */}
           <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
               value={searchInput}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
+              onFocus={e => e.target.style.borderColor = t.accent}
+              onBlur={e => e.target.style.borderColor = t.border}
             />
           </div>
 
@@ -325,7 +331,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={countryFilter}
             onChange={(e) => handleCountryFilterChange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="all">All Countries</option>
             <option value="uzbekistan">Uzbekistan</option>
@@ -336,7 +342,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => handleStatusFilterChange(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="all">All Statuses</option>
             <option value="Draft">Draft</option>
@@ -350,7 +356,7 @@ const DirectInsuranceList: React.FC = () => {
           <select
             value={dateFilterField}
             onChange={(e) => handleDateFilterChange(e.target.value, dateFrom, dateTo)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            style={{ padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
           >
             <option value="inceptionDate">Inception</option>
             <option value="expiryDate">Expiry</option>
@@ -374,18 +380,20 @@ const DirectInsuranceList: React.FC = () => {
           {/* Refresh */}
           <button
             onClick={() => { fetchData(); loadStats(); }}
-            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+            style={{ padding: 8, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer', color: t.text4 }}
             title="Refresh"
+            onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={{ color: loading ? t.accent : t.text4 }} />
           </button>
 
-          <div className="w-px h-5 bg-gray-300" />
+          <div style={{ width: 1, height: 20, background: t.border }} />
 
           {/* New Policy Button */}
           <button
             onClick={handleNewPolicy}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm"
+            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.accent, color: '#fff', borderRadius: 8, fontWeight: 500, fontSize: 13, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
           >
             <Plus size={16} />
             New Request
@@ -395,68 +403,67 @@ const DirectInsuranceList: React.FC = () => {
       </div>{/* end sticky filter bar */}
 
       {/* Policies Table */}
-      <div className="bg-white rounded-xl border border-slate-200">
+      <div style={{ background: t.bgPanel, borderRadius: 10, border: `1px solid ${t.border}`, boxShadow: t.shadow, marginTop: 4 }}>
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <RefreshCw className="animate-spin text-blue-600" size={32} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
+            <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
           </div>
         ) : policies.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-slate-400">
-            <FileText size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium">No policies found</p>
-            <p className="text-sm">Create your first direct insurance policy</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 256, color: t.text4 }}>
+            <FileText size={48} style={{ marginBottom: 16, opacity: 0.5 }} />
+            <p style={{ fontSize: 16, fontWeight: 500 }}>No policies found</p>
+            <p style={{ fontSize: 13 }}>Create your first direct insurance policy</p>
             <button
               onClick={handleNewPolicy}
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              style={{ marginTop: 16, padding: '8px 16px', background: t.accent, color: '#fff', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13 }}
             >
-              <Plus size={16} className="inline mr-2" />
+              <Plus size={16} style={{ display: 'inline', marginRight: 8 }} />
               New Request
             </button>
           </div>
         ) : (
           <>
             <table className="w-full">
-              <thead className="bg-gray-50 sticky z-20 shadow-sm" style={{ top: `${filterHeight}px` }}>
+              <thead className="sticky z-20" style={{ top: `${filterHeight}px` }}>
                 <tr>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Policy #</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Insured</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Country</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Class</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Period</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">GWP</th>
-                  <th className="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
-                  <th className="px-1 py-3 w-10 bg-gray-50"></th>
+                  {['Policy #', 'Insured', 'Country', 'Class', 'Period'].map(label => (
+                    <th key={label} className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>{label}</th>
+                  ))}
+                  <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>GWP</th>
+                  <th className="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>Status</th>
+                  <th className="px-1 py-3 w-10" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody>
                 {policies.map((policy: any) => (
                   <tr
                     key={policy.id}
                     onClick={() => handleViewPolicy(policy.id)}
-                    className="hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="transition-colors cursor-pointer"
+                    style={{ borderBottom: `1px solid ${t.borderS}` }}
+                    onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     <td className="px-4 py-3">
-                      <span className="font-medium text-slate-800">{policy.policy_number}</span>
+                      <span style={{ fontWeight: 500, color: t.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{policy.policy_number}</span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <Building2 size={16} className="text-slate-400" />
-                        <span className="text-slate-700">{policy.insured_name}</span>
+                        <Building2 size={16} style={{ color: t.text4 }} />
+                        <span style={{ color: t.text1 }}>{policy.insured_name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 text-sm ${
-                        policy.territory === 'Uzbekistan' ? 'text-blue-600' : 'text-purple-600'
-                      }`}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 13, color: policy.territory === 'Uzbekistan' ? t.accent : '#a78bfa' }}>
                         {policy.territory === 'Uzbekistan' ? <MapPin size={14} /> : <Globe size={14} />}
                         {policy.territory || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-600 text-sm">{policy.class_of_business}</td>
-                    <td className="px-4 py-3 text-slate-600 text-sm">
+                    <td className="px-4 py-3" style={{ color: t.text3, fontSize: 13 }}>{policy.class_of_business}</td>
+                    <td className="px-4 py-3" style={{ color: t.text3, fontSize: 13 }}>
                       {formatDate(policy.inception_date)} - {formatDate(policy.expiry_date)}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium text-slate-800">
+                    <td className="px-4 py-3 text-right" style={{ fontWeight: 500, color: t.text1, fontVariantNumeric: 'tabular-nums' }}>
                       {formatCurrency(policy.gross_premium || 0)}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -464,18 +471,23 @@ const DirectInsuranceList: React.FC = () => {
                     </td>
                     <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
                       <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === policy.id ? null : policy.id); }}
-                        className="p-1.5 hover:bg-gray-100 rounded-lg">
-                        <MoreVertical size={16} className="text-gray-500" />
+                        style={{ padding: 6, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer' }}
+                        onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                        <MoreVertical size={16} style={{ color: t.text4 }} />
                       </button>
                       {openMenuId === policy.id && (
-                        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[120px]">
-                          <button onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
+                          <button onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Eye size={14} /> View
                           </button>
-                          <button onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                          <button onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Edit size={14} /> Edit
                           </button>
-                          <button onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <button onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Trash2 size={14} /> Delete
                           </button>
                         </div>
@@ -488,8 +500,8 @@ const DirectInsuranceList: React.FC = () => {
             {/* Infinite scroll sentinel */}
             <div ref={sentinelRef} className="h-1" />
             {loadingMore && (
-              <div className="flex justify-center py-4">
-                <RefreshCw size={20} className="animate-spin text-blue-600" />
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+                <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
               </div>
             )}
           </>

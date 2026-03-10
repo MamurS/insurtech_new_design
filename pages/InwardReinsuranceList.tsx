@@ -15,12 +15,14 @@ import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { CompactDateFilter } from '../components/CompactDateFilter';
 import { toISODateString } from '../components/DatePickerInput';
+import { useTheme } from '../theme/useTheme';
 
 const InwardReinsuranceList: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
+  const { t } = useTheme();
 
   // Determine origin from URL path
   const origin: InwardReinsuranceOrigin = location.pathname.includes('/foreign') ? 'FOREIGN' : 'DOMESTIC';
@@ -262,15 +264,16 @@ const InwardReinsuranceList: React.FC = () => {
 
   // Status badge
   const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      DRAFT: 'bg-gray-100 text-gray-700',
-      PENDING: 'bg-yellow-100 text-yellow-700',
-      ACTIVE: 'bg-green-100 text-green-700',
-      EXPIRED: 'bg-red-100 text-red-700',
-      CANCELLED: 'bg-slate-100 text-slate-700'
+    const statusMap: Record<string, { color: string; bg: string }> = {
+      DRAFT: { color: t.text2, bg: t.bgInput },
+      PENDING: { color: t.warning, bg: t.warningBg },
+      ACTIVE: { color: t.success, bg: t.successBg },
+      EXPIRED: { color: t.danger, bg: t.dangerBg },
+      CANCELLED: { color: t.text3, bg: t.bgInput }
     };
+    const s = statusMap[status] || { color: t.text2, bg: t.bgInput };
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status] || 'bg-gray-100 text-gray-700'}`}>
+      <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500, color: s.color, background: s.bg }}>
         {status}
       </span>
     );
@@ -280,14 +283,18 @@ const InwardReinsuranceList: React.FC = () => {
   const getTypeBadge = (type: string, structure: string) => {
     return (
       <div className="flex flex-col gap-1">
-        <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-          type === 'FAC' ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700'
-        }`}>
+        <span className="px-2 py-0.5 rounded" style={{
+          fontSize: 11, fontWeight: 500,
+          color: type === 'FAC' ? t.accent : '#6366f1',
+          background: type === 'FAC' ? `${t.accent}18` : 'rgba(99,102,241,0.1)'
+        }}>
           {type}
         </span>
-        <span className={`px-2 py-0.5 rounded text-xs ${
-          structure === 'PROPORTIONAL' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
-        }`}>
+        <span className="px-2 py-0.5 rounded" style={{
+          fontSize: 11,
+          color: structure === 'PROPORTIONAL' ? t.success : t.warning,
+          background: structure === 'PROPORTIONAL' ? t.successBg : t.warningBg
+        }}>
           {structure === 'PROPORTIONAL' ? 'Prop' : 'Non-Prop'}
         </span>
       </div>
@@ -308,24 +315,25 @@ const InwardReinsuranceList: React.FC = () => {
     };
     setHeaderLeft(
       <>
-        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-slate-500 font-medium">Contracts</span>
-          <span className="text-sm font-bold text-slate-800">{totalCount}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <span className="font-medium" style={{ fontSize: 11, color: t.text4 }}>Contracts</span>
+          <span className="font-bold" style={{ fontSize: 13, color: t.text1 }}>{totalCount}</span>
         </div>
-        <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-emerald-600 font-medium">Active</span>
-          <span className="text-sm font-bold text-emerald-800">{activeCount}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.successBg, border: `1px solid ${t.success}33` }}>
+          <span className="font-medium" style={{ fontSize: 11, color: t.success }}>Active</span>
+          <span className="font-bold" style={{ fontSize: 13, color: t.success }}>{activeCount}</span>
         </div>
-        <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
-          <span className="text-xs text-blue-600 font-medium">GWP</span>
-          <span className="text-sm font-bold text-blue-800">{fmtCompact(totalGWP)}</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: `${t.accent}15`, border: `1px solid ${t.accent}33` }}>
+          <span className="font-medium" style={{ fontSize: 11, color: t.accent }}>GWP</span>
+          <span className="font-bold" style={{ fontSize: 13, color: t.accent }}>{fmtCompact(totalGWP)}</span>
         </div>
       </>
     );
     setHeaderActions(
       <button
         onClick={() => handleExport()}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all whitespace-nowrap"
+        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
       >
         <Download size={16} /> Export
       </button>
@@ -336,18 +344,19 @@ const InwardReinsuranceList: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
+      <div className="rounded-xl p-3" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
         <div className="flex flex-wrap items-center gap-3">
           {/* Search */}
           <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              className="w-full pl-8 pr-3 py-2 rounded-lg outline-none text-sm"
+              style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
             />
           </div>
 
@@ -355,7 +364,8 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => { setTypeFilter(e.target.value as any); setPage(1); }}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            className="px-3 py-2 rounded-lg outline-none text-sm"
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Types</option>
             <option value="FAC">Facultative</option>
@@ -366,7 +376,8 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={structureFilter}
             onChange={(e) => { setStructureFilter(e.target.value as any); setPage(1); }}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            className="px-3 py-2 rounded-lg outline-none text-sm"
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Structures</option>
             <option value="PROPORTIONAL">Proportional</option>
@@ -377,7 +388,8 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            className="px-3 py-2 rounded-lg outline-none text-sm"
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Status</option>
             <option value="DRAFT">Draft</option>
@@ -392,7 +404,8 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={dateFilterField}
             onChange={(e) => { setDateFilterField(e.target.value); setPage(1); }}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            className="px-3 py-2 rounded-lg outline-none text-sm"
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="inceptionDate">Inception</option>
             <option value="expiryDate">Expiry</option>
@@ -418,13 +431,14 @@ const InwardReinsuranceList: React.FC = () => {
           {/* Refresh */}
           <button
             onClick={fetchContracts}
-            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+            className="p-2 rounded-lg"
+            style={{ color: t.text4 }}
             title="Refresh"
           >
             <RefreshCw size={16} />
           </button>
 
-          <div className="w-px h-5 bg-gray-300" />
+          <div className="w-px h-5" style={{ background: t.borderL }} />
 
           {/* New Contract Button */}
           <button
@@ -432,7 +446,8 @@ const InwardReinsuranceList: React.FC = () => {
               setEditingContractId(null);
               setShowFormModal(true);
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
+            style={{ background: t.accent, color: '#fff' }}
           >
             <Plus size={16} />
             New Contract
@@ -443,28 +458,29 @@ const InwardReinsuranceList: React.FC = () => {
 
       {/* Migration Required Message */}
       {migrationRequired && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 mt-4">
+        <div className="rounded-xl p-6 mt-4" style={{ background: t.warningBg, border: `1px solid ${t.warning}33` }}>
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-              <FileSpreadsheet size={20} className="text-amber-600" />
+            <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: `${t.warning}25` }}>
+              <FileSpreadsheet size={20} style={{ color: t.warning }} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-amber-800">Database Setup Required</h3>
-              <p className="text-amber-700 mt-1">
+              <h3 className="text-lg font-semibold" style={{ color: t.warning }}>{`Database Setup Required`}</h3>
+              <p className="mt-1" style={{ color: t.warning }}>
                 The Inward Reinsurance tables have not been created in the database yet.
               </p>
-              <p className="text-amber-600 mt-2 text-sm">
+              <p className="mt-2 text-sm" style={{ color: `${t.warning}cc` }}>
                 To use this feature, please run the migration script in your Supabase SQL Editor:
               </p>
-              <code className="block mt-2 p-3 bg-amber-100 rounded-lg text-sm text-amber-900 font-mono">
+              <code className="block mt-2 p-3 rounded-lg text-sm font-mono" style={{ background: `${t.warning}20`, color: t.text1 }}>
                 supabase_inward_reinsurance_migration.sql
               </code>
-              <p className="text-amber-600 mt-3 text-sm">
+              <p className="mt-3 text-sm" style={{ color: `${t.warning}cc` }}>
                 You can find this file in the root directory of the project. Copy its contents and execute it in the Supabase Dashboard SQL Editor.
               </p>
               <button
                 onClick={() => { setMigrationRequired(false); fetchContracts(); }}
-                className="mt-4 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium"
+                className="mt-4 px-4 py-2 rounded-lg text-sm font-medium"
+                style={{ background: t.warning, color: '#fff' }}
               >
                 Retry After Running Migration
               </button>
@@ -475,39 +491,40 @@ const InwardReinsuranceList: React.FC = () => {
 
       {/* Table */}
       {!migrationRequired && (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
         {loading ? (
-          <div className="p-12 text-center text-gray-500">Loading contracts...</div>
+          <div className="p-12 text-center" style={{ color: t.text4 }}>Loading contracts...</div>
         ) : contracts.length === 0 ? (
           <div className="p-12 text-center">
-            <FileSpreadsheet size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500">No contracts found</p>
+            <FileSpreadsheet size={48} className="mx-auto mb-4" style={{ color: t.text5 }} />
+            <p style={{ color: t.text4 }}>No contracts found</p>
             <button
               onClick={() => {
                 setEditingContractId(null);
                 setShowFormModal(true);
               }}
-              className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+              className="mt-4 font-medium"
+              style={{ color: t.accent }}
             >
               Create your first contract
             </button>
           </div>
         ) : (
             <table className="w-full">
-              <thead className="bg-gray-50 sticky z-20 shadow-sm" style={{ top: `${filterHeight}px` }}>
+              <thead className="sticky z-20" style={{ top: `${filterHeight}px`, background: t.bgCard, boxShadow: t.shadow }}>
                 <tr>
-                  <th className="px-3 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Contract #</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Type</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Cedant</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Coverage</th>
-                  <th className="px-3 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Period</th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Limit</th>
-                  <th className="px-3 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Share</th>
-                  <th className="px-3 py-3 text-center text-xs font-semibold text-gray-600 uppercase">Status</th>
-                  <th className="px-1 py-3 w-10 bg-gray-50"></th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text3 }}>Contract #</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text3 }}>Type</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text3 }}>Cedant</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text3 }}>Coverage</th>
+                  <th className="px-3 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text3 }}>Period</th>
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase" style={{ color: t.text3 }}>Limit</th>
+                  <th className="px-3 py-3 text-right text-xs font-semibold uppercase" style={{ color: t.text3 }}>Share</th>
+                  <th className="px-3 py-3 text-center text-xs font-semibold uppercase" style={{ color: t.text3 }}>Status</th>
+                  <th className="px-1 py-3 w-10" style={{ background: t.bgCard }}></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {contracts.map((contract) => (
                   <tr
                     key={contract.id}
@@ -515,54 +532,63 @@ const InwardReinsuranceList: React.FC = () => {
                       setEditingContractId(contract.id);
                       setShowFormModal(true);
                     }}
-                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="transition-colors cursor-pointer"
+                    style={{ borderBottom: `1px solid ${t.border}` }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = '')}
                   >
                     <td className="px-3 py-3">
-                      <div className="font-medium text-gray-900">{contract.contractNumber}</div>
-                      <div className="text-xs text-gray-500">UW {contract.uwYear}</div>
+                      <div className="font-medium" style={{ color: t.text1, fontFamily: "'JetBrains Mono', monospace" }}>{contract.contractNumber}</div>
+                      <div style={{ fontSize: 11, color: t.text4 }}>UW {contract.uwYear}</div>
                     </td>
                     <td className="px-3 py-3">
                       {getTypeBadge(contract.type, contract.structure)}
                     </td>
                     <td className="px-3 py-3">
-                      <div className="font-medium text-gray-900">{contract.cedantName}</div>
+                      <div className="font-medium" style={{ color: t.text1 }}>{contract.cedantName}</div>
                       {contract.brokerName && (
-                        <div className="text-xs text-gray-500">via {contract.brokerName}</div>
+                        <div style={{ fontSize: 11, color: t.text4 }}>via {contract.brokerName}</div>
                       )}
                     </td>
                     <td className="px-3 py-3">
-                      <div className="text-sm text-gray-900">{contract.typeOfCover}</div>
-                      <div className="text-xs text-gray-500">{contract.classOfCover}</div>
+                      <div className="text-sm" style={{ color: t.text1 }}>{contract.typeOfCover}</div>
+                      <div style={{ fontSize: 11, color: t.text4 }}>{contract.classOfCover}</div>
                     </td>
                     <td className="px-3 py-3">
-                      <div className="text-sm text-gray-900">{formatDate(contract.inceptionDate)}</div>
-                      <div className="text-xs text-gray-500">to {formatDate(contract.expiryDate)}</div>
+                      <div className="text-sm" style={{ color: t.text1 }}>{formatDate(contract.inceptionDate)}</div>
+                      <div style={{ fontSize: 11, color: t.text4 }}>to {formatDate(contract.expiryDate)}</div>
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium" style={{ color: t.text1, fontVariantNumeric: 'tabular-nums' }}>
                         {formatAmount(contract.limitOfLiability, contract.currency)}
                       </div>
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <span className="font-medium text-gray-900">{contract.ourShare}%</span>
+                      <span className="font-medium" style={{ color: t.text1, fontVariantNumeric: 'tabular-nums' }}>{contract.ourShare}%</span>
                     </td>
                     <td className="px-3 py-3 text-center">
                       {getStatusBadge(contract.status)}
                     </td>
                     <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
                       <button onClick={(e) => { e.stopPropagation(); setActionMenuOpen(actionMenuOpen === contract.id ? null : contract.id); }}
-                        className="p-1.5 hover:bg-gray-100 rounded-lg">
-                        <MoreVertical size={16} className="text-gray-500" />
+                        className="p-1.5 rounded-lg">
+                        <MoreVertical size={16} style={{ color: t.text4 }} />
                       </button>
                       {actionMenuOpen === contract.id && (
-                        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[120px]">
-                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <Eye size={14} /> View
                           </button>
-                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <Edit size={14} /> Edit
                           </button>
-                          <button onClick={() => { setActionMenuOpen(null); setDeleteConfirm({ isOpen: true, id: contract.id, number: contract.contractNumber }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <button onClick={() => { setActionMenuOpen(null); setDeleteConfirm({ isOpen: true, id: contract.id, number: contract.contractNumber }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <Trash2 size={14} /> Delete
                           </button>
                         </div>
@@ -576,25 +602,27 @@ const InwardReinsuranceList: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-4 py-3 border-t flex items-center justify-between">
-            <div className="text-sm text-gray-500">
+          <div className="px-4 py-3 flex items-center justify-between" style={{ borderTop: `1px solid ${t.border}` }}>
+            <div className="text-sm" style={{ color: t.text4 }}>
               Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, totalCount)} of {totalCount} contracts
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ color: t.text2 }}
               >
                 <ChevronLeft size={20} />
               </button>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm" style={{ color: t.text2 }}>
                 Page {page} of {totalPages}
               </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-1 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ color: t.text2 }}
               >
                 <ChevronRight size={20} />
               </button>

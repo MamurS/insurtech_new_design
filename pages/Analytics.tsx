@@ -13,6 +13,7 @@ import {
 import { useAnalyticsSummary, ChannelType, ChannelMetrics, MGAMetrics } from '../hooks/useAnalytics';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // =============================================
 // HELPER FUNCTIONS
@@ -64,44 +65,55 @@ interface ChannelCardProps {
   onClick: () => void;
 }
 
-const ChannelCard: React.FC<ChannelCardProps> = ({ channel, isSelected, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`p-4 rounded-xl border-2 text-left transition-all w-full ${
-      isSelected
-        ? 'border-blue-500 bg-blue-50 shadow-md'
-        : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
-    }`}
-  >
-    <div className="flex items-center justify-between mb-2">
-      <div
-        className={`p-2 rounded-lg ${isSelected ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'}`}
-        style={{ backgroundColor: isSelected ? channel.color : undefined }}
-      >
-        {CHANNEL_ICONS[channel.channel]}
+const ChannelCard: React.FC<ChannelCardProps> = ({ channel, isSelected, onClick }) => {
+  const { t } = useTheme();
+  return (
+    <button
+      onClick={onClick}
+      className="p-4 rounded-xl text-left transition-all w-full"
+      style={{
+        border: isSelected ? `2px solid ${t.accent}` : `2px solid ${t.border}`,
+        background: isSelected ? t.accentMuted : t.bgPanel,
+        boxShadow: isSelected ? t.shadowLg : 'none',
+      }}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div
+          className="p-2 rounded-lg"
+          style={{
+            backgroundColor: isSelected ? channel.color : t.bgInput,
+            color: isSelected ? '#fff' : t.text3,
+          }}
+        >
+          {CHANNEL_ICONS[channel.channel]}
+        </div>
+        <span
+          className="text-xs font-medium px-2 py-1 rounded-full"
+          style={{
+            background: isSelected ? t.accentMuted : t.bgInput,
+            color: isSelected ? t.accent : t.text4,
+          }}
+        >
+          {channel.recordCount} records
+        </span>
       </div>
-      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-        isSelected ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'
-      }`}>
-        {channel.recordCount} records
-      </span>
-    </div>
-    <h3 className="font-semibold text-slate-800 text-sm">{channel.label}</h3>
-    <p className="text-lg font-bold mt-1" style={{ color: channel.color }}>
-      {formatCurrency(channel.grossWrittenPremium)}
-    </p>
-    <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
-      <span className="flex items-center gap-1">
-        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-        {channel.activeCount} active
-      </span>
-      <span className="flex items-center gap-1">
-        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-        {channel.pendingCount} pending
-      </span>
-    </div>
-  </button>
-);
+      <h3 className="font-semibold text-sm" style={{ color: t.text1 }}>{channel.label}</h3>
+      <p className="text-lg font-bold mt-1" style={{ color: channel.color }}>
+        {formatCurrency(channel.grossWrittenPremium)}
+      </p>
+      <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: t.text4 }}>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full" style={{ background: t.success }}></span>
+          {channel.activeCount} active
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full" style={{ background: t.warning }}></span>
+          {channel.pendingCount} pending
+        </span>
+      </div>
+    </button>
+  );
+};
 
 // KPI Card Component
 interface KPICardProps {
@@ -113,26 +125,35 @@ interface KPICardProps {
   trend?: { value: number; isPositive: boolean };
 }
 
-const KPICard: React.FC<KPICardProps> = ({ title, value, subtitle, icon, color, trend }) => (
-  <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-    <div className="flex items-start justify-between">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-slate-500 truncate">{title}</p>
-        <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
-        {subtitle && <p className="text-xs text-slate-400 mt-1 truncate">{subtitle}</p>}
-        {trend && (
-          <div className={`flex items-center gap-1 mt-2 text-sm ${trend.isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
-            {trend.isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-            <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-          </div>
-        )}
-      </div>
-      <div className={`p-3 rounded-lg ${color}`}>
-        {icon}
+const KPICard: React.FC<KPICardProps> = ({ title, value, subtitle, icon, color, trend }) => {
+  const { t } = useTheme();
+  return (
+    <div
+      className="rounded-xl p-4"
+      style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate" style={{ color: t.text4 }}>{title}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{value}</p>
+          {subtitle && <p className="text-xs mt-1 truncate" style={{ color: t.text5 }}>{subtitle}</p>}
+          {trend && (
+            <div
+              className="flex items-center gap-1 mt-2 text-sm"
+              style={{ color: trend.isPositive ? t.success : t.danger }}
+            >
+              {trend.isPositive ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+              <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
+            </div>
+          )}
+        </div>
+        <div className="p-3 rounded-lg" style={{ backgroundColor: color }}>
+          {icon}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Small Stat Card
 interface StatCardProps {
@@ -141,12 +162,15 @@ interface StatCardProps {
   color?: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ label, value, color = 'text-slate-800' }) => (
-  <div className="text-center p-3 bg-slate-50 rounded-lg">
-    <p className={`text-xl font-bold ${color}`}>{value}</p>
-    <p className="text-xs text-slate-500 mt-0.5">{label}</p>
-  </div>
-);
+const StatCard: React.FC<StatCardProps> = ({ label, value, color }) => {
+  const { t } = useTheme();
+  return (
+    <div className="text-center p-3 rounded-lg" style={{ background: t.bgCard }}>
+      <p className="text-xl font-bold" style={{ color: color || t.text1 }}>{value}</p>
+      <p className="text-xs mt-0.5" style={{ color: t.text4 }}>{label}</p>
+    </div>
+  );
+};
 
 // Chart Card Wrapper
 interface ChartCardProps {
@@ -157,23 +181,29 @@ interface ChartCardProps {
   className?: string;
 }
 
-const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, loading, className = '' }) => (
-  <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${className}`}>
-    <div className="px-5 py-4 border-b border-slate-100">
-      <h3 className="font-semibold text-slate-800">{title}</h3>
-      {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+const ChartCard: React.FC<ChartCardProps> = ({ title, subtitle, children, loading, className = '' }) => {
+  const { t } = useTheme();
+  return (
+    <div
+      className={`rounded-xl ${className}`}
+      style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}
+    >
+      <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderS}` }}>
+        <h3 className="font-semibold" style={{ color: t.text1 }}>{title}</h3>
+        {subtitle && <p className="text-xs mt-0.5" style={{ color: t.text4 }}>{subtitle}</p>}
+      </div>
+      <div className="p-5">
+        {loading ? (
+          <div className="h-64 flex items-center justify-center">
+            <RefreshCw className="w-6 h-6 animate-spin" style={{ color: t.text5 }} />
+          </div>
+        ) : (
+          children
+        )}
+      </div>
     </div>
-    <div className="p-5">
-      {loading ? (
-        <div className="h-64 flex items-center justify-center">
-          <RefreshCw className="w-6 h-6 text-slate-300 animate-spin" />
-        </div>
-      ) : (
-        children
-      )}
-    </div>
-  </div>
-);
+  );
+};
 
 // =============================================
 // MAIN COMPONENT
@@ -183,6 +213,7 @@ const Analytics: React.FC = () => {
   const { data, loading, error, refetch } = useAnalyticsSummary();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const [selectedChannel, setSelectedChannel] = useState<ChannelType>('total');
+  const { t } = useTheme();
 
   // Get the currently selected channel's metrics
   const currentMetrics = selectedChannel === 'total'
@@ -292,7 +323,8 @@ const Analytics: React.FC = () => {
         <button
           onClick={handleExport}
           disabled={!data}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-xs font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
         >
           <Download size={14} />
           Export
@@ -300,26 +332,27 @@ const Analytics: React.FC = () => {
         <button
           onClick={refetch}
           disabled={loading}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg disabled:opacity-50"
-          title="Refresh"
+          className="p-2 rounded-lg disabled:opacity-50"
+          style={{ color: t.text4 }}
         >
-          <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
         </button>
       </div>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
-  }, [data, loading, setHeaderActions, setHeaderLeft]);
+  }, [data, loading, setHeaderActions, setHeaderLeft, t]);
 
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-800">Failed to load analytics</h3>
-          <p className="text-slate-500 mt-1">{error}</p>
+          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load analytics</h3>
+          <p className="mt-1" style={{ color: t.text4 }}>{error}</p>
           <button
             onClick={refetch}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="mt-4 px-4 py-2 rounded-lg"
+            style={{ background: t.accent, color: '#fff' }}
           >
             Retry
           </button>
@@ -351,8 +384,12 @@ const Analytics: React.FC = () => {
         )}
         {loading && !data && (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="p-4 rounded-xl border border-slate-200 bg-white animate-pulse">
-              <div className="h-20 bg-slate-100 rounded"></div>
+            <div
+              key={i}
+              className="p-4 rounded-xl animate-pulse"
+              style={{ border: `1px solid ${t.border}`, background: t.bgPanel }}
+            >
+              <div className="h-20 rounded" style={{ background: t.bgInput }}></div>
             </div>
           ))
         )}
@@ -364,29 +401,29 @@ const Analytics: React.FC = () => {
           title="Gross Written Premium"
           value={currentMetrics ? formatCurrency(currentMetrics.grossWrittenPremium) : '-'}
           subtitle={selectedChannel === 'total' ? 'Total portfolio' : currentMetrics?.label}
-          icon={<DollarSign className="w-5 h-5 text-white" />}
-          color="bg-blue-500"
+          icon={<DollarSign className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#3b82f6"
         />
         <KPICard
           title="Net Written Premium"
           value={currentMetrics ? formatCurrency(currentMetrics.netWrittenPremium) : '-'}
           subtitle="After cessions"
-          icon={<Activity className="w-5 h-5 text-white" />}
-          color="bg-emerald-500"
+          icon={<Activity className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#10b981"
         />
         <KPICard
           title="Loss Ratio"
           value={data ? formatPercent(data.claims.lossRatio) : '-'}
           subtitle={`${data?.claims.openClaims || 0} open claims`}
-          icon={<PieChartIcon className="w-5 h-5 text-white" />}
-          color={data && data.claims.lossRatio > 70 ? 'bg-red-500' : 'bg-amber-500'}
+          icon={<PieChartIcon className="w-5 h-5" style={{ color: '#fff' }} />}
+          color={data && data.claims.lossRatio > 70 ? '#ef4444' : '#f59e0b'}
         />
         <KPICard
           title="Total Records"
           value={currentMetrics ? formatNumber(currentMetrics.recordCount) : '-'}
           subtitle={`${currentMetrics?.activeCount || 0} active`}
-          icon={<FileText className="w-5 h-5 text-white" />}
-          color="bg-violet-500"
+          icon={<FileText className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#8b5cf6"
         />
       </div>
 
@@ -396,22 +433,22 @@ const Analytics: React.FC = () => {
           title="Gross Premium Earned"
           value={currentMetrics ? formatCurrency(currentMetrics.grossPremiumEarned) : '-'}
           subtitle="Pro-rata earned"
-          icon={<TrendingUp className="w-5 h-5 text-white" />}
-          color="bg-teal-500"
+          icon={<TrendingUp className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#14b8a6"
         />
         <KPICard
           title="Net Premium Earned"
           value={currentMetrics ? formatCurrency(currentMetrics.netPremiumEarned) : '-'}
           subtitle="Earned after cessions"
-          icon={<Activity className="w-5 h-5 text-white" />}
-          color="bg-cyan-500"
+          icon={<Activity className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#06b6d4"
         />
         <KPICard
           title="Unearned Premium Reserve"
           value={currentMetrics ? formatCurrency(currentMetrics.unearnedPremiumReserve) : '-'}
           subtitle="UPR (liability)"
-          icon={<Shield className="w-5 h-5 text-white" />}
-          color="bg-orange-500"
+          icon={<Shield className="w-5 h-5" style={{ color: '#fff' }} />}
+          color="#f97316"
         />
         <KPICard
           title="Combined Ratio"
@@ -422,9 +459,9 @@ const Analytics: React.FC = () => {
               : (data.claims.lossRatio + (currentMetrics?.commissionRatio || 0)) < 100
                 ? 'Underwriting profit' : 'Underwriting loss'
             : undefined}
-          icon={<Percent className="w-5 h-5 text-white" />}
+          icon={<Percent className="w-5 h-5" style={{ color: '#fff' }} />}
           color={data && (data.expenseRatio > 0 ? data.fullCombinedRatio : data.claims.lossRatio + (currentMetrics?.commissionRatio || 0)) < 100
-            ? 'bg-green-500' : 'bg-red-500'}
+            ? '#22c55e' : '#ef4444'}
         />
       </div>
 
@@ -433,57 +470,60 @@ const Analytics: React.FC = () => {
         <StatCard
           label="Commission"
           value={currentMetrics ? formatCurrency(currentMetrics.commission) : '-'}
-          color="text-blue-600"
+          color={t.accent}
         />
         <StatCard
           label="Avg Premium"
           value={currentMetrics ? formatCurrency(currentMetrics.avgPremium) : '-'}
-          color="text-emerald-600"
+          color={t.success}
         />
         <StatCard
           label="Avg Share %"
           value={currentMetrics ? formatPercent(currentMetrics.avgOurShare) : '-'}
-          color="text-violet-600"
+          color="#8b5cf6"
         />
         <StatCard
           label="Total Limit"
           value={currentMetrics ? formatCurrency(currentMetrics.totalLimit) : '-'}
-          color="text-amber-600"
+          color={t.warning}
         />
         <StatCard
           label="Active"
           value={currentMetrics ? currentMetrics.activeCount.toLocaleString() : '-'}
-          color="text-green-600"
+          color={t.success}
         />
         <StatCard
           label="Comm. Ratio"
           value={currentMetrics ? formatPercent(currentMetrics.commissionRatio) : '-'}
-          color="text-orange-600"
+          color="#f97316"
         />
         <StatCard
           label="Expense Ratio"
           value={data?.expenseRatio ? formatPercent(data.expenseRatio) : 'N/A'}
-          color="text-purple-600"
+          color="#a855f7"
         />
       </div>
 
       {/* MGA / Binding Authority Section */}
       {data?.mga && data.mga.agreementCount > 0 && (
-        <div className="bg-white rounded-xl border-2 border-indigo-200 p-4">
+        <div
+          className="rounded-xl p-4"
+          style={{ background: t.bgPanel, border: `2px solid ${t.accent}` }}
+        >
           <div className="flex items-center gap-2 mb-3">
-            <FileSignature size={18} className="text-indigo-600" />
-            <h3 className="font-semibold text-indigo-900">MGA / Binding Authority</h3>
-            <span className="text-xs text-indigo-500 ml-auto">{data.mga.agreementCount} active agreements</span>
+            <FileSignature size={18} style={{ color: t.accent }} />
+            <h3 className="font-semibold" style={{ color: t.text1 }}>MGA / Binding Authority</h3>
+            <span className="text-xs ml-auto" style={{ color: t.text4 }}>{data.mga.agreementCount} active agreements</span>
           </div>
           <div className="grid grid-cols-4 gap-4">
-            <StatCard label="EPI (Forecast)" value={formatCurrency(data.mga.totalEpi)} color="text-indigo-400" />
-            <StatCard label="Actual GWP" value={formatCurrency(data.mga.actualGwp)} color="text-indigo-700" />
+            <StatCard label="EPI (Forecast)" value={formatCurrency(data.mga.totalEpi)} color={t.text4} />
+            <StatCard label="Actual GWP" value={formatCurrency(data.mga.actualGwp)} color={t.accent} />
             <StatCard
               label="Utilization"
               value={formatPercent(data.mga.utilizationPercent)}
-              color={data.mga.utilizationPercent > 80 ? 'text-green-600' : data.mga.utilizationPercent > 50 ? 'text-amber-600' : 'text-red-600'}
+              color={data.mga.utilizationPercent > 80 ? t.success : data.mga.utilizationPercent > 50 ? t.warning : t.danger}
             />
-            <StatCard label="Remaining EPI" value={formatCurrency(data.mga.totalEpi - data.mga.actualGwp)} color="text-slate-500" />
+            <StatCard label="Remaining EPI" value={formatCurrency(data.mga.totalEpi - data.mga.actualGwp)} color={t.text4} />
           </div>
         </div>
       )}
@@ -500,30 +540,30 @@ const Analytics: React.FC = () => {
             <AreaChart data={currentMetrics?.monthlyTrend || []}>
               <defs>
                 <linearGradient id="gwpGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                  <stop offset="5%" stopColor={t.accent} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={t.accent} stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="nwpGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <stop offset="5%" stopColor={t.success} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={t.success} stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="#94a3b8" />
+              <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
+              <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke={t.text4} />
               <YAxis
                 tick={{ fontSize: 12 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
               />
               <Tooltip
                 formatter={(value: number) => [formatCurrency(value), '']}
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
               />
               <Legend />
               <Area
                 type="monotone"
                 dataKey="gwp"
-                stroke="#3b82f6"
+                stroke={t.accent}
                 fill="url(#gwpGradient)"
                 strokeWidth={2}
                 name="GWP"
@@ -531,7 +571,7 @@ const Analytics: React.FC = () => {
               <Area
                 type="monotone"
                 dataKey="nwp"
-                stroke="#10b981"
+                stroke={t.success}
                 fill="url(#nwpGradient)"
                 strokeWidth={2}
                 name="NWP"
@@ -550,19 +590,19 @@ const Analytics: React.FC = () => {
             <ComposedChart data={currentMetrics?.monthlyTrend || []}>
               <defs>
                 <linearGradient id="gwpAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+                  <stop offset="5%" stopColor={t.accent} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={t.accent} stopOpacity={0.02} />
                 </linearGradient>
                 <linearGradient id="gpeAreaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.25} />
                   <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="#94a3b8" />
+              <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
+              <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke={t.text4} />
               <YAxis
                 tick={{ fontSize: 12 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
               />
               <Tooltip
@@ -573,12 +613,12 @@ const Analytics: React.FC = () => {
                   const upr = gwp - gpe;
                   const earningPct = gwp > 0 ? (gpe / gwp) * 100 : 0;
                   return (
-                    <div className="bg-white border border-slate-200 rounded-lg shadow-lg p-3 text-sm">
-                      <p className="font-semibold text-slate-800 mb-1.5">{label}</p>
-                      <p className="text-blue-600">GWP: {formatCurrency(gwp)}</p>
-                      <p className="text-teal-600">GPE: {formatCurrency(gpe)}</p>
-                      <p className="text-amber-600">UPR: {formatCurrency(upr)}</p>
-                      <p className="text-slate-500 mt-1">Earning: {formatPercent(earningPct)}</p>
+                    <div className="rounded-lg p-3 text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+                      <p className="font-semibold mb-1.5" style={{ color: t.text1 }}>{label}</p>
+                      <p style={{ color: t.accent }}>GWP: {formatCurrency(gwp)}</p>
+                      <p style={{ color: '#14b8a6' }}>GPE: {formatCurrency(gpe)}</p>
+                      <p style={{ color: t.warning }}>UPR: {formatCurrency(upr)}</p>
+                      <p className="mt-1" style={{ color: t.text4 }}>Earning: {formatPercent(earningPct)}</p>
                     </div>
                   );
                 }}
@@ -587,7 +627,7 @@ const Analytics: React.FC = () => {
               <Area
                 type="monotone"
                 dataKey="gwp"
-                stroke="#3b82f6"
+                stroke={t.accent}
                 fill="url(#gwpAreaGradient)"
                 strokeWidth={2}
                 name="GWP"
@@ -615,23 +655,23 @@ const Analytics: React.FC = () => {
         >
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={channelComparisonData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
               <XAxis
                 type="number"
                 tick={{ fontSize: 12 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
               />
               <YAxis
                 type="category"
                 dataKey="name"
                 tick={{ fontSize: 11 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 width={110}
               />
               <Tooltip
                 formatter={(value: number) => [formatCurrency(value), '']}
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
               />
               <Bar dataKey="gwp" name="GWP" radius={[0, 4, 4, 0]}>
                 {channelComparisonData.map((entry, index) => (
@@ -651,16 +691,16 @@ const Analytics: React.FC = () => {
       >
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={waterfallData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-            <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} stroke="#94a3b8" />
+            <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
+            <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} stroke={t.text4} />
             <YAxis
               tick={{ fontSize: 12 }}
-              stroke="#94a3b8"
+              stroke={t.text4}
               tickFormatter={(v) => `$${(Math.abs(v) / 1000000).toFixed(1)}M`}
             />
             <Tooltip
               formatter={(value: number) => [formatCurrency(Math.abs(value)), value < 0 ? 'Deduction' : 'Amount']}
-              contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+              contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
             />
             <Bar dataKey="value" radius={[4, 4, 0, 0]}>
               {waterfallData.map((entry, index) => (
@@ -697,7 +737,7 @@ const Analytics: React.FC = () => {
               </Pie>
               <Tooltip
                 formatter={(value: number) => [formatCurrency(value), 'Premium']}
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -706,7 +746,7 @@ const Analytics: React.FC = () => {
             {classBreakdownData.slice(0, 6).map((item, i) => (
               <div key={item.name} className="flex items-center gap-2 text-xs">
                 <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }}></span>
-                <span className="text-slate-600 truncate">{item.name}</span>
+                <span className="truncate" style={{ color: t.text3 }}>{item.name}</span>
               </div>
             ))}
           </div>
@@ -721,11 +761,11 @@ const Analytics: React.FC = () => {
         >
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={data?.lossRatioByClass || []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={t.border} />
               <XAxis
                 dataKey="class"
                 tick={{ fontSize: 10 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 interval={0}
                 angle={-20}
                 textAnchor="end"
@@ -734,14 +774,14 @@ const Analytics: React.FC = () => {
               <YAxis
                 yAxisId="left"
                 tick={{ fontSize: 12 }}
-                stroke="#94a3b8"
+                stroke={t.text4}
                 tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`}
               />
               <YAxis
                 yAxisId="right"
                 orientation="right"
                 tick={{ fontSize: 12 }}
-                stroke="#f59e0b"
+                stroke={t.warning}
                 tickFormatter={(v) => `${v}%`}
               />
               <Tooltip
@@ -749,12 +789,12 @@ const Analytics: React.FC = () => {
                   name === 'lossRatio' ? `${value}%` : formatCurrency(value),
                   name === 'lossRatio' ? 'Loss Ratio' : name === 'earnedPremium' ? 'Premium' : 'Losses'
                 ]}
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                contentStyle={{ borderRadius: '8px', border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
               />
               <Legend />
-              <Bar yAxisId="left" dataKey="earnedPremium" fill="#3b82f6" name="Premium" radius={[4, 4, 0, 0]} />
-              <Bar yAxisId="left" dataKey="incurredLosses" fill="#ef4444" name="Losses" radius={[4, 4, 0, 0]} />
-              <Line yAxisId="right" type="monotone" dataKey="lossRatio" stroke="#f59e0b" strokeWidth={2} name="Loss Ratio %" dot={{ fill: '#f59e0b' }} />
+              <Bar yAxisId="left" dataKey="earnedPremium" fill={t.accent} name="Premium" radius={[4, 4, 0, 0]} />
+              <Bar yAxisId="left" dataKey="incurredLosses" fill={t.danger} name="Losses" radius={[4, 4, 0, 0]} />
+              <Line yAxisId="right" type="monotone" dataKey="lossRatio" stroke={t.warning} strokeWidth={2} name="Loss Ratio %" dot={{ fill: t.warning }} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -770,23 +810,27 @@ const Analytics: React.FC = () => {
         >
           <div className="space-y-3 max-h-80 overflow-y-auto">
             {(currentMetrics?.topCedants || []).slice(0, 10).map((cedant, index) => (
-              <div key={cedant.name} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+              <div key={cedant.name} className="flex items-center justify-between py-2 last:border-0" style={{ borderBottom: `1px solid ${t.borderS}` }}>
                 <div className="flex items-center gap-3">
-                  <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                    index === 0 ? 'bg-amber-500' : index === 1 ? 'bg-slate-400' : index === 2 ? 'bg-amber-700' : 'bg-slate-300'
-                  }`}>
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{
+                      color: '#fff',
+                      backgroundColor: index === 0 ? '#f59e0b' : index === 1 ? t.text4 : index === 2 ? '#92400e' : t.text5,
+                    }}
+                  >
                     {index + 1}
                   </span>
                   <div className="min-w-0">
-                    <p className="font-medium text-slate-800 text-sm truncate max-w-48">{cedant.name}</p>
-                    <p className="text-xs text-slate-500">{cedant.count} contracts</p>
+                    <p className="font-medium text-sm truncate max-w-48" style={{ color: t.text1 }}>{cedant.name}</p>
+                    <p className="text-xs" style={{ color: t.text4 }}>{cedant.count} contracts</p>
                   </div>
                 </div>
-                <span className="font-semibold text-slate-800 whitespace-nowrap">{formatCurrency(cedant.premium)}</span>
+                <span className="font-semibold whitespace-nowrap" style={{ color: t.text1 }}>{formatCurrency(cedant.premium)}</span>
               </div>
             ))}
             {(!currentMetrics?.topCedants || currentMetrics.topCedants.length === 0) && (
-              <div className="text-center py-8 text-slate-400">
+              <div className="text-center py-8" style={{ color: t.text5 }}>
                 <Users className="w-8 h-8 mx-auto mb-2" />
                 <p>No client data available</p>
               </div>
@@ -804,66 +848,70 @@ const Analytics: React.FC = () => {
             <div className="space-y-4">
               {/* Claims Stats Grid */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 bg-slate-50 rounded-lg">
+                <div className="p-4 rounded-lg" style={{ background: t.bgCard }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-500" />
-                    <span className="text-xs text-slate-500">Open Claims</span>
+                    <AlertTriangle className="w-4 h-4" style={{ color: t.warning }} />
+                    <span className="text-xs" style={{ color: t.text4 }}>Open Claims</span>
                   </div>
-                  <p className="text-2xl font-bold text-amber-600">{data.claims.openClaims}</p>
+                  <p className="text-2xl font-bold" style={{ color: t.warning }}>{data.claims.openClaims}</p>
                 </div>
-                <div className="p-4 bg-slate-50 rounded-lg">
+                <div className="p-4 rounded-lg" style={{ background: t.bgCard }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-4 h-4 text-emerald-500" />
-                    <span className="text-xs text-slate-500">Closed Claims</span>
+                    <Shield className="w-4 h-4" style={{ color: t.success }} />
+                    <span className="text-xs" style={{ color: t.text4 }}>Closed Claims</span>
                   </div>
-                  <p className="text-2xl font-bold text-emerald-600">{data.claims.closedClaims}</p>
+                  <p className="text-2xl font-bold" style={{ color: t.success }}>{data.claims.closedClaims}</p>
                 </div>
               </div>
 
               {/* Financial Metrics */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                  <span className="text-sm text-slate-600">Total Incurred</span>
-                  <span className="font-bold text-red-600">{formatCurrency(data.claims.totalIncurred)}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: t.dangerBg }}>
+                  <span className="text-sm" style={{ color: t.text3 }}>Total Incurred</span>
+                  <span className="font-bold" style={{ color: t.danger }}>{formatCurrency(data.claims.totalIncurred)}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <span className="text-sm text-slate-600">Total Paid</span>
-                  <span className="font-bold text-blue-600">{formatCurrency(data.claims.totalPaid)}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: t.accentMuted }}>
+                  <span className="text-sm" style={{ color: t.text3 }}>Total Paid</span>
+                  <span className="font-bold" style={{ color: t.accent }}>{formatCurrency(data.claims.totalPaid)}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
-                  <span className="text-sm text-slate-600">Outstanding Reserve</span>
-                  <span className="font-bold text-amber-600">{formatCurrency(data.claims.totalReserve)}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: t.warningBg }}>
+                  <span className="text-sm" style={{ color: t.text3 }}>Outstanding Reserve</span>
+                  <span className="font-bold" style={{ color: t.warning }}>{formatCurrency(data.claims.totalReserve)}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-violet-50 rounded-lg">
-                  <span className="text-sm text-slate-600">Average Claim Size</span>
-                  <span className="font-bold text-violet-600">{formatCurrency(data.claims.avgClaimSize)}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: t.bgCard }}>
+                  <span className="text-sm" style={{ color: t.text3 }}>Average Claim Size</span>
+                  <span className="font-bold" style={{ color: '#8b5cf6' }}>{formatCurrency(data.claims.avgClaimSize)}</span>
                 </div>
               </div>
 
               {/* Loss Ratio Indicator */}
-              <div className="mt-4 p-4 rounded-lg border border-slate-200">
+              <div className="mt-4 p-4 rounded-lg" style={{ border: `1px solid ${t.border}` }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-slate-600">Loss Ratio</span>
-                  <span className={`text-lg font-bold ${
-                    data.claims.lossRatio > 80 ? 'text-red-600' :
-                    data.claims.lossRatio > 60 ? 'text-amber-600' : 'text-emerald-600'
-                  }`}>
+                  <span className="text-sm font-medium" style={{ color: t.text3 }}>Loss Ratio</span>
+                  <span
+                    className="text-lg font-bold"
+                    style={{
+                      color: data.claims.lossRatio > 80 ? t.danger :
+                             data.claims.lossRatio > 60 ? t.warning : t.success,
+                    }}
+                  >
                     {formatPercent(data.claims.lossRatio)}
                   </span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2.5">
+                <div className="w-full rounded-full h-2.5" style={{ background: t.border }}>
                   <div
-                    className={`h-2.5 rounded-full transition-all ${
-                      data.claims.lossRatio > 80 ? 'bg-red-500' :
-                      data.claims.lossRatio > 60 ? 'bg-amber-500' : 'bg-emerald-500'
-                    }`}
-                    style={{ width: `${Math.min(data.claims.lossRatio, 100)}%` }}
+                    className="h-2.5 rounded-full transition-all"
+                    style={{
+                      width: `${Math.min(data.claims.lossRatio, 100)}%`,
+                      background: data.claims.lossRatio > 80 ? t.danger :
+                                  data.claims.lossRatio > 60 ? t.warning : t.success,
+                    }}
                   ></div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 text-slate-400">
+            <div className="text-center py-8" style={{ color: t.text5 }}>
               <AlertTriangle className="w-8 h-8 mx-auto mb-2" />
               <p>No claims data available</p>
             </div>
@@ -879,19 +927,19 @@ const Analytics: React.FC = () => {
       >
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {currencyBreakdownData.map((item, index) => (
-            <div key={item.name} className="p-4 bg-slate-50 rounded-lg text-center">
+            <div key={item.name} className="p-4 rounded-lg text-center" style={{ background: t.bgCard }}>
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm mx-auto mb-2"
-                style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mx-auto mb-2"
+                style={{ backgroundColor: COLORS[index % COLORS.length], color: '#fff' }}
               >
                 {item.name}
               </div>
-              <p className="font-semibold text-slate-800">{formatCurrency(item.value)}</p>
-              <p className="text-xs text-slate-500">{item.count} contracts</p>
+              <p className="font-semibold" style={{ color: t.text1 }}>{formatCurrency(item.value)}</p>
+              <p className="text-xs" style={{ color: t.text4 }}>{item.count} contracts</p>
             </div>
           ))}
           {currencyBreakdownData.length === 0 && (
-            <div className="col-span-full text-center py-8 text-slate-400">
+            <div className="col-span-full text-center py-8" style={{ color: t.text5 }}>
               <Percent className="w-8 h-8 mx-auto mb-2" />
               <p>No currency data available</p>
             </div>
@@ -900,32 +948,32 @@ const Analytics: React.FC = () => {
       </ChartCard>
 
       {/* Quick Stats Footer */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 text-white">
-        <h3 className="font-semibold mb-4">Portfolio Summary</h3>
+      <div className="rounded-xl p-6" style={{ background: t.bgSidebar, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+        <h3 className="font-semibold mb-4" style={{ color: t.text1 }}>Portfolio Summary</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div>
-            <p className="text-slate-400 text-xs">Total Records</p>
-            <p className="text-2xl font-bold">{data?.total.recordCount.toLocaleString() || '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Total Records</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data?.total.recordCount.toLocaleString() || '-'}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Total GWP</p>
-            <p className="text-2xl font-bold">{data ? formatCurrency(data.total.grossWrittenPremium) : '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Total GWP</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? formatCurrency(data.total.grossWrittenPremium) : '-'}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Total NWP</p>
-            <p className="text-2xl font-bold">{data ? formatCurrency(data.total.netWrittenPremium) : '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Total NWP</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? formatCurrency(data.total.netWrittenPremium) : '-'}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Total Claims</p>
-            <p className="text-2xl font-bold">{data?.claims.totalClaims.toLocaleString() || '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Total Claims</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data?.claims.totalClaims.toLocaleString() || '-'}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Classes Written</p>
-            <p className="text-2xl font-bold">{data ? Object.keys(data.total.classBreakdown).length : '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Classes Written</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? Object.keys(data.total.classBreakdown).length : '-'}</p>
           </div>
           <div>
-            <p className="text-slate-400 text-xs">Currencies</p>
-            <p className="text-2xl font-bold">{data ? Object.keys(data.total.currencyBreakdown).length : '-'}</p>
+            <p className="text-xs" style={{ color: t.text4 }}>Currencies</p>
+            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? Object.keys(data.total.currencyBreakdown).length : '-'}</p>
           </div>
         </div>
       </div>

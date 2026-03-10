@@ -6,6 +6,7 @@ import { useProfiles } from '../hooks/useUsers';
 import { TaskPriority, EntityType } from '../types';
 import { DatePickerInput, parseDate, toISODateString } from './DatePickerInput';
 import { ContextBar } from './ContextBar';
+import { useTheme } from '../theme/useTheme';
 
 interface AssignTaskModalProps {
     isOpen: boolean;
@@ -17,12 +18,13 @@ interface AssignTaskModalProps {
     preSelectedUser?: string;
 }
 
-const AssignTaskModal: React.FC<AssignTaskModalProps> = ({ 
-    isOpen, onClose, entityType, entityId, entityReference, preSelectedUser 
+const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
+    isOpen, onClose, entityType, entityId, entityReference, preSelectedUser
 }) => {
     const createTaskMutation = useCreateTask();
     const uploadAttachmentMutation = useUploadAttachment();
     const { data: profiles, isLoading: loadingProfiles } = useProfiles();
+    const { t } = useTheme();
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -30,7 +32,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
     const [dueDate, setDueDate] = useState<Date | null>(null);
     const [assignedTo, setAssignedTo] = useState(preSelectedUser || '');
     const [errorMsg, setErrorMsg] = useState('');
-    
+
     // File Upload State
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -104,14 +106,17 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
     if (!isOpen) return null;
 
+    const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13 };
+    const selectStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13 };
+
     return (
-        <div className="fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md animate-in fade-in zoom-in duration-200">
-                <div className="p-5 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
-                    <h3 className="font-bold text-gray-800 text-lg">Create New Task</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }}>
+            <div className="w-full max-w-md animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadowLg }}>
+                <div className="p-5 flex justify-between items-center rounded-t-xl" style={{ background: t.bgInput, borderBottom: `1px solid ${t.border}` }}>
+                    <h3 className="font-bold text-lg" style={{ color: t.text1 }}>Create New Task</h3>
+                    <button onClick={onClose} style={{ color: t.text4 }}><X size={20}/></button>
                 </div>
-                
+
                 <ContextBar
                     status="NEW"
                     breadcrumbs={[
@@ -122,24 +127,24 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                     {errorMsg && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 flex items-center gap-2">
+                        <div className="p-3 rounded-lg text-sm flex items-center gap-2" style={{ background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}30` }}>
                             <AlertTriangle size={16} className="shrink-0"/>
                             <span>{errorMsg}</span>
                         </div>
                     )}
 
                     {entityReference && (
-                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 text-sm text-blue-800 flex items-center gap-2">
+                        <div className="p-3 rounded-lg text-sm flex items-center gap-2" style={{ background: `${t.accent}18`, color: t.accent, border: `1px solid ${t.accent}30` }}>
                             <Briefcase size={16}/>
                             Linked to: <strong>{entityReference}</strong>
                         </div>
                     )}
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Task Title <span className="text-red-500">*</span></label>
-                        <input 
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Task Title <span style={{ color: t.danger }}>*</span></label>
+                        <input
                             required
-                            className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                            style={inputStyle}
                             value={title}
                             onChange={e => setTitle(e.target.value)}
                             placeholder="e.g., Review slip conditions"
@@ -147,13 +152,13 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Assign To <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Assign To <span style={{ color: t.danger }}>*</span></label>
                         {loadingProfiles ? (
-                            <div className="text-gray-500 text-sm"><Loader2 className="animate-spin inline mr-2"/> Loading users...</div>
+                            <div className="text-sm" style={{ color: t.text4 }}><Loader2 className="animate-spin inline mr-2"/> Loading users...</div>
                         ) : (
-                            <select 
+                            <select
                                 required
-                                className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+                                style={selectStyle}
                                 value={assignedTo}
                                 onChange={e => setAssignedTo(e.target.value)}
                             >
@@ -167,9 +172,9 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Priority</label>
-                            <select 
-                                className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Priority</label>
+                            <select
+                                style={selectStyle}
                                 value={priority}
                                 onChange={e => setPriority(e.target.value as TaskPriority)}
                             >
@@ -188,10 +193,10 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
-                        <textarea 
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label>
+                        <textarea
                             rows={3}
-                            className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm resize-none"
+                            style={{ ...inputStyle, resize: 'none' }}
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             placeholder="Add details here..."
@@ -199,43 +204,45 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     </div>
 
                     {/* Attachments Section */}
-                    <div className="border-t pt-4">
-                        <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                    <div className="pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
+                        <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ color: t.text2 }}>
                             <Paperclip size={16}/> Attachments
                         </label>
                         <div className="space-y-2">
                             {selectedFiles.map((file, idx) => (
-                                <div key={idx} className="flex items-center justify-between bg-gray-50 p-2 rounded border border-gray-200 text-sm">
+                                <div key={idx} className="flex items-center justify-between p-2 rounded text-sm" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
                                     <span className="truncate flex-1 flex items-center gap-2">
-                                        <FileIcon size={14} className="text-gray-400"/> {file.name}
+                                        <FileIcon size={14} style={{ color: t.text4 }}/> {file.name}
                                     </span>
-                                    <button type="button" onClick={() => removeFile(idx)} className="text-gray-400 hover:text-red-500">
+                                    <button type="button" onClick={() => removeFile(idx)} style={{ color: t.text4 }}>
                                         <Trash2 size={14}/>
                                     </button>
                                 </div>
                             ))}
-                            <label className="flex items-center justify-center w-full p-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                                <div className="text-center text-sm text-gray-500">
-                                    <span className="text-blue-600 font-medium">+ Add Files</span>
+                            <label className="flex items-center justify-center w-full p-3 rounded-lg cursor-pointer transition-colors" style={{ border: `2px dashed ${t.borderL}` }}>
+                                <div className="text-center text-sm" style={{ color: t.text4 }}>
+                                    <span className="font-medium" style={{ color: t.accent }}>+ Add Files</span>
                                 </div>
                                 <input type="file" className="hidden" multiple onChange={handleFileSelect} />
                             </label>
                         </div>
                     </div>
 
-                    <div className="pt-4 border-t flex justify-end gap-3">
-                        <button 
-                            type="button" 
+                    <div className="pt-4 flex justify-end gap-3" style={{ borderTop: `1px solid ${t.border}` }}>
+                        <button
+                            type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm font-medium"
+                            className="px-4 py-2 rounded-lg text-sm font-medium"
+                            style={{ color: t.text3 }}
                             disabled={isSubmitting}
                         >
                             Cancel
                         </button>
-                        <button 
+                        <button
                             type="submit"
                             disabled={isSubmitting || !title || !assignedTo}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-bold shadow-sm flex items-center gap-2 disabled:opacity-50"
+                            className="px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-50"
+                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
                         >
                             {isSubmitting ? <Loader2 size={16} className="animate-spin"/> : null}
                             {uploadStatus ? uploadStatus : 'Assign Task'}

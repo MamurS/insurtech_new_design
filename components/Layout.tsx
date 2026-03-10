@@ -4,79 +4,140 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useSessionTimeout } from '../hooks/useSessionTimeout';
 import { DB } from '../services/db';
+import { useTheme } from '../theme/useTheme';
+import { THEMES } from '../theme/tokens';
 import SessionTimeoutWarning from './SessionTimeoutWarning';
-import {
-  LayoutDashboard, FileText, Settings,
-  FileSpreadsheet, Lock, PanelLeftClose, PanelLeftOpen,
-  LogOut, User as UserIcon, Building2, AlertOctagon, ClipboardList,
-  ChevronDown, ChevronRight, ChevronUp, ArrowDownRight, Globe, Home, BarChart3, Briefcase, FileSignature, Receipt, Shield, Calculator, FileCheck, TrendingUp
-} from 'lucide-react';
-import { MosaicLogo } from './MosaicLogo';
+import CommandPalette from './layout/CommandPalette';
+import NotificationPanel from './notifications/NotificationPanel';
 import EnvironmentBadge from './EnvironmentBadge';
 import { PageHeaderProvider, usePageHeader } from '../context/PageHeaderContext';
+import {
+  LayoutDashboard, FileText, Settings, Search, Bell, Sun, Moon,
+  FileSpreadsheet, Lock, LogOut, Building2, AlertOctagon, ClipboardList,
+  ArrowDownRight, Globe, Home, BarChart3, Briefcase, FileSignature,
+  Receipt, Shield, Calculator, FileCheck, TrendingUp, Zap, Wallet,
+  Plus, Menu
+} from 'lucide-react';
 
 interface LayoutProps {
   children?: React.ReactNode;
 }
 
-// Route groups define which routes should highlight which nav items
-const routeGroups: Record<string, string[]> = {
-  '/': ['/'], // Dashboard only - analytics view
-  '/direct-insurance': ['/direct-insurance', '/policy', '/new', '/edit', '/wording'], // Direct insurance policies
-  '/inward-reinsurance': ['/inward-reinsurance'], // Inward reinsurance dashboard and sub-pages
-  '/mga': ['/mga'],
-  '/analytics': ['/analytics'],
-  '/financial-statements': ['/financial-statements'],
-  '/risk-accumulation': ['/risk-accumulation'],
-  '/ibnr': ['/ibnr', '/ibnr/manual', '/ibnr/bf-method'],
-  '/regulatory': ['/regulatory'],
-  '/slips': ['/slips', '/slip'],
-  '/claims': ['/claims', '/claim'],
-  '/agenda': ['/agenda'],
-  '/entities': ['/entities'],
-  '/clauses': ['/clauses'],
-  '/admin': ['/admin'],
+// Tab definitions matching v15 mockup
+interface TabDef {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  path?: string;
+}
+
+const TABS: TabDef[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={13} />, path: '/' },
+  { id: 'policy-admin', label: 'Policy Admin', icon: <Briefcase size={13} />, path: '/direct-insurance' },
+  { id: 'inward', label: 'Inward RI', icon: <ArrowDownRight size={13} />, path: '/inward-reinsurance' },
+  { id: 'claims', label: 'Claims', icon: <AlertOctagon size={13} />, path: '/claims' },
+  { id: 'financial-lines', label: 'Financial Lines', icon: <Shield size={13} /> },
+  { id: 'billing', label: 'Billing', icon: <Wallet size={13} /> },
+  { id: 'finance', label: 'Finance', icon: <Building2 size={13} />, path: '/financial-statements' },
+];
+
+// Sidebar items per active tab — context-sensitive navigation
+interface SideItem {
+  label: string;
+  icon: React.ReactNode;
+  path?: string;
+  accent?: boolean;
+}
+
+const SIDE_ITEMS: Record<string, SideItem[]> = {
+  dashboard: [
+    { label: 'Overview', icon: <BarChart3 size={14} />, path: '/' },
+    { label: 'Analytics', icon: <BarChart3 size={14} />, path: '/analytics' },
+    { label: 'My Agenda', icon: <ClipboardList size={14} />, path: '/agenda' },
+  ],
+  'policy-admin': [
+    { label: 'Portfolio', icon: <FileText size={14} />, path: '/direct-insurance' },
+    { label: 'New Policy', icon: <Plus size={14} />, path: '/new', accent: true },
+    { label: 'Analytics', icon: <BarChart3 size={14} />, path: '/analytics' },
+    { label: 'Slips', icon: <FileSpreadsheet size={14} />, path: '/slips' },
+    { label: 'Entities', icon: <Building2 size={14} />, path: '/entities' },
+    { label: 'Clause Library', icon: <FileText size={14} />, path: '/clauses' },
+  ],
+  inward: [
+    { label: 'Dashboard', icon: <BarChart3 size={14} />, path: '/inward-reinsurance' },
+    { label: 'Foreign', icon: <Globe size={14} />, path: '/inward-reinsurance/foreign' },
+    { label: 'Domestic', icon: <Home size={14} />, path: '/inward-reinsurance/domestic' },
+    { label: 'New Foreign', icon: <Globe size={14} />, path: '/inward-reinsurance/foreign/new', accent: true },
+    { label: 'New Domestic', icon: <Home size={14} />, path: '/inward-reinsurance/domestic/new', accent: true },
+  ],
+  claims: [
+    { label: 'All Claims', icon: <AlertOctagon size={14} />, path: '/claims' },
+    { label: 'Slips', icon: <FileSpreadsheet size={14} />, path: '/slips' },
+  ],
+  'financial-lines': [
+    { label: 'MGA / Binders', icon: <FileSignature size={14} />, path: '/mga' },
+  ],
+  billing: [],
+  finance: [
+    { label: 'Financial Statements', icon: <Receipt size={14} />, path: '/financial-statements' },
+    { label: 'Risk Accumulation', icon: <Shield size={14} />, path: '/risk-accumulation' },
+    { label: 'IBNR — Manual', icon: <Calculator size={14} />, path: '/ibnr/manual' },
+    { label: 'IBNR — BF Method', icon: <TrendingUp size={14} />, path: '/ibnr/bf-method' },
+    { label: 'Regulatory', icon: <FileCheck size={14} />, path: '/regulatory' },
+  ],
+  admin: [
+    { label: 'Settings', icon: <Settings size={14} />, path: '/settings' },
+    { label: 'Entities', icon: <Building2 size={14} />, path: '/entities' },
+    { label: 'Clause Library', icon: <FileText size={14} />, path: '/clauses' },
+  ],
 };
 
-const getPageTitle = (pathname: string): string => {
-  if (pathname === '/') return 'Portfolio';
-  if (pathname.startsWith('/direct-insurance') || pathname.startsWith('/policy') || pathname.startsWith('/new') || pathname.startsWith('/edit')) return 'Direct Insurance';
-  if (pathname.includes('/inward-reinsurance/foreign')) return 'Inward Reinsurance — Foreign';
-  if (pathname.includes('/inward-reinsurance/domestic')) return 'Inward Reinsurance — Domestic';
-  if (pathname.startsWith('/inward-reinsurance')) return 'Inward Reinsurance';
-  if (pathname.startsWith('/mga')) return 'MGA / Binders';
-  if (pathname.startsWith('/analytics')) return 'Analytics';
-  if (pathname.startsWith('/financial')) return 'Technical Account';
-  if (pathname.startsWith('/risk-accumulation')) return 'Risk Accumulation';
-  if (pathname.includes('/ibnr/manual')) return 'IBNR — Manual Entry';
-  if (pathname.includes('/ibnr/bf-method')) return 'IBNR — BF Method';
-  if (pathname.startsWith('/ibnr')) return 'IBNR Estimation';
-  if (pathname.startsWith('/regulatory')) return 'Regulatory Reporting';
-  if (pathname.startsWith('/slips') || pathname.startsWith('/slip')) return 'Slips';
-  if (pathname.startsWith('/claims') || pathname.startsWith('/claim')) return 'Claims';
-  if (pathname.startsWith('/entities')) return 'Legal Entities';
-  if (pathname.startsWith('/clauses')) return 'Clause Library';
-  if (pathname.startsWith('/admin')) return 'Admin Console';
-  if (pathname.startsWith('/agenda')) return 'My Agenda';
-  if (pathname.startsWith('/wording')) return 'Policy Wording';
-  if (pathname.startsWith('/settings')) return 'Settings';
-  return '';
-};
+// Determine active tab from current route
+function getActiveTab(pathname: string): string {
+  if (pathname === '/') return 'dashboard';
+  if (pathname.startsWith('/direct-insurance') || pathname.startsWith('/policy') || pathname.startsWith('/new') || pathname.startsWith('/edit') || pathname.startsWith('/wording')) return 'policy-admin';
+  if (pathname.startsWith('/inward-reinsurance')) return 'inward';
+  if (pathname.startsWith('/claims') || pathname.startsWith('/claim')) return 'claims';
+  if (pathname.startsWith('/mga')) return 'financial-lines';
+  if (pathname.startsWith('/financial') || pathname.startsWith('/risk-accumulation') || pathname.startsWith('/ibnr') || pathname.startsWith('/regulatory')) return 'finance';
+  if (pathname.startsWith('/admin')) return 'admin';
+  if (pathname.startsWith('/slips') || pathname.startsWith('/slip')) return 'policy-admin';
+  if (pathname.startsWith('/entities') || pathname.startsWith('/clauses')) return 'policy-admin';
+  if (pathname.startsWith('/analytics')) return 'dashboard';
+  if (pathname.startsWith('/agenda')) return 'dashboard';
+  if (pathname.startsWith('/settings')) return 'admin';
+  return 'dashboard';
+}
+
+function getSideGroupLabel(tabId: string): string {
+  switch (tabId) {
+    case 'dashboard': return 'Navigation';
+    case 'policy-admin': return 'Direct Insurance';
+    case 'inward': return 'Reinsurance';
+    case 'claims': return 'Claims';
+    case 'financial-lines': return 'Financial Lines';
+    case 'billing': return 'Billing';
+    case 'finance': return 'Finance';
+    case 'admin': return 'Administration';
+    default: return 'Navigation';
+  }
+}
 
 const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, signOut } = useAuth();
   const { headerActions, headerLeft } = usePageHeader();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isInwardReinsuranceOpen, setIsInwardReinsuranceOpen] = useState(
-    location.pathname.includes('/inward-reinsurance')
-  );
-  const [isIbnrOpen, setIsIbnrOpen] = useState(
-    location.pathname.includes('/ibnr')
-  );
+  const { theme, toggleTheme, t } = useTheme();
+
+  const [sideOpen, setSideOpen] = useState(true);
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [sessionTimeoutMs, setSessionTimeoutMs] = useState(30 * 60 * 1000);
+
+  const activeTab = getActiveTab(location.pathname);
+  const sideItems = SIDE_ITEMS[activeTab] || [];
 
   // Load session timeout: user localStorage override > global admin DB setting > 30 min default
   useEffect(() => {
@@ -97,10 +158,23 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
     });
   }, []);
 
-  // Close user menu on route change
+  // Close menus on route change
   useEffect(() => {
     setIsUserMenuOpen(false);
+    setNotifOpen(false);
   }, [location.pathname]);
+
+  // Keyboard shortcut for command palette
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdOpen(v => !v);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -120,412 +194,349 @@ const LayoutInner: React.FC<LayoutProps> = ({ children }) => {
     enabled: !!user,
   });
 
-  const getLinkClass = (navPath: string, exact: boolean = false) => {
-    let isActive = false;
-
-    if (exact || navPath === '/') {
-      // Dashboard (/) should ONLY match exactly "/"
-      isActive = location.pathname === navPath;
-    } else {
-      // Other paths use startsWith matching
-      isActive = location.pathname.startsWith(navPath);
-    }
-
-    // Check route groups for additional matching paths
-    if (!isActive && routeGroups[navPath]) {
-      isActive = routeGroups[navPath].some(p =>
-        p === '/' ? location.pathname === p : location.pathname.startsWith(p)
-      );
-    }
-
-    return `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors whitespace-nowrap ${
-      isActive ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
-    }`;
-  };
-
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      {/* Environment Banner - shown when on staging */}
+    <div style={{ fontFamily: "'DM Sans', sans-serif", background: t.bgApp, color: t.text1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Environment Banner */}
       <EnvironmentBadge />
 
-      <div className="flex-1 bg-gray-50 flex overflow-hidden">
-      {/* Sidebar */}
-      <aside
-        className={`bg-slate-900 text-white flex-shrink-0 flex flex-col z-30 transition-all duration-300 ease-in-out shadow-xl relative
-        ${isSidebarOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full opacity-0 overflow-hidden'}`}
-      >
-        {/* Sidebar Header */}
-        <div className="p-4 border-b border-slate-700/50">
-          <Link to="/">
-            <MosaicLogo variant="white" size="sm" showText />
-          </Link>
+      {/* ── Top Bar (44px) ── */}
+      <div style={{
+        background: t.topbar,
+        borderBottom: `1px solid ${t.border}`,
+        padding: '0 16px 0 8px',
+        height: 44,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexShrink: 0,
+        position: 'relative',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {/* Hamburger toggle */}
+          <button
+            onClick={() => setSideOpen(v => !v)}
+            title="Toggle sidebar"
+            style={{
+              width: 32, height: 32, borderRadius: 7,
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              gap: 4, flexShrink: 0, opacity: 0.7,
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+            onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+          >
+            <Menu size={16} style={{ color: t.text2 }} />
+          </button>
+          {/* Logo */}
+          <div style={{
+            width: 26, height: 26, borderRadius: 7,
+            background: 'linear-gradient(135deg, #2563eb, #06b6d4)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 700, fontSize: 10, color: '#fff',
+          }}>
+            M
+          </div>
+          <span style={{ fontWeight: 700, fontSize: 14, color: t.text1 }}>Mosaic ERP</span>
+          <span style={{
+            padding: '2px 8px', borderRadius: 4,
+            background: t.border, color: t.text3, fontSize: 10, fontWeight: 600,
+          }}>
+            v2
+          </span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto overflow-x-hidden">
-          <Link
-            to="/"
-            className={getLinkClass('/', true)}
-            title="Portfolio"
-          >
-            <LayoutDashboard size={20} className="flex-shrink-0" />
-            <span>Portfolio</span>
-          </Link>
-
-          {/* Direct Insurance */}
-          <Link
-            to="/direct-insurance"
-            className={getLinkClass('/direct-insurance')}
-            title="Direct Insurance"
-          >
-            <Briefcase size={20} className="flex-shrink-0" />
-            <span>Direct Insurance</span>
-          </Link>
-
-          {/* Inward Reinsurance Collapsible Section */}
-          <div className="pt-2">
-            <div
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors whitespace-nowrap ${
-                location.pathname.includes('/inward-reinsurance')
-                  ? 'bg-blue-600/20 text-blue-300'
-                  : 'text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Link
-                to="/inward-reinsurance"
-                onClick={() => setIsInwardReinsuranceOpen(true)}
-                className="flex items-center gap-3 flex-1"
-                title="Inward Reinsurance Dashboard"
-              >
-                <ArrowDownRight size={20} className="flex-shrink-0" />
-                <span className="text-left">Inward Reinsurance</span>
-              </Link>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsInwardReinsuranceOpen(!isInwardReinsuranceOpen);
-                }}
-                className="p-1 hover:bg-slate-700 rounded transition-colors"
-                title={isInwardReinsuranceOpen ? "Collapse" : "Expand"}
-              >
-                {isInwardReinsuranceOpen ? (
-                  <ChevronDown size={16} className="flex-shrink-0" />
-                ) : (
-                  <ChevronRight size={16} className="flex-shrink-0" />
-                )}
-              </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Page-level header actions from pages */}
+          {headerLeft && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 8 }}>
+              {headerLeft}
             </div>
-
-            {/* Nested Links */}
-            {isInwardReinsuranceOpen && (
-              <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-700 pl-2">
-                <Link
-                  to="/inward-reinsurance/foreign"
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm whitespace-nowrap ${
-                    location.pathname.includes('/inward-reinsurance/foreign')
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                  title="Foreign/Overseas"
-                >
-                  <Globe size={16} className="flex-shrink-0" />
-                  <span>Foreign</span>
-                </Link>
-                <Link
-                  to="/inward-reinsurance/domestic"
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm whitespace-nowrap ${
-                    location.pathname.includes('/inward-reinsurance/domestic')
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                  title="Domestic"
-                >
-                  <Home size={16} className="flex-shrink-0" />
-                  <span>Domestic</span>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <Link
-            to="/mga"
-            className={getLinkClass('/mga')}
-            title="MGA / Binders"
-          >
-            <FileSignature size={20} className="flex-shrink-0" />
-            <span>MGA / Binders</span>
-          </Link>
-
-          <Link
-            to="/analytics"
-            className={getLinkClass('/analytics')}
-            title="Analytics"
-          >
-            <BarChart3 size={20} className="flex-shrink-0" />
-            <span>Analytics</span>
-          </Link>
-
-          <Link
-            to="/financial-statements"
-            className={getLinkClass('/financial-statements')}
-            title="Financial Statements"
-          >
-            <Receipt size={20} className="flex-shrink-0" />
-            <span>Financial Statements</span>
-          </Link>
-
-          <Link
-            to="/risk-accumulation"
-            className={getLinkClass('/risk-accumulation')}
-            title="Risk Accumulation"
-          >
-            <Shield size={20} className="flex-shrink-0" />
-            <span>Risk Accumulation</span>
-          </Link>
-
-          {/* IBNR Estimation Collapsible Section */}
-          <div className="pt-2">
-            <div
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors whitespace-nowrap ${
-                location.pathname.includes('/ibnr')
-                  ? 'bg-blue-600/20 text-blue-300'
-                  : 'text-slate-300 hover:bg-slate-800'
-              }`}
-            >
-              <Link
-                to="/ibnr/manual"
-                onClick={() => setIsIbnrOpen(true)}
-                className="flex items-center gap-3 flex-1"
-                title="IBNR Estimation"
-              >
-                <Calculator size={20} className="flex-shrink-0" />
-                <span className="text-left">IBNR Estimation</span>
-              </Link>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsIbnrOpen(!isIbnrOpen);
-                }}
-                className="p-1 hover:bg-slate-700 rounded transition-colors"
-                title={isIbnrOpen ? "Collapse" : "Expand"}
-              >
-                {isIbnrOpen ? (
-                  <ChevronDown size={16} className="flex-shrink-0" />
-                ) : (
-                  <ChevronRight size={16} className="flex-shrink-0" />
-                )}
-              </button>
-            </div>
-
-            {/* Nested Links */}
-            {isIbnrOpen && (
-              <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-700 pl-2">
-                <Link
-                  to="/ibnr/manual"
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm whitespace-nowrap ${
-                    location.pathname.includes('/ibnr/manual') || (location.pathname === '/ibnr' && !location.pathname.includes('/bf-method'))
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                  title="Manual Entry"
-                >
-                  <FileText size={16} className="flex-shrink-0" />
-                  <span>Manual Entry</span>
-                </Link>
-                <Link
-                  to="/ibnr/bf-method"
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-sm whitespace-nowrap ${
-                    location.pathname.includes('/ibnr/bf-method')
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-                  }`}
-                  title="BF Method"
-                >
-                  <TrendingUp size={16} className="flex-shrink-0" />
-                  <span>BF Method</span>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <Link
-            to="/regulatory"
-            className={getLinkClass('/regulatory')}
-            title="Regulatory Reports"
-          >
-            <FileCheck size={20} className="flex-shrink-0" />
-            <span>Regulatory Reports</span>
-          </Link>
-
-          <Link
-            to="/agenda"
-            className={getLinkClass('/agenda')}
-            title="My Agenda"
-          >
-            <ClipboardList size={20} className="flex-shrink-0" />
-            <span>My Agenda</span>
-          </Link>
-
-          <Link
-              to="/slips"
-              className={getLinkClass('/slips')}
-              title="Reinsurance Slips"
-          >
-              <FileSpreadsheet size={20} className="flex-shrink-0" />
-              <span>Reinsurance Slips</span>
-          </Link>
-
-          <Link
-              to="/claims"
-              className={getLinkClass('/claims')}
-              title="Claims Center"
-          >
-              <AlertOctagon size={20} className="flex-shrink-0" />
-              <span>Claims Center</span>
-          </Link>
-
-          <div className="pt-4 pb-2 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-            Configuration
-          </div>
-
-          <Link 
-              to="/entities" 
-              className={getLinkClass('/entities')}
-              title="Legal Entities"
-          >
-              <Building2 size={20} className="flex-shrink-0" />
-              <span>Legal Entities</span>
-          </Link>
-
-          <Link 
-              to="/clauses" 
-              className={getLinkClass('/clauses')}
-              title="Clause Library"
-          >
-              <FileText size={20} className="flex-shrink-0" />
-              <span>Clause Library</span>
-          </Link>
-
-          {/* Admin Console - Restricted to Super Admin and Admin only */}
-          {(user?.role === 'Super Admin' || user?.role === 'Admin') && (
-             <Link 
-              to="/admin" 
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors whitespace-nowrap mt-2 ${location.pathname.startsWith('/admin') ? 'bg-emerald-800 text-emerald-100' : 'text-emerald-400 hover:bg-emerald-900/50'}`}
-              title="Admin Console"
-            >
-              <Lock size={18} className="flex-shrink-0" />
-              <span className="font-semibold">Admin Console</span>
-            </Link>
           )}
-        </nav>
+          {headerActions && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 8 }}>
+              {headerActions}
+            </div>
+          )}
 
-        {/* User Profile Section with Popup */}
-        <div className="p-4 border-t border-slate-700/50 relative">
-          {/* Clickable User Card */}
+          {/* Search trigger */}
           <button
-            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 transition-colors text-left"
+            onClick={() => setCmdOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '5px 12px', borderRadius: 7,
+              background: t.bgInput, border: `1px solid ${t.border}`,
+              cursor: 'pointer', color: t.text4, fontSize: 12,
+              fontFamily: 'inherit',
+            }}
           >
-            {/* Avatar */}
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-              {user?.avatarUrl || user?.name?.substring(0, 1) || 'U'}
-            </div>
-
-            {/* User Info */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.name || 'User'}</p>
-              <p className="text-xs text-slate-400 truncate">{user?.role || 'Role'}</p>
-            </div>
-
-            {/* Chevron */}
-            <ChevronUp
-              size={16}
-              className={`text-slate-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
-            />
+            <Search size={13} style={{ color: t.text4 }} />
+            <span>Search...</span>
+            <span style={{
+              fontSize: 10, color: t.text5, background: t.bgApp,
+              padding: '1px 5px', borderRadius: 3, border: `1px solid ${t.border}`,
+              marginLeft: 8,
+            }}>
+              ⌘K
+            </span>
           </button>
 
-          {/* Popup Menu */}
-          {isUserMenuOpen && (
-            <>
-              {/* Backdrop to close menu when clicking outside */}
-              <div
-                className="fixed inset-0 z-40"
-                onClick={() => setIsUserMenuOpen(false)}
-              />
+          {/* Notifications */}
+          <button
+            onClick={() => setNotifOpen(v => !v)}
+            style={{
+              width: 32, height: 32, borderRadius: 7,
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+            onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+          >
+            <Bell size={16} style={{ color: t.text3 }} />
+            <div style={{
+              position: 'absolute', top: 6, right: 6,
+              width: 7, height: 7, borderRadius: '50%',
+              background: t.danger, border: `2px solid ${t.topbar}`,
+            }} />
+          </button>
+          <NotificationPanel open={notifOpen} onClose={() => setNotifOpen(false)} />
 
-              {/* Menu */}
-              <div className="absolute bottom-full left-4 right-4 mb-2 bg-slate-800 rounded-xl shadow-xl border border-slate-700 overflow-hidden z-50">
-                {/* User Info Header */}
-                <div className="px-4 py-3 border-b border-slate-700">
-                  <p className="text-sm font-medium text-white">{user?.name}</p>
-                  <p className="text-xs text-slate-400">{user?.email}</p>
-                </div>
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              width: 32, height: 32, borderRadius: 7,
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+            onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+          >
+            {theme === 'dark'
+              ? <Sun size={15} style={{ color: t.text3 }} />
+              : <Moon size={15} style={{ color: t.text3 }} />}
+          </button>
 
-                {/* Menu Items */}
-                <div className="py-1">
-                  <Link
-                    to="/settings"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
-                  >
-                    <Settings size={18} />
-                    <span className="text-sm">Settings</span>
-                  </Link>
+          {/* User avatar + menu */}
+          <div style={{ position: 'relative' }}>
+            <div
+              onClick={() => setIsUserMenuOpen(v => !v)}
+              style={{
+                width: 28, height: 28, borderRadius: 7,
+                background: 'linear-gradient(135deg, #2563eb, #8b5cf6)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, color: '#fff', fontWeight: 700, cursor: 'pointer',
+              }}
+            >
+              {user?.name?.substring(0, 1) || 'U'}
+            </div>
 
-                  <button
-                    onClick={() => {
-                      setIsUserMenuOpen(false);
-                      handleSignOut();
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
-                  >
-                    <LogOut size={18} />
-                    <span className="text-sm">Sign Out</span>
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </aside>
-
-      {/* Main Content Wrapper */}
-      <div className="flex-1 flex flex-col h-full min-w-0">
-
-          {/* Global Header (Fixed at top of content area) */}
-          <header className="bg-white border-b border-gray-200 px-4 py-2 flex items-center shadow-sm z-20 flex-shrink-0 relative">
-                <div className="flex items-center">
-                    <button
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="p-2 text-slate-500 hover:bg-gray-100 hover:text-slate-800 rounded-lg transition-colors focus:outline-none"
-                        title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+            {/* User dropdown */}
+            {isUserMenuOpen && (
+              <>
+                <div style={{ position: 'fixed', inset: 0, zIndex: 998 }} onClick={() => setIsUserMenuOpen(false)} />
+                <div style={{
+                  position: 'absolute', top: 36, right: 0, width: 220,
+                  background: t.bgPanel, border: `1px solid ${t.borderL}`,
+                  borderRadius: 10, boxShadow: t.shadowLg, zIndex: 999, overflow: 'hidden',
+                }}>
+                  <div style={{ padding: '12px 14px', borderBottom: `1px solid ${t.border}` }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: t.text1 }}>{user?.name || 'User'}</div>
+                    <div style={{ fontSize: 11, color: t.text4, marginTop: 2 }}>{user?.email}</div>
+                    <div style={{ fontSize: 10, color: t.text3, marginTop: 2 }}>{user?.role}</div>
+                  </div>
+                  <div style={{ padding: 4 }}>
+                    <Link
+                      to="/settings"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 8,
+                        padding: '8px 10px', borderRadius: 6, cursor: 'pointer',
+                        color: t.text2, fontSize: 12, textDecoration: 'none',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
-                        {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
+                      <Settings size={14} />
+                      Settings
+                    </Link>
+                    {(user?.role === 'Super Admin' || user?.role === 'Admin') && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 8,
+                          padding: '8px 10px', borderRadius: 6, cursor: 'pointer',
+                          color: t.text2, fontSize: 12, textDecoration: 'none',
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                      >
+                        <Lock size={14} />
+                        Admin Console
+                      </Link>
+                    )}
+                    <button
+                      onClick={() => { setIsUserMenuOpen(false); handleSignOut(); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 8,
+                        padding: '8px 10px', borderRadius: 6, cursor: 'pointer',
+                        color: t.danger, fontSize: 12, width: '100%',
+                        background: 'transparent', border: 'none', fontFamily: 'inherit',
+                        textAlign: 'left',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <LogOut size={14} />
+                      Sign Out
                     </button>
+                  </div>
                 </div>
-                {headerLeft && (
-                    <div className="hidden md:flex items-center gap-2 ml-2">
-                        {headerLeft}
-                    </div>
-                )}
-                <div className="flex-1 text-center">
-                    <h1 className="text-xl font-bold text-gray-800">{getPageTitle(location.pathname)}</h1>
-                </div>
-                <div className="flex items-center gap-2">
-                    {headerActions}
-                </div>
-                {/* Blur fade strip below header */}
-                <div className="absolute left-0 right-0 top-full h-6 pointer-events-none z-10"
-                     style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', background: 'linear-gradient(to bottom, rgba(249,250,251,0.85), rgba(249,250,251,0))' }} />
-          </header>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
 
-          {/* Scrollable Page Content */}
-          <main className="flex-1 overflow-y-scroll pt-2 px-4 pb-4 md:pt-2 md:px-8 md:pb-8 relative main-content-area">
-             <div className="w-full mx-auto">
-                {children}
-             </div>
-          </main>
+      {/* ── Tab Bar (38px) ── */}
+      <div style={{
+        background: t.bgSidebar,
+        borderBottom: `1px solid ${t.border}`,
+        display: 'flex',
+        alignItems: 'flex-end',
+        padding: '0 12px',
+        flexShrink: 0,
+        height: 38,
+        gap: 1,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 1, flex: 1 }}>
+          {TABS.map(tab => {
+            const active = activeTab === tab.id;
+            return (
+              <div
+                key={tab.id}
+                onClick={() => { if (tab.path) navigate(tab.path); }}
+                style={{
+                  padding: '0 16px',
+                  height: 34,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 7,
+                  cursor: tab.path ? 'pointer' : 'default',
+                  borderRadius: '6px 6px 0 0',
+                  background: active ? t.bgApp : 'transparent',
+                  borderTop: active ? `2px solid ${t.accent}` : '2px solid transparent',
+                  borderLeft: active ? `1px solid ${t.border}` : '1px solid transparent',
+                  borderRight: active ? `1px solid ${t.border}` : '1px solid transparent',
+                  borderBottom: active ? `1px solid ${t.bgApp}` : 'none',
+                  marginBottom: active ? -1 : 0,
+                  transition: 'all 0.12s',
+                  position: 'relative',
+                  zIndex: active ? 2 : 1,
+                }}
+                onMouseEnter={e => { if (!active) e.currentTarget.style.background = t.bgHover; }}
+                onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? t.bgApp : 'transparent'; }}
+              >
+                <span style={{ color: active ? t.accent : t.text4, display: 'flex', alignItems: 'center' }}>{tab.icon}</span>
+                <span style={{ fontSize: 12, fontWeight: active ? 600 : 400, color: active ? t.text1 : t.text3, whiteSpace: 'nowrap' }}>{tab.label}</span>
+              </div>
+            );
+          })}
+        </div>
+        {/* Admin tab on the right */}
+        {(user?.role === 'Super Admin' || user?.role === 'Admin') && (
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
+            <div
+              onClick={() => navigate('/admin')}
+              style={{
+                padding: '0 14px',
+                height: 34,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                cursor: 'pointer',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === 'admin' ? t.bgApp : 'transparent',
+                borderTop: activeTab === 'admin' ? `2px solid ${t.text3}` : '2px solid transparent',
+                borderLeft: activeTab === 'admin' ? `1px solid ${t.border}` : '1px solid transparent',
+                borderRight: activeTab === 'admin' ? `1px solid ${t.border}` : '1px solid transparent',
+                borderBottom: activeTab === 'admin' ? `1px solid ${t.bgApp}` : 'none',
+                marginBottom: activeTab === 'admin' ? -1 : 0,
+                position: 'relative',
+                zIndex: activeTab === 'admin' ? 2 : 1,
+              }}
+              onMouseEnter={e => { if (activeTab !== 'admin') e.currentTarget.style.background = t.bgHover; }}
+              onMouseLeave={e => { if (activeTab !== 'admin') e.currentTarget.style.background = 'transparent'; }}
+            >
+              <Settings size={13} style={{ color: activeTab === 'admin' ? t.text1 : t.text4 }} />
+              <span style={{ fontSize: 12, fontWeight: activeTab === 'admin' ? 600 : 400, color: activeTab === 'admin' ? t.text1 : t.text3 }}>Admin</span>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* ── Body (sidebar + content) ── */}
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        {/* Context Sidebar (190px) */}
+        <div style={{
+          width: sideOpen ? 190 : 0,
+          minWidth: sideOpen ? 190 : 0,
+          background: t.bgSidebar,
+          borderRight: `1px solid ${t.border}`,
+          flexShrink: 0,
+          overflow: 'hidden',
+          transition: 'width 0.2s ease, min-width 0.2s ease',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <div style={{ width: 190, padding: '14px 0', display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
+            <div style={{
+              fontSize: 9, fontWeight: 700, color: t.sideGroup,
+              textTransform: 'uppercase', letterSpacing: 1.2,
+              padding: '6px 16px 8px', whiteSpace: 'nowrap',
+            }}>
+              {getSideGroupLabel(activeTab)}
+            </div>
+            {sideItems.map((item, i) => (
+              <Link
+                key={i}
+                to={item.path || '#'}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 9,
+                  padding: '9px 16px',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  borderLeft: item.accent ? `2px solid ${t.accent}` : '2px solid transparent',
+                  background: item.path === location.pathname ? t.bgActive : 'transparent',
+                  transition: 'background 0.12s',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
+                onMouseEnter={e => { if (item.path !== location.pathname) e.currentTarget.style.background = t.bgHover; }}
+                onMouseLeave={e => { if (item.path !== location.pathname) e.currentTarget.style.background = item.path === location.pathname ? t.bgActive : 'transparent'; }}
+              >
+                <span style={{ color: item.accent ? t.accent : t.text4, display: 'flex', alignItems: 'center' }}>{item.icon}</span>
+                <span style={{ fontSize: 12, color: item.accent ? t.accent : t.text3, fontWeight: item.accent ? 600 : 400 }}>{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Main content area */}
+        <main style={{
+          flex: 1,
+          overflowY: 'auto',
+          background: t.bgApp,
+        }} className="main-content-area">
+          {children}
+        </main>
       </div>
+
+      {/* Command Palette */}
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
 
       {/* Session Timeout Warning Modal */}
       {showWarning && (

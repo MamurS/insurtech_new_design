@@ -9,6 +9,7 @@ import {
   Currency
 } from '../types';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import { EntitySearchInput } from './EntitySearchInput';
 import { formatSICDisplay } from '../data/sicCodes';
 import { DatePickerInput, toISODateString } from './DatePickerInput';
@@ -53,58 +54,6 @@ const FOREIGN_COUNTRIES = ALL_COUNTRIES.filter(c => c !== 'Uzbekistan');
 // Countries for Domestic (only Uzbekistan)
 const DOMESTIC_COUNTRIES = ['Uzbekistan'];
 
-// Form Section Card Component
-interface FormSectionProps {
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  className?: string;
-}
-
-const FormSection: React.FC<FormSectionProps> = ({
-  title,
-  icon,
-  children,
-  className = ''
-}) => {
-  return (
-    <div className={`bg-white rounded-xl border border-slate-200 shadow-sm ${className}`}>
-      <div className="px-5 py-3 border-b border-slate-100">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-2">
-          {icon}
-          {title}
-        </h3>
-      </div>
-      <div className="p-5">
-        {children}
-      </div>
-    </div>
-  );
-};
-
-// Error message component
-interface FieldErrorProps {
-  error?: string;
-}
-
-const FieldError: React.FC<FieldErrorProps> = ({ error }) => {
-  if (!error) return null;
-  return (
-    <p className="mt-1 text-xs text-red-500 flex items-center gap-1">
-      <AlertCircle size={12} />
-      {error}
-    </p>
-  );
-};
-
-// Background gradient classes based on type + structure
-const backgroundGradients: Record<string, string> = {
-  'FAC-PROPORTIONAL': 'bg-gradient-to-br from-amber-50/50 via-blue-50/30 to-slate-50',
-  'FAC-NON_PROPORTIONAL': 'bg-gradient-to-br from-amber-50/50 via-violet-50/30 to-slate-50',
-  'TREATY-PROPORTIONAL': 'bg-gradient-to-br from-emerald-50/50 via-blue-50/30 to-slate-50',
-  'TREATY-NON_PROPORTIONAL': 'bg-gradient-to-br from-emerald-50/50 via-violet-50/30 to-slate-50',
-};
-
 // Validation errors type
 type FormErrors = Record<string, string>;
 
@@ -122,9 +71,54 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
   onCancel
 }) => {
   const toast = useToast();
+  const { t } = useTheme();
   const isEdit = Boolean(id);
   const [loading, setLoading] = useState(Boolean(id)); // Only show loading for edit mode
   const [saving, setSaving] = useState(false);
+
+  // Reusable style constants
+  const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 12, fontWeight: 600, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' };
+  const inputStyle: React.CSSProperties = { width: '100%', height: 40, padding: '0 12px', background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'box-shadow 0.15s' };
+  const inputErrorStyle: React.CSSProperties = { border: `1px solid ${t.danger}`, boxShadow: `0 0 0 2px ${t.dangerBg}` };
+  const selectStyle: React.CSSProperties = { ...inputStyle, cursor: 'pointer' };
+  const selectErrorStyle: React.CSSProperties = { ...inputErrorStyle };
+  const cardStyle: React.CSSProperties = { background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow, overflow: 'hidden' };
+  const sectionHeaderStyle: React.CSSProperties = { padding: '12px 20px', borderBottom: `1px solid ${t.border}` };
+  const sectionTitleStyle: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: t.text3, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 8 };
+  const sectionBodyStyle: React.CSSProperties = { padding: 20 };
+
+  // Form Section Card Component
+  const FormSection: React.FC<{ title: string; icon: React.ReactNode; children: React.ReactNode; className?: string }> = ({
+    title,
+    icon,
+    children,
+    className = ''
+  }) => {
+    return (
+      <div className={className} style={cardStyle}>
+        <div style={sectionHeaderStyle}>
+          <h3 style={sectionTitleStyle}>
+            {icon}
+            {title}
+          </h3>
+        </div>
+        <div style={sectionBodyStyle}>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  // Error message component
+  const FieldError: React.FC<{ error?: string }> = ({ error }) => {
+    if (!error) return null;
+    return (
+      <p className="mt-1 flex items-center gap-1" style={{ color: t.danger, fontSize: 12 }}>
+        <AlertCircle size={12} />
+        {error}
+      </p>
+    );
+  };
 
   // Validation errors state
   const [errors, setErrors] = useState<FormErrors>({});
@@ -181,12 +175,6 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
     notes: '',
     uwYear: new Date().getFullYear()
   });
-
-  // Get background class based on current selections
-  const getBackgroundClass = () => {
-    const key = `${activeType}-${activeStructure}`;
-    return backgroundGradients[key] || backgroundGradients['FAC-PROPORTIONAL'];
-  };
 
   // Helper function to check migration errors
   const checkMigrationError = (error: any): boolean => {
@@ -535,38 +523,38 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Loading...</div>;
+    return <div className="p-8" style={{ textAlign: 'center', color: t.text4 }}>Loading...</div>;
   }
 
   // Show migration required message
   if (migrationRequired) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+      <div style={{ background: t.warningBg, border: `1px solid ${t.warning}`, borderRadius: 12, padding: 24 }}>
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-            <FileText size={20} className="text-amber-600" />
+          <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: t.warningBg }}>
+            <FileText size={20} style={{ color: t.warning }} />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-amber-800">Database Setup Required</h3>
-            <p className="text-amber-700 mt-1">
+            <h3 style={{ fontSize: 18, fontWeight: 600, color: t.text1 }}>Database Setup Required</h3>
+            <p style={{ color: t.text2, marginTop: 4 }}>
               The Inward Reinsurance tables have not been created in the database yet.
             </p>
-            <p className="text-amber-600 mt-2 text-sm">
+            <p style={{ color: t.text3, marginTop: 8, fontSize: 14 }}>
               To use this feature, please run the migration script in your Supabase SQL Editor:
             </p>
-            <code className="block mt-2 p-3 bg-amber-100 rounded-lg text-sm text-amber-900 font-mono">
+            <code className="block" style={{ marginTop: 8, padding: 12, background: t.bgInput, borderRadius: 8, fontSize: 14, color: t.text1, fontFamily: 'monospace' }}>
               supabase_inward_reinsurance_migration.sql
             </code>
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => { setMigrationRequired(false); window.location.reload(); }}
-                className="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium"
+                style={{ padding: '8px 16px', background: t.warning, color: '#fff', borderRadius: 8, fontSize: 14, fontWeight: 500, border: 'none', cursor: 'pointer' }}
               >
                 Retry After Running Migration
               </button>
               <button
                 onClick={onCancel}
-                className="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 text-sm font-medium"
+                style={{ padding: '8px 16px', background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2, borderRadius: 8, fontSize: 14, fontWeight: 500, cursor: 'pointer' }}
               >
                 Cancel
               </button>
@@ -585,14 +573,8 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
     ...allCurrencies.filter(c => !priorityCurrencies.includes(c)).sort()
   ];
 
-  const labelClass = "block text-xs font-medium text-slate-500 mb-1.5";
-  const inputClass = "w-full h-10 px-3 rounded-lg border border-slate-300 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow";
-  const inputErrorClass = "border-red-500 ring-2 ring-red-500/20 focus:border-red-500 focus:ring-red-500/30";
-  const selectClass = "w-full h-10 px-3 rounded-lg border border-slate-300 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow bg-white";
-  const selectErrorClass = "border-red-500 ring-2 ring-red-500/20 focus:border-red-500 focus:ring-red-500/30";
-
   return (
-    <div className={`rounded-xl transition-colors duration-500 ${getBackgroundClass()}`}>
+    <div className="rounded-xl" style={{ background: t.bgApp }}>
       {/* Context Bar */}
       <ContextBar
         status={formData.status || 'DRAFT'}
@@ -630,11 +612,11 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
               />
 
               <div className="w-48">
-                <label className={labelClass}>
-                  Contract Number<span className="text-red-500 ml-0.5">*</span>
+                <label style={labelStyle}>
+                  Contract Number<span style={{ color: t.danger, marginLeft: 2 }}>*</span>
                 </label>
                 <div className="relative">
-                  <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   <input
                     type="text"
                     name="contractNumber"
@@ -642,14 +624,14 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     onChange={handleChange}
                     data-error={!!errors.contractNumber}
                     placeholder="e.g., IR-2026-001"
-                    className={`${inputClass} pl-8 ${errors.contractNumber ? inputErrorClass : ''}`}
+                    style={{ ...inputStyle, paddingLeft: 32, ...(errors.contractNumber ? inputErrorStyle : {}) }}
                   />
                 </div>
                 <FieldError error={errors.contractNumber} />
               </div>
 
               <div className="w-28">
-                <label className={labelClass}>UW Year</label>
+                <label style={labelStyle}>UW Year</label>
                 <input
                   type="number"
                   name="uwYear"
@@ -658,17 +640,17 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                   min={2000}
                   max={2100}
                   placeholder="2026"
-                  className={inputClass}
+                  style={inputStyle}
                 />
               </div>
 
               <div className="w-40">
-                <label className={labelClass}>Status</label>
+                <label style={labelStyle}>Status</label>
                 <select
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className={selectClass}
+                  style={selectStyle}
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PENDING">Pending Review</option>
@@ -689,25 +671,25 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             >
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className={labelClass}>Treaty Name</label>
+                  <label style={labelStyle}>Treaty Name</label>
                   <input
                     type="text"
                     name="treatyName"
                     value={formData.treatyName}
                     onChange={handleChange}
                     placeholder="e.g., Property Quota Share 2026"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Treaty Number</label>
+                  <label style={labelStyle}>Treaty Number</label>
                   <input
                     type="text"
                     name="treatyNumber"
                     value={formData.treatyNumber}
                     onChange={handleChange}
                     placeholder="e.g., TRT-2026-001"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
               </div>
@@ -723,11 +705,11 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             >
               <div className="grid grid-cols-2 gap-5">
                 <div>
-                  <label className={labelClass}>
-                    Original Insured Name<span className="text-red-500 ml-0.5">*</span>
+                  <label style={labelStyle}>
+                    Original Insured Name<span style={{ color: t.danger, marginLeft: 2 }}>*</span>
                   </label>
                   <div className="relative">
-                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                     <input
                       type="text"
                       name="originalInsuredName"
@@ -735,18 +717,18 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       onChange={handleChange}
                       data-error={!!errors.originalInsuredName}
                       placeholder="Company name"
-                      className={`${inputClass} pl-8 ${errors.originalInsuredName ? inputErrorClass : ''}`}
+                      style={{ ...inputStyle, paddingLeft: 32, ...(errors.originalInsuredName ? inputErrorStyle : {}) }}
                     />
                   </div>
                   <FieldError error={errors.originalInsuredName} />
                 </div>
                 <div>
-                  <label className={labelClass}>Risk Location</label>
+                  <label style={labelStyle}>Risk Location</label>
                   <select
                     name="territory"
                     value={formData.territory || ''}
                     onChange={handleChange}
-                    className={inputClass}
+                    style={selectStyle}
                   >
                     <option value="">Select country...</option>
                     {(origin === 'FOREIGN' ? FOREIGN_COUNTRIES : DOMESTIC_COUNTRIES).map(country => (
@@ -788,9 +770,9 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                   className={errors.cedantName ? 'has-error' : ''}
                 />
                 {formData.cedantSicCode && (
-                  <div className="mt-1.5 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">
-                    <span className="text-gray-400">Industry:</span>
-                    <span className="text-gray-600">{formatSICDisplay(formData.cedantSicCode)}</span>
+                  <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 12 }}>
+                    <span style={{ color: t.text4 }}>Industry:</span>
+                    <span style={{ color: t.text3 }}>{formatSICDisplay(formData.cedantSicCode)}</span>
                   </div>
                 )}
                 <FieldError error={errors.cedantName} />
@@ -810,12 +792,12 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
               {origin === 'FOREIGN' && (
                 <>
                   <div>
-                    <label className={labelClass}>Cedant Country</label>
+                    <label style={labelStyle}>Cedant Country</label>
                     <select
                       name="cedantCountry"
                       value={formData.cedantCountry || ''}
                       onChange={handleChange}
-                      className={selectClass}
+                      style={selectStyle}
                     >
                       <option value="">Select country...</option>
                       <option value="TR">Turkey</option>
@@ -831,12 +813,12 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     </select>
                   </div>
                   <div>
-                    <label className={labelClass}>Cedant Rating</label>
+                    <label style={labelStyle}>Cedant Rating</label>
                     <select
                       name="cedantRating"
                       value={(formData as any).cedantRating || ''}
                       onChange={handleChange}
-                      className={selectClass}
+                      style={selectStyle}
                     >
                       <option value="">Select rating...</option>
                       <option value="A+">A+ (Superior)</option>
@@ -856,15 +838,15 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
           <FormSection icon={<Shield className="w-4 h-4" />} title="Coverage & Terms">
             <div className="grid grid-cols-3 gap-5 mb-5">
               <div>
-                <label className={labelClass}>
-                  Type of Cover<span className="text-red-500 ml-0.5">*</span>
+                <label style={labelStyle}>
+                  Type of Cover<span style={{ color: t.danger, marginLeft: 2 }}>*</span>
                 </label>
                 <select
                   name="typeOfCover"
                   value={formData.typeOfCover}
                   onChange={handleChange}
                   data-error={!!errors.typeOfCover}
-                  className={`${selectClass} ${errors.typeOfCover ? selectErrorClass : ''}`}
+                  style={{ ...selectStyle, ...(errors.typeOfCover ? selectErrorStyle : {}) }}
                 >
                   <option value="">Select...</option>
                   {typeOfCoverOptions.length > 0 ? (
@@ -885,15 +867,15 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                 <FieldError error={errors.typeOfCover} />
               </div>
               <div>
-                <label className={labelClass}>
-                  Class of Cover<span className="text-red-500 ml-0.5">*</span>
+                <label style={labelStyle}>
+                  Class of Cover<span style={{ color: t.danger, marginLeft: 2 }}>*</span>
                 </label>
                 <select
                   name="classOfCover"
                   value={formData.classOfCover}
                   onChange={handleChange}
                   data-error={!!errors.classOfCover}
-                  className={`${selectClass} ${errors.classOfCover ? selectErrorClass : ''}`}
+                  style={{ ...selectStyle, ...(errors.classOfCover ? selectErrorStyle : {}) }}
                 >
                   <option value="">Select...</option>
                   {classOfCoverOptions.length > 0 ? (
@@ -914,12 +896,12 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                 <FieldError error={errors.classOfCover} />
               </div>
               <div>
-                <label className={labelClass}>Currency</label>
+                <label style={labelStyle}>Currency</label>
                 <select
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
-                  className={selectClass}
+                  style={selectStyle}
                 >
                   {sortedCurrencies.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -937,7 +919,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     clearError('inceptionDate');
                   }}
                   required
-                  className={errors.inceptionDate ? 'border-red-500 ring-2 ring-red-500/20' : ''}
+                  className={errors.inceptionDate ? 'has-error' : ''}
                 />
                 <FieldError error={errors.inceptionDate} />
               </div>
@@ -950,12 +932,12 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     clearError('expiryDate');
                   }}
                   required
-                  className={errors.expiryDate ? 'border-red-500 ring-2 ring-red-500/20' : ''}
+                  className={errors.expiryDate ? 'has-error' : ''}
                 />
                 <FieldError error={errors.expiryDate} />
               </div>
               <div>
-                <label className={labelClass}>Gross Premium</label>
+                <label style={labelStyle}>Gross Premium</label>
                 <input
                   type="number"
                   name="grossPremium"
@@ -964,7 +946,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                   min={0}
                   step="0.01"
                   placeholder="0.00"
-                  className={inputClass}
+                  style={inputStyle}
                 />
               </div>
             </div>
@@ -975,7 +957,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             {activeStructure === 'PROPORTIONAL' ? (
               <div className="grid grid-cols-3 gap-5">
                 <div>
-                  <label className={labelClass}>Our Share %<span className="text-red-500 ml-0.5">*</span></label>
+                  <label style={labelStyle}>Our Share %<span style={{ color: t.danger, marginLeft: 2 }}>*</span></label>
                   <div className="relative">
                     <input
                       type="number"
@@ -987,14 +969,14 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       max={100}
                       step="0.01"
                       placeholder="e.g., 5.00"
-                      className={`${inputClass} pr-8 ${errors.ourShare ? inputErrorClass : ''}`}
+                      style={{ ...inputStyle, paddingRight: 32, ...(errors.ourShare ? inputErrorStyle : {}) }}
                     />
-                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   </div>
                   <FieldError error={errors.ourShare} />
                 </div>
                 <div>
-                  <label className={labelClass}>Ceding Commission %</label>
+                  <label style={labelStyle}>Ceding Commission %</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1005,13 +987,13 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       max={100}
                       step="0.01"
                       placeholder="e.g., 25.00"
-                      className={`${inputClass} pr-8`}
+                      style={{ ...inputStyle, paddingRight: 32 }}
                     />
-                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   </div>
                 </div>
                 <div>
-                  <label className={labelClass}>Our Capacity / Line</label>
+                  <label style={labelStyle}>Our Capacity / Line</label>
                   <input
                     type="number"
                     name="limitOfLiability"
@@ -1020,14 +1002,14 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     min={0}
                     step="0.01"
                     placeholder="e.g., 500,000"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-4 gap-5">
                 <div>
-                  <label className={labelClass}>Limit<span className="text-red-500 ml-0.5">*</span></label>
+                  <label style={labelStyle}>Limit<span style={{ color: t.danger, marginLeft: 2 }}>*</span></label>
                   <input
                     type="number"
                     name="limitOfLiability"
@@ -1037,12 +1019,12 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     min={0}
                     step="0.01"
                     placeholder="e.g., 10,000,000"
-                    className={`${inputClass} ${errors.limitOfLiability ? inputErrorClass : ''}`}
+                    style={{ ...inputStyle, ...(errors.limitOfLiability ? inputErrorStyle : {}) }}
                   />
                   <FieldError error={errors.limitOfLiability} />
                 </div>
                 <div>
-                  <label className={labelClass}>Excess / Attachment</label>
+                  <label style={labelStyle}>Excess / Attachment</label>
                   <input
                     type="number"
                     name="excessPoint"
@@ -1051,11 +1033,11 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     min={0}
                     step="0.01"
                     placeholder="e.g., 5,000,000"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Rate on Line %</label>
+                  <label style={labelStyle}>Rate on Line %</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1066,13 +1048,13 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       max={100}
                       step="0.01"
                       placeholder="e.g., 2.50"
-                      className={`${inputClass} pr-8`}
+                      style={{ ...inputStyle, paddingRight: 32 }}
                     />
-                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   </div>
                 </div>
                 <div>
-                  <label className={labelClass}>Our Share %<span className="text-red-500 ml-0.5">*</span></label>
+                  <label style={labelStyle}>Our Share %<span style={{ color: t.danger, marginLeft: 2 }}>*</span></label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1084,9 +1066,9 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       max={100}
                       step="0.01"
                       placeholder="e.g., 5.00"
-                      className={`${inputClass} pr-8 ${errors.ourShare ? inputErrorClass : ''}`}
+                      style={{ ...inputStyle, paddingRight: 32, ...(errors.ourShare ? inputErrorStyle : {}) }}
                     />
-                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   </div>
                   <FieldError error={errors.ourShare} />
                 </div>
@@ -1103,18 +1085,18 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             >
               <div className="grid grid-cols-3 gap-5">
                 <div>
-                  <label className={labelClass}>Layer Number</label>
+                  <label style={labelStyle}>Layer Number</label>
                   <input
                     type="number"
                     name="layerNumber"
                     value={formData.layerNumber}
                     onChange={handleChange}
                     min={1}
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Aggregate Limit</label>
+                  <label style={labelStyle}>Aggregate Limit</label>
                   <input
                     type="number"
                     name="aggregateLimit"
@@ -1122,11 +1104,11 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     onChange={handleChange}
                     min={0}
                     step="0.01"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Aggregate Deductible</label>
+                  <label style={labelStyle}>Aggregate Deductible</label>
                   <input
                     type="number"
                     name="aggregateDeductible"
@@ -1134,22 +1116,22 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                     onChange={handleChange}
                     min={0}
                     step="0.01"
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Number of Reinstatements</label>
+                  <label style={labelStyle}>Number of Reinstatements</label>
                   <input
                     type="number"
                     name="reinstatements"
                     value={formData.reinstatements}
                     onChange={handleChange}
                     min={0}
-                    className={inputClass}
+                    style={inputStyle}
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Reinstatement Premium (%)</label>
+                  <label style={labelStyle}>Reinstatement Premium (%)</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1159,9 +1141,9 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
                       min={0}
                       max={100}
                       step="0.01"
-                      className={`${inputClass} pr-8`}
+                      style={{ ...inputStyle, paddingRight: 32 }}
                     />
-                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
                   </div>
                 </div>
               </div>
@@ -1176,23 +1158,24 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
               onChange={handleChange}
               rows={4}
               placeholder="Additional notes or comments..."
-              className={`${inputClass} h-auto resize-none`}
+              style={{ ...inputStyle, height: 'auto', padding: '10px 12px', resize: 'none' }}
             />
           </FormSection>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+          <div className="flex justify-end gap-3 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2.5 text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 font-medium text-sm transition-colors"
+              style={{ padding: '10px 16px', color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}`, borderRadius: 8, fontWeight: 500, fontSize: 14, cursor: 'pointer', transition: 'background 0.15s' }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2"
+              style={{ padding: '10px 24px', background: t.accent, color: '#fff', borderRadius: 8, fontWeight: 500, fontSize: 14, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1, transition: 'background 0.15s' }}
             >
               <Save size={16} />
               {saving ? 'Saving...' : (isEdit ? 'Update Contract' : 'Create Contract')}

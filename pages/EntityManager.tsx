@@ -8,8 +8,10 @@ import { FormModal } from '../components/FormModal';
 import { EntityFormContent } from '../components/EntityFormContent';
 import { Plus, Search, Building2, MapPin, Eye, Edit, Trash2 } from 'lucide-react';
 import { getSectionForCode } from '../data/sicCodes';
+import { useTheme } from '../theme/useTheme';
 
 const EntityManager: React.FC = () => {
+  const { t } = useTheme();
   const [entities, setEntities] = useState<LegalEntity[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,8 +44,8 @@ const EntityManager: React.FC = () => {
     loadData();
   };
 
-  const filteredEntities = entities.filter(e => 
-    e.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filteredEntities = entities.filter(e =>
+    e.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     e.regCodeValue.includes(searchTerm) ||
     e.shortName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -52,37 +54,39 @@ const EntityManager: React.FC = () => {
     <div className="space-y-6">
        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Legal Entities</h2>
-          <p className="text-gray-500 text-sm">Manage company registry, counterparties, and insureds.</p>
+          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Legal Entities</h2>
+          <p className="text-sm" style={{ color: t.text4 }}>Manage company registry, counterparties, and insureds.</p>
         </div>
         <button
           onClick={() => { setEditingEntityId(null); setShowEntityModal(true); }}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold transition-all shadow-sm"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold transition-all"
+          style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
         >
           <Plus size={18} /> Add Entity
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b bg-gray-50 flex gap-4 items-center">
+      <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
+        <div className="p-4 flex gap-4 items-center" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
             <div className="relative flex-1 max-w-md">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
-                <input 
-                    type="text" 
-                    placeholder="Search by name, INN, or code..." 
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }}/>
+                <input
+                    type="text"
+                    placeholder="Search by name, INN, or code..."
+                    className="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-2 outline-none text-sm"
+                    style={{ border: `1px solid ${t.border}`, '--tw-ring-color': t.accent } as React.CSSProperties}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                 />
             </div>
-            <div className="text-xs text-gray-500 font-medium">
+            <div className="text-xs font-medium" style={{ color: t.text4 }}>
                 {filteredEntities.length} Records found
             </div>
         </div>
 
         <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-                <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
+                <thead className="font-semibold" style={{ background: t.bgInput, color: t.text2, borderBottom: `1px solid ${t.border}` }}>
                     <tr>
                         <th className="px-6 py-4">Entity Name</th>
                         <th className="px-6 py-4">Type</th>
@@ -93,46 +97,46 @@ const EntityManager: React.FC = () => {
                         <th className="px-6 py-4 text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody style={{ borderColor: t.bgInput } as React.CSSProperties}>
                     {filteredEntities.map(entity => (
-                        <tr key={entity.id} onClick={() => setSelectedEntity(entity)} className="hover:bg-blue-50 cursor-pointer transition-colors group">
+                        <tr key={entity.id} onClick={() => setSelectedEntity(entity)} className="cursor-pointer transition-colors group" style={{ borderBottom: `1px solid ${t.bgInput}` }}>
                             <td className="px-6 py-4">
-                                <div className="font-bold text-gray-900">{entity.fullName}</div>
-                                <div className="text-xs text-gray-500">{entity.shortName}</div>
+                                <div className="font-bold" style={{ color: t.text1 }}>{entity.fullName}</div>
+                                <div className="text-xs" style={{ color: t.text4 }}>{entity.shortName}</div>
                             </td>
                             <td className="px-6 py-4">
-                                <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium border border-gray-200 text-gray-600">{entity.type}</span>
+                                <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text3 }}>{entity.type}</span>
                             </td>
-                            <td className="px-6 py-4 font-mono text-gray-600">
+                            <td className="px-6 py-4 font-mono" style={{ color: t.text3 }}>
                                 {entity.regCodeValue}
                             </td>
                             <td className="px-6 py-4">
                                 {entity.sicCode ? (
-                                    <span className="px-2 py-0.5 bg-blue-50 border border-blue-200 rounded text-xs font-medium text-blue-700 whitespace-nowrap">
+                                    <span className="px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap" style={{ background: t.bgInput, border: `1px solid ${t.accent}`, color: t.accent }}>
                                         {getSectionForCode(entity.sicCode)?.title || entity.sicSection || '-'}
                                     </span>
                                 ) : (
-                                    <span className="text-gray-300 text-xs">—</span>
+                                    <span className="text-xs" style={{ color: t.text5 }}>—</span>
                                 )}
                             </td>
-                            <td className="px-6 py-4 text-gray-600">
+                            <td className="px-6 py-4" style={{ color: t.text3 }}>
                                 <div className="flex items-center gap-1"><MapPin size={12}/> {entity.country}</div>
                             </td>
-                            <td className="px-6 py-4 text-gray-600">
+                            <td className="px-6 py-4" style={{ color: t.text3 }}>
                                 {entity.city || '-'}
                             </td>
                             <td className="px-6 py-4 text-center">
                                 <div className="flex justify-center gap-2">
-                                    <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} className="p-1.5 text-blue-600 hover:bg-blue-100 rounded" title="View"><Eye size={16}/></button>
-                                    <button onClick={(e) => { e.stopPropagation(); setEditingEntityId(entity.id); setShowEntityModal(true); }} className="p-1.5 text-amber-600 hover:bg-amber-100 rounded" title="Edit"><Edit size={16}/></button>
-                                    <button onClick={(e) => handleDelete(e, entity.id)} className="p-1.5 text-red-600 hover:bg-red-100 rounded" title="Delete"><Trash2 size={16}/></button>
+                                    <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} className="p-1.5 rounded" style={{ color: t.accent }} title="View"><Eye size={16}/></button>
+                                    <button onClick={(e) => { e.stopPropagation(); setEditingEntityId(entity.id); setShowEntityModal(true); }} className="p-1.5 rounded" style={{ color: t.accent }} title="Edit"><Edit size={16}/></button>
+                                    <button onClick={(e) => handleDelete(e, entity.id)} className="p-1.5 rounded" style={{ color: t.danger }} title="Delete"><Trash2 size={16}/></button>
                                 </div>
                             </td>
                         </tr>
                     ))}
                     {filteredEntities.length === 0 && (
                         <tr>
-                            <td colSpan={7} className="py-12 text-center text-gray-400">
+                            <td colSpan={7} className="py-12 text-center" style={{ color: t.text5 }}>
                                 <Building2 size={48} className="mx-auto mb-4 opacity-20"/>
                                 No entities found.
                             </td>

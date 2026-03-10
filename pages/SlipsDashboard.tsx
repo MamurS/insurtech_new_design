@@ -12,6 +12,7 @@ import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
 import { Search, Edit, Trash2, Plus, FileSpreadsheet, ArrowUp, ArrowDown, ArrowUpDown, Download, FileText, CheckCircle, AlertCircle, XCircle, AlertTriangle, MoreVertical, Eye, RefreshCw } from 'lucide-react';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 // Detect shifted column data from legacy CSV import:
 // insuredName got a numeric ID, brokerReinsurer got the actual insured name.
@@ -36,6 +37,7 @@ const getDisplaySlipNumber = (slip: ReinsuranceSlip): string => {
 };
 
 const SlipsDashboard: React.FC = () => {
+  const { t } = useTheme();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const [slips, setSlips] = useState<ReinsuranceSlip[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -170,10 +172,10 @@ const SlipsDashboard: React.FC = () => {
     if (statusFilter === 'DELETED') {
         return slip.isDeleted === true;
     }
-    
+
     // For non-deleted filters, exclude deleted slips
     if (slip.isDeleted && statusFilter !== 'ALL') return false;
-    
+
     const currentStatus = (slip.status as any) || 'DRAFT';
 
     // Status filter
@@ -188,7 +190,7 @@ const SlipsDashboard: React.FC = () => {
             if (currentStatus !== statusFilter) return false;
         }
     }
-    
+
     // Search filter — use display values (handles shifted column data)
     if (searchTerm) {
       const search = searchTerm.toLowerCase();
@@ -266,13 +268,14 @@ const SlipsDashboard: React.FC = () => {
     setHeaderActions(
       <button
         onClick={handleExport}
-        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all whitespace-nowrap"
+        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
       >
         <Download size={16} /> Export
       </button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
-  }, [sortedSlips, setHeaderActions, setHeaderLeft]);
+  }, [sortedSlips, setHeaderActions, setHeaderLeft, t]);
 
   const formatMoney = (amount: number | undefined, currency: string | undefined) => {
     if (amount === undefined || amount === null) return '-';
@@ -286,29 +289,29 @@ const SlipsDashboard: React.FC = () => {
   const getStatusBadge = (status: string, isDeleted?: boolean) => {
     if (isDeleted) {
         return (
-            <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+            <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 500, background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}` }}>
                 DELETED
             </span>
         );
     }
-    
+
     // Normalize legacy status
     if (status === 'Active') status = 'BOUND';
-    
-    const styles: Record<string, string> = {
-        'DRAFT': 'bg-gray-100 text-gray-800 border border-gray-200',
-        'PENDING': 'bg-blue-100 text-blue-800 border border-blue-200',
-        'QUOTED': 'bg-purple-100 text-purple-800 border border-purple-200',
-        'SIGNED': 'bg-indigo-100 text-indigo-800 border border-indigo-200',
-        'SENT': 'bg-cyan-100 text-cyan-800 border border-cyan-200',
-        'BOUND': 'bg-green-100 text-green-800 border border-green-200',
-        'CLOSED': 'bg-gray-100 text-gray-600 border border-gray-300',
-        'DECLINED': 'bg-red-100 text-red-800 border border-red-200',
-        'NTU': 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-        'CANCELLED': 'bg-red-100 text-red-800 border border-red-200',
+
+    const badgeStyles: Record<string, React.CSSProperties> = {
+        'DRAFT': { background: t.bgInput, color: t.text1, border: `1px solid ${t.border}` },
+        'PENDING': { background: t.accentMuted + '22', color: t.accent, border: `1px solid ${t.accent}44` },
+        'QUOTED': { background: '#7c3aed18', color: '#7c3aed', border: '1px solid #7c3aed44' },
+        'SIGNED': { background: '#4f46e518', color: '#4f46e5', border: '1px solid #4f46e544' },
+        'SENT': { background: '#0891b218', color: '#0891b2', border: '1px solid #0891b244' },
+        'BOUND': { background: t.successBg, color: t.success, border: `1px solid ${t.success}44` },
+        'CLOSED': { background: t.bgInput, color: t.text3, border: `1px solid ${t.borderL}` },
+        'DECLINED': { background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}44` },
+        'NTU': { background: t.warningBg, color: t.warning, border: `1px solid ${t.warning}44` },
+        'CANCELLED': { background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}44` },
     };
     return (
-        <span className={`px-2 py-1 rounded-full text-xs font-bold ${styles[status] || 'bg-gray-100 text-gray-800'}`}>
+        <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, ...(badgeStyles[status] || { background: t.bgInput, color: t.text1 }) }}>
             {status || 'DRAFT'}
         </span>
     );
@@ -317,13 +320,14 @@ const SlipsDashboard: React.FC = () => {
   const SortableHeader = ({ label, sortKey }: { label: string, sortKey: keyof ReinsuranceSlip }) => {
     const isActive = sortConfig.key === sortKey;
     return (
-      <th 
-        className="px-4 py-4 cursor-pointer hover:bg-gray-100 transition-colors group select-none"
+      <th
+        className="px-4 py-4 cursor-pointer transition-colors group select-none"
         onClick={() => handleSort(sortKey)}
+        style={{ background: 'inherit' }}
       >
         <div className="flex items-center gap-2">
           {label}
-          <div className="text-gray-400 group-hover:text-gray-600">
+          <div style={{ color: t.text4 }}>
              {isActive ? (sortConfig.direction === 'asc' ? <ArrowUp size={14}/> : <ArrowDown size={14}/>) : <ArrowUpDown size={14} className="opacity-0 group-hover:opacity-50"/>}
           </div>
         </div>
@@ -334,48 +338,51 @@ const SlipsDashboard: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
+      <div className="p-3" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
         <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
           {/* Status Tabs - Compact */}
-          <div className="flex bg-gray-100 p-0.5 rounded-lg overflow-x-auto">
+          <div className="flex p-0.5 rounded-lg overflow-x-auto" style={{ background: t.bgInput }}>
             {slipStatusTabs.map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setStatusFilter(tab.key)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap ${
+                className="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap"
+                style={
                   statusFilter === tab.key
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+                    ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow }
+                    : { color: t.text4 }
+                }
               >
                 {tab.label}
               </button>
             ))}
           </div>
 
-          <div className="w-px h-5 bg-gray-300" />
+          <div className="w-px h-5" style={{ background: t.borderL }} />
 
           {/* Search */}
           <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              className="w-full pl-8 pr-3 py-2 rounded-lg outline-none text-sm"
+              style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="w-px h-5 bg-gray-300" />
+          <div className="w-px h-5" style={{ background: t.borderL }} />
 
           {/* Date Filter */}
           <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
           <select
             value={dateFilterField}
             onChange={(e) => { setDateFilterField(e.target.value); setVisibleCount(VISIBLE_INCREMENT); }}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            className="px-3 py-2 rounded-lg outline-none text-sm"
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgPanel, color: t.text1 }}
           >
             <option value="date">Slip Date</option>
           </select>
@@ -394,19 +401,21 @@ const SlipsDashboard: React.FC = () => {
           {/* Refresh */}
           <button
             onClick={() => fetchData()}
-            className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg"
+            className="p-2 rounded-lg"
             title="Refresh"
+            style={{ color: t.text4 }}
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
           </button>
 
-          <div className="w-px h-5 bg-gray-300" />
+          <div className="w-px h-5" style={{ background: t.borderL }} />
 
           {/* New Slip Button */}
           <button
             type="button"
             onClick={() => { setEditingSlipId(null); setShowSlipModal(true); }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
+            style={{ background: t.accent, color: '#fff' }}
           >
             <Plus size={16} /> New Slip
           </button>
@@ -415,9 +424,9 @@ const SlipsDashboard: React.FC = () => {
       </div>{/* end sticky filter bar */}
 
       {/* Slips Table */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm">
+      <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow }}>
         <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 sticky z-20 shadow-sm" style={{ top: `${filterHeight}px` }}>
+            <thead className="sticky z-20" style={{ background: t.bgApp, boxShadow: t.shadow, top: `${filterHeight}px` }}>
                 <tr>
                     <th className="px-4 py-4 w-12">#</th>
                     <th className="px-4 py-4 w-24">Status</th>
@@ -426,47 +435,48 @@ const SlipsDashboard: React.FC = () => {
                     <SortableHeader label="Insured" sortKey="insuredName" />
                     <SortableHeader label="Limit of Liab" sortKey="limitOfLiability" />
                     <SortableHeader label="Broker / Reinsurer" sortKey="brokerReinsurer" />
-                    <th className="px-1 py-3 w-10 bg-gray-50"></th>
+                    <th className="px-1 py-3 w-10" style={{ background: t.bgApp }}></th>
                 </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
                 {visibleSlips.map((slip, index) => (
-                    <tr 
-                      key={slip.id} 
+                    <tr
+                      key={slip.id}
                       onClick={() => setSelectedSlip(slip)}
-                      className={`transition-colors cursor-pointer ${slip.isDeleted ? 'bg-gray-100 opacity-60 grayscale cursor-not-allowed' : 'hover:bg-amber-50/30'}`}
+                      className="transition-colors cursor-pointer"
+                      style={slip.isDeleted ? { background: t.bgInput, opacity: 0.6, filter: 'grayscale(1)', cursor: 'not-allowed', borderBottom: `1px solid ${t.border}` } : { borderBottom: `1px solid ${t.border}` }}
                     >
-                        <td className="px-4 py-4 text-gray-400">{index + 1}</td>
+                        <td className="px-4 py-4" style={{ color: t.text4 }}>{index + 1}</td>
                         <td className="px-4 py-4">
                             {getStatusBadge((slip.status as any) || 'DRAFT', slip.isDeleted)}
                         </td>
-                        <td className="px-4 py-4 font-mono font-medium text-amber-700">
+                        <td className="px-4 py-4 font-mono font-medium" style={{ color: t.warning }}>
                             {getDisplaySlipNumber(slip)}
                         </td>
-                        <td className="px-4 py-4 text-gray-600">{formatDate(slip.date)}</td>
-                        <td className="px-4 py-4 font-medium text-gray-800">{getDisplayInsured(slip)}</td>
-                        <td className="px-4 py-4 text-gray-700 font-mono">
+                        <td className="px-4 py-4" style={{ color: t.text3 }}>{formatDate(slip.date)}</td>
+                        <td className="px-4 py-4 font-medium" style={{ color: t.text1 }}>{getDisplayInsured(slip)}</td>
+                        <td className="px-4 py-4 font-mono" style={{ color: t.text2 }}>
                             {formatMoney(slip.limitOfLiability, slip.currency as string)}
                         </td>
-                        <td className="px-4 py-4 text-gray-600">{getDisplayBroker(slip)}</td>
+                        <td className="px-4 py-4" style={{ color: t.text3 }}>{getDisplayBroker(slip)}</td>
                         <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
                             <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === slip.id ? null : slip.id); }}
-                                className="p-1.5 hover:bg-gray-100 rounded-lg">
-                                <MoreVertical size={16} className="text-gray-500" />
+                                className="p-1.5 rounded-lg">
+                                <MoreVertical size={16} style={{ color: t.text4 }} />
                             </button>
                             {openMenuId === slip.id && (
-                                <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[120px]">
-                                    <button onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+                                    <button onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
                                         <Eye size={14} /> View
                                     </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                    <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
                                         <Edit size={14} /> Edit
                                     </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                    <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
                                         <FileText size={14} /> Wording
                                     </button>
                                     {!slip.isDeleted && (
-                                        <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                                        <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger }}>
                                             <Trash2 size={14} /> Delete
                                         </button>
                                     )}
@@ -482,19 +492,19 @@ const SlipsDashboard: React.FC = () => {
         <div ref={sentinelRef} className="h-1" />
         {hasMore && (
           <div className="flex justify-center py-4">
-            <RefreshCw size={20} className="animate-spin text-blue-600" />
+            <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
           </div>
         )}
 
         {!loading && filteredSlips.length === 0 && (
-            <div className="p-12 text-center text-gray-400 flex flex-col items-center">
+            <div className="p-12 text-center flex flex-col items-center" style={{ color: t.text4 }}>
                 <FileSpreadsheet size={48} className="mb-4 opacity-20" />
                 <p>No slips found matching your search.</p>
             </div>
         )}
       </div>
 
-      <ConfirmDialog 
+      <ConfirmDialog
         isOpen={!!deleteId}
         title="Delete Slip?"
         message="Are you sure you want to delete this reinsurance slip record? It will be marked as deleted."

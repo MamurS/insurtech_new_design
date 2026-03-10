@@ -4,6 +4,7 @@ import { DB } from '../services/db';
 import { LegalEntity, Currency, PolicyStatus, PaymentStatus } from '../types';
 import { DatePickerInput, toISODateString, parseDate } from './DatePickerInput';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../theme/useTheme';
 import {
   Search, ChevronDown, Building2, Loader2, Calendar,
   Shield, Users, Layers, DollarSign, Lock, Clock, Save, X, Globe, Check,
@@ -153,22 +154,25 @@ const SectionCard: React.FC<{
   title: string;
   icon: React.ReactNode;
   children: React.ReactNode;
-}> = ({ number, title, icon, children }) => (
-  <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-    <div className="flex items-center gap-3 px-5 py-3.5 border-b border-slate-100 bg-slate-50/50 rounded-t-xl">
-      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">
-        {number}
+}> = ({ number, title, icon, children }) => {
+  const { t } = useTheme();
+  return (
+    <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow }}>
+      <div className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '12px 12px 0 0' }}>
+        <div className="flex items-center justify-center w-7 h-7 rounded-full" style={{ background: t.accentMuted, color: t.accent, fontSize: 12, fontWeight: 700 }}>
+          {number}
+        </div>
+        <div className="flex items-center gap-2" style={{ color: t.text2 }}>
+          {icon}
+          <h3 className="font-semibold text-sm">{title}</h3>
+        </div>
       </div>
-      <div className="flex items-center gap-2 text-slate-700">
-        {icon}
-        <h3 className="font-semibold text-sm">{title}</h3>
+      <div className="px-5 py-4 space-y-4">
+        {children}
       </div>
     </div>
-    <div className="px-5 py-4 space-y-4">
-      {children}
-    </div>
-  </div>
-);
+  );
+};
 
 // ─── Searchable Dropdown (strict selection only) ────────────────
 const SearchableDropdown: React.FC<{
@@ -182,6 +186,7 @@ const SearchableDropdown: React.FC<{
   loading?: boolean;
   error?: string;
 }> = ({ label, value, options, onSelect, onClear, required, placeholder, loading, error }) => {
+  const { t } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -215,27 +220,26 @@ const SearchableDropdown: React.FC<{
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-medium text-slate-600 mb-1.5">
-        {label} {required && <span className="text-red-500">*</span>}
+      <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+        {label} {required && <span style={{ color: t.danger }}>*</span>}
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          className={`w-full p-2.5 bg-white border rounded-lg text-sm cursor-pointer flex items-center justify-between min-h-[42px] ${
-            error ? 'border-red-400' : 'border-slate-300 hover:border-slate-400'
-          }`}
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
+          className="flex items-center justify-between"
         >
           {value ? (
             <div className="flex items-center justify-between w-full">
-              <span className="text-slate-900">{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="text-slate-400 hover:text-slate-600 ml-2">
+              <span style={{ color: t.text1 }}>{value}</span>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}>
                 <X size={14} />
               </button>
             </div>
           ) : (
-            <span className="text-slate-400">{placeholder || 'Select...'}</span>
+            <span style={{ color: t.text4 }}>{placeholder || 'Select...'}</span>
           )}
-          <ChevronDown size={14} className="text-slate-400 shrink-0 ml-2" />
+          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
         </div>
       ) : (
         <div className="relative">
@@ -246,38 +250,37 @@ const SearchableDropdown: React.FC<{
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder={placeholder || 'Type to filter...'}
             autoComplete="off"
-            className="w-full p-2.5 bg-white border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-900 pr-8"
+            style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1 max-h-52 overflow-y-auto">
+        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(opt => (
             <li
               key={opt.id}
               onClick={() => { onSelect(opt.id, opt.label); setIsOpen(false); setSearchTerm(''); }}
-              className={`px-3 py-2 text-sm cursor-pointer border-b border-slate-50 last:border-0 flex items-center gap-2 ${
-                opt.label === value ? 'bg-blue-50 text-blue-700' : 'hover:bg-blue-50'
-              }`}
+              className="px-3 py-2 cursor-pointer flex items-center gap-2"
+              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: opt.label === value ? t.accentMuted : undefined, color: opt.label === value ? t.accent : t.text1 }}
             >
               {opt.icon && <span className="shrink-0">{opt.icon}</span>}
               <div className="min-w-0">
-                <div className="font-medium text-slate-900 truncate">{opt.label}</div>
-                {opt.sublabel && <div className="text-xs text-slate-500 truncate">{opt.sublabel}</div>}
+                <div className="font-medium truncate" style={{ color: t.text1 }}>{opt.label}</div>
+                {opt.sublabel && <div className="truncate" style={{ fontSize: 12, color: t.text4 }}>{opt.sublabel}</div>}
               </div>
-              {opt.label === value && <Check size={14} className="text-blue-600 shrink-0 ml-auto" />}
+              {opt.label === value && <Check size={14} className="shrink-0 ml-auto" style={{ color: t.accent }} />}
             </li>
           )) : (
-            <li className="px-3 py-3 text-sm text-slate-500 text-center">
+            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>
               {loading ? 'Loading...' : 'No results found'}
             </li>
           )}
         </ul>
       )}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -289,6 +292,7 @@ const ProductSearch: React.FC<{
   onClear: () => void;
   error?: string;
 }> = ({ value, onSelect, onClear, error }) => {
+  const { t } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [allProducts, setAllProducts] = useState<InsuranceProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -323,53 +327,53 @@ const ProductSearch: React.FC<{
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-sm font-medium text-slate-600 mb-1.5">
-        Type of Insurance Cover <span className="text-red-500">*</span>
+      <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
+        Type of Insurance Cover <span style={{ color: t.danger }}>*</span>
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          className={`w-full p-2.5 bg-white border rounded-lg text-sm cursor-pointer flex items-center justify-between min-h-[42px] ${
-            error ? 'border-red-400' : 'border-slate-300 hover:border-slate-400'
-          }`}
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
+          className="flex items-center justify-between"
         >
           {value ? (
             <div className="flex items-center justify-between w-full">
-              <span className="text-slate-900">{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="text-slate-400 hover:text-slate-600 ml-2"><X size={14} /></button>
+              <span style={{ color: t.text1 }}>{value}</span>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}><X size={14} /></button>
             </div>
-          ) : (<span className="text-slate-400">Select insurance product...</span>)}
-          <ChevronDown size={14} className="text-slate-400 shrink-0 ml-2" />
+          ) : (<span style={{ color: t.text4 }}>Select insurance product...</span>)}
+          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
         </div>
       ) : (
         <div className="relative">
           <input ref={inputRef} type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Type to filter products..." autoComplete="off"
-            className="w-full p-2.5 bg-white border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm text-slate-900 pr-8" />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1 max-h-52 overflow-y-auto">
+        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(p => (
             <li key={p.id} onClick={() => { onSelect(p); setIsOpen(false); setSearchTerm(''); }}
-              className={`px-3 py-2 text-sm cursor-pointer border-b border-slate-50 last:border-0 ${p.name === value ? 'bg-blue-50' : 'hover:bg-blue-50'}`}>
+              className="px-3 py-2 cursor-pointer"
+              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: p.name === value ? t.accentMuted : undefined }}>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium text-slate-900">{p.name}</div>
-                  <div className="text-xs text-slate-500">{p.code} · Classes: {(p.class_codes || []).join(', ')}</div>
+                  <div className="font-medium" style={{ color: t.text1 }}>{p.name}</div>
+                  <div style={{ fontSize: 12, color: t.text4 }}>{p.code} · Classes: {(p.class_codes || []).join(', ')}</div>
                 </div>
-                {p.name === value && <Check size={14} className="text-blue-600 shrink-0" />}
+                {p.name === value && <Check size={14} className="shrink-0" style={{ color: t.accent }} />}
               </div>
             </li>
           )) : (
-            <li className="px-3 py-3 text-sm text-slate-500 text-center">{loading ? 'Loading products...' : 'No products found'}</li>
+            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>{loading ? 'Loading products...' : 'No products found'}</li>
           )}
         </ul>
       )}
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -378,7 +382,8 @@ const ProductSearch: React.FC<{
 const CurrencyInput: React.FC<{
   value: number; onChange: (v: number) => void; currency: string; placeholder?: string;
   bold?: boolean; bgClass?: string; borderClass?: string;
-}> = React.memo(({ value, onChange, currency, placeholder = '0', bold, bgClass = '', borderClass = 'border-slate-300' }) => {
+}> = React.memo(({ value, onChange, currency, placeholder = '0', bold }) => {
+  const { t } = useTheme();
   const [localValue, setLocalValue] = useState(value ? fmtNum(value) : '');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -403,11 +408,13 @@ const CurrencyInput: React.FC<{
         onBlur={() => setLocalValue(value ? fmtNum(value) : '')}
         onWheel={(e) => (e.target as HTMLInputElement).blur()}
         placeholder={placeholder}
-        className={`w-full p-2 pr-16 border rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none ${bold ? 'font-bold' : ''} ${bgClass} ${borderClass}`}
+        className={`w-full text-right ${bold ? 'font-bold' : ''}`}
+        style={{ padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
       />
-      <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium px-1.5 py-0.5 rounded select-none pointer-events-none ${
-        bold ? 'text-blue-600 bg-blue-100 font-bold' : 'text-slate-500 bg-slate-100'
-      }`}>
+      <span
+        className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none"
+        style={{ fontSize: 11, fontWeight: bold ? 700 : 500, color: bold ? t.accent : t.text4, background: bold ? t.accentMuted : t.bgHover }}
+      >
         {currency}
       </span>
     </div>
@@ -416,6 +423,7 @@ const CurrencyInput: React.FC<{
 
 // ─── Main Component ─────────────────────────────────────────────
 export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel }) => {
+  const { t } = useTheme();
   const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -449,13 +457,13 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
   }, []);
 
   const insuredOptions = useMemo(() =>
-    entities.map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} className="text-slate-400" /> })), [entities]);
+    entities.map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} style={{ color: t.text4 }} /> })), [entities]);
 
   const intermediaryOptions = useMemo(() =>
-    entities.filter(e => e.type === form.channel).map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} className="text-slate-400" /> })), [entities, form.channel]);
+    entities.filter(e => e.type === form.channel).map(e => ({ id: e.id, label: e.fullName, sublabel: e.shortName || undefined, icon: <Building2 size={14} style={{ color: t.text4 }} /> })), [entities, form.channel]);
 
   const countryOptions = useMemo(() =>
-    COUNTRIES.map(c => ({ id: c, label: c, icon: <Globe size={14} className="text-slate-400" /> })), []);
+    COUNTRIES.map(c => ({ id: c, label: c, icon: <Globe size={14} style={{ color: t.text4 }} /> })), []);
 
   // ─── FX Rate ────────────────────────────────────────────────
   useEffect(() => {
@@ -735,10 +743,10 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         />
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Sector / Industry</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Sector / Industry</label>
             <input type="text" value={form.sector} onChange={(e) => updateForm({ sector: e.target.value })}
               placeholder="e.g. Oil & Gas, Agriculture..."
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+              style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
           </div>
           <SearchableDropdown
             label="Country" value={form.insuredCountry} options={countryOptions}
@@ -756,10 +764,10 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           error={errors.productName} />
         {form.classCodes.length > 0 && (
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Class of Insurance</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Class of Insurance</label>
             <div className="flex flex-wrap gap-2">
               {form.classCodes.map(code => (
-                <span key={code} className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium border border-blue-200">
+                <span key={code} className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: t.accentMuted, color: t.accent, border: `1px solid ${t.accentMuted}` }}>
                   Class {code} — {INSURANCE_CLASSES[code] || 'Unknown'}
                 </span>
               ))}
@@ -771,9 +779,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       {/* ══════ Section 3: Channel & Intermediary ══════ */}
       <SectionCard number={3} title="Channel & Intermediary" icon={<Layers size={16} />}>
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-1.5">Channel <span className="text-red-500">*</span></label>
+          <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Channel <span style={{ color: t.danger }}>*</span></label>
           <select value={form.channel} onChange={(e) => updateForm({ channel: e.target.value as any, intermediaryName: '', intermediaryEntityId: undefined })}
-            className="w-full p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            style={{ width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}>
             <option value="Direct">Direct</option>
             <option value="Broker">Broker</option>
             <option value="Agent">Agent</option>
@@ -794,14 +802,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       <SectionCard number={4} title="Sums Insured" icon={<DollarSign size={16} />}>
         <div className="flex items-center gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Currency</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Currency</label>
             <select value={form.currency} onChange={(e) => updateForm({ currency: e.target.value })}
-              className="p-2.5 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-w-[100px]">
+              style={{ padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit', minWidth: 100 }}>
               {Object.values(Currency).map(c => (<option key={c} value={c}>{c}</option>))}
             </select>
           </div>
           {fxDisplay && (
-            <div className="mt-5 text-xs text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+            <div className="mt-5 px-3 py-1.5 rounded-lg" style={{ fontSize: 12, color: t.text4, background: t.bgInput, border: `1px solid ${t.border}` }}>
               Exchange rate: {fxDisplay}
             </div>
           )}
@@ -812,21 +820,21 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {sumInsuredFields.map(field => (
               <div key={field.key} className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <label className="text-sm text-slate-600 w-48 shrink-0">{field.label}</label>
+                  <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{field.label}</label>
                   <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[field.key] || 0} onChange={(v) => setAmount(field.key, v)} />
                 </div>
                 {field.toggles?.map(toggle => (
                   <div key={toggle.key} className="ml-6 space-y-1">
-                    <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                    <label className="flex items-center gap-2 cursor-pointer" style={{ fontSize: 13, color: t.text2 }}>
                       <input type="checkbox" checked={form.sumInsuredToggles[toggle.key] || false}
                         onChange={(e) => setToggle(toggle.key, e.target.checked)}
-                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+                        className="rounded" style={{ borderColor: t.border }} />
                       {toggle.label}
                     </label>
                     {form.sumInsuredToggles[toggle.key] && (
                       <div className="flex items-center gap-3 ml-6">
-                        <span className="text-slate-300 text-xs">├</span>
-                        <label className="text-sm text-slate-600 w-48 shrink-0">{toggle.label}</label>
+                        <span style={{ color: t.text5, fontSize: 12 }}>├</span>
+                        <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{toggle.label}</label>
                         <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[toggle.key] || 0} onChange={(v) => setAmount(toggle.key, v)} />
                       </div>
                     )}
@@ -834,8 +842,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 ))}
                 {field.hasSubLimits && field.subLimits?.map(sub => (
                   <div key={sub.key} className="flex items-center gap-3 ml-6">
-                    <span className="text-slate-300 text-xs">├</span>
-                    <label className="text-sm text-slate-600 w-48 shrink-0">{sub.label}</label>
+                    <span style={{ color: t.text5, fontSize: 12 }}>├</span>
+                    <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{sub.label}</label>
                     <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[sub.key] || 0} onChange={(v) => setAmount(sub.key, v)} />
                   </div>
                 ))}
@@ -844,13 +852,13 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <label className="text-sm text-slate-600 w-48 shrink-0">Sum Insured</label>
+            <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Sum Insured</label>
             <CurrencyInput currency={form.currency} value={form.totalSumInsured} onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })} />
           </div>
         )}
 
-        <div className="flex items-center gap-3 pt-3 border-t border-slate-200">
-          <label className="text-sm font-semibold text-slate-700 w-48 shrink-0">Total Sum Insured</label>
+        <div className="flex items-center gap-3 pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="font-semibold w-48 shrink-0" style={{ fontSize: 13, color: t.text1 }}>Total Sum Insured</label>
           <CurrencyInput currency={form.currency} value={form.totalSumInsured}
             onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })}
             bold bgClass="bg-blue-50/50" borderClass="border-2 border-blue-200" />
@@ -860,7 +868,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       {/* ══════ Section 5: Limit of Liability ══════ */}
       <SectionCard number={5} title="Limit of Liability" icon={<Lock size={16} />}>
         <div className="flex items-center gap-3">
-          <label className="text-sm text-slate-600 w-48 shrink-0">Limit of Liability</label>
+          <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Limit of Liability</label>
           <CurrencyInput currency={form.currency} value={form.limitOfLiability} onChange={(v) => updateForm({ limitOfLiability: v })} />
         </div>
       </SectionCard>
@@ -874,14 +882,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             onChange={(d) => updateForm({ expiryDate: toISODateString(d) || '' })} required
             minDate={parseDate(form.inceptionDate) || undefined} />
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-1.5">Duration</label>
-            <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700 font-medium">
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Duration</label>
+            <div className="p-2.5 rounded-lg font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {durationDays ? `${durationDays} days` : '—'}
             </div>
           </div>
         </div>
-        {errors.inceptionDate && <p className="text-red-500 text-xs">{errors.inceptionDate}</p>}
-        {errors.expiryDate && <p className="text-red-500 text-xs">{errors.expiryDate}</p>}
+        {errors.inceptionDate && <p className="text-xs" style={{ color: t.danger }}>{errors.inceptionDate}</p>}
+        {errors.expiryDate && <p className="text-xs" style={{ color: t.danger }}>{errors.expiryDate}</p>}
       </SectionCard>
 
       {/* ══════ Section 7: Deductibles ══════ */}
@@ -889,19 +897,19 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         <div className="space-y-3">
           {/* Column headers */}
           <div className="grid grid-cols-12 gap-3 px-3">
-            <div className="col-span-5 text-xs font-medium text-slate-500">Type / Description</div>
-            <div className="col-span-3 text-xs font-medium text-slate-500">Percentage</div>
-            <div className="col-span-4 text-xs font-medium text-slate-500">Amount</div>
+            <div className="col-span-5 text-xs font-medium" style={{ color: t.text4 }}>Type / Description</div>
+            <div className="col-span-3 text-xs font-medium" style={{ color: t.text4 }}>Percentage</div>
+            <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
           </div>
           {form.deductibles.map((ded) => (
             <div key={ded.id} className="flex items-center gap-2">
-              <div className="flex-1 grid grid-cols-12 gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+              <div className="flex-1 grid grid-cols-12 gap-3 p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
                 {/* Description */}
                 <div className="col-span-5">
                   <input type="text" value={ded.description}
                     onChange={(e) => updateDeductible(ded.id, 'description', e.target.value)}
                     placeholder="e.g. All Perils, Fire, Flood..."
-                    className="w-full p-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                    style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
                 </div>
                 {/* Percentage */}
                 <div className="col-span-3">
@@ -910,8 +918,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                       value={ded.percentage || ''}
                       onChange={(e) => updateDeductible(ded.id, 'percentage', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full p-2 pr-8 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+                      className="w-full text-right"
+                      style={{ padding: '8px 32px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
                   </div>
                 </div>
                 {/* Amount */}
@@ -922,7 +931,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
               {/* Remove button */}
               {form.deductibles.length > 1 ? (
                 <button onClick={() => removeDeductible(ded.id)}
-                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                  className="p-1.5 rounded-lg transition-colors shrink-0" style={{ color: t.text4 }}>
                   <Trash2 size={14} />
                 </button>
               ) : <div className="w-8 shrink-0" />}
@@ -930,11 +939,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           ))}
         </div>
         <button onClick={addDeductible}
-          className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium mt-1">
+          className="flex items-center gap-1.5 font-medium mt-1" style={{ fontSize: 13, color: t.accent }}>
           <Plus size={14} /> Add Deductible
         </button>
         {(form.totalSumInsured > 0 || form.limitOfLiability > 0) && (
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs mt-1" style={{ color: t.text4 }}>
             Auto-calculation basis: {form.totalSumInsured > 0 ? `Total SI ${fmtNum(form.totalSumInsured)}` : `LoL ${fmtNum(form.limitOfLiability)}`} {form.currency}
           </p>
         )}
@@ -945,32 +954,33 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {/* Sub-premiums (if cover sections have amounts) */}
         {form.subPremiums.length > 0 && (
           <div className="space-y-2 mb-4">
-            <label className="block text-sm font-medium text-slate-600">Sub-Premiums</label>
+            <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, display: 'block' }}>Sub-Premiums</label>
             {/* Header row */}
             <div className="grid grid-cols-12 gap-3 px-3">
-              <div className="col-span-4 text-xs font-medium text-slate-500">Cover Section</div>
-              <div className="col-span-2 text-xs font-medium text-slate-500">Rate</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Cover Section</div>
+              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Rate</div>
               <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium text-slate-500">Premium Amount</div>
-              <div className="col-span-1 text-xs font-medium text-slate-500">Basis</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Premium Amount</div>
+              <div className="col-span-1 text-xs font-medium" style={{ color: t.text4 }}>Basis</div>
             </div>
             <div className="space-y-2">
               {form.subPremiums.map(sub => (
-                <div key={sub.key} className="grid grid-cols-12 gap-3 items-center p-2.5 bg-slate-50 rounded-lg border border-slate-200">
-                  <label className="col-span-4 text-sm text-slate-600 truncate" title={sub.label}>{sub.label}</label>
+                <div key={sub.key} className="grid grid-cols-12 gap-3 items-center p-2.5 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                  <label className="col-span-4 truncate" style={{ fontSize: 13, color: t.text2 }} title={sub.label}>{sub.label}</label>
                   <div className="col-span-2 relative">
                     <input type="text" inputMode="numeric"
                       value={sub.rate || ''}
                       onChange={(e) => updateSubPremium(sub.key, 'rate', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+                      className="w-full text-right"
+                      style={{ padding: '8px 28px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
                   </div>
-                  <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+                  <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
                   <div className="col-span-4">
                     <CurrencyInput currency={form.currency} value={sub.amount} onChange={(v) => updateSubPremium(sub.key, 'amount', v)} />
                   </div>
-                  <span className="col-span-1 text-xs text-slate-400 truncate" title={`of ${fmtNum(sub.basis)}`}>
+                  <span className="col-span-1 text-xs truncate" style={{ color: t.text4 }} title={`of ${fmtNum(sub.basis)}`}>
                     of {fmtNum(sub.basis)}
                   </span>
                 </div>
@@ -981,7 +991,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
         {/* Gross Premium */}
         <div className="grid grid-cols-12 gap-3 items-center">
-          <label className="col-span-4 text-sm font-semibold text-slate-700">Gross Premium</label>
+          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Gross Premium</label>
           <div className="col-span-2 relative">
             <input type="text" inputMode="numeric"
               value={form.premiumRate || ''}
@@ -992,10 +1002,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 updateForm({ premiumRate: rate, grossPremium: amount, grossPremiumManual: false });
               }}
               placeholder="0"
-              className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+              className="w-full text-right"
+              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
           <div className="col-span-5">
             <CurrencyInput currency={form.currency} value={form.grossPremium}
               onChange={(v) => {
@@ -1008,37 +1019,38 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         </div>
 
         {/* Commission */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3 border-t border-slate-100">
-          <label className="col-span-4 text-sm text-slate-600">Commission</label>
+        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="col-span-4" style={{ fontSize: 13, color: t.text2 }}>Commission</label>
           <div className="col-span-2 relative">
             <input type="text" inputMode="numeric"
               value={form.commissionPercent || ''}
               onChange={(e) => updateForm({ commissionPercent: parseNum(e.target.value) })}
               placeholder="0"
-              className="w-full p-2 pr-7 border border-slate-300 rounded-lg text-sm text-right focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 pointer-events-none">%</span>
+              className="w-full text-right"
+              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-slate-300 text-xs text-center">=</span>
+          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
           <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 border border-slate-200 bg-slate-50 rounded-lg text-sm text-right text-slate-700">
+            <div className="w-full p-2 pr-16 rounded-lg text-right" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {fmtNum(form.commissionAmount) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
               {form.currency}
             </span>
           </div>
         </div>
 
         {/* Net Premium */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3 border-t border-slate-200">
-          <label className="col-span-4 text-sm font-semibold text-slate-700">Net Premium</label>
+        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
+          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Net Premium</label>
           <div className="col-span-2" />
           <span className="col-span-1" />
           <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 border-2 border-emerald-200 bg-emerald-50/50 rounded-lg text-sm text-right font-bold text-emerald-800">
+            <div className="w-full p-2 pr-16 rounded-lg text-right font-bold" style={{ background: t.successBg, border: `2px solid ${t.success}`, fontSize: 13, color: t.success }}>
               {fmtNum(form.netPremium) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 700, color: t.success, background: t.successBg }}>
               {form.currency}
             </span>
           </div>
@@ -1049,13 +1061,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       <SectionCard number={9} title="Payment Terms" icon={<CreditCard size={16} />}>
         {/* Payment type toggle */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">Payment Type</label>
-          <div className="inline-flex rounded-lg border border-slate-300 overflow-hidden">
+          <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 8, display: 'block' }}>Payment Type</label>
+          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
             <button
               onClick={() => updateForm({ paymentType: 'lump_sum', installments: [] })}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                form.paymentType === 'lump_sum' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-              }`}
+              className="px-4 py-2 font-medium transition-colors"
+              style={{ fontSize: 13, background: form.paymentType === 'lump_sum' ? t.accent : t.bgPanel, color: form.paymentType === 'lump_sum' ? '#fff' : t.text2 }}
             >
               Lump Sum
             </button>
@@ -1074,9 +1085,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                   updateForm({ paymentType: 'installments' });
                 }
               }}
-              className={`px-4 py-2 text-sm font-medium transition-colors border-l border-slate-300 ${
-                form.paymentType === 'installments' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-              }`}
+              className="px-4 py-2 font-medium transition-colors"
+              style={{ fontSize: 13, borderLeft: `1px solid ${t.border}`, background: form.paymentType === 'installments' ? t.accent : t.bgPanel, color: form.paymentType === 'installments' ? '#fff' : t.text2 }}
             >
               Installments
             </button>
@@ -1086,12 +1096,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {form.paymentType === 'lump_sum' ? (
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1.5">Amount</label>
+              <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Amount</label>
               <div className="relative">
-                <div className="w-full p-2.5 pr-16 border border-slate-200 bg-slate-50 rounded-lg text-sm text-right font-medium text-slate-700">
+                <div className="w-full p-2.5 pr-16 rounded-lg text-right font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
                   {fmtNum(form.grossPremium) || '0'}
                 </div>
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded select-none pointer-events-none">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
                   {form.currency}
                 </span>
               </div>
@@ -1104,16 +1114,16 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {/* Column headers */}
             <div className="grid grid-cols-12 gap-3 px-3">
               <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium text-slate-500">Amount</div>
-              <div className="col-span-4 text-xs font-medium text-slate-500">Due Date</div>
-              <div className="col-span-2 text-xs font-medium text-slate-500">Status</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
+              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Due Date</div>
+              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Status</div>
               <div className="col-span-1" />
             </div>
 
             {/* Installment rows */}
             {form.installments.map((inst) => (
-              <div key={inst.id} className="grid grid-cols-12 gap-3 items-center p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <span className="col-span-1 text-xs font-bold text-slate-500 text-center">#{inst.number}</span>
+              <div key={inst.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                <span className="col-span-1 text-xs font-bold text-center" style={{ color: t.text4 }}>#{inst.number}</span>
                 <div className="col-span-4">
                   <CurrencyInput currency={form.currency} value={inst.amount}
                     onChange={(v) => updateInstallment(inst.id, 'amount', v)} />
@@ -1125,14 +1135,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 <div className="col-span-2">
                   <select value={inst.status}
                     onChange={(e) => updateInstallment(inst.id, 'status', e.target.value)}
-                    className="w-full p-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}>
                     <option value="Pending">Pending</option>
                     <option value="Paid">Paid</option>
                   </select>
                 </div>
                 <div className="col-span-1 flex justify-center">
                   <button onClick={() => removeInstallment(inst.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                    className="p-1.5 rounded-lg transition-colors" style={{ color: t.text4 }}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -1142,12 +1152,12 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             {/* Actions row */}
             <div className="flex items-center gap-3">
               <button onClick={addInstallment}
-                className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                className="flex items-center gap-1.5 font-medium" style={{ fontSize: 13, color: t.accent }}>
                 <Plus size={14} /> Add Installment
               </button>
               {form.installments.length >= 2 && form.grossPremium > 0 && (
                 <button onClick={splitEqual}
-                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 font-medium ml-4">
+                  className="flex items-center gap-1.5 font-medium ml-4" style={{ fontSize: 13, color: t.text4 }}>
                   Split Equally
                 </button>
               )}
@@ -1155,7 +1165,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
             {/* Mismatch warning */}
             {installmentMismatch && (
-              <div className="flex items-center gap-2 p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700">
+              <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: t.warningBg, border: `1px solid ${t.warning}`, fontSize: 13, color: t.warning }}>
                 <AlertTriangle size={14} className="shrink-0" />
                 <span>
                   Installments total <strong>{fmtNum(installmentTotal)} {form.currency}</strong> ≠ Gross Premium <strong>{fmtNum(form.grossPremium)} {form.currency}</strong>
@@ -1168,20 +1178,22 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       </SectionCard>
 
       {/* ══════ Sticky Footer ══════ */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 z-50" style={{ background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="text-xs text-slate-400 flex items-center gap-4">
+          <div className="flex items-center gap-4" style={{ fontSize: 12, color: t.text4 }}>
             {form.productName && <span>Product: {form.productName}</span>}
             {form.totalSumInsured > 0 && <span>SI: {fmtNum(form.totalSumInsured)} {form.currency}</span>}
             {form.grossPremium > 0 && <span>Premium: {fmtNum(form.grossPremium)} {form.currency}</span>}
           </div>
           <div className="flex items-center gap-3">
             <button onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+              className="px-4 py-2 font-medium rounded-lg transition-colors"
+              style={{ fontSize: 13, color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}` }}>
               Cancel
             </button>
             <button onClick={handleSave} disabled={saving}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 shadow-sm transition-colors">
+              className="flex items-center gap-2 px-5 py-2 font-semibold rounded-lg disabled:opacity-50 transition-colors"
+              style={{ fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow }}>
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               Save as Draft
             </button>

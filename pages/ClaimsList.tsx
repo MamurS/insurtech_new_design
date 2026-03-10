@@ -10,11 +10,13 @@ import RegisterClaimModal from '../components/RegisterClaimModal';
 import { AlertOctagon, Search, Plus, Filter, Loader2, RefreshCw, Download, MoreVertical, Eye } from 'lucide-react';
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
+import { useTheme } from '../theme/useTheme';
 
 const PAGE_SIZE = 20;
 
 const ClaimsList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTheme();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const [showFilters, setShowFilters] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -46,7 +48,7 @@ const ClaimsList: React.FC = () => {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  
+
   // Filter State
   const [filters, setFilters] = useState<ClaimFilters>({
       liabilityType: 'ALL',
@@ -133,20 +135,22 @@ const ClaimsList: React.FC = () => {
       <div className="flex items-center gap-2">
         <button
           onClick={handleExport}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm transition-all whitespace-nowrap"
+          style={{ background: t.success, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
+          className="flex items-center gap-2 transition-all whitespace-nowrap"
         >
           <Download size={16} /> Export
         </button>
         <button
           onClick={() => setShowRegisterModal(true)}
-          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-all text-sm shadow-sm whitespace-nowrap"
+          style={{ background: t.danger, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
+          className="flex items-center gap-2 transition-all whitespace-nowrap"
         >
           <Plus size={16} /> Register Claim
         </button>
       </div>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
-  }, [claims, setHeaderActions, setHeaderLeft]);
+  }, [claims, setHeaderActions, setHeaderLeft, t]);
 
   // Format Currency Helper
   const formatMoney = (val: number | undefined) => {
@@ -159,19 +163,26 @@ const ClaimsList: React.FC = () => {
   const summaryPaid = claims.reduce((acc, c) => acc + (c.totalPaidOurShare || 0), 0);
   const summaryOutstanding = claims.reduce((acc, c) => acc + (c.outstandingOurShare || 0), 0);
 
+  // Status badge styling
+  const getStatusBadgeStyle = (status: string) => {
+    if (status === 'OPEN') return { color: t.success, background: t.successBg };
+    if (status === 'CLOSED') return { color: t.text3, background: t.bgInput };
+    return { color: t.danger, background: t.dangerBg };
+  };
+
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
+      <div className="rounded-xl p-3" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
         <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
           {/* Search */}
           <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }}/>
             <input
               type="text"
               placeholder="Search..."
-              className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+              style={{ width: '100%', padding: '8px 12px 8px 32px', background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none' }}
               value={filters.searchTerm}
               onChange={e => handleFilterChange('searchTerm', e.target.value)}
             />
@@ -179,7 +190,11 @@ const ClaimsList: React.FC = () => {
 
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm font-medium transition-colors ${showFilters ? 'bg-blue-50 border-blue-300 text-blue-700' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            style={showFilters
+              ? { background: t.accentMuted, border: `1px solid ${t.accent}`, color: t.accent }
+              : { background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }
+            }
           >
             <Filter size={14}/> Filters
           </button>
@@ -188,7 +203,7 @@ const ClaimsList: React.FC = () => {
           <select
             value={dateFilterField}
             onChange={(e) => setDateFilterField(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+            style={{ padding: '8px 12px', border: `1px solid ${t.borderL}`, borderRadius: 8, fontSize: 13, background: t.bgPanel, color: t.text1, outline: 'none' }}
           >
             <option value="lossDate">Loss Date</option>
             <option value="reportDate">Report Date</option>
@@ -205,7 +220,7 @@ const ClaimsList: React.FC = () => {
           />
           </div>
 
-          <button onClick={() => refetch()} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg">
+          <button onClick={() => refetch()} className="p-2 rounded-lg" style={{ color: t.text4 }}>
             <RefreshCw size={16}/>
           </button>
 
@@ -213,15 +228,15 @@ const ClaimsList: React.FC = () => {
       </div>
       </div>{/* end sticky filter bar */}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
 
         {/* Expandable Filter Panel */}
         {showFilters && (
-            <div className="p-4 bg-blue-50/50 border-b border-blue-100 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200">
+            <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200" style={{ background: t.accentMuted, borderBottom: `1px solid ${t.border}` }}>
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Status</label>
-                    <select 
-                        className="w-full p-2 border rounded-lg text-sm bg-white"
+                    <label style={{ color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }} className="block mb-1">Status</label>
+                    <select
+                        style={{ width: '100%', padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 13, background: t.bgPanel, color: t.text1 }}
                         value={filters.status}
                         onChange={(e) => handleFilterChange('status', e.target.value)}
                     >
@@ -233,9 +248,9 @@ const ClaimsList: React.FC = () => {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Liability Type</label>
-                    <select 
-                        className="w-full p-2 border rounded-lg text-sm bg-white"
+                    <label style={{ color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }} className="block mb-1">Liability Type</label>
+                    <select
+                        style={{ width: '100%', padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 13, background: t.bgPanel, color: t.text1 }}
                         value={filters.liabilityType}
                         onChange={(e) => handleFilterChange('liabilityType', e.target.value)}
                     >
@@ -249,18 +264,18 @@ const ClaimsList: React.FC = () => {
 
         {/* Loading State */}
         {isLoading && (
-            <div className="py-20 text-center flex flex-col items-center justify-center text-gray-500">
-                <Loader2 size={32} className="animate-spin mb-3 text-blue-600"/>
+            <div className="py-20 text-center flex flex-col items-center justify-center" style={{ color: t.text4 }}>
+                <Loader2 size={32} className="animate-spin mb-3" style={{ color: t.accent }}/>
                 Loading claims...
             </div>
         )}
 
         {/* Error State */}
         {isError && (
-            <div className="py-12 text-center flex flex-col items-center justify-center text-red-500">
+            <div className="py-12 text-center flex flex-col items-center justify-center" style={{ color: t.danger }}>
                 <AlertOctagon size={32} className="mb-3"/>
                 <p className="font-medium">Failed to load claims.</p>
-                <button onClick={() => refetch()} className="mt-3 text-blue-600 hover:underline text-sm">Try Again</button>
+                <button onClick={() => refetch()} className="mt-3 text-sm hover:underline" style={{ color: t.accent }}>Try Again</button>
             </div>
         )}
 
@@ -268,94 +283,102 @@ const ClaimsList: React.FC = () => {
         {!isLoading && !isError && (
             <>
                     <table className="w-full text-left text-sm whitespace-nowrap table-fixed">
-                        <thead className="bg-gray-50 sticky z-20 shadow-sm" style={{ top: `${filterHeight}px` }}>
+                        <thead className="sticky z-20" style={{ top: `${filterHeight}px`, background: t.bgApp, boxShadow: t.shadow }}>
                             <tr>
-                                <th className="px-4 py-4 w-[120px]">Claim Ref</th>
-                                <th className="px-4 py-4 w-[110px]">Policy Ref</th>
-                                <th className="px-4 py-4 w-[80px]">Status</th>
-                                <th className="px-4 py-4 w-[90px]">Loss Date</th>
-                                <th className="px-4 py-4">Insured / Claimant</th>
-                                <th className="px-4 py-4 text-right bg-gray-50 w-[110px]">Incurred (100%)</th>
-                                <th className="px-4 py-4 text-right bg-blue-50/50 w-[120px]">Incurred (Ours)</th>
-                                <th className="px-4 py-4 text-right bg-green-50/50 w-[110px]">Paid (Ours)</th>
-                                <th className="px-4 py-4 text-right bg-red-50/50 w-[100px]">Outstanding</th>
-                                <th className="px-1 py-3 w-10 bg-gray-50"></th>
+                                <th className="px-4 py-4 w-[120px]" style={{ color: t.text2 }}>Claim Ref</th>
+                                <th className="px-4 py-4 w-[110px]" style={{ color: t.text2 }}>Policy Ref</th>
+                                <th className="px-4 py-4 w-[80px]" style={{ color: t.text2 }}>Status</th>
+                                <th className="px-4 py-4 w-[90px]" style={{ color: t.text2 }}>Loss Date</th>
+                                <th className="px-4 py-4" style={{ color: t.text2 }}>Insured / Claimant</th>
+                                <th className="px-4 py-4 text-right w-[110px]" style={{ color: t.text2, background: t.bgApp }}>Incurred (100%)</th>
+                                <th className="px-4 py-4 text-right w-[120px]" style={{ color: t.text2, background: t.accentMuted }}>Incurred (Ours)</th>
+                                <th className="px-4 py-4 text-right w-[110px]" style={{ color: t.text2, background: t.successBg }}>Paid (Ours)</th>
+                                <th className="px-4 py-4 text-right w-[100px]" style={{ color: t.text2, background: t.dangerBg }}>Outstanding</th>
+                                <th className="px-1 py-3 w-10" style={{ background: t.bgApp }}></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {claims.map(claim => (
-                                <tr 
-                                    key={claim.id} 
+                        <tbody className="divide-y" style={{ borderColor: t.border }}>
+                            {claims.map(claim => {
+                                const badgeStyle = getStatusBadgeStyle(claim.status);
+                                return (
+                                <tr
+                                    key={claim.id}
                                     onClick={() => navigate(`/claims/${claim.id}`)}
-                                    className="hover:bg-blue-50 cursor-pointer transition-colors group"
+                                    className="cursor-pointer transition-colors"
+                                    onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                                    onMouseLeave={e => (e.currentTarget.style.background = '')}
                                 >
-                                    <td className="px-4 py-4 font-bold text-gray-900 truncate">
+                                    <td className="px-4 py-4 font-bold truncate" style={{ color: t.text1 }}>
                                         {claim.claimNumber}
                                         {claim.liabilityType === 'INFORMATIONAL' && (
-                                            <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] bg-gray-200 text-gray-600 border border-gray-300">INFO</span>
+                                            <span className="ml-2 px-1.5 py-0.5 rounded text-[10px]" style={{ background: t.bgInput, color: t.text3, border: `1px solid ${t.borderL}` }}>INFO</span>
                                         )}
                                     </td>
-                                    <td className="px-4 py-4 font-mono text-blue-600 text-xs truncate">{claim.policyNumber}</td>
+                                    <td className="px-4 py-4 font-mono text-xs truncate" style={{ color: t.accent }}>{claim.policyNumber}</td>
                                     <td className="px-4 py-4">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                                            claim.status === 'OPEN' ? 'bg-green-100 text-green-800' :
-                                            claim.status === 'CLOSED' ? 'bg-gray-100 text-gray-600' :
-                                            'bg-red-100 text-red-800'
-                                        }`}>
+                                        <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, color: badgeStyle.color, background: badgeStyle.background }}>
                                             {claim.status}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-4 text-gray-600 text-xs">{formatDate(claim.lossDate)}</td>
+                                    <td className="px-4 py-4 text-xs" style={{ color: t.text3 }}>{formatDate(claim.lossDate)}</td>
                                     <td className="px-4 py-4 overflow-hidden">
-                                        <div className="font-medium text-gray-900 truncate" title={claim.insuredName}>{claim.insuredName}</div>
-                                        <div className="text-xs text-gray-500 truncate">{claim.claimantName}</div>
+                                        <div className="font-medium truncate" style={{ color: t.text1 }} title={claim.insuredName}>{claim.insuredName}</div>
+                                        <div className="text-xs truncate" style={{ color: t.text4 }}>{claim.claimantName}</div>
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono text-gray-600 bg-gray-50/30">
+                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.text3 }}>
                                         {formatMoney(claim.totalIncurred100)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono font-bold text-gray-900 bg-blue-50/20">
+                                    <td className="px-4 py-4 text-right font-mono font-bold" style={{ color: t.text1 }}>
                                         {formatMoney(claim.totalIncurredOurShare)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono text-green-700 bg-green-50/20">
+                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.success }}>
                                         {formatMoney(claim.totalPaidOurShare)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono text-red-700 bg-red-50/20">
+                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.danger }}>
                                         {formatMoney(claim.outstandingOurShare)}
                                     </td>
                                     <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
                                         <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === claim.id ? null : claim.id); }}
-                                            className="p-1.5 hover:bg-gray-100 rounded-lg">
-                                            <MoreVertical size={16} className="text-gray-500" />
+                                            className="p-1.5 rounded-lg"
+                                            onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                                            onMouseLeave={e => (e.currentTarget.style.background = '')}
+                                        >
+                                            <MoreVertical size={16} style={{ color: t.text4 }} />
                                         </button>
                                         {openMenuId === claim.id && (
-                                            <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[120px]">
-                                                <button onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                            <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+                                                <button onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm"
+                                                  style={{ color: t.text2 }}
+                                                  onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
+                                                  onMouseLeave={e => (e.currentTarget.style.background = '')}
+                                                >
                                                     <Eye size={14} /> View
                                                 </button>
                                             </div>
                                         )}
                                     </td>
                                 </tr>
-                            ))}
+                                );
+                            })}
                             {claims.length === 0 && (
                                 <tr>
-                                    <td colSpan={10} className="py-12 text-center text-gray-400">
+                                    <td colSpan={10} className="py-12 text-center" style={{ color: t.text5 }}>
                                         <AlertOctagon size={48} className="mx-auto mb-4 opacity-20"/>
                                         No claims found matching your criteria.
                                     </td>
                                 </tr>
                             )}
                         </tbody>
-                        
+
                         {/* Summary Row */}
                         {claims.length > 0 && (
-                            <tfoot className="bg-slate-50 border-t-2 border-slate-200 font-bold text-slate-800 text-xs shadow-inner">
+                            <tfoot className="font-bold text-xs" style={{ background: t.bgApp, borderTop: `2px solid ${t.border}`, color: t.text2 }}>
                                 <tr>
                                     <td colSpan={5} className="px-4 py-3 text-right uppercase tracking-wider">Page Summary:</td>
                                     <td className="px-4 py-3 text-right">-</td>
                                     <td className="px-4 py-3 text-right font-mono">{formatMoney(summaryIncurred)}</td>
-                                    <td className="px-4 py-3 text-right font-mono text-green-800">{formatMoney(summaryPaid)}</td>
-                                    <td className="px-4 py-3 text-right font-mono text-red-800">{formatMoney(summaryOutstanding)}</td>
+                                    <td className="px-4 py-3 text-right font-mono" style={{ color: t.success }}>{formatMoney(summaryPaid)}</td>
+                                    <td className="px-4 py-3 text-right font-mono" style={{ color: t.danger }}>{formatMoney(summaryOutstanding)}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -366,16 +389,16 @@ const ClaimsList: React.FC = () => {
                 <div ref={sentinelRef} className="h-1" />
                 {isLoading && filters.page > 1 && (
                   <div className="flex justify-center py-4">
-                    <RefreshCw size={20} className="animate-spin text-blue-600" />
+                    <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
                   </div>
                 )}
             </>
         )}
       </div>
 
-      <RegisterClaimModal 
-        isOpen={showRegisterModal} 
-        onClose={() => setShowRegisterModal(false)} 
+      <RegisterClaimModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
       />
     </div>
   );
