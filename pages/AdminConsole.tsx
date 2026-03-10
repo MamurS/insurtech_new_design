@@ -727,7 +727,7 @@ const AdminConsole: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>System Overview</h2>
-            <button onClick={loadAllData} className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium" style={{ background: t.bgCard }}><RefreshCw size={16}/> Refresh</button>
+            <button onClick={loadAllData} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/> Refresh</button>
         </div>
 
         {/* Top Stats */}
@@ -756,34 +756,34 @@ const AdminConsole: React.FC = () => {
 
         {/* Financial Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gradient-to-br to-green-600 rounded-xl p-6 text-white" style={{ boxShadow: t.shadowLg }}>
+            <div className="rounded-xl p-6" style={{ background: t.success, color: '#fff', boxShadow: t.shadowLg }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-green-100 text-sm">Total Premium</p>
+                        <p className="text-sm" style={{ opacity: 0.8 }}>Total Premium</p>
                         <p className="text-3xl font-bold mt-1">${totalPremium.toLocaleString()}</p>
-                        <p className="text-green-200 text-xs mt-2">{rawPolicies.length} policies</p>
+                        <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{rawPolicies.length} policies</p>
                     </div>
-                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"><DollarSign size={28}/></div>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><DollarSign size={28}/></div>
                 </div>
             </div>
-            <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 text-white" style={{ boxShadow: t.shadowLg }}>
+            <div className="rounded-xl p-6" style={{ background: t.danger, color: '#fff', boxShadow: t.shadowLg }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-red-100 text-sm">Claims Paid</p>
+                        <p className="text-sm" style={{ opacity: 0.8 }}>Claims Paid</p>
                         <p className="text-3xl font-bold mt-1">${totalClaimsPaid.toLocaleString()}</p>
-                        <p className="text-red-200 text-xs mt-2">{claims.length} claims</p>
+                        <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{claims.length} claims</p>
                     </div>
-                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"><TrendingDown size={28}/></div>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><TrendingDown size={28}/></div>
                 </div>
             </div>
-            <div className={`bg-gradient-to-br ${lossRatio > 70 ? 'from-amber-500 to-amber-600' : ' to-blue-600'} rounded-xl p-6 text-white`} style={{ boxShadow: t.shadowLg }}>
+            <div className="rounded-xl p-6" style={{ background: lossRatio > 70 ? t.warning : t.accent, color: '#fff', boxShadow: t.shadowLg }}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <p className="text-sm opacity-80">Loss Ratio</p>
+                        <p className="text-sm" style={{ opacity: 0.8 }}>Loss Ratio</p>
                         <p className="text-3xl font-bold mt-1">{lossRatio.toFixed(1)}%</p>
-                        <p className="text-xs opacity-70 mt-2">{lossRatio > 70 ? 'Above target' : 'Within target'}</p>
+                        <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{lossRatio > 70 ? 'Above target' : 'Within target'}</p>
                     </div>
-                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"><PieChart size={28}/></div>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><PieChart size={28}/></div>
                 </div>
             </div>
         </div>
@@ -803,9 +803,9 @@ const AdminConsole: React.FC = () => {
                         <div className="absolute inset-0 flex items-center justify-center"><span className="text-2xl font-bold">{stats.totalPolicies}</span></div>
                     </div>
                     <div className="space-y-3">
-                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full bg-green-500"></div><span className="text-sm">Active ({activePolicies})</span></div>
-                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full bg-yellow-500"></div><span className="text-sm">Pending ({pendingPolicies})</span></div>
-                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full bg-red-500"></div><span className="text-sm">Expired ({expiredPolicies})</span></div>
+                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full" style={{ background: t.success }}></div><span className="text-sm">Active ({activePolicies})</span></div>
+                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full" style={{ background: t.warning }}></div><span className="text-sm">Pending ({pendingPolicies})</span></div>
+                        <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full" style={{ background: t.danger }}></div><span className="text-sm">Expired ({expiredPolicies})</span></div>
                     </div>
                 </div>
             </div>
@@ -815,12 +815,12 @@ const AdminConsole: React.FC = () => {
                     {['DRAFT','PENDING','QUOTED','BOUND','CLOSED','DECLINED'].map(status => {
                         const count = rawSlips.filter(s => s.status === status).length;
                         const pct = stats.totalSlips > 0 ? (count/stats.totalSlips)*100 : 0;
-                        const colors: Record<string,string> = { DRAFT:'bg-gray-400', PENDING:'bg-blue-500', QUOTED:'bg-purple-500', BOUND:'bg-green-500', CLOSED:'bg-gray-600', DECLINED:'bg-red-500' };
+                        const colors: Record<string,string> = { DRAFT: t.text5, PENDING: t.accent, QUOTED: '#a855f7', BOUND: t.success, CLOSED: t.text2, DECLINED: t.danger };
                         return (
                             <div key={status} className="flex items-center gap-3">
                                 <div className="w-20 text-xs font-medium" style={{ color: t.text2 }}>{status}</div>
                                 <div className="flex-1 h-6 rounded-full overflow-hidden" style={{ background: t.bgCard }}>
-                                    <div className={`h-full ${colors[status]}`} style={{width:`${pct}%`}}></div>
+                                    <div className="h-full" style={{width:`${pct}%`, background: colors[status]}}></div>
                                 </div>
                                 <div className="w-12 text-right text-sm font-medium">{count}</div>
                             </div>
@@ -835,13 +835,13 @@ const AdminConsole: React.FC = () => {
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Recent Activity</h3>
-                    <button onClick={() => setActiveSection('activity-log')} className="text-sm hover:text-blue-800" style={{ color: t.accent }}>View All →</button>
+                    <button onClick={() => setActiveSection('activity-log')} className="text-sm" style={{ color: t.accent }}>View All →</button>
                 </div>
                 <div className="space-y-3">
                     {recentActivity.length === 0 ? (
                         <div className="text-center py-8" style={{ color: t.text4 }}><Activity size={32} className="mx-auto mb-2 opacity-50"/><p className="text-sm">No recent activity</p></div>
                     ) : recentActivity.slice(0,5).map((a,i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 hover:bg-gray-50 rounded-lg">
+                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg" onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${a.action==='INSERT'?' ':a.action==='UPDATE'?' ':a.action==='DELETE'?' ':' '}`} style={{ background: `${t.accent}20`, color: t.accent }}>
                                 {a.action==='INSERT'?<Plus size={14}/>:a.action==='UPDATE'?<Edit size={14}/>:a.action==='DELETE'?<Trash2 size={14}/>:<RefreshCw size={14}/>}
                             </div>
@@ -856,13 +856,13 @@ const AdminConsole: React.FC = () => {
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold">Pending Tasks</h3>
-                    <span className="px-2.5 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">{tasks.filter(t=>t.status==='PENDING').length} pending</span>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: t.warningBg, color: t.warning }}>{tasks.filter(t=>t.status==='PENDING').length} pending</span>
                 </div>
                 <div className="space-y-3">
                     {tasks.filter(t=>t.status==='PENDING').length===0 ? (
                         <div className="text-center py-8" style={{ color: t.text4 }}><CheckCircle size={32} className="mx-auto mb-2 opacity-50"/><p className="text-sm">All tasks done!</p></div>
                     ) : tasks.filter(t=>t.status==='PENDING').slice(0,5).map((t,i) => (
-                        <div key={i} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
+                        <div key={i} className="flex items-center justify-between p-3 rounded-lg" onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <div className="flex items-center gap-3 min-w-0">
                                 <div className={`w-2 h-2 rounded-full ${t.priority==='HIGH'?'0':t.priority==='MEDIUM'?'0':'0'}`} style={{ background: t.warningBg }}></div>
                                 <div className="min-w-0">
@@ -883,7 +883,7 @@ const AdminConsole: React.FC = () => {
     <div className="space-y-4 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
             <div><h2 className="text-xl font-bold" style={{ color: t.text1 }}>Activity Log</h2><p className="text-sm" style={{ color: t.text3 }}>Track all system activities</p></div>
-            <button onClick={fetchActivityLogs} className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200 rounded-lg text-sm font-medium" style={{ background: t.bgCard }}><RefreshCw size={16}/>Refresh</button>
+            <button onClick={fetchActivityLogs} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/>Refresh</button>
         </div>
         <div className="p-4 rounded-xl border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -906,7 +906,7 @@ const AdminConsole: React.FC = () => {
                 <DatePickerInput label="From" value={parseDate(activityDateFrom)} onChange={(date) => {setActivityDateFrom(toISODateString(date) || '');setActivityPage(0);}}/>
                 <DatePickerInput label="To" value={parseDate(activityDateTo)} onChange={(date) => {setActivityDateTo(toISODateString(date) || '');setActivityPage(0);}}/>
             </div>
-            {(activitySearch||activityCategory||activityDateFrom||activityDateTo) && <button onClick={()=>{setActivitySearch('');setActivityCategory('');setActivityDateFrom('');setActivityDateTo('');setActivityPage(0);}} className="mt-3 text-sm hover:text-blue-800" style={{ color: t.accent }}>Clear filters</button>}
+            {(activitySearch||activityCategory||activityDateFrom||activityDateTo) && <button onClick={()=>{setActivitySearch('');setActivityCategory('');setActivityDateFrom('');setActivityDateTo('');setActivityPage(0);}} className="mt-3 text-sm" style={{ color: t.accent }}>Clear filters</button>}
         </div>
         <div className="text-sm" style={{ color: t.text3 }}>Showing {activityLogs.length} of {activityTotal} logs</div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -921,13 +921,13 @@ const AdminConsole: React.FC = () => {
                             <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text2 }}>Description</th>
                             <th className="px-4 py-3 text-left text-xs font-semibold uppercase" style={{ color: t.text2 }}>Reference</th>
                         </tr></thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y" style={{ borderColor: t.borderL }}>
                             {activityLogs.map(log => (
-                                <tr key={log.id} className="hover:bg-gray-50">
+                                <tr key={log.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                                     <td className="px-4 py-3 text-sm whitespace-nowrap" style={{ color: t.text3 }}>{formatDateTime(log.created_at)}</td>
                                     <td className="px-4 py-3"><div className="text-sm font-medium" style={{ color: t.text1 }}>{log.user_name||'System'}</div><div className="text-xs" style={{ color: t.text3 }}>{log.user_email}</div></td>
-                                    <td className="px-4 py-3"><span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${log.action==='INSERT'?' text-green-800':log.action==='UPDATE'?' ':log.action==='DELETE'?' text-red-800':log.action==='STATUS_CHANGE'?' text-purple-800':' '}`} style={{ background: `${t.accent}20`, color: t.accent }}>{log.action}</span></td>
-                                    <td className="px-4 py-3"><span className={`inline-flex px-2 py-1 rounded text-xs font-medium ${log.action_category==='POLICY'?'bg-indigo-50 text-indigo-700':log.action_category==='SLIP'?'bg-orange-50 text-orange-700':log.action_category==='CLAIM'?' ':log.action_category==='TASK'?' text-yellow-700':' '}`} style={{ background: t.warningBg, color: t.danger }}>{log.action_category}</span></td>
+                                    <td className="px-4 py-3"><span className="inline-flex px-2 py-1 rounded-full text-xs font-medium" style={{ background: `${t.accent}20`, color: t.accent }}>{log.action}</span></td>
+                                    <td className="px-4 py-3"><span className="inline-flex px-2 py-1 rounded text-xs font-medium" style={{ background: t.warningBg, color: t.warning }}>{log.action_category}</span></td>
                                     <td className="px-4 py-3 text-sm max-w-md truncate" style={{ color: t.text2 }} title={log.action_description}>{log.action_description}</td>
                                     <td className="px-4 py-3 text-sm font-mono" style={{ color: t.text2 }}>{log.entity_reference}</td>
                                 </tr>
@@ -958,13 +958,13 @@ const AdminConsole: React.FC = () => {
                 <thead style={{ background: t.bgCard, color: t.text2 }}><tr><th className="px-6 py-4 w-12">Code</th><th className="px-6 py-4">Name</th><th className="px-6 py-4">Head</th><th className="px-6 py-4 text-center">Staff</th><th className="px-6 py-4 text-center">Status</th><th className="px-6 py-4 text-right">Actions</th></tr></thead>
                 <tbody className="divide-y">
                     {departments.map(dept => (
-                        <tr key={dept.id} className="hover:bg-gray-50">
+                        <tr key={dept.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <td className="px-6 py-4 font-mono font-bold" style={{ color: t.text3 }}>{dept.code}</td>
                             <td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{dept.name}</div><div className="text-xs" style={{ color: t.text3 }}>{dept.description}</div></td>
                             <td className="px-6 py-4 text-sm" style={{ color: t.text2 }}>{(dept as any).headName || '-'}</td>
                             <td className="px-6 py-4 text-center text-sm">{dept.currentStaffCount||0} / {dept.maxStaff||'∞'}</td>
                             <td className="px-6 py-4 text-center">{dept.isActive ? <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.successBg, color: t.success }}>Active</span> : <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.bgCard, color: t.text3 }}>Inactive</span>}</td>
-                            <td className="px-6 py-4 text-right"><div className="flex justify-end gap-2"><button onClick={()=>handleEditDepartment(dept)} className="hover:bg-blue-50 p-2 rounded" style={{ color: t.accent }}><Edit size={16}/></button><button onClick={()=>handleDeleteDepartment(dept.id,dept.name)} className="hover:bg-red-50 p-2 rounded" style={{ color: t.danger }}><Trash2 size={16}/></button></div></td>
+                            <td className="px-6 py-4 text-right"><div className="flex justify-end gap-2"><button onClick={()=>handleEditDepartment(dept)} className="p-2 rounded" style={{ color: t.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = t.accentMuted)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Edit size={16}/></button><button onClick={()=>handleDeleteDepartment(dept.id,dept.name)} className="p-2 rounded" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Trash2 size={16}/></button></div></td>
                         </tr>
                     ))}
                     {departments.length===0 && <tr><td colSpan={6} className="text-center py-8" style={{ color: t.text4 }}>No departments found.</td></tr>}
