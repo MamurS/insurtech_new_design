@@ -341,34 +341,34 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
             <div className="space-y-4">
                 <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={16}/> Core Information</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div><div style={{ color: t.text4 }}>Insured Name</div><div className="font-medium" style={{ color: t.text1 }}>{policy.insuredName}</div></div>
-                    <div><div style={{ color: t.text4 }}>Ref / Policy No</div><div className="font-medium font-mono" style={{ color: t.text1 }}>{policy.policyNumber}</div></div>
-                    {policy.secondaryPolicyNumber && <div><div style={{ color: t.text4 }}>Secondary Ref</div><div className="font-medium" style={{ color: t.text1 }}>{policy.secondaryPolicyNumber}</div></div>}
-                    {policy.agreementNumber && <div><div style={{ color: t.text4 }}>Agreement No</div><div className="font-medium" style={{ color: t.text1 }}>{policy.agreementNumber}</div></div>}
+                    <div><div style={{ color: t.text4 }}>Insured Name</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.insuredName}</div></div>
+                    <div><div style={{ color: t.text4 }}>Ref / Policy No</div><div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{policy.policyNumber}</div></div>
+                    {policy.secondaryPolicyNumber && <div><div style={{ color: t.text4 }}>Secondary Ref</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.secondaryPolicyNumber}</div></div>}
+                    {policy.agreementNumber && <div><div style={{ color: t.text4 }}>Agreement No</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.agreementNumber}</div></div>}
 
                     {policy.channel === 'Inward' && <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: '1px solid #a855f720' }}><div className="text-xs uppercase font-bold" style={{ color: '#a855f7' }}>Cedant</div><div className="font-medium" style={{ color: '#a855f7' }}>{policy.cedantName || '-'}</div></div>}
-                    <div className="col-span-2 p-2 rounded" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}><div className="text-xs uppercase" style={{ color: t.text4 }}>Intermediary ({policy.intermediaryType})</div><div className="font-medium" style={{ color: t.text1 }}>{policy.intermediaryName || 'Direct'}</div></div>
+                    <div className="col-span-2 p-2 rounded" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}><div className="text-xs uppercase" style={{ color: t.text4 }}>Intermediary ({policy.intermediaryType})</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.intermediaryName || 'Direct'}</div></div>
 
-                    {policy.borrower && <div><div style={{ color: t.text4 }}>Borrower</div><div className="font-medium" style={{ color: t.text1 }}>{policy.borrower}</div></div>}
-                    {policy.insuredAddress && <div className="col-span-2"><div style={{ color: t.text4 }}>Insured Address</div><div className="font-medium truncate" style={{ color: t.text1 }}>{policy.insuredAddress}</div></div>}
+                    {policy.borrower && <div><div style={{ color: t.text4 }}>Borrower</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.borrower}</div></div>}
+                    {policy.insuredAddress && <div className="col-span-2"><div style={{ color: t.text4 }}>Insured Address</div><div className="truncate" style={{ color: t.text1, fontWeight: 500 }}>{policy.insuredAddress}</div></div>}
 
-                     <div><div style={{ color: t.text4 }}>Industry</div><div className="font-medium" style={{ color: t.text1 }}>{policy.industry || '-'}</div></div>
-                     <div><div style={{ color: t.text4 }}>Territory</div><div className="font-medium" style={{ color: t.text1 }}>{policy.territory}</div></div>
-                     <div><div style={{ color: t.text4 }}>Class</div><div className="font-medium" style={{ color: t.text1 }}>{policy.classOfInsurance}</div></div>
-                     <div><div style={{ color: t.text4 }}>Risk Code</div><div className="font-medium" style={{ color: t.text1 }}>{policy.riskCode || '-'}</div></div>
+                     <div><div style={{ color: t.text4 }}>Industry</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.industry || '-'}</div></div>
+                     <div><div style={{ color: t.text4 }}>Territory</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.territory}</div></div>
+                     <div><div style={{ color: t.text4 }}>Class</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.classOfInsurance}</div></div>
+                     <div><div style={{ color: t.text4 }}>Risk Code</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.riskCode || '-'}</div></div>
                 </div>
             </div>
 
             <div className="space-y-4">
                  <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={16}/> Dates & Terms</h4>
                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div><div style={{ color: t.text4 }}>Inception</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.inceptionDate)}</div></div>
-                    <div><div style={{ color: t.text4 }}>Expiry</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.expiryDate)}</div></div>
+                    <div><div style={{ color: t.text4 }}>Inception</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.inceptionDate)}</div></div>
+                    <div><div style={{ color: t.text4 }}>Expiry</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.expiryDate)}</div></div>
 
-                    {policy.dateOfSlip && <div><div style={{ color: t.text4 }}>Date of Slip</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.dateOfSlip)}</div></div>}
-                    {policy.accountingDate && <div><div style={{ color: t.text4 }}>Accounting Date</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.accountingDate)}</div></div>}
+                    {policy.dateOfSlip && <div><div style={{ color: t.text4 }}>Date of Slip</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.dateOfSlip)}</div></div>}
+                    {policy.accountingDate && <div><div style={{ color: t.text4 }}>Accounting Date</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.accountingDate)}</div></div>}
 
-                    <div className="col-span-2"><div style={{ color: t.text4 }}>Deductible</div><div className="font-medium p-2 rounded text-xs" style={{ color: t.text1, background: t.bgCard }}>{policy.deductible || 'N/A'}</div></div>
+                    <div className="col-span-2"><div style={{ color: t.text4 }}>Deductible</div><div className="p-2 rounded text-xs" style={{ color: t.text1, background: t.bgCard, fontWeight: 500 }}>{policy.deductible || 'N/A'}</div></div>
                  </div>
             </div>
         </div>
@@ -378,7 +378,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
              <h4 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
                  <div><div style={{ color: t.text4 }}>Sum Insured</div><div style={{ color: t.text1, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.sumInsured, policy.currency)}</div></div>
-                 <div><div style={{ color: t.text4 }}>Limit of Liability</div><div className="font-medium" style={{ color: t.text1 }}>{formatMoney(policy.limitForeignCurrency, policy.currency)}</div></div>
+                 <div><div style={{ color: t.text4 }}>Limit of Liability</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatMoney(policy.limitForeignCurrency, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Gross Premium</div><div style={{ color: t.success, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.grossPremium, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Net Premium</div><div style={{ color: t.accent, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.netPremium, policy.currency)}</div></div>
              </div>
