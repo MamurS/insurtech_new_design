@@ -322,8 +322,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <label className="cursor-pointer px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgCard, color: t.text2, fontWeight: 500 }}><Upload size={16} /> {uploadFile ? uploadFile.name : "Choose PDF..."}<input type="file" accept=".pdf" className="hidden" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} /></label>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <button onClick={() => setShowNTUConfirm(true)} className="w-full py-2.5 font-bold rounded-lg text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2 }}>Mark as NTU</button>
-                    <button onClick={() => setShowActivateConfirm(true)} className="w-full py-2.5 font-bold rounded-lg text-sm" style={{ background: t.success, color: '#fff' }}>Bind & Activate</button>
+                    <button onClick={() => setShowNTUConfirm(true)} className="w-full py-2.5 rounded-lg text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2, fontWeight: 700 }}>Mark as NTU</button>
+                    <button onClick={() => setShowActivateConfirm(true)} className="w-full py-2.5 rounded-lg text-sm" style={{ background: t.success, color: '#fff', fontWeight: 700 }}>Bind & Activate</button>
                 </div>
             </div>
         )}
@@ -331,7 +331,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         {/* EARLY TERMINATION BUTTON */}
         {policy.status === PolicyStatus.ACTIVE && (
             <div className="rounded-xl p-4 mb-6 flex justify-between items-center relative z-20" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                <div className="text-sm flex items-center gap-2" style={{ color: t.text3 }}><CheckCircle style={{ color: t.success }} size={18} /><span className="font-bold" style={{ color: t.text1 }}>Policy is Active.</span></div>
+                <div className="text-sm flex items-center gap-2" style={{ color: t.text3 }}><CheckCircle style={{ color: t.success }} size={18} /><span style={{ color: t.text1, fontWeight: 700 }}>Policy is Active.</span></div>
                 <button onClick={() => setShowTerminationConfirm(true)} className="px-4 py-2 font-bold rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40`, color: t.warning }}><XCircle size={16} /> Early Termination</button>
             </div>
         )}
