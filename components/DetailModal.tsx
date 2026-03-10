@@ -430,8 +430,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {(!slip.status || currentStatus === 'DRAFT') && (
                     <button
                         onClick={() => requestSlipStatusChange('PENDING')}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
-                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
+                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Send size={16} />
                         Submit for Review
@@ -443,15 +443,15 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('QUOTED')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
-                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
+                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <FileText size={16} />
                             Quote Received
                         </button>
                         <button
                             onClick={() => handleSlipDecline()}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                             style={{ background: t.danger, color: '#fff', boxShadow: t.shadow }}
                         >
                             <XCircle size={16} />
@@ -465,7 +465,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('SIGNED', { signed_date: new Date().toISOString().split('T')[0] })}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                             style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
                         >
                             <CheckCircle size={16} />
@@ -473,7 +473,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         </button>
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                             style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
                         >
                             <XCircle size={16} />
@@ -486,8 +486,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {currentStatus === 'SIGNED' && (
                     <button
                         onClick={() => requestSlipStatusChange('SENT', { sent_date: new Date().toISOString().split('T')[0] })}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
-                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
+                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Send size={16} />
                         Send to Reinsurer
@@ -499,7 +499,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('BOUND', { bound_date: new Date().toISOString().split('T')[0] })}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                             style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
                         >
                             <CheckCircle size={16} />
@@ -507,7 +507,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         </button>
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                             style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
                         >
                             <XCircle size={16} />
@@ -520,7 +520,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {currentStatus === 'BOUND' && (
                     <button
                         onClick={() => requestSlipStatusChange('CLOSED', { closed_date: new Date().toISOString().split('T')[0] })}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                         style={{ background: t.text3, color: '#fff', boxShadow: t.shadow }}
                     >
                         <Archive size={16} />
@@ -532,7 +532,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {['DECLINED', 'NTU', 'CANCELLED'].includes(currentStatus) && (
                     <button
                         onClick={() => requestSlipStatusChange('PENDING')}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold"
+                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
                         style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
                     >
                         <RefreshCw size={16} />
