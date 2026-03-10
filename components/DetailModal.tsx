@@ -289,14 +289,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     </div>
                 ) : (
                     <div className="rounded-lg p-3 mb-4" style={{ background: t.successBg, border: `1px solid ${t.success}40` }}>
-                        <p className="text-sm font-medium flex items-center gap-2" style={{ color: t.success }}><CheckCircle size={16} /> {uploadFile ? `Document ready: ${uploadFile.name}` : 'Signed document on file'}</p>
+                        <p className="text-sm flex items-center gap-2" style={{ color: t.success, fontWeight: 500 }}><CheckCircle size={16} /> {uploadFile ? `Document ready: ${uploadFile.name}` : 'Signed document on file'}</p>
                     </div>
                 )}
                 <p className="text-sm" style={{ color: t.text3 }}>This will bind the risk and mark the policy as <strong>Active</strong>.</p>
             </div>
             <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
                 <button type="button" onClick={() => setShowActivateConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Go Back</button>
-                <button type="button" onClick={() => { setShowActivateConfirm(false); handleStatusChange(PolicyStatus.ACTIVE, item as Policy); }} disabled={isProcessing} className="px-4 py-2 font-bold rounded-lg text-sm flex items-center gap-2" style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}>Activate Policy</button>
+                <button type="button" onClick={() => { setShowActivateConfirm(false); handleStatusChange(PolicyStatus.ACTIVE, item as Policy); }} disabled={isProcessing} className="px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Activate Policy</button>
             </div>
         </div>
     </div>
