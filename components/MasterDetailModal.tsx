@@ -272,15 +272,15 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
             <h4 className="mb-3 flex items-center gap-2 text-sm" style={{ color: t.accent, fontWeight: 700 }}><Shield size={14} /> Outward Reinsurance Summary</h4>
             <div className="flex gap-4">
               <div className="flex-1 text-center">
-                <div className="text-[11px] uppercase font-bold" style={{ color: t.accent }}>Total Ceded</div>
+                <div className="text-[11px] uppercase" style={{ color: t.accent, fontWeight: 700 }}>Total Ceded</div>
                 <div style={{ color: t.accent, fontSize: 15, fontWeight: 700 }}>{totalCeded.toFixed(2)}%</div>
               </div>
               <div className="flex-1 text-center">
-                <div className="text-[11px] uppercase font-bold" style={{ color: t.success }}>Retention</div>
+                <div className="text-[11px] uppercase" style={{ color: t.success, fontWeight: 700 }}>Retention</div>
                 <div style={{ color: t.success, fontSize: 15, fontWeight: 700 }}>{retention.toFixed(2)}%</div>
               </div>
               <div className="flex-1 text-center">
-                <div className="text-[11px] uppercase font-bold" style={{ color: t.warning }}>Reinsurers</div>
+                <div className="text-[11px] uppercase" style={{ color: t.warning, fontWeight: 700 }}>Reinsurers</div>
                 <div style={{ color: t.warning, fontSize: 15, fontWeight: 700 }}>{uniqueShares.size}</div>
               </div>
             </div>
@@ -300,7 +300,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         <div className="rounded-lg overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-xs font-semibold uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3 }}>
+              <thead className="text-xs uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3, fontWeight: 600 }}>
                 <tr>
                   <th className="px-4 py-3 text-left">#</th>
                   <th className="px-4 py-3 text-left">Ref Number</th>
@@ -430,15 +430,15 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         {/* Summary bar */}
         <div className="flex gap-4">
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: t.accent }}>Total Ceded</div>
+            <div className="text-[11px] uppercase" style={{ color: t.accent, fontWeight: 700 }}>Total Ceded</div>
             <div style={{ color: t.accent, fontSize: 15, fontWeight: 700 }}>{totalCededShare.toFixed(2)}%</div>
           </div>
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.success + '18', border: `1px solid ${t.success}40` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: t.success }}>Retention</div>
+            <div className="text-[11px] uppercase" style={{ color: t.success, fontWeight: 700 }}>Retention</div>
             <div style={{ color: t.success, fontSize: 15, fontWeight: 700 }}>{Math.max(0, 100 - totalCededShare).toFixed(2)}%</div>
           </div>
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.warning + '18', border: `1px solid ${t.warning}40` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: t.warning }}>Reinsurers</div>
+            <div className="text-[11px] uppercase" style={{ color: t.warning, fontWeight: 700 }}>Reinsurers</div>
             <div style={{ color: t.warning, fontSize: 15, fontWeight: 700 }}>{reinsurerRows.length}</div>
           </div>
         </div>
@@ -447,7 +447,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         <div className="rounded-lg overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-xs font-semibold uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3 }}>
+            <thead className="text-xs uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3, fontWeight: 600 }}>
               <tr>
                 <th className="px-4 py-3 text-left">Reinsurer</th>
                 <th className="px-4 py-3 text-right">Share %</th>
