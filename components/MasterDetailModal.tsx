@@ -461,7 +461,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
             <tbody className="divide-y" style={{ borderColor: t.border }}>
               {reinsurerRows.map((rr, idx) => (
                 <tr key={rr.name + idx} style={{ background: idx % 2 === 0 ? t.bgPanel : t.bgRowAlt }}>
-                  <td className="px-4 py-2.5 font-medium" style={{ color: t.text1 }}>{rr.name}</td>
+                  <td className="px-4 py-2.5" style={{ color: t.text1, fontWeight: 500 }}>{rr.name}</td>
                   <td className="px-4 py-2.5 text-right font-mono">{rr.share.toFixed(2)}%</td>
                   <td className="px-4 py-2.5 text-right font-mono">{fmtFull(rr.cededPremium, currency)}</td>
                   <td className="px-4 py-2.5 text-right">{pct(rr.commission)}</td>
