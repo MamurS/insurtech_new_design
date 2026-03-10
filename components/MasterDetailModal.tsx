@@ -682,8 +682,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                 className="flex items-center gap-1.5 px-4 py-2.5 text-sm"
                 style={
                   activeTab === tab.key
-                    ? { borderBottom: `2px solid ${t.accent}`, color: t.accent, background: t.bgPanel }
-                    : { borderBottom: '2px solid transparent', color: t.text4 }
+                    ? { borderBottom: `2px solid ${t.accent}`, color: t.accent, background: t.bgPanel, fontWeight: 500 }
+                    : { borderBottom: '2px solid transparent', color: t.text4, fontWeight: 500 }
                 }
               >
                 {tab.icon}
@@ -702,8 +702,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         <div className="px-5 py-3 flex justify-end gap-2 flex-shrink-0" style={{ borderTop: `1px solid ${t.border}`, background: t.bgCard }}>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg font-medium text-sm"
-            style={{ background: t.bgHover, color: t.text1 }}
+            className="px-5 py-2 rounded-lg text-sm"
+            style={{ background: t.bgHover, color: t.text1, fontWeight: 500 }}
           >
             Close
           </button>
