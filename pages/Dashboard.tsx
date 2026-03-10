@@ -924,7 +924,7 @@ const Dashboard: React.FC = () => {
                                         {row.cedantName ? (
                                             <div className="flex flex-col min-w-0">
                                                 <span
-                                                    className="hover:text-blue-600 hover:underline cursor-pointer truncate"
+                                                    className="hover:underline cursor-pointer truncate"
                                                     onClick={(e) => handleEntityClick(e, row.cedantName)}
                                                 >
                                                     {row.cedantName}
@@ -942,7 +942,7 @@ const Dashboard: React.FC = () => {
                                             </div>
                                         ) : (
                                             <span
-                                                className="hover:text-blue-600 hover:underline cursor-pointer truncate block"
+                                                className="hover:underline cursor-pointer truncate block"
                                                 onClick={(e) => handleEntityClick(e, row.insuredName)}
                                             >
                                                 {row.insuredName}

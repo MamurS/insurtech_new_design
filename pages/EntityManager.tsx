@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DB } from '../services/db';
 import { LegalEntity } from '../types';
 import { EntityDetailModal } from '../components/EntityDetailModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { FormModal } from '../components/FormModal';
-import { EntityFormContent } from '../components/EntityFormContent';
 import SidePanel, { PanelField } from '../components/ui/SidePanel';
 import { Plus, Search, Building2, MapPin, Eye, Edit, Trash2 } from 'lucide-react';
 import { getSectionForCode } from '../data/sicCodes';
 import { useTheme } from '../theme/useTheme';
 
 const EntityManager: React.FC = () => {
+  const navigate = useNavigate();
   const { t } = useTheme();
   const [entities, setEntities] = useState<LegalEntity[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,10 +19,6 @@ const EntityManager: React.FC = () => {
   const [selectedEntity, setSelectedEntity] = useState<LegalEntity | null>(null);
   const [selectedEntityForPanel, setSelectedEntityForPanel] = useState<LegalEntity | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; id: string }>({ isOpen: false, id: '' });
-
-  // Modal State
-  const [showEntityModal, setShowEntityModal] = useState(false);
-  const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -68,7 +64,7 @@ const EntityManager: React.FC = () => {
           <p className="text-sm" style={{ color: t.text4 }}>Manage company registry, counterparties, and insureds.</p>
         </div>
         <button
-          onClick={() => { setEditingEntityId(null); setShowEntityModal(true); }}
+          onClick={() => navigate('/entities/new')}
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold transition-all"
           style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
         >
@@ -155,7 +151,7 @@ const EntityManager: React.FC = () => {
                               <td className="px-6 py-4 text-center">
                                   <div className="flex justify-center gap-2">
                                       <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} className="p-1.5 rounded" style={{ color: t.accent }} title="View"><Eye size={16}/></button>
-                                      <button onClick={(e) => { e.stopPropagation(); setEditingEntityId(entity.id); setShowEntityModal(true); }} className="p-1.5 rounded" style={{ color: t.accent }} title="Edit"><Edit size={16}/></button>
+                                      <button onClick={(e) => { e.stopPropagation(); navigate(`/entities/edit/${entity.id}`); }} className="p-1.5 rounded" style={{ color: t.accent }} title="Edit"><Edit size={16}/></button>
                                       <button onClick={(e) => handleDelete(e, entity.id)} className="p-1.5 rounded" style={{ color: t.danger }} title="Delete"><Trash2 size={16}/></button>
                                   </div>
                               </td>
@@ -196,8 +192,7 @@ const EntityManager: React.FC = () => {
               <button
                 onClick={() => {
                   if (selectedEntityForPanel) {
-                    setEditingEntityId(selectedEntityForPanel.id);
-                    setShowEntityModal(true);
+                    navigate(`/entities/edit/${selectedEntityForPanel.id}`);
                   }
                 }}
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
@@ -234,7 +229,7 @@ const EntityManager: React.FC = () => {
       <EntityDetailModal
         entity={selectedEntity}
         onClose={() => setSelectedEntity(null)}
-        onEdit={(id) => { setSelectedEntity(null); setEditingEntityId(id); setShowEntityModal(true); }}
+        onEdit={(id) => { setSelectedEntity(null); navigate(`/entities/edit/${id}`); }}
       />
 
       <ConfirmDialog
@@ -247,19 +242,6 @@ const EntityManager: React.FC = () => {
         confirmText="Delete"
       />
 
-      {/* Entity Form Modal */}
-      <FormModal
-        isOpen={showEntityModal}
-        onClose={() => { setShowEntityModal(false); setEditingEntityId(null); }}
-        title={editingEntityId ? 'Edit Legal Entity' : 'New Legal Entity'}
-        subtitle={editingEntityId ? 'Edit entity details' : 'Add a new legal entity to the registry'}
-      >
-        <EntityFormContent
-          id={editingEntityId || undefined}
-          onSave={() => { setShowEntityModal(false); setEditingEntityId(null); loadData(); }}
-          onCancel={() => { setShowEntityModal(false); setEditingEntityId(null); }}
-        />
-      </FormModal>
     </div>
   );
 };

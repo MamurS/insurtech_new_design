@@ -4,6 +4,7 @@ import { PermissionService } from '../services/permissionService';
 import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from './ConfirmDialog';
 import { X, Save, Plus, Trash2, CheckSquare, Square } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 interface RoleEditModalProps {
     role?: Role;
@@ -12,6 +13,7 @@ interface RoleEditModalProps {
 }
 
 export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onSave }) => {
+    const { t } = useTheme();
     const [activeTab, setActiveTab] = useState<'details' | 'permissions' | 'limits'>('details');
     const toast = useToast();
     const [formData, setFormData] = useState<Partial<Role>>({
@@ -57,7 +59,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
     const handleSave = async () => {
         try {
             let roleId = role?.id;
-            
+
             // 1. Save Role Details
             if (roleId) {
                 await PermissionService.updateRole(roleId, formData);
@@ -91,7 +93,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
     };
 
     const togglePermission = (id: string) => {
-        setSelectedPermissions(prev => 
+        setSelectedPermissions(prev =>
             prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
         );
     };
@@ -111,74 +113,80 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
 
     return (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
-                <div className="p-4 border-b flex justify-between items-center bg-gray-50">
-                    <h3 className="font-bold text-gray-800 text-lg">{role ? 'Edit Role' : 'Create New Role'}</h3>
-                    <button onClick={onClose}><X className="text-gray-500 hover:text-gray-800" size={20}/></button>
+            <div className="rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
+                <div className="p-4 border-b flex justify-between items-center" style={{ background: t.bgCard, borderColor: t.border }}>
+                    <h3 className="font-bold text-lg" style={{ color: t.text1 }}>{role ? 'Edit Role' : 'Create New Role'}</h3>
+                    <button onClick={onClose}><X style={{ color: t.text4 }} size={20}/></button>
                 </div>
 
-                <div className="flex border-b bg-white">
+                <div className="flex border-b" style={{ background: t.bgPanel, borderColor: t.border }}>
                     {(['details', 'permissions', 'limits'] as const).map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`flex-1 py-3 text-sm font-bold uppercase tracking-wide border-b-2 transition-colors ${
-                                activeTab === tab ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'
-                            }`}
+                            className="flex-1 py-3 text-sm font-bold uppercase tracking-wide border-b-2 transition-colors"
+                            style={{
+                                borderColor: activeTab === tab ? t.accent : 'transparent',
+                                color: activeTab === tab ? t.accent : t.text4
+                            }}
                         >
                             {tab}
                         </button>
                     ))}
                 </div>
 
-                <div className="p-6 overflow-y-auto flex-1 bg-white">
+                <div className="p-6 overflow-y-auto flex-1" style={{ background: t.bgPanel }}>
                     {activeTab === 'details' && (
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Role Name</label>
-                                <input 
-                                    className="w-full p-2 border rounded" 
-                                    value={formData.name} 
+                                <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Role Name</label>
+                                <input
+                                    className="w-full p-2 border rounded"
+                                    style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
+                                    value={formData.name}
                                     onChange={e => setFormData({...formData, name: e.target.value})}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
-                                <textarea 
-                                    className="w-full p-2 border rounded" 
-                                    value={formData.description} 
+                                <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label>
+                                <textarea
+                                    className="w-full p-2 border rounded"
+                                    style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
+                                    value={formData.description}
                                     onChange={e => setFormData({...formData, description: e.target.value})}
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Department</label>
-                                    <input 
-                                        className="w-full p-2 border rounded" 
-                                        value={formData.department} 
+                                    <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Department</label>
+                                    <input
+                                        className="w-full p-2 border rounded"
+                                        style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
+                                        value={formData.department}
                                         onChange={e => setFormData({...formData, department: e.target.value})}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Hierarchy Level</label>
-                                    <input 
+                                    <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Hierarchy Level</label>
+                                    <input
                                         type="number"
-                                        className="w-full p-2 border rounded" 
-                                        value={formData.level} 
+                                        className="w-full p-2 border rounded"
+                                        style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
+                                        value={formData.level}
                                         onChange={e => setFormData({...formData, level: Number(e.target.value)})}
                                     />
-                                    <span className="text-xs text-gray-500">Lower number = Higher Authority</span>
+                                    <span className="text-xs" style={{ color: t.text4 }}>Lower number = Higher Authority</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 mt-4">
-                                <input 
-                                    type="checkbox" 
+                                <input
+                                    type="checkbox"
                                     id="isActive"
                                     checked={formData.isActive}
                                     onChange={e => setFormData({...formData, isActive: e.target.checked})}
-                                    className="w-5 h-5 text-blue-600 rounded"
+                                    className="w-5 h-5 rounded"
                                 />
-                                <label htmlFor="isActive" className="font-medium text-gray-700">Role is Active</label>
+                                <label htmlFor="isActive" className="font-medium" style={{ color: t.text2 }}>Role is Active</label>
                             </div>
                         </div>
                     )}
@@ -188,26 +196,27 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                             {Object.entries(groupedPermissions).map(([module, perms]) => {
                                 const typedPerms = perms as Permission[];
                                 return (
-                                <div key={module} className="border rounded-lg overflow-hidden">
-                                    <div className="bg-gray-100 px-4 py-2 font-bold text-gray-700 uppercase text-xs flex justify-between items-center">
+                                <div key={module} className="border rounded-lg overflow-hidden" style={{ borderColor: t.border }}>
+                                    <div className="px-4 py-2 font-bold uppercase text-xs flex justify-between items-center" style={{ background: t.bgCard, color: t.text2 }}>
                                         {module}
-                                        <span className="text-xs font-normal text-gray-500">{typedPerms.filter(p => selectedPermissions.includes(p.id)).length}/{typedPerms.length}</span>
+                                        <span className="text-xs font-normal" style={{ color: t.text4 }}>{typedPerms.filter(p => selectedPermissions.includes(p.id)).length}/{typedPerms.length}</span>
                                     </div>
-                                    <div className="p-2 grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white">
+                                    <div className="p-2 grid grid-cols-1 sm:grid-cols-2 gap-2" style={{ background: t.bgPanel }}>
                                         {typedPerms.map(p => {
                                             const isSelected = selectedPermissions.includes(p.id);
                                             return (
-                                                <div 
-                                                    key={p.id} 
+                                                <div
+                                                    key={p.id}
                                                     onClick={() => togglePermission(p.id)}
-                                                    className={`flex items-start gap-2 p-2 rounded cursor-pointer transition-colors ${isSelected ? 'bg-blue-50 text-blue-800' : 'hover:bg-gray-50'}`}
+                                                    className="flex items-start gap-2 p-2 rounded cursor-pointer transition-colors"
+                                                    style={isSelected ? { background: t.accent + '18', color: t.accent } : {}}
                                                 >
-                                                    <div className={`mt-0.5 ${isSelected ? 'text-blue-600' : 'text-gray-400'}`}>
+                                                    <div className="mt-0.5" style={{ color: isSelected ? t.accent : t.text4 }}>
                                                         {isSelected ? <CheckSquare size={16}/> : <Square size={16}/>}
                                                     </div>
                                                     <div>
                                                         <div className="text-sm font-medium">{p.name}</div>
-                                                        <div className="text-xs text-gray-500">{p.description}</div>
+                                                        <div className="text-xs" style={{ color: t.text4 }}>{p.description}</div>
                                                     </div>
                                                 </div>
                                             );
@@ -221,13 +230,13 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                     {activeTab === 'limits' && (
                         <div className="space-y-6">
                             {limits.map((limit, idx) => (
-                                <div key={limit.id || idx} className="border p-4 rounded-xl bg-gray-50">
+                                <div key={limit.id || idx} className="border p-4 rounded-xl" style={{ background: t.bgCard, borderColor: t.border }}>
                                     <div className="flex justify-between mb-4">
-                                        <h4 className="font-bold text-gray-800 uppercase text-sm">
+                                        <h4 className="font-bold uppercase text-sm" style={{ color: t.text1 }}>
                                             {limit.limitType === 'policy_lol' ? 'Policy Limit of Liability' : 'Claim Payment Limit'}
                                         </h4>
                                         <button
-                                            className="text-red-500 hover:text-red-700"
+                                            style={{ color: t.danger }}
                                             onClick={() => setDeleteLimitConfirm({ show: true, index: idx, limitId: limit.id })}
                                         >
                                             <Trash2 size={16}/>
@@ -235,18 +244,20 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Max Amount</label>
-                                            <input 
-                                                type="number" 
+                                            <label className="block text-xs font-bold mb-1" style={{ color: t.text4 }}>Max Amount</label>
+                                            <input
+                                                type="number"
                                                 className="w-full p-2 border rounded font-mono"
+                                                style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
                                                 value={limit.maxAmount}
                                                 onChange={e => handleLimitChange(idx, 'maxAmount', Number(e.target.value))}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 mb-1">Currency</label>
-                                            <select 
+                                            <label className="block text-xs font-bold mb-1" style={{ color: t.text4 }}>Currency</label>
+                                            <select
                                                 className="w-full p-2 border rounded"
+                                                style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
                                                 value={limit.currency}
                                                 onChange={e => handleLimitChange(idx, 'currency', e.target.value)}
                                             >
@@ -256,27 +267,28 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2">
-                                            <input 
+                                            <input
                                                 type="checkbox"
                                                 checked={limit.canApproveOthers}
                                                 onChange={e => handleLimitChange(idx, 'canApproveOthers', e.target.checked)}
                                             />
-                                            <span className="text-sm">Can approve requests from lower levels</span>
+                                            <span className="text-sm" style={{ color: t.text2 }}>Can approve requests from lower levels</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <input 
+                                            <input
                                                 type="checkbox"
                                                 checked={limit.requiresApprovalAbove}
                                                 onChange={e => handleLimitChange(idx, 'requiresApprovalAbove', e.target.checked)}
                                             />
-                                            <span className="text-sm">Requires approval above this limit</span>
+                                            <span className="text-sm" style={{ color: t.text2 }}>Requires approval above this limit</span>
                                         </div>
                                     </div>
                                 </div>
                             ))}
-                            <button 
+                            <button
                                 onClick={() => setLimits([...limits, { id: crypto.randomUUID(), limitType: 'custom', currency: 'USD', maxAmount: 0, requiresApprovalAbove: true, canApproveOthers: false }])}
-                                className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-500 hover:text-blue-500 flex items-center justify-center gap-2"
+                                className="w-full py-2 border-2 border-dashed rounded-lg flex items-center justify-center gap-2"
+                                style={{ borderColor: t.borderL, color: t.text4 }}
                             >
                                 <Plus size={16}/> Add Limit Type
                             </button>
@@ -284,9 +296,9 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                     )}
                 </div>
 
-                <div className="p-4 border-t bg-gray-50 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded font-medium">Cancel</button>
-                    <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded font-bold hover:bg-blue-700 flex items-center gap-2 shadow-sm">
+                <div className="p-4 border-t flex justify-end gap-3" style={{ background: t.bgCard, borderColor: t.border }}>
+                    <button onClick={onClose} className="px-4 py-2 rounded font-medium" style={{ color: t.text3 }}>Cancel</button>
+                    <button onClick={handleSave} className="px-6 py-2 rounded font-bold flex items-center gap-2" style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}>
                         <Save size={16}/> Save Role
                     </button>
                 </div>

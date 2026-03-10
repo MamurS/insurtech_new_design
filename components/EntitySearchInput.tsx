@@ -3,6 +3,7 @@ import { DB } from '../services/db';
 import { LegalEntity } from '../types';
 import { Search, ChevronDown, Building2, Loader2 } from 'lucide-react';
 import { formatSICDisplay } from '../data/sicCodes';
+import { useTheme } from '../theme/useTheme';
 
 interface EntitySearchInputProps {
     label: string;
@@ -23,6 +24,7 @@ export const EntitySearchInput: React.FC<EntitySearchInputProps> = ({
     required = false,
     className = ""
 }) => {
+    const { t } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
     const [entities, setEntities] = useState<LegalEntity[]>([]);
     const [loading, setLoading] = useState(true);
@@ -85,12 +87,10 @@ export const EntitySearchInput: React.FC<EntitySearchInputProps> = ({
         setIsOpen(true);
     };
 
-    const inputClass = "w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900 pr-8";
-
     return (
         <div className={`relative w-full ${className}`} ref={wrapperRef}>
-            <label className="block text-sm font-medium text-gray-600 mb-1.5">
-                {label} {required && <span className="text-red-500">*</span>}
+            <label className="block text-sm font-medium mb-1.5" style={{ color: t.text3 }}>
+                {label} {required && <span style={{ color: t.danger }}>*</span>}
             </label>
             <div className="relative">
                 <input
@@ -101,9 +101,10 @@ export const EntitySearchInput: React.FC<EntitySearchInputProps> = ({
                     required={required}
                     placeholder={placeholder}
                     autoComplete="off"
-                    className={inputClass}
+                    className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm pr-8"
+                    style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
                 />
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
                     {loading ? (
                         <Loader2 size={14} className="animate-spin" />
                     ) : isOpen ? (
@@ -115,27 +116,31 @@ export const EntitySearchInput: React.FC<EntitySearchInputProps> = ({
             </div>
 
             {isOpen && !loading && (
-                <ul className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                <ul
+                    className="absolute z-50 w-full rounded-lg mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100"
+                    style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowMd }}
+                >
                     {filteredEntities.length > 0 ? (
                         filteredEntities.map((entity) => (
                             <li
                                 key={entity.id}
                                 onClick={() => handleSelect(entity)}
-                                className="px-3 py-2 text-sm hover:bg-blue-50 hover:text-blue-700 cursor-pointer border-b border-gray-50 last:border-0"
+                                className="px-3 py-2 text-sm cursor-pointer last:border-0"
+                                style={{ borderBottom: `1px solid ${t.border}` }}
                             >
                                 <div className="flex items-center gap-2">
-                                    <Building2 size={14} className="text-gray-400 shrink-0" />
+                                    <Building2 size={14} className="shrink-0" style={{ color: t.text4 }} />
                                     <div className="flex-1 min-w-0">
-                                        <div className="font-medium text-gray-900 truncate">
+                                        <div className="font-medium truncate" style={{ color: t.text1 }}>
                                             {entity.fullName}
                                         </div>
                                         {(entity.shortName || entity.regCodeValue || entity.sicCode) && (
-                                            <div className="text-xs text-gray-500 truncate">
+                                            <div className="text-xs truncate" style={{ color: t.text4 }}>
                                                 {entity.shortName && <span>{entity.shortName}</span>}
                                                 {entity.shortName && entity.regCodeValue && <span> | </span>}
                                                 {entity.regCodeValue && <span>INN: {entity.regCodeValue}</span>}
                                                 {entity.sicCode && (
-                                                    <span className="ml-1 text-blue-500">
+                                                    <span className="ml-1" style={{ color: t.accent }}>
                                                         &bull; {formatSICDisplay(entity.sicCode)}
                                                     </span>
                                                 )}
@@ -146,7 +151,7 @@ export const EntitySearchInput: React.FC<EntitySearchInputProps> = ({
                             </li>
                         ))
                     ) : (
-                        <li className="px-3 py-4 text-sm text-gray-500 text-center">
+                        <li className="px-3 py-4 text-sm text-center" style={{ color: t.text4 }}>
                             {searchTerm ? (
                                 <div>
                                     <p>No entities found matching "{searchTerm}"</p>

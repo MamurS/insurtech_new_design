@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../theme/useTheme';
 
 interface BreadcrumbItem {
   label: string;
@@ -12,32 +13,37 @@ interface ContextBarProps {
   breadcrumbs: BreadcrumbItem[];
 }
 
-const getStatusStyle = (status: string) => {
-  switch (status?.toUpperCase()) {
-    case 'DRAFT':
-      return 'bg-slate-100 text-slate-600 border border-slate-300';
-    case 'PENDING':
-      return 'bg-amber-50 text-amber-700 border border-amber-300';
-    case 'ACTIVE':
-      return 'bg-emerald-50 text-emerald-700 border border-emerald-300';
-    case 'EXPIRED':
-    case 'CANCELLED':
-      return 'bg-red-50 text-red-600 border border-red-300';
-    default:
-      return 'bg-slate-100 text-slate-600 border border-slate-300';
-  }
-};
-
 export const ContextBar: React.FC<ContextBarProps> = ({ status, breadcrumbs }) => {
+  const { t } = useTheme();
+
+  const getStatusStyle = (s: string): React.CSSProperties => {
+    switch (s?.toUpperCase()) {
+      case 'DRAFT':
+        return { background: t.bgCard, color: t.text3, border: '1px solid ' + t.borderL };
+      case 'PENDING':
+        return { background: t.warningBg, color: t.warning, border: '1px solid ' + t.warning + '60' };
+      case 'ACTIVE':
+        return { background: t.successBg, color: t.success, border: '1px solid ' + t.success + '60' };
+      case 'EXPIRED':
+      case 'CANCELLED':
+        return { background: t.dangerBg, color: t.danger, border: '1px solid ' + t.danger + '60' };
+      default:
+        return { background: t.bgCard, color: t.text3, border: '1px solid ' + t.borderL };
+    }
+  };
+
   return (
-    <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 mb-6">
+    <div className="px-6 py-3 mb-6" style={{ background: t.bgCard, borderBottom: '1px solid ' + t.border }}>
       <div className="flex items-center gap-2 text-sm">
         {status && (
           <>
-            <span className={`px-2.5 py-1 text-xs font-medium rounded ${getStatusStyle(status)}`}>
+            <span
+              className="px-2.5 py-1 text-xs font-medium rounded"
+              style={getStatusStyle(status)}
+            >
               {status}
             </span>
-            <ChevronRight className="w-4 h-4 text-slate-300" />
+            <ChevronRight className="w-4 h-4" style={{ color: t.text5 }} />
           </>
         )}
 
@@ -46,15 +52,16 @@ export const ContextBar: React.FC<ContextBarProps> = ({ status, breadcrumbs }) =
             {item.href ? (
               <Link
                 to={item.href}
-                className="text-slate-500 hover:text-blue-600 transition-colors"
+                className="transition-colors"
+                style={{ color: t.text4 }}
               >
                 {item.label}
               </Link>
             ) : (
-              <span className="text-slate-900 font-medium">{item.label}</span>
+              <span className="font-medium" style={{ color: t.text1 }}>{item.label}</span>
             )}
             {index < breadcrumbs.length - 1 && (
-              <ChevronRight className="w-4 h-4 text-slate-300" />
+              <ChevronRight className="w-4 h-4" style={{ color: t.text5 }} />
             )}
           </React.Fragment>
         ))}

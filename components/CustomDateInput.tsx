@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatDate, parseDateInput, maskDateInput, getStoredDateFormat } from '../utils/dateUtils';
+import { useTheme } from '../theme/useTheme';
 
 interface CustomDateInputProps {
     label?: string;
@@ -13,9 +14,10 @@ interface CustomDateInputProps {
 }
 
 export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, value, onChange, required, placeholder }) => {
+    const { t } = useTheme();
     const [inputValue, setInputValue] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    
+
     // Calendar View State
     const [viewDate, setViewDate] = useState(new Date());
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -24,7 +26,7 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
     useEffect(() => {
         const formatted = value ? formatDate(value) : '';
         setInputValue(formatted);
-        
+
         // If value exists, set calendar view to that date
         if (value) {
             const dateObj = new Date(value);
@@ -52,7 +54,7 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
 
         // Attempt to parse
         const isoDate = parseDateInput(masked);
-        
+
         // Open calendar to show feedback if user is typing numbers
         if (masked.length > 0 && !isOpen) setIsOpen(true);
 
@@ -71,7 +73,7 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
         // Adjust for timezone offset to ensure YYYY-MM-DD matches local selection
         const offsetDate = new Date(newDate.getTime() - (newDate.getTimezoneOffset() * 60000));
         const isoString = offsetDate.toISOString().split('T')[0];
-        
+
         onChange({ target: { name, value: isoString } });
         setInputValue(formatDate(isoString));
         setIsOpen(false);
@@ -90,20 +92,20 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
 
     const daysInCurrentMonth = getDaysInMonth(viewDate.getFullYear(), viewDate.getMonth());
     const firstDay = getFirstDayOfMonth(viewDate.getFullYear(), viewDate.getMonth()); // 0=Sun, 1=Mon...
-    
+
     // Check if a day is the currently selected value
     const isSelected = (day: number) => {
         if (!value) return false;
         const target = new Date(value);
-        return target.getDate() === day && 
-               target.getMonth() === viewDate.getMonth() && 
+        return target.getDate() === day &&
+               target.getMonth() === viewDate.getMonth() &&
                target.getFullYear() === viewDate.getFullYear();
     };
 
     const isToday = (day: number) => {
         const today = new Date();
-        return day === today.getDate() && 
-               viewDate.getMonth() === today.getMonth() && 
+        return day === today.getDate() &&
+               viewDate.getMonth() === today.getMonth() &&
                viewDate.getFullYear() === today.getFullYear();
     }
 
@@ -111,7 +113,7 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
 
     return (
         <div className="w-full" ref={wrapperRef}>
-            {label && <label className="block text-sm font-medium text-gray-600 mb-1.5">{label}</label>}
+            {label && <label className="block text-sm font-medium mb-1.5" style={{ color: t.text3 }}>{label}</label>}
             <div className="relative">
                 <input
                     type="text"
@@ -120,15 +122,17 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
                     onChange={handleTextChange}
                     onFocus={() => setIsOpen(true)}
                     placeholder={placeholder || getStoredDateFormat().toLowerCase()}
-                    className="w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900 pr-10 font-mono"
+                    className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm pr-10 font-mono"
+                    style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
                     autoComplete="off"
                     maxLength={10}
                     required={required}
                 />
-                <button 
+                <button
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 p-1 rounded-full transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors"
+                    style={{ color: t.text4 }}
                     tabIndex={-1}
                 >
                     <CalendarIcon size={18} />
@@ -136,19 +140,22 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
 
                 {/* Custom Calendar Dropdown */}
                 {isOpen && (
-                    <div className="absolute z-[100] mt-1 p-4 bg-white border border-gray-200 rounded-xl shadow-xl w-72 animate-in fade-in zoom-in-95 duration-100 select-none right-0 sm:left-0 sm:right-auto">
-                        
+                    <div
+                        className="absolute z-[100] mt-1 p-4 rounded-xl w-72 animate-in fade-in zoom-in-95 duration-100 select-none right-0 sm:left-0 sm:right-auto"
+                        style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}
+                    >
+
                         {/* Header */}
                         <div className="flex justify-between items-center mb-4">
-                            <button type="button" onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-100 rounded text-gray-600"><ChevronLeft size={20}/></button>
-                            <span className="font-bold text-gray-800">{monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}</span>
-                            <button type="button" onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-100 rounded text-gray-600"><ChevronRight size={20}/></button>
+                            <button type="button" onClick={() => changeMonth(-1)} className="p-1 rounded" style={{ color: t.text3 }}><ChevronLeft size={20}/></button>
+                            <span className="font-bold" style={{ color: t.text1 }}>{monthNames[viewDate.getMonth()]} {viewDate.getFullYear()}</span>
+                            <button type="button" onClick={() => changeMonth(1)} className="p-1 rounded" style={{ color: t.text3 }}><ChevronRight size={20}/></button>
                         </div>
 
                         {/* Weekdays */}
                         <div className="grid grid-cols-7 text-center mb-2">
                             {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-                                <span key={d} className="text-xs font-medium text-gray-400 uppercase">{d}</span>
+                                <span key={d} className="text-xs font-medium uppercase" style={{ color: t.text4 }}>{d}</span>
                             ))}
                         </div>
 
@@ -158,7 +165,7 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
                             {Array.from({ length: firstDay === -1 ? 6 : firstDay }).map((_, i) => (
                                 <div key={`empty-${i}`} />
                             ))}
-                            
+
                             {/* Days */}
                             {Array.from({ length: daysInCurrentMonth }).map((_, i) => {
                                 const day = i +1;
@@ -169,11 +176,15 @@ export const CustomDateInput: React.FC<CustomDateInputProps> = ({ label, name, v
                                         key={day}
                                         type="button"
                                         onClick={() => handleDayClick(day)}
-                                        className={`
-                                            h-9 w-9 rounded-lg text-sm flex items-center justify-center transition-colors
-                                            ${selected ? 'bg-blue-600 text-white font-bold shadow-md' : 'text-gray-700 hover:bg-blue-50'}
-                                            ${today && !selected ? 'border border-blue-300 font-bold text-blue-600' : ''}
-                                        `}
+                                        className="h-9 w-9 rounded-lg text-sm flex items-center justify-center transition-colors"
+                                        style={{
+                                            ...(selected
+                                                ? { background: t.accent, color: '#fff', fontWeight: 'bold', boxShadow: t.shadowMd }
+                                                : { color: t.text2 }),
+                                            ...(today && !selected
+                                                ? { border: `1px solid ${t.accent}60`, fontWeight: 'bold', color: t.accent }
+                                                : {}),
+                                        }}
                                     >
                                         {day}
                                     </button>

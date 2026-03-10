@@ -333,23 +333,23 @@ const SlipForm: React.FC = () => {
             
             {/* Info Panel */}
             <div className="md:col-span-1">
-                <div className="bg-amber-50 rounded-xl p-6 border border-amber-200 sticky top-32">
-                    <div className="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mb-4">
+                <div className="rounded-xl p-6 sticky top-32" style={{ backgroundColor: t.warningBg, border: `1px solid ${t.warning}` }}>
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: t.warningBg, color: t.warning }}>
                         <FileSpreadsheet size={24} />
                     </div>
-                    <h3 className="font-bold text-amber-900 mb-2">Slip Registry</h3>
-                    <p className="text-sm text-amber-800/80 leading-relaxed mb-4">
+                    <h3 className="font-bold mb-2" style={{ color: t.text1 }}>Slip Registry</h3>
+                    <p className="text-sm leading-relaxed mb-4" style={{ color: t.text2 }}>
                         Register a new Outward Reinsurance Slip. Support for multiple reinsurers (panel) is now enabled.
                     </p>
-                    <div className="text-xs text-amber-700 font-mono bg-amber-100/50 p-2 rounded">
+                    <div className="text-xs font-mono p-2 rounded" style={{ backgroundColor: t.warningBg, color: t.warning }}>
                         Current Date: {formatDate(new Date().toISOString())}
                     </div>
                 </div>
             </div>
 
             {/* Form Fields */}
-            <div className="md:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-6 pb-2 border-b border-gray-100">Slip Details</h3>
+            <div className="md:col-span-2 rounded-xl p-6" style={{ backgroundColor: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
+                <h3 className="text-lg font-bold mb-6 pb-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}>Slip Details</h3>
                 
                 <div className="space-y-5">
                     <div>
@@ -409,15 +409,15 @@ const SlipForm: React.FC = () => {
                             required
                         />
                         {formData.insuredSicCode && (
-                          <div className="mt-1.5 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs">
-                            <span className="text-gray-400">Industry:</span>
-                            <span className="text-gray-600">{formatSICDisplay(formData.insuredSicCode)}</span>
+                          <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs" style={{ backgroundColor: t.bgCard, border: `1px solid ${t.border}` }}>
+                            <span style={{ color: t.text4 }}>Industry:</span>
+                            <span style={{ color: t.text3 }}>{formatSICDisplay(formData.insuredSicCode)}</span>
                           </div>
                         )}
                     </div>
 
                     {/* Financials Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4 border-t border-gray-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
                         <div>
                             <label className={labelClass}><span className="flex items-center gap-2"><DollarSign size={14}/> Currency</span></label>
                             <select 
@@ -443,18 +443,18 @@ const SlipForm: React.FC = () => {
                     </div>
 
                     {/* REINSURERS PANEL */}
-                    <div className="pt-4 border-t border-gray-100">
-                        <label className="block text-sm font-bold text-gray-800 mb-3">Reinsurance Market / Panel</label>
-                        <div className="border border-gray-200 rounded-lg overflow-hidden mb-2">
+                    <div className="pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
+                        <label className="block text-sm font-bold mb-3" style={{ color: t.text1 }}>Reinsurance Market / Panel</label>
+                        <div className="rounded-lg overflow-hidden mb-2" style={{ border: `1px solid ${t.border}` }}>
                              <table className="w-full text-sm text-left">
-                                <thead className="bg-gray-50 text-gray-700">
+                                <thead style={{ backgroundColor: t.bgCard, color: t.text2 }}>
                                     <tr>
                                         <th className="px-3 py-2 w-1/2">Market Name</th>
                                         <th className="px-3 py-2">Share %</th>
                                         <th className="px-3 py-2 w-10"></th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody style={{ borderColor: t.border }}>
                                     {formData.reinsurers?.map((reinsurer, idx) => (
                                         <tr key={reinsurer.id}>
                                             <td className="px-3 py-2">
@@ -475,7 +475,7 @@ const SlipForm: React.FC = () => {
                                                 />
                                             </td>
                                             <td className="px-3 py-2 text-center">
-                                                <button type="button" onClick={() => removeReinsurer(idx)} className="text-red-400 hover:text-red-600">
+                                                <button type="button" onClick={() => removeReinsurer(idx)} style={{ color: t.danger }}>
                                                     <Trash2 size={14}/>
                                                 </button>
                                             </td>
@@ -483,7 +483,7 @@ const SlipForm: React.FC = () => {
                                     ))}
                                     {(!formData.reinsurers || formData.reinsurers.length === 0) && (
                                         <tr>
-                                            <td colSpan={3} className="px-3 py-4 text-center text-gray-400 text-xs italic">
+                                            <td colSpan={3} className="px-3 py-4 text-center text-xs italic" style={{ color: t.text4 }}>
                                                 No markets added. Click below to add.
                                             </td>
                                         </tr>
@@ -491,7 +491,7 @@ const SlipForm: React.FC = () => {
                                 </tbody>
                              </table>
                         </div>
-                        <button type="button" onClick={addReinsurer} className="text-xs font-bold text-amber-600 flex items-center gap-1 hover:text-amber-800">
+                        <button type="button" onClick={addReinsurer} className="text-xs font-bold flex items-center gap-1" style={{ color: t.warning }}>
                             <Plus size={12}/> Add Market
                         </button>
                     </div>
@@ -513,26 +513,27 @@ const SlipForm: React.FC = () => {
       {/* Decline Slip Modal */}
       {showDeclineModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
-            <div className="bg-red-50 p-4 border-b border-red-100 flex items-center gap-3">
-              <div className="bg-red-100 p-2 rounded-full text-red-600"><XCircle size={20}/></div>
-              <h3 className="font-bold text-gray-800">Decline Slip</h3>
+          <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ backgroundColor: t.bgPanel, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', border: `1px solid ${t.border}` }}>
+            <div className="p-4 flex items-center gap-3" style={{ backgroundColor: t.dangerBg, borderBottom: `1px solid ${t.border}` }}>
+              <div className="p-2 rounded-full" style={{ backgroundColor: t.dangerBg, color: t.danger }}><XCircle size={20}/></div>
+              <h3 className="font-bold" style={{ color: t.text1 }}>Decline Slip</h3>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Reason for Declining</label>
+                <label className="block text-xs font-bold uppercase mb-1" style={{ color: t.text4 }}>Reason for Declining</label>
                 <textarea
                   rows={3}
                   value={declineReason}
                   onChange={(e) => setDeclineReason(e.target.value)}
                   placeholder="Please enter the reason for declining..."
-                  className="w-full p-2 bg-white border rounded-lg text-sm resize-none text-gray-900"
+                  className="w-full p-2 rounded-lg text-sm resize-none"
+                  style={{ backgroundColor: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
                 />
               </div>
             </div>
-            <div className="p-4 bg-gray-50 border-t flex justify-end gap-2">
-              <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg text-sm">Cancel</button>
-              <button onClick={confirmSlipDecline} className="px-4 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 text-sm shadow-sm">Decline Slip</button>
+            <div className="p-4 flex justify-end gap-2" style={{ backgroundColor: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+              <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Cancel</button>
+              <button onClick={confirmSlipDecline} className="px-4 py-2 font-bold rounded-lg text-sm" style={{ backgroundColor: t.danger, color: '#fff', boxShadow: t.shadow }}>Decline Slip</button>
             </div>
           </div>
         </div>

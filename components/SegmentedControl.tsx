@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from 'react';
+import { useTheme } from '../theme/useTheme';
 
 interface SegmentedControlOption {
   value: string;
@@ -11,32 +12,29 @@ interface SegmentedControlProps {
   options: SegmentedControlOption[];
   value: string;
   onChange: (value: string) => void;
-  colorMap?: Record<string, string>; // value → Tailwind classes for selected state
+  colorMap?: Record<string, React.CSSProperties>; // value → inline styles for selected state
   size?: 'sm' | 'md';
   disabled?: boolean;
   className?: string;
 }
 
-// Default color map for common values
-const defaultColorMap: Record<string, string> = {
-  // Contract Type
-  FAC: 'bg-amber-500 text-white shadow-sm',
-  fac: 'bg-amber-500 text-white shadow-sm',
-  TREATY: 'bg-emerald-600 text-white shadow-sm',
-  treaty: 'bg-emerald-600 text-white shadow-sm',
-  // Structure
-  PROPORTIONAL: 'bg-blue-600 text-white shadow-sm',
-  proportional: 'bg-blue-600 text-white shadow-sm',
-  NON_PROPORTIONAL: 'bg-violet-600 text-white shadow-sm',
-  'non-proportional': 'bg-violet-600 text-white shadow-sm',
-  // Status
-  DRAFT: 'bg-slate-500 text-white shadow-sm',
-  draft: 'bg-slate-500 text-white shadow-sm',
-  PENDING: 'bg-amber-500 text-white shadow-sm',
-  pending: 'bg-amber-500 text-white shadow-sm',
-  ACTIVE: 'bg-emerald-600 text-white shadow-sm',
-  active: 'bg-emerald-600 text-white shadow-sm',
-};
+// Default color map for common values (now returns inline style objects)
+const getDefaultStyles = (t: any): Record<string, React.CSSProperties> => ({
+  FAC: { background: t.warning, color: '#fff', boxShadow: t.shadow },
+  fac: { background: t.warning, color: '#fff', boxShadow: t.shadow },
+  TREATY: { background: t.success, color: '#fff', boxShadow: t.shadow },
+  treaty: { background: t.success, color: '#fff', boxShadow: t.shadow },
+  PROPORTIONAL: { background: t.accent, color: '#fff', boxShadow: t.shadow },
+  proportional: { background: t.accent, color: '#fff', boxShadow: t.shadow },
+  NON_PROPORTIONAL: { background: '#7c3aed', color: '#fff', boxShadow: t.shadow },
+  'non-proportional': { background: '#7c3aed', color: '#fff', boxShadow: t.shadow },
+  DRAFT: { background: t.text4, color: '#fff', boxShadow: t.shadow },
+  draft: { background: t.text4, color: '#fff', boxShadow: t.shadow },
+  PENDING: { background: t.warning, color: '#fff', boxShadow: t.shadow },
+  pending: { background: t.warning, color: '#fff', boxShadow: t.shadow },
+  ACTIVE: { background: t.success, color: '#fff', boxShadow: t.shadow },
+  active: { background: t.success, color: '#fff', boxShadow: t.shadow },
+});
 
 const sizeConfig = {
   sm: {
@@ -65,11 +63,13 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
   disabled = false,
   className = ''
 }) => {
+  const { t } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const config = sizeConfig[size];
 
   // Merge default colors with custom colorMap
-  const mergedColorMap = { ...defaultColorMap, ...colorMap };
+  const defaultStyles = getDefaultStyles(t);
+  const mergedColorMap = { ...defaultStyles, ...colorMap };
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent, currentIndex: number) => {
     if (disabled) return;
@@ -98,14 +98,14 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
     }
   }, [disabled, onChange, options]);
 
-  const getSelectedStyle = (optionValue: string): string => {
-    return mergedColorMap[optionValue] || 'bg-blue-600 text-white shadow-sm';
+  const getSelectedStyle = (optionValue: string): React.CSSProperties => {
+    return mergedColorMap[optionValue] || { background: t.accent, color: '#fff', boxShadow: t.shadow };
   };
 
   return (
     <div className={className}>
       {label && (
-        <label className="block text-xs font-medium text-slate-500 mb-1.5">
+        <label className="block text-xs font-medium mb-1.5" style={{ color: t.text4 }}>
           {label}
         </label>
       )}
@@ -116,9 +116,10 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
         className={`
           inline-flex items-center
           ${config.container}
-          rounded-lg border border-slate-200 bg-slate-50
+          rounded-lg
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
+        style={{ borderColor: t.border, border: `1px solid ${t.border}`, background: t.bgCard }}
       >
         {options.map((option, index) => {
           const isSelected = value === option.value;
@@ -141,12 +142,9 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                 font-medium rounded-md
                 transition-all duration-150
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1
-                ${isSelected
-                  ? getSelectedStyle(option.value)
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white'
-                }
                 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}
               `}
+              style={isSelected ? getSelectedStyle(option.value) : { color: t.text3 }}
             >
               {option.icon && <span className="w-4 h-4 flex items-center justify-center">{option.icon}</span>}
               <span>{option.label}</span>

@@ -2,6 +2,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import { getStoredDateFormat } from '../utils/dateUtils';
+import { useTheme } from '../theme/useTheme';
 
 const getPickerFormat = (): string => {
     const appFormat = getStoredDateFormat();
@@ -22,7 +23,19 @@ interface Props {
     placeholder?: string;
 }
 
+const CompactDateInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement> & { t: any }>(
+    ({ t, ...props }, ref) => (
+        <input
+            ref={ref}
+            {...props}
+            className="w-full px-2 py-1.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2 }}
+        />
+    )
+);
+
 export const CompactDateFilter: React.FC<Props> = ({ value, onChange, placeholder = 'dd.mm.yyyy' }) => {
+    const { t } = useTheme();
     const format = getPickerFormat();
     return (
         <div style={{ width: '120px' }} className="flex-shrink-0">
@@ -31,7 +44,7 @@ export const CompactDateFilter: React.FC<Props> = ({ value, onChange, placeholde
                 onChange={onChange}
                 dateFormat={format}
                 placeholderText={placeholder}
-                className="w-full px-2 py-1.5 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
+                customInput={<CompactDateInput t={t} />}
                 showMonthDropdown
                 showYearDropdown
                 dropdownMode="select"

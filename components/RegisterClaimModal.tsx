@@ -10,6 +10,7 @@ import { DatePickerInput, parseDate, toISODateString } from './DatePickerInput';
 import { EntitySearchInput } from './EntitySearchInput';
 import { formatSICDisplay } from '../data/sicCodes';
 import { ContextBar } from './ContextBar';
+import { useTheme } from '../theme/useTheme';
 
 interface RegisterClaimModalProps {
     isOpen: boolean;
@@ -27,25 +28,26 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
     const { data: policies, isLoading: policiesLoading } = usePoliciesDropdown();
     const createClaimMutation = useCreateClaim();
     const toast = useToast();
+    const { t } = useTheme();
 
     // Form state
     const [selectedPolicyId, setSelectedPolicyId] = useState('');
     const [claimNumber, setClaimNumber] = useState(generateClaimNumber());
-    
+
     // Date States (as Date objects)
     const [lossDate, setLossDate] = useState<Date | null>(null);
     const [reportDate, setReportDate] = useState<Date | null>(new Date());
-    
+
     const [description, setDescription] = useState('');
     const [causeOfLoss, setCauseOfLoss] = useState('');
     const [claimantName, setClaimantName] = useState('');
     const [locationCountry, setLocationCountry] = useState('');
     const [initialReserve, setInitialReserve] = useState<number | ''>('');
-    
+
     // Searchable Dropdown State
     const [searchTerm, setSearchTerm] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    
+
     // Calculated liability
     const [liabilityType, setLiabilityType] = useState<ClaimLiabilityType | null>(null);
     const [liabilityReason, setLiabilityReason] = useState('');
@@ -70,9 +72,9 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
 
         if (selectedPolicy && lossDateStr && reportDateStr) {
             const result = determineLiability(
-                { 
-                    inceptionDate: selectedPolicy.inceptionDate, 
-                    expiryDate: selectedPolicy.expiryDate 
+                {
+                    inceptionDate: selectedPolicy.inceptionDate,
+                    expiryDate: selectedPolicy.expiryDate
                 } as any,
                 lossDateStr,
                 reportDateStr
@@ -157,12 +159,12 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }}>
+            <div className="rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-20">
-                    <h2 className="text-xl font-bold text-gray-800">Register New Claim</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
+                <div className="flex items-center justify-between p-6 sticky top-0 z-20" style={{ borderBottom: '1px solid ' + t.border, background: t.bgPanel }}>
+                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>Register New Claim</h2>
+                    <button onClick={onClose} className="p-2 rounded-lg" style={{ color: t.text4 }}>
                         <X size={20} />
                     </button>
                 </div>
@@ -180,54 +182,62 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
                 <div className="p-6 space-y-6">
                     {/* Policy Selection (Searchable Dropdown) */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">
-                            Policy <span className="text-red-500">*</span>
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>
+                            Policy <span style={{ color: t.danger }}>*</span>
                         </label>
                         {policiesLoading ? (
-                            <div className="flex items-center gap-2 text-gray-500 text-sm">
+                            <div className="flex items-center gap-2 text-sm" style={{ color: t.text4 }}>
                                 <Loader2 size={16} className="animate-spin" /> Loading policies...
                             </div>
                         ) : (
                             <div className="relative">
                                 {/* Click outside overlay */}
                                 {isDropdownOpen && (
-                                    <div 
-                                        className="fixed inset-0 z-10" 
+                                    <div
+                                        className="fixed inset-0 z-10"
                                         onClick={() => setIsDropdownOpen(false)}
                                     />
                                 )}
-                                
+
                                 <div className="relative z-20">
                                     <input
                                         type="text"
-                                        className={`w-full p-2.5 pr-8 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white ${!selectedPolicyId && searchTerm ? 'border-amber-300 ring-1 ring-amber-200' : 'border-gray-300'}`}
+                                        className="w-full p-2.5 pr-8 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                        style={{
+                                            background: t.bgPanel,
+                                            borderWidth: '1px',
+                                            borderStyle: 'solid',
+                                            borderColor: !selectedPolicyId && searchTerm ? t.warning : t.border,
+                                            ...((!selectedPolicyId && searchTerm) ? { boxShadow: '0 0 0 1px ' + t.warning + '60' } : {})
+                                        }}
                                         placeholder="Type to search by policy number or insured name..."
                                         value={searchTerm}
                                         onChange={handleSearchChange}
                                         onFocus={() => setIsDropdownOpen(true)}
                                     />
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
                                         {isDropdownOpen ? <Search size={16} /> : <ChevronDown size={16} />}
                                     </div>
                                 </div>
 
                                 {/* Dropdown List */}
                                 {isDropdownOpen && (
-                                    <div className="absolute z-30 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100">
+                                    <div className="absolute z-30 w-full mt-1 rounded-lg max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100" style={{ background: t.bgPanel, border: '1px solid ' + t.border, boxShadow: t.shadowLg }}>
                                         {filteredPolicies.length === 0 ? (
-                                            <div className="p-3 text-gray-500 text-sm text-center">No policies found matching "{searchTerm}"</div>
+                                            <div className="p-3 text-sm text-center" style={{ color: t.text4 }}>No policies found matching "{searchTerm}"</div>
                                         ) : (
                                             filteredPolicies.map(policy => (
                                                 <div
                                                     key={policy.id}
-                                                    className="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-0 transition-colors"
+                                                    className="p-3 cursor-pointer last:border-0 transition-colors"
+                                                    style={{ borderBottom: '1px solid ' + t.border }}
                                                     onClick={() => handleSelectPolicy(policy)}
                                                 >
-                                                    <div className="font-medium text-gray-900 text-sm flex justify-between">
+                                                    <div className="font-medium text-sm flex justify-between" style={{ color: t.text1 }}>
                                                         <span>{policy.policyNumber}</span>
-                                                        <span className="text-gray-400 font-normal text-xs">{policy.currency}</span>
+                                                        <span className="font-normal text-xs" style={{ color: t.text4 }}>{policy.currency}</span>
                                                     </div>
-                                                    <div className="text-xs text-gray-500">{policy.insuredName}</div>
+                                                    <div className="text-xs" style={{ color: t.text4 }}>{policy.insuredName}</div>
                                                 </div>
                                             ))
                                         )}
@@ -235,16 +245,16 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
                                 )}
                             </div>
                         )}
-                        
+
                         {/* Selected Policy Details Display */}
                         {selectedPolicy ? (
-                            <div className="mt-2 text-xs text-gray-500 bg-gray-50 p-2 rounded border border-gray-100 flex flex-wrap gap-x-4 gap-y-1">
+                            <div className="mt-2 text-xs p-2 rounded flex flex-wrap gap-x-4 gap-y-1" style={{ color: t.text4, background: t.bgCard, border: '1px solid ' + t.border }}>
                                 <span><span className="font-bold">Period:</span> {formatDate(selectedPolicy.inceptionDate)} to {formatDate(selectedPolicy.expiryDate)}</span>
                                 <span><span className="font-bold">Currency:</span> {selectedPolicy.currency}</span>
                                 <span><span className="font-bold">Our Share:</span> {selectedPolicy.ourShare}%</span>
                             </div>
                         ) : searchTerm && !isDropdownOpen && (
-                            <div className="mt-1 text-xs text-amber-600 flex items-center gap-1">
+                            <div className="mt-1 text-xs flex items-center gap-1" style={{ color: t.warning }}>
                                 <AlertTriangle size={12}/> Policy not selected. Please select from the dropdown.
                             </div>
                         )}
@@ -252,12 +262,13 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
 
                     {/* Claim Number */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">
-                            Claim Number <span className="text-red-500">*</span>
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>
+                            Claim Number <span style={{ color: t.danger }}>*</span>
                         </label>
                         <input
                             type="text"
-                            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                            className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                            style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: t.border }}
                             value={claimNumber}
                             onChange={(e) => setClaimNumber(e.target.value)}
                         />
@@ -283,36 +294,37 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
 
                     {/* Liability Type Display */}
                     {liabilityType ? (
-                        <div className={`p-4 rounded-lg flex items-start gap-3 ${
-                            liabilityType === 'ACTIVE' 
-                                ? 'bg-blue-50 border border-blue-200' 
-                                : 'bg-amber-50 border border-amber-200'
-                        }`}>
+                        <div className="p-4 rounded-lg flex items-start gap-3" style={
+                            liabilityType === 'ACTIVE'
+                                ? { background: t.accent + '18', border: '1px solid ' + t.accent + '40' }
+                                : { background: t.warningBg, border: '1px solid ' + t.warning + '40' }
+                        }>
                             {liabilityType === 'ACTIVE' ? (
-                                <CheckCircle className="text-blue-600 flex-shrink-0" size={20} />
+                                <CheckCircle className="flex-shrink-0" size={20} style={{ color: t.accent }} />
                             ) : (
-                                <AlertTriangle className="text-amber-600 flex-shrink-0" size={20} />
+                                <AlertTriangle className="flex-shrink-0" size={20} style={{ color: t.warning }} />
                             )}
                             <div>
-                                <div className={`font-bold text-sm ${liabilityType === 'ACTIVE' ? 'text-blue-800' : 'text-amber-800'}`}>
+                                <div className="font-bold text-sm" style={{ color: liabilityType === 'ACTIVE' ? t.accent : t.warning }}>
                                     {liabilityType === 'ACTIVE' ? 'Active Liability' : 'Informational Only'}
                                 </div>
-                                <div className={`text-xs ${liabilityType === 'ACTIVE' ? 'text-blue-600' : 'text-amber-600'}`}>{liabilityReason}</div>
+                                <div className="text-xs" style={{ color: liabilityType === 'ACTIVE' ? t.accent : t.warning }}>{liabilityReason}</div>
                             </div>
                         </div>
                     ) : selectedPolicyId && lossDate ? (
-                        <div className="p-3 bg-gray-50 rounded text-xs text-gray-500 italic flex items-center gap-2">
+                        <div className="p-3 rounded text-xs italic flex items-center gap-2" style={{ background: t.bgCard, color: t.text4 }}>
                             <Loader2 size={12} className="animate-spin"/> Calculating liability...
                         </div>
                     ) : null}
 
                     {/* Description */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">
-                            Description <span className="text-red-500">*</span>
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>
+                            Description <span style={{ color: t.danger }}>*</span>
                         </label>
                         <textarea
-                            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                            className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                            style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: t.border }}
                             rows={3}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -322,9 +334,10 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
 
                     {/* Cause of Loss */}
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Cause of Loss</label>
+                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Cause of Loss</label>
                         <select
-                            className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+                            className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                            style={{ background: t.bgPanel, borderWidth: '1px', borderStyle: 'solid', borderColor: t.border }}
                             value={causeOfLoss}
                             onChange={(e) => setCauseOfLoss(e.target.value)}
                         >
@@ -355,10 +368,11 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-1">Location / Country</label>
+                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Location / Country</label>
                             <input
                                 type="text"
-                                className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: t.border }}
                                 value={locationCountry}
                                 onChange={(e) => setLocationCountry(e.target.value)}
                             />
@@ -367,26 +381,27 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
 
                     {/* Initial Reserve - Only for ACTIVE claims */}
                     {liabilityType === 'ACTIVE' && (
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <label className="block text-sm font-bold text-gray-700 mb-1">
+                        <div className="p-4 rounded-lg" style={{ background: t.bgCard, border: '1px solid ' + t.border }}>
+                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>
                                 Initial Reserve (100% Gross)
                             </label>
                             <div className="relative">
                                 <input
                                     type="number"
-                                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                    className="w-full p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm"
+                                    style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: t.border }}
                                     value={initialReserve}
                                     onChange={(e) => setInitialReserve(e.target.value ? Number(e.target.value) : '')}
                                     placeholder="0.00"
                                 />
                                 {selectedPolicy && (
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold" style={{ color: t.text4 }}>
                                         {selectedPolicy.currency}
                                     </div>
                                 )}
                             </div>
                             {initialReserve && selectedPolicy && (
-                                <div className="mt-2 text-xs text-blue-600 font-medium">
+                                <div className="mt-2 text-xs font-medium" style={{ color: t.accent }}>
                                     Net Reserve (Our share {selectedPolicy.ourShare}%): {(Number(initialReserve) * selectedPolicy.ourShare / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })} {selectedPolicy.currency}
                                 </div>
                             )}
@@ -395,14 +410,15 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-                    <div className="text-xs text-gray-500 flex items-center gap-1">
+                <div className="flex items-center justify-between p-6" style={{ borderTop: '1px solid ' + t.border, background: t.bgCard }}>
+                    <div className="text-xs flex items-center gap-1" style={{ color: t.text4 }}>
                         {!isFormValid && <><Info size={14}/> Complete marked fields to enable registration.</>}
                     </div>
                     <div className="flex gap-3">
                         <button
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors"
+                            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                            style={{ color: t.text3 }}
                             disabled={createClaimMutation.isPending}
                         >
                             Cancel
@@ -410,11 +426,12 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
                         <button
                             onClick={handleSubmit}
                             disabled={createClaimMutation.isPending || !isFormValid}
-                            className={`px-6 py-2 rounded-lg text-sm font-bold shadow-sm flex items-center gap-2 transition-colors ${
-                                isFormValid 
-                                ? 'bg-red-600 hover:bg-red-700 text-white' 
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
+                            className="px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors"
+                            style={
+                                isFormValid
+                                    ? { background: t.danger, color: '#fff', boxShadow: t.shadow }
+                                    : { background: t.bgHover, color: t.text4, cursor: 'not-allowed' }
+                            }
                         >
                             {createClaimMutation.isPending && <Loader2 size={16} className="animate-spin" />}
                             Register Claim
