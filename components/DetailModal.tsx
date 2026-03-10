@@ -218,7 +218,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
     };
     const s = badgeStyles[status] || { background: t.bgCard, color: t.text1 };
     return (
-        <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: s.background, color: s.color }}>
+        <span className="px-3 py-1 rounded-full text-sm" style={{ background: s.background, color: s.color, fontWeight: 500 }}>
             {status || 'DRAFT'}
         </span>
     );
@@ -229,14 +229,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
           <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
               <div className="p-4 flex items-center gap-3" style={{ background: t.warningBg, borderBottom: `1px solid ${t.warning}40` }}>
                   <div className="p-2 rounded-full" style={{ background: t.warningBg, color: t.warning }}><AlertTriangle size={20}/></div>
-                  <h3 className="font-bold" style={{ color: t.text1 }}>Early Policy Termination</h3>
+                  <h3 style={{ color: t.text1, fontWeight: 700 }}>Early Policy Termination</h3>
               </div>
               <div className="p-6 space-y-4">
                   <div>
                       <DatePickerInput label="Termination Date" value={parseDate(terminationData.terminationDate)} onChange={(date) => setTerminationData({...terminationData, terminationDate: toISODateString(date) || ''})}/>
                   </div>
                   <div>
-                      <label className="block text-xs font-bold uppercase mb-1" style={{ color: t.text4 }}>Initiated By</label>
+                      <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Initiated By</label>
                       <select value={terminationData.initiator} onChange={(e) => setTerminationData({...terminationData, initiator: e.target.value as any})} className="w-full p-2 rounded-lg text-sm" style={{ background: t.bgPanel, borderColor: t.border, border: `1px solid ${t.border}`, color: t.text1 }}>
                           <option value="Us">Us (Insurer)</option>
                           <option value="Broker">Broker</option>
@@ -245,13 +245,13 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                       </select>
                   </div>
                   <div>
-                      <label className="block text-xs font-bold uppercase mb-1" style={{ color: t.text4 }}>Reason for Termination</label>
+                      <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Termination</label>
                       <textarea rows={3} value={terminationData.reason} onChange={(e) => setTerminationData({...terminationData, reason: e.target.value})} className="w-full p-2 rounded-lg text-sm resize-none" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}/>
                   </div>
               </div>
               <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                  <button onClick={() => setShowTerminationConfirm(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Cancel</button>
-                  <button onClick={() => handleStatusChange(PolicyStatus.EARLY_TERMINATION, item as Policy, terminationData)} className="px-4 py-2 font-bold rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow }}>Terminate Policy</button>
+                  <button onClick={() => setShowTerminationConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
+                  <button onClick={() => handleStatusChange(PolicyStatus.EARLY_TERMINATION, item as Policy, terminationData)} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Terminate Policy</button>
               </div>
           </div>
       </div>
@@ -262,14 +262,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
             <div className="p-4 flex items-center gap-3" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}` }}>
                 <div className="p-2 rounded-full" style={{ background: t.bgHover, color: t.text3 }}><XCircle size={20}/></div>
-                <h3 className="font-bold" style={{ color: t.text1 }}>Confirm "Not Taken Up"</h3>
+                <h3 style={{ color: t.text1, fontWeight: 700 }}>Confirm "Not Taken Up"</h3>
             </div>
             <div className="p-6">
                 <p className="text-sm" style={{ color: t.text3 }}>This means the deal was cancelled by the client/broker before inception.</p>
             </div>
             <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                <button type="button" onClick={() => setShowNTUConfirm(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Go Back</button>
-                <button type="button" onClick={() => { setShowNTUConfirm(false); handleStatusChange(PolicyStatus.NTU, item as Policy); }} disabled={isProcessing} className="px-4 py-2 font-bold rounded-lg text-sm" style={{ background: t.text2, color: '#fff', boxShadow: t.shadow }}>Confirm NTU</button>
+                <button type="button" onClick={() => setShowNTUConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Go Back</button>
+                <button type="button" onClick={() => { setShowNTUConfirm(false); handleStatusChange(PolicyStatus.NTU, item as Policy); }} disabled={isProcessing} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.text2, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Confirm NTU</button>
             </div>
         </div>
     </div>
@@ -280,12 +280,12 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
             <div className="p-4 flex items-center gap-3" style={{ background: t.successBg, borderBottom: `1px solid ${t.success}40` }}>
                 <div className="p-2 rounded-full" style={{ background: t.success + '18', color: t.success }}><CheckCircle size={20}/></div>
-                <h3 className="font-bold" style={{ color: t.text1 }}>Bind & Activate Policy</h3>
+                <h3 style={{ color: t.text1, fontWeight: 700 }}>Bind & Activate Policy</h3>
             </div>
             <div className="p-6">
                 {!uploadFile && !(item as Policy)?.signedDocument ? (
                     <div className="rounded-lg p-3 mb-4" style={{ background: t.warningBg, border: `1px solid ${t.warning}40` }}>
-                        <p className="text-sm font-medium flex items-center gap-2" style={{ color: t.warning }}><AlertCircle size={16} /> No signed document uploaded</p>
+                        <p className="text-sm flex items-center gap-2" style={{ color: t.warning, fontWeight: 500 }}><AlertCircle size={16} /> No signed document uploaded</p>
                     </div>
                 ) : (
                     <div className="rounded-lg p-3 mb-4" style={{ background: t.successBg, border: `1px solid ${t.success}40` }}>
@@ -295,7 +295,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 <p className="text-sm" style={{ color: t.text3 }}>This will bind the risk and mark the policy as <strong>Active</strong>.</p>
             </div>
             <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                <button type="button" onClick={() => setShowActivateConfirm(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Go Back</button>
+                <button type="button" onClick={() => setShowActivateConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Go Back</button>
                 <button type="button" onClick={() => { setShowActivateConfirm(false); handleStatusChange(PolicyStatus.ACTIVE, item as Policy); }} disabled={isProcessing} className="px-4 py-2 font-bold rounded-lg text-sm flex items-center gap-2" style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}>Activate Policy</button>
             </div>
         </div>
@@ -671,11 +671,11 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
                     <div className="p-4 flex items-center gap-3" style={{ background: t.dangerBg, borderBottom: `1px solid ${t.danger}40` }}>
                         <div className="p-2 rounded-full" style={{ background: t.danger + '18', color: t.danger }}><XCircle size={20}/></div>
-                        <h3 className="font-bold" style={{ color: t.text1 }}>Decline Slip</h3>
+                        <h3 style={{ color: t.text1, fontWeight: 700 }}>Decline Slip</h3>
                     </div>
                     <div className="p-6 space-y-4">
                         <div>
-                            <label className="block text-xs font-bold uppercase mb-1" style={{ color: t.text4 }}>Reason for Declining</label>
+                            <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
                             <textarea
                                 rows={3}
                                 value={declineReason}
@@ -687,8 +687,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         </div>
                     </div>
                     <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                        <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Cancel</button>
-                        <button onClick={confirmSlipDecline} className="px-4 py-2 font-bold rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow }}>Decline Slip</button>
+                        <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
+                        <button onClick={confirmSlipDecline} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
                     </div>
                 </div>
             </div>
