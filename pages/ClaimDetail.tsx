@@ -8,13 +8,25 @@ import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ArrowLeft, FileText, Plus, Wallet, Loader2, CheckCircle, XCircle, RefreshCw, Settings } from 'lucide-react';
 import { supabase } from '../services/supabase';
+import { useTheme } from '../theme/useTheme';
 
 const ClaimDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const { t } = useTheme();
   const [statusConfirm, setStatusConfirm] = useState<{ isOpen: boolean; status: string; message: string }>({ isOpen: false, status: '', message: '' });
-  
+  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [hoveredBackBtn, setHoveredBackBtn] = useState(false);
+  const [hoveredCloseBtn, setHoveredCloseBtn] = useState(false);
+  const [hoveredDenyBtn, setHoveredDenyBtn] = useState(false);
+  const [hoveredReopenBtn, setHoveredReopenBtn] = useState(false);
+  const [hoveredCloseBtn2, setHoveredCloseBtn2] = useState(false);
+  const [hoveredDenyBtn2, setHoveredDenyBtn2] = useState(false);
+  const [hoveredAddTransBtn, setHoveredAddTransBtn] = useState(false);
+  const [hoveredCancelBtn, setHoveredCancelBtn] = useState(false);
+  const [hoveredSaveBtn, setHoveredSaveBtn] = useState(false);
+
   // React Query Hooks
   const { data: claim, isLoading: loading, error, refetch } = useClaimDetail(id);
   const addTransactionMutation = useAddTransaction();
@@ -81,7 +93,7 @@ const ClaimDetail: React.FC = () => {
 
   const handleAddTransaction = () => {
       if (!claim || !id) return;
-      
+
       addTransactionMutation.mutate({
           claimId: id,
           transactionType: newTrans.type,
@@ -102,32 +114,47 @@ const ClaimDetail: React.FC = () => {
       });
   };
 
+  // Status badge style helper
+  const getStatusBadgeStyle = (status: string, liabilityType?: string) => {
+    if (status === 'CLOSED') return { backgroundColor: t.successBg, color: t.success };
+    if (status === 'DENIED') return { backgroundColor: t.dangerBg, color: t.danger };
+    if (liabilityType === 'ACTIVE') return { backgroundColor: t.accentMuted, color: t.accent };
+    return { backgroundColor: t.bgInput, color: t.text2 };
+  };
+
+  // Transaction type badge style helper
+  const getTransBadgeStyle = (type: string) => {
+    if (['PAYMENT', 'LEGAL_FEE', 'ADJUSTER_FEE'].includes(type)) return { backgroundColor: t.successBg, color: t.success };
+    if (['RESERVE_SET', 'RESERVE_ADJUST'].includes(type)) return { backgroundColor: t.accentMuted, color: t.accent };
+    return { backgroundColor: t.bgInput, color: t.text1 };
+  };
+
   if (loading) return (
       <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="animate-spin text-blue-600" size={32} />
+          <Loader2 className="animate-spin" size={32} style={{ color: t.accent }} />
       </div>
   );
 
   if (error || !claim) return (
-      <div className="p-8 text-center text-red-500">
+      <div className="p-8 text-center" style={{ color: t.danger }}>
           Error loading claim details. <button onClick={() => window.location.reload()} className="underline">Retry</button>
       </div>
   );
 
   const policy = claim.policyContext || { policyNumber: 'N/A', insuredName: 'N/A', currency: 'USD' };
-  
+
   // Strict Financial Calculations based on transaction history
   const transactions = claim.transactions || [];
 
   // Incurred: RESERVE_SET, RESERVE_ADJUST, IMPORT_BALANCE
-  const totalIncurredTransactions = transactions.filter(t => 
+  const totalIncurredTransactions = transactions.filter(t =>
       ['RESERVE_SET', 'RESERVE_ADJUST', 'IMPORT_BALANCE'].includes(t.transactionType)
   );
   const totalIncurred = totalIncurredTransactions.reduce((acc, t) => acc + t.amount100pct, 0);
   const totalIncurredOurShare = totalIncurredTransactions.reduce((acc, t) => acc + t.amountOurShare, 0);
 
   // Paid: PAYMENT, LEGAL_FEE, ADJUSTER_FEE
-  const totalPaidTransactions = transactions.filter(t => 
+  const totalPaidTransactions = transactions.filter(t =>
       ['PAYMENT', 'LEGAL_FEE', 'ADJUSTER_FEE'].includes(t.transactionType)
   );
   const totalPaid = totalPaidTransactions.reduce((acc, t) => acc + t.amount100pct, 0);
@@ -149,72 +176,90 @@ const ClaimDetail: React.FC = () => {
     <div className="space-y-6 pb-20">
        {/* Header */}
        <div className="flex items-center gap-4">
-           <button onClick={() => navigate('/claims')} className="p-2 bg-white border rounded-lg hover:bg-gray-50"><ArrowLeft size={20}/></button>
+           <button
+             onClick={() => navigate('/claims')}
+             className="p-2 rounded-lg"
+             style={{ backgroundColor: hoveredBackBtn ? t.bgInput : t.bgPanel, border: `1px solid ${t.border}` }}
+             onMouseEnter={() => setHoveredBackBtn(true)}
+             onMouseLeave={() => setHoveredBackBtn(false)}
+           >
+             <ArrowLeft size={20}/>
+           </button>
            <div>
-               <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
+               <h2 className="text-2xl font-bold flex items-center gap-3" style={{ color: t.text1 }}>
                    {claim.claimNumber}
-                   <span className={`px-2 py-1 text-sm rounded-full ${
-                       claim.status === 'CLOSED' ? 'bg-green-100 text-green-800' :
-                       claim.status === 'DENIED' ? 'bg-red-100 text-red-800' :
-                       claim.liabilityType === 'ACTIVE' ? 'bg-blue-100 text-blue-800' : 
-                       'bg-gray-100 text-gray-600'
-                   }`}>
+                   <span className="px-2 py-1 text-sm rounded-full" style={getStatusBadgeStyle(claim.status, claim.liabilityType)}>
                        {claim.status === 'OPEN' ? (claim.liabilityType === 'ACTIVE' ? 'ACTIVE' : 'INFO') : claim.status}
                    </span>
                </h2>
-               <p className="text-gray-500">Policy: <span className="font-mono font-bold text-blue-600">{policy.policyNumber}</span> • {policy.insuredName}</p>
+               <p style={{ color: t.text4 }}>Policy: <span className="font-mono font-bold" style={{ color: t.accent }}>{policy.policyNumber}</span> • {policy.insuredName}</p>
            </div>
        </div>
 
        {/* Claim Actions Section */}
-       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm uppercase">
+       <div className="rounded-lg p-4" style={{ backgroundColor: t.bgInput, border: `1px solid ${t.border}` }}>
+            <h3 className="font-bold mb-3 flex items-center gap-2 text-sm uppercase" style={{ color: t.text1 }}>
                 <Settings size={16} />
                 Workflow Actions
             </h3>
-            
+
             <div className="flex flex-wrap gap-2">
                 {claim.status === 'OPEN' && (
                     <>
-                        <button 
+                        <button
                             onClick={() => handleStatusChange('CLOSED')}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-colors"
+                            style={{ backgroundColor: hoveredCloseBtn ? t.success : t.success, opacity: hoveredCloseBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                            onMouseEnter={() => setHoveredCloseBtn(true)}
+                            onMouseLeave={() => setHoveredCloseBtn(false)}
                         >
                             <CheckCircle size={16} />
                             Close Claim
                         </button>
-                        <button 
+                        <button
                             onClick={() => handleStatusChange('DENIED')}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-colors"
+                            style={{ backgroundColor: t.danger, opacity: hoveredDenyBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                            onMouseEnter={() => setHoveredDenyBtn(true)}
+                            onMouseLeave={() => setHoveredDenyBtn(false)}
                         >
                             <XCircle size={16} />
                             Deny Claim
                         </button>
                     </>
                 )}
-                
+
                 {(claim.status === 'CLOSED' || claim.status === 'DENIED') && (
-                    <button 
+                    <button
                         onClick={() => handleStatusChange('REOPENED')}
-                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-colors"
+                        style={{ backgroundColor: t.warning, opacity: hoveredReopenBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                        onMouseEnter={() => setHoveredReopenBtn(true)}
+                        onMouseLeave={() => setHoveredReopenBtn(false)}
                     >
                         <RefreshCw size={16} />
                         Reopen Claim
                     </button>
                 )}
-                
+
                 {claim.status === 'REOPENED' && (
                     <>
-                        <button 
+                        <button
                             onClick={() => handleStatusChange('CLOSED')}
-                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-colors"
+                            style={{ backgroundColor: t.success, opacity: hoveredCloseBtn2 ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                            onMouseEnter={() => setHoveredCloseBtn2(true)}
+                            onMouseLeave={() => setHoveredCloseBtn2(false)}
                         >
                             <CheckCircle size={16} />
                             Close Claim
                         </button>
-                        <button 
+                        <button
                             onClick={() => handleStatusChange('DENIED')}
-                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-bold transition-colors"
+                            style={{ backgroundColor: t.danger, opacity: hoveredDenyBtn2 ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                            onMouseEnter={() => setHoveredDenyBtn2(true)}
+                            onMouseLeave={() => setHoveredDenyBtn2(false)}
                         >
                             <XCircle size={16} />
                             Deny Claim
@@ -227,38 +272,41 @@ const ClaimDetail: React.FC = () => {
        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
            {/* Left: Metadata */}
            <div className="md:col-span-1 space-y-6">
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2"><FileText size={18}/> Claim Details</h3>
+                <div className="p-6 rounded-xl" style={{ backgroundColor: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                    <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><FileText size={18}/> Claim Details</h3>
                     <div className="space-y-3 text-sm">
-                        <div><div className="text-xs text-gray-500 uppercase">Status</div><div className="font-medium">{claim.status}</div></div>
-                        <div><div className="text-xs text-gray-500 uppercase">Loss Date</div><div className="font-medium">{formatDate(claim.lossDate)}</div></div>
-                        <div><div className="text-xs text-gray-500 uppercase">Report Date</div><div className="font-medium">{formatDate(claim.reportDate)}</div></div>
-                        {claim.closedDate && <div><div className="text-xs text-gray-500 uppercase">Closed Date</div><div className="font-medium">{formatDate(claim.closedDate)}</div></div>}
-                        <div><div className="text-xs text-gray-500 uppercase">Description</div><div className="font-medium">{claim.description || '-'}</div></div>
-                        <div><div className="text-xs text-gray-500 uppercase">Claimant</div><div className="font-medium">{claim.claimantName || '-'}</div></div>
-                        <div><div className="text-xs text-gray-500 uppercase">Country</div><div className="font-medium">{claim.locationCountry || '-'}</div></div>
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Status</div><div className="font-medium">{claim.status}</div></div>
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Loss Date</div><div className="font-medium">{formatDate(claim.lossDate)}</div></div>
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Report Date</div><div className="font-medium">{formatDate(claim.reportDate)}</div></div>
+                        {claim.closedDate && <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Closed Date</div><div className="font-medium">{formatDate(claim.closedDate)}</div></div>}
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Description</div><div className="font-medium">{claim.description || '-'}</div></div>
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Claimant</div><div className="font-medium">{claim.claimantName || '-'}</div></div>
+                        <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Country</div><div className="font-medium">{claim.locationCountry || '-'}</div></div>
                     </div>
                 </div>
 
                 {claim.liabilityType === 'INFORMATIONAL' && (
-                    <div className="bg-amber-50 p-6 rounded-xl border border-amber-200 text-amber-900">
+                    <div className="p-6 rounded-xl" style={{ backgroundColor: t.warningBg, border: `1px solid ${t.warning}`, color: t.warning }}>
                         <h3 className="font-bold mb-2">Informational Only</h3>
                         <p className="text-sm mb-2">This claim is tracked for record-keeping. Financials are imported in bulk.</p>
                         <div className="font-mono text-xl font-bold">{formatMoney(claim.importedTotalIncurred || 0)} {policy.currency}</div>
-                        <div className="text-xs opacity-75">Imported Incurred Estimate</div>
+                        <div className="text-xs" style={{ opacity: 0.75 }}>Imported Incurred Estimate</div>
                     </div>
                 )}
            </div>
 
            {/* Right: Ledger */}
            <div className="md:col-span-2">
-               <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                   <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-                       <h3 className="font-bold text-gray-800 flex items-center gap-2"><Wallet size={18}/> Financial Ledger</h3>
+               <div className="rounded-xl overflow-hidden" style={{ backgroundColor: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                   <div className="p-4 flex justify-between items-center" style={{ backgroundColor: t.bgInput, borderBottom: `1px solid ${t.border}` }}>
+                       <h3 className="font-bold flex items-center gap-2" style={{ color: t.text1 }}><Wallet size={18}/> Financial Ledger</h3>
                        {claim.liabilityType === 'ACTIVE' && claim.status !== 'CLOSED' && claim.status !== 'DENIED' && (
-                           <button 
+                           <button
                              onClick={() => setShowTransModal(true)}
-                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm"
+                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold"
+                             style={{ backgroundColor: hoveredAddTransBtn ? t.accent : t.accent, opacity: hoveredAddTransBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
+                             onMouseEnter={() => setHoveredAddTransBtn(true)}
+                             onMouseLeave={() => setHoveredAddTransBtn(false)}
                            >
                                <Plus size={16}/> Add Transaction
                            </button>
@@ -266,25 +314,25 @@ const ClaimDetail: React.FC = () => {
                    </div>
 
                    {claim.liabilityType === 'ACTIVE' && (
-                       <div className="grid grid-cols-3 bg-blue-50 border-b border-blue-100 p-4 text-center">
+                       <div className="grid grid-cols-3 p-4 text-center" style={{ backgroundColor: t.accentMuted, borderBottom: `1px solid ${t.border}` }}>
                            <div>
-                               <div className="text-xs text-blue-600 uppercase font-bold">Incurred (Our Share)</div>
-                               <div className="text-xl font-bold text-blue-900">{formatMoney(totalIncurredOurShare)} {policy.currency}</div>
+                               <div className="text-xs uppercase font-bold" style={{ color: t.accent }}>Incurred (Our Share)</div>
+                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(totalIncurredOurShare)} {policy.currency}</div>
                            </div>
                            <div>
-                               <div className="text-xs text-green-600 uppercase font-bold">Paid (Our Share)</div>
-                               <div className="text-xl font-bold text-green-900">{formatMoney(totalPaidOurShare)} {policy.currency}</div>
+                               <div className="text-xs uppercase font-bold" style={{ color: t.success }}>Paid (Our Share)</div>
+                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(totalPaidOurShare)} {policy.currency}</div>
                            </div>
                            <div>
-                               <div className="text-xs text-red-600 uppercase font-bold">Outstanding (Our Share)</div>
-                               <div className="text-xl font-bold text-red-900">{formatMoney(outstandingOurShare)} {policy.currency}</div>
+                               <div className="text-xs uppercase font-bold" style={{ color: t.danger }}>Outstanding (Our Share)</div>
+                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(outstandingOurShare)} {policy.currency}</div>
                            </div>
                        </div>
                    )}
 
                    <div className="overflow-x-auto">
                        <table className="w-full text-left text-sm whitespace-nowrap">
-                           <thead className="bg-gray-100 text-gray-700 font-semibold border-b">
+                           <thead className="font-semibold" style={{ backgroundColor: t.bgInput, color: t.text1, borderBottom: `1px solid ${t.border}` }}>
                                <tr>
                                    <th className="px-6 py-3">Date</th>
                                    <th className="px-6 py-3">Type</th>
@@ -293,27 +341,28 @@ const ClaimDetail: React.FC = () => {
                                    <th className="px-6 py-3">Notes</th>
                                </tr>
                            </thead>
-                           <tbody className="divide-y divide-gray-100">
-                               {transactions.map(t => (
-                                   <tr key={t.id} className="hover:bg-gray-50">
-                                       <td className="px-6 py-3 text-gray-500">{formatDate(t.transactionDate)}</td>
+                           <tbody className="divide-y" style={{ borderColor: t.borderL }}>
+                               {transactions.map(tx => (
+                                   <tr
+                                     key={tx.id}
+                                     style={{ backgroundColor: hoveredRow === tx.id ? t.bgInput : 'transparent' }}
+                                     onMouseEnter={() => setHoveredRow(tx.id)}
+                                     onMouseLeave={() => setHoveredRow(null)}
+                                   >
+                                       <td className="px-6 py-3" style={{ color: t.text4 }}>{formatDate(tx.transactionDate)}</td>
                                        <td className="px-6 py-3">
-                                           <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                                               ['PAYMENT', 'LEGAL_FEE', 'ADJUSTER_FEE'].includes(t.transactionType) ? 'bg-green-100 text-green-800' :
-                                               ['RESERVE_SET', 'RESERVE_ADJUST'].includes(t.transactionType) ? 'bg-blue-100 text-blue-800' :
-                                               'bg-gray-100 text-gray-800'
-                                           }`}>
-                                               {t.transactionType}
+                                           <span className="px-2 py-0.5 rounded text-xs font-bold" style={getTransBadgeStyle(tx.transactionType)}>
+                                               {tx.transactionType}
                                            </span>
                                        </td>
-                                       <td className="px-6 py-3 text-right font-mono">{formatMoney(t.amount100pct)}</td>
-                                       <td className="px-6 py-3 text-right font-mono text-gray-600">{formatMoney(t.amountOurShare)}</td>
-                                       <td className="px-6 py-3 text-gray-500 italic truncate max-w-[200px]">{t.notes}</td>
+                                       <td className="px-6 py-3 text-right font-mono">{formatMoney(tx.amount100pct)}</td>
+                                       <td className="px-6 py-3 text-right font-mono" style={{ color: t.text2 }}>{formatMoney(tx.amountOurShare)}</td>
+                                       <td className="px-6 py-3 italic truncate max-w-[200px]" style={{ color: t.text4 }}>{tx.notes}</td>
                                    </tr>
                                ))}
                                {transactions.length === 0 && (
                                    <tr>
-                                       <td colSpan={5} className="py-8 text-center text-gray-400 italic">No transactions recorded.</td>
+                                       <td colSpan={5} className="py-8 text-center italic" style={{ color: t.text5 }}>No transactions recorded.</td>
                                    </tr>
                                )}
                            </tbody>
@@ -325,14 +374,15 @@ const ClaimDetail: React.FC = () => {
 
        {/* Add Transaction Modal */}
        {showTransModal && (
-           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-               <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
-                   <h3 className="font-bold text-lg mb-4">Add Financial Transaction</h3>
+           <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+               <div className="rounded-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200" style={{ backgroundColor: t.bgPanel, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                   <h3 className="font-bold text-lg mb-4" style={{ color: t.text1 }}>Add Financial Transaction</h3>
                    <div className="space-y-4">
                        <div>
-                           <label className="block text-sm font-bold text-gray-700 mb-1">Type</label>
-                           <select 
-                                className="w-full p-2 border rounded"
+                           <label className="block text-sm font-bold mb-1" style={{ color: t.text1 }}>Type</label>
+                           <select
+                                className="w-full p-2 rounded"
+                                style={{ border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.type}
                                 onChange={e => setNewTrans({...newTrans, type: e.target.value as ClaimTransactionType})}
                            >
@@ -345,43 +395,52 @@ const ClaimDetail: React.FC = () => {
                            </select>
                        </div>
                        <div>
-                           <label className="block text-sm font-bold text-gray-700 mb-1">Amount (100% Gross)</label>
-                           <input 
-                                type="number" 
-                                className="w-full p-2 border rounded font-mono"
+                           <label className="block text-sm font-bold mb-1" style={{ color: t.text1 }}>Amount (100% Gross)</label>
+                           <input
+                                type="number"
+                                className="w-full p-2 rounded font-mono"
+                                style={{ border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.amount}
                                 onChange={e => setNewTrans({...newTrans, amount: Number(e.target.value)})}
                            />
                        </div>
                        <div>
-                           <label className="block text-sm font-bold text-gray-700 mb-1">Our Share %</label>
-                           <input 
-                                type="number" 
-                                className="w-full p-2 border rounded"
+                           <label className="block text-sm font-bold mb-1" style={{ color: t.text1 }}>Our Share %</label>
+                           <input
+                                type="number"
+                                className="w-full p-2 rounded"
+                                style={{ border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.share}
                                 onChange={e => setNewTrans({...newTrans, share: Number(e.target.value)})}
                            />
                        </div>
                        <div>
-                           <label className="block text-sm font-bold text-gray-700 mb-1">Notes</label>
-                           <textarea 
-                                className="w-full p-2 border rounded"
+                           <label className="block text-sm font-bold mb-1" style={{ color: t.text1 }}>Notes</label>
+                           <textarea
+                                className="w-full p-2 rounded"
+                                style={{ border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.notes}
                                 onChange={e => setNewTrans({...newTrans, notes: e.target.value})}
                            />
                        </div>
                        <div className="flex justify-end gap-2 pt-4">
-                           <button 
-                                onClick={() => setShowTransModal(false)} 
-                                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                           <button
+                                onClick={() => setShowTransModal(false)}
+                                className="px-4 py-2 rounded"
+                                style={{ color: t.text2, backgroundColor: hoveredCancelBtn ? t.bgInput : 'transparent' }}
+                                onMouseEnter={() => setHoveredCancelBtn(true)}
+                                onMouseLeave={() => setHoveredCancelBtn(false)}
                                 disabled={addTransactionMutation.isPending}
                             >
                                 Cancel
                             </button>
-                           <button 
-                                onClick={handleAddTransaction} 
+                           <button
+                                onClick={handleAddTransaction}
                                 disabled={addTransactionMutation.isPending}
-                                className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 flex items-center gap-2"
+                                className="px-4 py-2 font-bold rounded flex items-center gap-2"
+                                style={{ backgroundColor: t.accent, opacity: hoveredSaveBtn ? 0.85 : 1, color: '#fff' }}
+                                onMouseEnter={() => setHoveredSaveBtn(true)}
+                                onMouseLeave={() => setHoveredSaveBtn(false)}
                             >
                                 {addTransactionMutation.isPending && <Loader2 className="animate-spin" size={16}/>}
                                 Save

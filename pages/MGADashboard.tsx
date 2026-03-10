@@ -647,71 +647,72 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
       </div>
 
       {/* Performance Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100">
-          <h3 className="font-semibold text-slate-800">Agreement Performance</h3>
-          <p className="text-xs text-slate-500 mt-0.5">Utilization, bordereaux activity, and scoring</p>
+      <div className="rounded-xl overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+        <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+          <h3 className="font-semibold" style={{ color: t.text1 }}>Agreement Performance</h3>
+          <p className="text-xs mt-0.5" style={{ color: t.text4 }}>Utilization, bordereaux activity, and scoring</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50">
+            <thead style={{ background: t.bgInput }}>
               <tr>
-                <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase">Agreement #</th>
-                <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase">MGA / Partner</th>
-                <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase">Status</th>
-                <th className="text-right px-3 py-3 text-xs font-semibold text-slate-500 uppercase">EPI</th>
-                <th className="text-right px-3 py-3 text-xs font-semibold text-slate-500 uppercase">Actual GWP</th>
-                <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase w-36">Utilization</th>
-                <th className="text-right px-2 py-3 text-xs font-semibold text-slate-500 uppercase">Bdx</th>
-                <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase">Last Bdx</th>
-                <th className="text-right px-3 py-3 text-xs font-semibold text-slate-500 uppercase">Avg Qtr GWP</th>
-                <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase">Score</th>
-                <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase">Trend</th>
+                <th className="text-left px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Agreement #</th>
+                <th className="text-left px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>MGA / Partner</th>
+                <th className="text-center px-2 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Status</th>
+                <th className="text-right px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>EPI</th>
+                <th className="text-right px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Actual GWP</th>
+                <th className="text-left px-3 py-3 text-xs font-semibold uppercase w-36" style={{ color: t.text4 }}>Utilization</th>
+                <th className="text-right px-2 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Bdx</th>
+                <th className="text-left px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Last Bdx</th>
+                <th className="text-right px-3 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Avg Qtr GWP</th>
+                <th className="text-center px-2 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Score</th>
+                <th className="text-center px-2 py-3 text-xs font-semibold uppercase" style={{ color: t.text4 }}>Trend</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y" style={{ borderColor: t.borderL }}>
               {perfRows.map(row => {
-                const statusColors: Record<string, string> = {
-                  'ACTIVE': 'bg-emerald-100 text-emerald-700',
-                  'DRAFT': 'bg-slate-100 text-slate-600',
-                  'EXPIRED': 'bg-amber-100 text-amber-700',
-                  'TERMINATED': 'bg-red-100 text-red-700',
-                  'CANCELLED': 'bg-slate-200 text-slate-500',
+                const statusColorMap: Record<string, { bg: string; color: string }> = {
+                  'ACTIVE': { bg: t.successBg, color: t.success },
+                  'DRAFT': { bg: t.bgInput, color: t.text2 },
+                  'EXPIRED': { bg: t.warningBg, color: t.warning },
+                  'TERMINATED': { bg: t.dangerBg, color: t.danger },
+                  'CANCELLED': { bg: t.border, color: t.text4 },
                 };
-                const barColor = row.utilization >= 75 ? 'bg-emerald-500' : row.utilization >= 50 ? 'bg-amber-500' : 'bg-red-500';
+                const barBg = row.utilization >= 75 ? t.success : row.utilization >= 50 ? t.warning : t.danger;
+                const sc = statusColorMap[row.agreement.status] || { bg: t.bgInput, color: t.text2 };
                 return (
-                  <tr key={row.agreement.id} className="hover:bg-slate-50">
-                    <td className="px-3 py-2.5 font-medium text-slate-800">{row.agreement.agreementNumber}</td>
-                    <td className="px-3 py-2.5 text-slate-700 max-w-[160px] truncate">{row.agreement.mgaName}</td>
+                  <tr key={row.agreement.id}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
+                    <td className="px-3 py-2.5 font-medium" style={{ color: t.text1 }}>{row.agreement.agreementNumber}</td>
+                    <td className="px-3 py-2.5 max-w-[160px] truncate" style={{ color: t.text1 }}>{row.agreement.mgaName}</td>
                     <td className="px-2 py-2.5 text-center">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[row.agreement.status] || 'bg-slate-100 text-slate-600'}`}>
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: sc.bg, color: sc.color }}>
                         {row.agreement.status}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 text-right text-slate-600 font-mono">{fmtCur(row.agreement.epi)}</td>
-                    <td className="px-3 py-2.5 text-right font-mono font-medium text-slate-800">{row.gwp > 0 ? fmtCur(row.gwp) : '-'}</td>
+                    <td className="px-3 py-2.5 text-right font-mono" style={{ color: t.text2 }}>{fmtCur(row.agreement.epi)}</td>
+                    <td className="px-3 py-2.5 text-right font-mono font-medium" style={{ color: t.text1 }}>{row.gwp > 0 ? fmtCur(row.gwp) : '-'}</td>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full ${barColor}`} style={{ width: `${Math.min(row.utilization, 100)}%` }} />
+                        <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: t.border }}>
+                          <div className="h-full rounded-full" style={{ width: `${Math.min(row.utilization, 100)}%`, background: barBg }} />
                         </div>
-                        <span className={`text-xs font-semibold w-10 text-right ${
-                          row.utilization >= 75 ? 'text-emerald-600' : row.utilization >= 50 ? 'text-amber-600' : 'text-red-600'
-                        }`}>
+                        <span className="text-xs font-semibold w-10 text-right" style={{ color: row.utilization >= 75 ? t.success : row.utilization >= 50 ? t.warning : t.danger }}>
                           {row.agreement.epi > 0 ? `${row.utilization.toFixed(0)}%` : 'N/A'}
                         </span>
                       </div>
                     </td>
-                    <td className="px-2 py-2.5 text-right text-slate-600 font-mono">{row.bdxCount}</td>
-                    <td className="px-3 py-2.5 text-slate-600 text-xs">{row.lastBdxDate ? formatDate(row.lastBdxDate) : '-'}</td>
-                    <td className="px-3 py-2.5 text-right text-slate-700 font-mono">{row.avgQuarterlyGwp > 0 ? fmtCurShort(row.avgQuarterlyGwp) : '-'}</td>
+                    <td className="px-2 py-2.5 text-right font-mono" style={{ color: t.text2 }}>{row.bdxCount}</td>
+                    <td className="px-3 py-2.5 text-xs" style={{ color: t.text2 }}>{row.lastBdxDate ? formatDate(row.lastBdxDate) : '-'}</td>
+                    <td className="px-3 py-2.5 text-right font-mono" style={{ color: t.text1 }}>{row.avgQuarterlyGwp > 0 ? fmtCurShort(row.avgQuarterlyGwp) : '-'}</td>
                     <td className="px-2 py-2.5 text-center"><StarRating score={row.score} /></td>
                     <td className="px-2 py-2.5 text-center"><TrendIndicator bdxEntries={row.bdxEntries} /></td>
                   </tr>
                 );
               })}
               {perfRows.length === 0 && (
-                <tr><td colSpan={11} className="py-12 text-center text-slate-400">No agreements found</td></tr>
+                <tr><td colSpan={11} className="py-12 text-center" style={{ color: t.text5 }}>No agreements found</td></tr>
               )}
             </tbody>
           </table>
@@ -722,10 +723,10 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Utilization Chart */}
         {utilizationChartData.length > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-800">Utilization by Agreement</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Actual GWP as % of EPI</p>
+          <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+            <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+              <h3 className="font-semibold" style={{ color: t.text1 }}>Utilization by Agreement</h3>
+              <p className="text-xs mt-0.5" style={{ color: t.text4 }}>Actual GWP as % of EPI</p>
             </div>
             <div className="p-5">
               <ResponsiveContainer width="100%" height={Math.max(280, utilizationChartData.length * 32)}>
@@ -751,10 +752,10 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
 
         {/* Quarterly Trend Chart */}
         {trendData.length > 0 && trendAgreements.length > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-            <div className="px-5 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-800">Cumulative GWP Trend</h3>
-              <p className="text-xs text-slate-500 mt-0.5">Top agreements by accepted bordereaux over time</p>
+          <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+            <div className="px-5 py-4" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+              <h3 className="font-semibold" style={{ color: t.text1 }}>Cumulative GWP Trend</h3>
+              <p className="text-xs mt-0.5" style={{ color: t.text4 }}>Top agreements by accepted bordereaux over time</p>
             </div>
             <div className="p-5">
               <ResponsiveContainer width="100%" height={300}>
@@ -961,36 +962,38 @@ const MGADashboard: React.FC = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    const s: Record<string, string> = {
-      'DRAFT': 'bg-slate-100 text-slate-600',
-      'ACTIVE': 'bg-emerald-100 text-emerald-700',
-      'EXPIRED': 'bg-amber-100 text-amber-700',
-      'TERMINATED': 'bg-red-100 text-red-700',
-      'CANCELLED': 'bg-slate-200 text-slate-500',
+    const s: Record<string, { bg: string; color: string }> = {
+      'DRAFT': { bg: t.bgInput, color: t.text2 },
+      'ACTIVE': { bg: t.successBg, color: t.success },
+      'EXPIRED': { bg: t.warningBg, color: t.warning },
+      'TERMINATED': { bg: t.dangerBg, color: t.danger },
+      'CANCELLED': { bg: t.border, color: t.text4 },
     };
-    return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${s[status] || 'bg-slate-100 text-slate-600'}`}>{status}</span>;
+    const st = s[status] || { bg: t.bgInput, color: t.text2 };
+    return <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: st.bg, color: st.color }}>{status}</span>;
   };
 
   const getTypeBadge = (type: string) => {
-    const s: Record<string, string> = {
-      'BINDING_AUTHORITY': 'bg-purple-100 text-purple-700',
-      'LINESLIP': 'bg-blue-100 text-blue-700',
-      'TREATY': 'bg-teal-100 text-teal-700',
+    const s: Record<string, { bg: string; color: string }> = {
+      'BINDING_AUTHORITY': { bg: t.accentMuted, color: t.accent },
+      'LINESLIP': { bg: t.accentMuted, color: t.accent },
+      'TREATY': { bg: t.accentMuted, color: t.success },
     };
     const labels: Record<string, string> = {
       'BINDING_AUTHORITY': 'BA',
       'LINESLIP': 'Lineslip',
       'TREATY': 'Treaty',
     };
-    return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s[type] || 'bg-slate-100 text-slate-600'}`}>{labels[type] || type}</span>;
+    const st = s[type] || { bg: t.bgInput, color: t.text2 };
+    return <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: st.bg, color: st.color }}>{labels[type] || type}</span>;
   };
 
   const getUtilizationDisplay = (agId: string, epi: number) => {
     const gwp = bdxGwpMap[agId] || 0;
-    if (epi <= 0) return <span className="text-xs text-slate-400">N/A</span>;
+    if (epi <= 0) return <span className="text-xs" style={{ color: t.text5 }}>N/A</span>;
     const pct = (gwp / epi) * 100;
-    const color = pct > 80 ? 'text-emerald-600' : pct > 50 ? 'text-amber-600' : 'text-red-600';
-    return <span className={`text-xs font-semibold ${color}`}>{pct.toFixed(0)}%</span>;
+    const color = pct > 80 ? t.success : pct > 50 ? t.warning : t.danger;
+    return <span className="text-xs font-semibold" style={{ color }}>{pct.toFixed(0)}%</span>;
   };
 
   // ─── Export ───────────────────────────────────────────
@@ -1025,7 +1028,10 @@ const MGADashboard: React.FC = () => {
     setHeaderActions(
       <div className="flex items-center gap-2">
         <button onClick={handleExport} disabled={exporting || filteredAgreements.length === 0}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 shadow-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
           <Download size={14} />
           Export
         </button>
@@ -1049,42 +1055,46 @@ const MGADashboard: React.FC = () => {
   return (
     <div>
       {/* Sticky Filter Bar — ALWAYS visible */}
-      <div ref={filterRef} className="sticky top-0 z-30 bg-gray-50 sticky-filter-blur">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
+      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgInput }}>
+        <div className="rounded-xl p-3" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
           <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
             {/* Page Tab Toggle */}
-            <div className="flex bg-gray-100 p-0.5 rounded-lg">
+            <div className="flex p-0.5 rounded-lg" style={{ background: t.bgInput }}>
               <button
                 onClick={() => setActivePageTab('agreements')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap ${
-                  activePageTab === 'agreements' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap"
+                style={activePageTab === 'agreements' ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow } : { color: t.text4 }}
+                onMouseEnter={(e) => { if (activePageTab !== 'agreements') e.currentTarget.style.color = t.text1; }}
+                onMouseLeave={(e) => { if (activePageTab !== 'agreements') e.currentTarget.style.color = t.text4; }}
               >
                 Agreements
               </button>
               <button
                 onClick={() => setActivePageTab('performance')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap ${
-                  activePageTab === 'performance' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                className="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap"
+                style={activePageTab === 'performance' ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow } : { color: t.text4 }}
+                onMouseEnter={(e) => { if (activePageTab !== 'performance') e.currentTarget.style.color = t.text1; }}
+                onMouseLeave={(e) => { if (activePageTab !== 'performance') e.currentTarget.style.color = t.text4; }}
               >
                 Performance
               </button>
             </div>
 
-            <div className="w-px h-5 bg-gray-300" />
+            <div className="w-px h-5" style={{ background: t.border }} />
 
             {/* Search */}
             <div className="relative flex-1 min-w-[180px]">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
               <input type="text" placeholder="Search agreements..." value={searchInput}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+                className="w-full pl-8 pr-3 py-2 rounded-lg focus:outline-none text-sm"
+                style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }} />
             </div>
 
             {/* Status */}
             <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setVisibleCount(VISIBLE_INCREMENT); }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white">
+              className="px-3 py-2 rounded-lg focus:outline-none text-sm"
+              style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}>
               <option value="all">All Statuses</option>
               <option value="DRAFT">Draft</option>
               <option value="ACTIVE">Active</option>
@@ -1095,7 +1105,8 @@ const MGADashboard: React.FC = () => {
 
             {/* Type */}
             <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setVisibleCount(VISIBLE_INCREMENT); }}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white">
+              className="px-3 py-2 rounded-lg focus:outline-none text-sm"
+              style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}>
               <option value="all">All Types</option>
               <option value="BINDING_AUTHORITY">Binding Authority</option>
               <option value="LINESLIP">Lineslip</option>
@@ -1107,7 +1118,8 @@ const MGADashboard: React.FC = () => {
               <select
                 value={dateFilterField}
                 onChange={(e) => setDateFilterField(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white"
+                className="px-3 py-2 rounded-lg focus:outline-none text-sm"
+                style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1 }}
               >
                 <option value="inceptionDate">Inception</option>
                 <option value="expiryDate">Expiry</option>
@@ -1125,15 +1137,22 @@ const MGADashboard: React.FC = () => {
             </div>
 
             {/* Refresh */}
-            <button onClick={loadData} className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg" title="Refresh">
-              <RefreshCw size={16} className={loading ? 'animate-spin text-blue-600' : ''} />
+            <button onClick={loadData} className="p-2 rounded-lg"
+              style={{ color: t.text4 }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = t.bgInput)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '')}
+              title="Refresh">
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : {}} />
             </button>
 
-            <div className="w-px h-5 bg-gray-300" />
+            <div className="w-px h-5" style={{ background: t.border }} />
 
             {/* New Agreement */}
             <button onClick={() => { setEditingId(null); setShowFormModal(true); }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm">
+              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
+              style={{ background: t.accent, color: '#fff' }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
               <Plus size={16} />
               New Agreement
             </button>

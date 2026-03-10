@@ -11,8 +11,10 @@ import { EntitySearchInput } from '../components/EntitySearchInput';
 import { formatSICDisplay } from '../data/sicCodes';
 import { Save, ArrowLeft, FileSpreadsheet, Building, Hash, Activity, Plus, Trash2, DollarSign, Send, FileText, CheckCircle, XCircle, Archive, RefreshCw, Settings } from 'lucide-react';
 import { DatePickerInput, parseDate, toISODateString } from '../components/DatePickerInput';
+import { useTheme } from '../theme/useTheme';
 
 const SlipForm: React.FC = () => {
+  const { t } = useTheme();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
@@ -182,11 +184,14 @@ const SlipForm: React.FC = () => {
     });
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const labelClass = "block text-sm font-medium text-gray-600 mb-1.5";
-  const inputClass = "w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-sm text-gray-900";
-  const selectClass = "w-full p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all text-sm text-gray-900";
+  const labelStyle: React.CSSProperties = { color: t.text2 };
+  const inputStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
+  const selectStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
+  const labelClass = "block text-sm font-medium mb-1.5";
+  const inputClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-sm";
+  const selectClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all text-sm";
 
   // Priority Currencies Sort
   const priorityCurrencies = ['UZS', 'USD', 'EUR'];
@@ -200,14 +205,14 @@ const SlipForm: React.FC = () => {
     <div className="max-w-4xl mx-auto pb-20">
       <form onSubmit={handleSubmit}>
          {/* Sticky Header - Use negative margin to span full width over layout padding */}
-         <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 flex items-center justify-between shadow-sm z-40">
+         <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 backdrop-blur-md flex items-center justify-between z-40" style={{ backgroundColor: t.bgInput, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
             <div className="flex items-center gap-4">
-                <button type="button" onClick={() => navigate('/slips')} className="text-gray-500 hover:text-gray-800 transition-colors">
+                <button type="button" onClick={() => navigate('/slips')} className="transition-colors" style={{ color: t.text4 }}>
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h2 className="text-xl font-bold text-gray-800">{isEdit ? 'Edit Slip' : 'New Slip Record'}</h2>
-                    <p className="text-xs text-gray-500">
+                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{isEdit ? 'Edit Slip' : 'New Slip Record'}</h2>
+                    <p className="text-xs" style={{ color: t.text4 }}>
                        Outward Reinsurance Registry
                     </p>
                 </div>
@@ -216,13 +221,15 @@ const SlipForm: React.FC = () => {
                  <button
                     type="button"
                     onClick={() => navigate('/slips')}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                    className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+                    style={{ color: t.text2 }}
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold bg-amber-600 text-white hover:bg-amber-700 rounded-lg shadow-sm transition-all"
+                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all"
+                    style={{ backgroundColor: t.warning, color: '#fff', boxShadow: t.shadow }}
                 >
                     <Save size={18} /> Save Slip
                 </button>
@@ -231,90 +238,90 @@ const SlipForm: React.FC = () => {
 
         {/* Workflow Actions Section - Only show when editing existing slip */}
         {id && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+            <div className="rounded-xl p-4 mb-6" style={{ backgroundColor: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.borderL}` }}>
                 <div className="flex items-center gap-2 mb-3">
-                    <Settings size={16} className="text-gray-500" />
-                    <span className="font-semibold text-gray-700">WORKFLOW ACTIONS</span>
-                    <span className={`ml-2 px-2 py-1 rounded text-xs font-medium ${
-                        slipStatus === 'DRAFT' ? 'bg-gray-100 text-gray-800' :
-                        slipStatus === 'PENDING' ? 'bg-blue-100 text-blue-800' :
-                        slipStatus === 'QUOTED' ? 'bg-purple-100 text-purple-800' :
-                        slipStatus === 'SIGNED' ? 'bg-indigo-100 text-indigo-800' :
-                        slipStatus === 'SENT' ? 'bg-cyan-100 text-cyan-800' :
-                        slipStatus === 'BOUND' ? 'bg-green-100 text-green-800' :
-                        slipStatus === 'CLOSED' ? 'bg-gray-100 text-gray-600' :
-                        slipStatus === 'DECLINED' ? 'bg-red-100 text-red-800' :
-                        slipStatus === 'NTU' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                    }`}>
+                    <Settings size={16} style={{ color: t.text4 }} />
+                    <span className="font-semibold" style={{ color: t.text1 }}>WORKFLOW ACTIONS</span>
+                    <span className="ml-2 px-2 py-1 rounded text-xs font-medium" style={
+                        slipStatus === 'DRAFT' ? { backgroundColor: t.bgInput, color: t.text1 } :
+                        slipStatus === 'PENDING' ? { backgroundColor: t.accent + '22', color: t.accent } :
+                        slipStatus === 'QUOTED' ? { backgroundColor: t.accent + '22', color: t.accent } :
+                        slipStatus === 'SIGNED' ? { backgroundColor: t.accent + '22', color: t.accent } :
+                        slipStatus === 'SENT' ? { backgroundColor: t.accent + '22', color: t.accent } :
+                        slipStatus === 'BOUND' ? { backgroundColor: t.successBg, color: t.success } :
+                        slipStatus === 'CLOSED' ? { backgroundColor: t.bgInput, color: t.text2 } :
+                        slipStatus === 'DECLINED' ? { backgroundColor: t.dangerBg, color: t.danger } :
+                        slipStatus === 'NTU' ? { backgroundColor: t.warningBg, color: t.warning } :
+                        { backgroundColor: t.bgInput, color: t.text1 }
+                    }>
                         {slipStatus}
                     </span>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                     {(slipStatus === 'DRAFT' || !slipStatus) && (
-                        <button type="button" onClick={() => handleSlipStatusChange('PENDING')} 
-                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                        <button type="button" onClick={() => handleSlipStatusChange('PENDING')}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.accent, color: '#fff' }}>
                             <Send size={14} /> Submit for Review
                         </button>
                     )}
-                    
+
                     {slipStatus === 'PENDING' && (
                         <>
-                            <button type="button" onClick={() => handleSlipStatusChange('QUOTED')} 
-                                className="flex items-center gap-1 px-3 py-1.5 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700">
+                            <button type="button" onClick={() => handleSlipStatusChange('QUOTED')}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.accent, color: '#fff' }}>
                                 <FileText size={14} /> Quote Received
                             </button>
                             <button type="button" onClick={handleSlipDecline}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm hover:bg-red-200">
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.dangerBg, color: t.danger }}>
                                 <XCircle size={14} /> Decline
                             </button>
                         </>
                     )}
-                    
+
                     {slipStatus === 'QUOTED' && (
                         <>
-                            <button type="button" onClick={() => handleSlipStatusChange('SIGNED', { signed_date: new Date().toISOString() })} 
-                                className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">
+                            <button type="button" onClick={() => handleSlipStatusChange('SIGNED', { signed_date: new Date().toISOString() })}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.accent, color: '#fff' }}>
                                 <CheckCircle size={14} /> Accept & Sign
                             </button>
                             <button type="button" onClick={() => handleSlipStatusChange('NTU')}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200">
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.warningBg, color: t.warning }}>
                                 <XCircle size={14} /> Not Taken Up
                             </button>
                         </>
                     )}
-                    
+
                     {slipStatus === 'SIGNED' && (
-                        <button type="button" onClick={() => handleSlipStatusChange('SENT', { sent_date: new Date().toISOString() })} 
-                            className="flex items-center gap-1 px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-700">
+                        <button type="button" onClick={() => handleSlipStatusChange('SENT', { sent_date: new Date().toISOString() })}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.accent, color: '#fff' }}>
                             <Send size={14} /> Send to Reinsurer
                         </button>
                     )}
-                    
+
                     {slipStatus === 'SENT' && (
                         <>
-                            <button type="button" onClick={() => handleSlipStatusChange('BOUND', { bound_date: new Date().toISOString() })} 
-                                className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+                            <button type="button" onClick={() => handleSlipStatusChange('BOUND', { bound_date: new Date().toISOString() })}
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.success, color: '#fff' }}>
                                 <CheckCircle size={14} /> Confirm Bound
                             </button>
                             <button type="button" onClick={() => handleSlipStatusChange('NTU')}
-                                className="flex items-center gap-1 px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm hover:bg-yellow-200">
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.warningBg, color: t.warning }}>
                                 <XCircle size={14} /> Withdrawn
                             </button>
                         </>
                     )}
-                    
+
                     {slipStatus === 'BOUND' && (
-                        <button type="button" onClick={() => handleSlipStatusChange('CLOSED', { closed_date: new Date().toISOString() })} 
-                            className="flex items-center gap-1 px-3 py-1.5 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700">
+                        <button type="button" onClick={() => handleSlipStatusChange('CLOSED', { closed_date: new Date().toISOString() })}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.text2, color: '#fff' }}>
                             <Archive size={14} /> Close Slip
                         </button>
                     )}
-                    
+
                     {['DECLINED', 'NTU', 'CANCELLED'].includes(slipStatus) && (
-                        <button type="button" onClick={() => handleSlipStatusChange('PENDING')} 
-                            className="flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm hover:bg-blue-200">
+                        <button type="button" onClick={() => handleSlipStatusChange('PENDING')}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: t.accent + '22', color: t.accent }}>
                             <RefreshCw size={14} /> Reopen
                         </button>
                     )}

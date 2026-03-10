@@ -128,7 +128,7 @@ const PolicyWording: React.FC = () => {
   const renderDynamicPolicy = (policy: Policy) => {
     const template = templates.find(t => t.id === selectedTemplateId);
 
-    if (!template) return <div className="p-8 text-red-500">Please select a template to generate the wording.</div>;
+    if (!template) return <div className="p-8" style={{ color: t.danger }}>Please select a template to generate the wording.</div>;
 
     // Helper to replace placeholders
     let content = template.content;
@@ -154,16 +154,16 @@ const PolicyWording: React.FC = () => {
     });
 
     return (
-        <div className="max-w-[210mm] mx-auto bg-white p-[20mm] shadow-lg min-h-[297mm] print:shadow-none print:w-full relative overflow-hidden">
+        <div className="max-w-[210mm] mx-auto p-[20mm] min-h-[297mm] print:shadow-none print:w-full relative overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
              {/* Header */}
-            <div className="border-b-2 border-slate-900 pb-4 mb-8 flex justify-between items-start relative z-10">
+            <div className="pb-4 mb-8 flex justify-between items-start relative z-10" style={{ borderBottom: `2px solid ${t.text1}` }}>
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-slate-900 flex items-center justify-center">
-                        <FileText className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: t.text1 }}>
+                        <FileText className="w-6 h-6" style={{ color: '#fff' }} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-serif font-bold text-slate-900">Policy Manager</h1>
-                        <p className="text-slate-500 text-sm uppercase tracking-widest">{template.name}</p>
+                        <h1 className="text-2xl font-serif font-bold" style={{ color: t.text1 }}>Policy Manager</h1>
+                        <p className="text-sm uppercase tracking-widest" style={{ color: t.text4 }}>{template.name}</p>
                     </div>
                 </div>
             </div>
@@ -184,12 +184,12 @@ const PolicyWording: React.FC = () => {
 
             {/* Attached Clauses */}
             {attachedClauses.length > 0 && (
-                <div className="mt-12 pt-8 border-t-2 border-gray-200 break-before-page">
+                <div className="mt-12 pt-8 break-before-page" style={{ borderTop: `2px solid ${t.border}` }}>
                     <h3 className="font-bold text-lg uppercase mb-6 text-center">Attached Clauses & Warranties</h3>
                     {attachedClauses.map((clause, idx) => (
                         <div key={clause.id} className="mb-6">
                             <h4 className="font-bold text-sm mb-2">{idx + 1}. {clause.title}</h4>
-                            <p className="text-sm text-justify leading-relaxed whitespace-pre-wrap font-serif text-gray-800">{clause.content}</p>
+                            <p className="text-sm text-justify leading-relaxed whitespace-pre-wrap font-serif" style={{ color: t.text1 }}>{clause.content}</p>
                         </div>
                     ))}
                 </div>
@@ -199,58 +199,58 @@ const PolicyWording: React.FC = () => {
   };
 
   const renderReinsuranceSlip = (policy: Policy) => (
-    <div className="max-w-[210mm] mx-auto bg-white p-[20mm] shadow-lg min-h-[297mm] print:shadow-none print:w-full font-serif relative">
+    <div className="max-w-[210mm] mx-auto p-[20mm] min-h-[297mm] print:shadow-none print:w-full font-serif relative" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
         <div className="flex justify-center mb-6">
-            <div className="w-12 h-12 rounded-lg bg-slate-900 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: t.text1 }}>
+                <FileText className="w-6 h-6" style={{ color: '#fff' }} />
             </div>
         </div>
 
-        <div className="text-center mb-8 border-b-4 border-double border-gray-800 pb-4">
+        <div className="text-center mb-8 pb-4" style={{ borderBottom: `4px double ${t.text1}` }}>
             <h1 className="text-2xl font-bold uppercase tracking-widest">Reinsurance Slip</h1>
-            <p className="text-sm text-gray-600 uppercase mt-1">{policy.channel}</p>
+            <p className="text-sm uppercase mt-1" style={{ color: t.text2 }}>{policy.channel}</p>
         </div>
 
         <div className="grid grid-cols-4 gap-4 mb-6 text-sm relative z-10">
-            <div className="font-bold text-right text-gray-600">TYPE:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>TYPE:</div>
             <div className="col-span-3 font-bold">{policy.classOfInsurance}</div>
 
-            <div className="font-bold text-right text-gray-600">REINSURED:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>REINSURED:</div>
             <div className="col-span-3">{policy.channel === 'Inward' ? policy.cedantName : 'Policy Manager'}</div>
 
-            <div className="font-bold text-right text-gray-600">ORIGINAL INSURED:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>ORIGINAL INSURED:</div>
             <div className="col-span-3">{policy.insuredName}</div>
 
-            <div className="font-bold text-right text-gray-600">PERIOD:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>PERIOD:</div>
             <div className="col-span-3">{formatDate(policy.inceptionDate)} to {formatDate(policy.expiryDate)} (Both days inclusive)</div>
 
-            <div className="font-bold text-right text-gray-600">INTEREST:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>INTEREST:</div>
             <div className="col-span-3 text-justify">{policy.classOfInsurance} - {policy.industry}. Situated at {policy.territory}.</div>
 
-            <div className="font-bold text-right text-gray-600">SUM INSURED:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>SUM INSURED:</div>
             <div className="col-span-3 font-mono">{formatMoney(policy.sumInsured, policy.currency)} (100%)</div>
 
-            <div className="font-bold text-right text-gray-600">CONDITIONS:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>CONDITIONS:</div>
             <div className="col-span-3">Subject to original policy terms and conditions. {policy.deductible ? `Deductible: ${policy.deductible}` : ''}</div>
 
-            <div className="font-bold text-right text-gray-600">PREMIUM:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>PREMIUM:</div>
             <div className="col-span-3 font-mono">{formatMoney(policy.grossPremium, policy.currency)} (100%)</div>
 
-            <div className="font-bold text-right text-gray-600">DEDUCTIONS:</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>DEDUCTIONS:</div>
             <div className="col-span-3">Commission: {policy.commissionPercent}%</div>
 
-            <div className="font-bold text-right text-gray-600">NET DUE:</div>
-            <div className="col-span-3 font-bold font-mono border-t border-gray-400 pt-1 inline-block">{formatMoney(policy.netPremium, policy.currency)}</div>
+            <div className="font-bold text-right" style={{ color: t.text2 }}>NET DUE:</div>
+            <div className="col-span-3 font-bold font-mono pt-1 inline-block" style={{ borderTop: `1px solid ${t.text5}` }}>{formatMoney(policy.netPremium, policy.currency)}</div>
         </div>
 
-        <div className="mt-12 border-t pt-4 relative z-10">
+        <div className="mt-12 pt-4 relative z-10" style={{ borderTop: `1px solid ${t.border}` }}>
             <h3 className="font-bold text-sm mb-4">SECURITY / MARKET:</h3>
-            <div className="border p-4 rounded text-sm">
+            <div className="p-4 rounded text-sm" style={{ border: `1px solid ${t.border}` }}>
                 <div className="flex justify-between mb-2">
                     <span>{policy.channel === 'Inward' ? 'Policy Manager' : policy.reinsurerName}</span>
                     <span className="font-bold">{policy.ourShare}% Line</span>
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs" style={{ color: t.text4 }}>
                     Ref: {policy.slipNumber || policy.policyNumber}
                 </div>
             </div>
@@ -259,38 +259,38 @@ const PolicyWording: React.FC = () => {
   );
 
   const renderRegistrySlipNote = (slip: ReinsuranceSlip) => (
-    <div className="max-w-[210mm] mx-auto bg-white p-[20mm] shadow-lg min-h-[297mm] print:shadow-none print:w-full font-sans relative">
-         <div className="flex items-center gap-4 border-b pb-6 mb-10">
-            <div className="w-12 h-12 rounded-lg bg-slate-900 flex items-center justify-center">
-                <FileText className="w-6 h-6 text-white" />
+    <div className="max-w-[210mm] mx-auto p-[20mm] min-h-[297mm] print:shadow-none print:w-full font-sans relative" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
+         <div className="flex items-center gap-4 pb-6 mb-10" style={{ borderBottom: `1px solid ${t.border}` }}>
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: t.text1 }}>
+                <FileText className="w-6 h-6" style={{ color: '#fff' }} />
             </div>
             <div>
-                 <h1 className="text-xl font-bold text-slate-900">Policy Manager</h1>
-                 <p className="text-slate-500 text-sm">INTERNAL SLIP ALLOCATION NOTE</p>
+                 <h1 className="text-xl font-bold" style={{ color: t.text1 }}>Policy Manager</h1>
+                 <p className="text-sm" style={{ color: t.text4 }}>INTERNAL SLIP ALLOCATION NOTE</p>
             </div>
         </div>
 
-        <div className="bg-gray-50 p-8 rounded-xl border border-gray-200 text-center mb-10">
-            <p className="text-sm text-gray-500 uppercase tracking-wide mb-2">Allocated Slip Number</p>
-            <div className="text-4xl font-mono font-bold text-slate-900">{slip.slipNumber}</div>
+        <div className="p-8 rounded-xl text-center mb-10" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+            <p className="text-sm uppercase tracking-wide mb-2" style={{ color: t.text4 }}>Allocated Slip Number</p>
+            <div className="text-4xl font-mono font-bold" style={{ color: t.text1 }}>{slip.slipNumber}</div>
         </div>
 
         <div className="space-y-4 text-sm max-w-lg mx-auto">
-             <div className="flex justify-between border-b border-gray-100 pb-2">
-                 <span className="text-gray-500">Date of Allocation</span>
+             <div className="flex justify-between pb-2" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                 <span style={{ color: t.text4 }}>Date of Allocation</span>
                  <span className="font-bold">{formatDate(slip.date)}</span>
              </div>
-             <div className="flex justify-between border-b border-gray-100 pb-2">
-                 <span className="text-gray-500">Insured Name</span>
+             <div className="flex justify-between pb-2" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                 <span style={{ color: t.text4 }}>Insured Name</span>
                  <span className="font-bold">{slip.insuredName}</span>
              </div>
-             <div className="flex justify-between border-b border-gray-100 pb-2">
-                 <span className="text-gray-500">Broker / Reinsurer</span>
+             <div className="flex justify-between pb-2" style={{ borderBottom: `1px solid ${t.borderL}` }}>
+                 <span style={{ color: t.text4 }}>Broker / Reinsurer</span>
                  <span className="font-bold">{slip.brokerReinsurer}</span>
              </div>
         </div>
 
-        <div className="mt-20 text-center text-xs text-gray-400">
+        <div className="mt-20 text-center text-xs" style={{ color: t.text5 }}>
             <p>This document certifies the reservation of the above slip number in the system.</p>
             <p>Generated on {formatDateTime(new Date().toISOString())}</p>
         </div>
@@ -311,7 +311,7 @@ const PolicyWording: React.FC = () => {
                     <select
                         value={selectedTemplateId}
                         onChange={(e) => setSelectedTemplateId(e.target.value)}
-                        className="w-full p-2 rounded text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                        className="w-full p-2 rounded text-sm focus:ring-2 outline-none"
                         style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
                     >
                         {templates.map(tmpl => <option key={tmpl.id} value={tmpl.id}>{tmpl.name}</option>)}
@@ -323,7 +323,7 @@ const PolicyWording: React.FC = () => {
             )}
 
             <div>
-                <button onClick={printDocument} className="w-full text-white py-3 rounded flex items-center justify-center gap-2 font-bold transition-colors" style={{ background: t.accent, boxShadow: t.shadow }}>
+                <button onClick={printDocument} className="w-full py-3 rounded flex items-center justify-center gap-2 font-bold transition-colors" style={{ background: t.accent, boxShadow: t.shadow, color: '#fff' }}>
                     <Printer size={18}/> Print / Save PDF
                 </button>
                 <p className="text-xs mt-2 text-center" style={{ color: t.text4 }}>Use the "Save as PDF" option in the print dialog.</p>
