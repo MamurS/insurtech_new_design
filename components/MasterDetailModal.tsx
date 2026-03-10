@@ -327,14 +327,14 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                   return (
                     <tr key={inst.id || idx} style={{ background: idx % 2 === 0 ? t.bgPanel : t.bgRowAlt }}>
                       <td className="px-4 py-2.5" style={{ color: t.text4 }}>{idx + 1}</td>
-                      <td className="px-4 py-2.5 font-mono text-xs font-medium" style={{ color: t.accent }}>{refNum}</td>
+                      <td className="px-4 py-2.5 font-mono text-xs" style={{ color: t.accent, fontWeight: 500 }}>{refNum}</td>
                       <td className="px-4 py-2.5 text-right font-mono">{fmtFull(gross, currency)}</td>
                       <td className="px-4 py-2.5 text-right font-mono">{fmtFull(net, currency)}</td>
                       <td className="px-4 py-2.5 text-right">{pct(comm)}</td>
                       <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text3 }}>{fx}</td>
                       <td className="px-4 py-2.5" style={{ color: t.text3 }}>{payDate ? formatDate(payDate) : '-'}</td>
                       <td className="px-4 py-2.5 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={getStatusBadgeStyle(instStatus)}>
+                        <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ fontWeight: 700, ...getStatusBadgeStyle(instStatus) }}>
                           {instStatus}
                         </span>
                       </td>
@@ -343,7 +343,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                 })}
               </tbody>
               {/* Total row */}
-              <tfoot className="font-bold text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}` }}>
+              <tfoot className="text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}`, fontWeight: 700 }}>
                 <tr>
                   <td className="px-4 py-3" colSpan={2}>TOTAL</td>
                   <td className="px-4 py-3 text-right font-mono" style={{ color: t.success }}>{fmtFull(row.grossPremium, currency)}</td>
@@ -357,7 +357,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Additional premium details */}
         <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <h4 className="font-bold mb-3 text-sm" style={{ color: t.text1 }}>Premium Details</h4>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Premium Details</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <Field label="Full Premium (FC)" value={fmt(row.fullPremiumForeign, currency)} mono />
             <Field label="Full Premium (NC)" value={fmt(row.fullPremiumNational)} mono />
@@ -468,14 +468,14 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                   <td className="px-4 py-2.5 text-right font-mono">{fmtFull(rr.netPremium, currency)}</td>
                   <td className="px-4 py-2.5 text-xs font-mono" style={{ color: t.text3 }}>{rr.slipNo}</td>
                   <td className="px-4 py-2.5 text-center">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={getStatusBadgeStyle(rr.status)}>
+                    <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ fontWeight: 700, ...getStatusBadgeStyle(rr.status) }}>
                       {rr.status}
                     </span>
                   </td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="font-bold text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}` }}>
+            <tfoot className="text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}`, fontWeight: 700 }}>
               <tr>
                 <td className="px-4 py-3">TOTAL</td>
                 <td className="px-4 py-3 text-right font-mono">{totalCededShare.toFixed(2)}%</td>
@@ -490,7 +490,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         {/* Additional reinsurance fields from the policy */}
         {policy && (
           <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-            <h4 className="font-bold mb-3 text-sm" style={{ color: t.text1 }}>Reinsurance Details</h4>
+            <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Reinsurance Details</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <Field label="Sum Reinsured (FC)" value={fmt(row.sumReinsuredForeign, currency)} mono />
               <Field label="Sum Reinsured (NC)" value={fmt(row.sumReinsuredNational)} mono />
@@ -533,7 +533,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Treaty details */}
         <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <h4 className="font-bold mb-3 text-sm" style={{ color: t.text1 }}>Contract Details</h4>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Contract Details</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {inward.treatyName && <Field label="Treaty Name" value={inward.treatyName} />}
             {inward.treatyNumber && <Field label="Treaty Number" value={inward.treatyNumber} mono />}
@@ -549,7 +549,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Reinstatements & special premiums */}
         <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <h4 className="font-bold mb-3 text-sm" style={{ color: t.text1 }}>Reinstatements & Premium</h4>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Reinstatements & Premium</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {inward.reinstatements != null && <Field label="Reinstatements" value={inward.reinstatements} />}
             {inward.reinstatementPremium != null && <Field label="Reinstatement Premium" value={fmt(inward.reinstatementPremium, currency)} mono />}
@@ -565,7 +565,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         {/* Retrocession details */}
         {(row.retroSumReinsured != null || row.retroPremium != null || row.risksCount != null) && (
           <div className="p-4 rounded-xl" style={{ background: t.warning + '18', border: `1px solid ${t.warning}40` }}>
-            <h4 className="font-bold mb-3 text-sm flex items-center gap-2" style={{ color: t.warning }}><Shield size={14} /> Retrocession</h4>
+            <h4 className="mb-3 text-sm flex items-center gap-2" style={{ color: t.warning, fontWeight: 700 }}><Shield size={14} /> Retrocession</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {row.retroSumReinsured != null && <Field label="Retro Sum Reinsured" value={fmt(row.retroSumReinsured, currency)} mono />}
               {row.retroPremium != null && <Field label="Retro Premium" value={fmt(row.retroPremium, currency)} mono />}
@@ -577,7 +577,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         {/* Slip information */}
         {row.slipNumber && (
           <div className="p-4 rounded-xl" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
-            <h4 className="font-bold mb-3 text-sm flex items-center gap-2" style={{ color: t.accent }}><FileText size={14} /> Slip Information</h4>
+            <h4 className="mb-3 text-sm flex items-center gap-2" style={{ color: t.accent, fontWeight: 700 }}><FileText size={14} /> Slip Information</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <Field label="Slip Number" value={row.slipNumber} mono />
               {row.dateOfSlip && <Field label="Date of Slip" value={formatDate(row.dateOfSlip)} />}
