@@ -215,25 +215,25 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Net Premium</div>
-            <div className="text-base font-bold font-mono" style={{ color: t.accent }}>{fmt(row.netPremium, currency)}</div>
+            <div className="text-base font-mono" style={{ color: t.accent, fontWeight: 700 }}>{fmt(row.netPremium, currency)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Our Share</div>
-            <div className="text-base font-bold" style={{ color: t.text1 }}>{pct(row.ourShare)}</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 700 }}>{pct(row.ourShare)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Premium Rate</div>
-            <div className="text-base font-medium" style={{ color: t.text1 }}>{row.premiumRate != null ? `${row.premiumRate}%` : '-'}</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 500 }}>{row.premiumRate != null ? `${row.premiumRate}%` : '-'}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Commission %</div>
-            <div className="text-base font-medium" style={{ color: t.text1 }}>{pct(row.commissionPercent)}</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 500 }}>{pct(row.commissionPercent)}</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Commission (NC)</div>
-            <div className="font-medium font-mono" style={{ color: t.text1 }}>{fmt(row.commissionNational)}</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.commissionNational)}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Tax %</div>
@@ -241,15 +241,15 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>FX Rate</div>
-            <div className="font-medium font-mono" style={{ color: t.text1 }}>{row.exchangeRate ?? '-'}</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{row.exchangeRate ?? '-'}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>FX Rate (USD)</div>
-            <div className="font-medium font-mono" style={{ color: t.text1 }}>{row.exchangeRateUSD ?? '-'}</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{row.exchangeRateUSD ?? '-'}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Equivalent USD</div>
-            <div className="font-medium font-mono" style={{ color: t.text1 }}>{fmt(row.equivalentUSD, 'USD')}</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.equivalentUSD, 'USD')}</div>
           </div>
         </div>
       </div>
