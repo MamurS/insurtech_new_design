@@ -9,9 +9,6 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailModal } from '../components/DetailModal';
 import { MasterDetailModal } from '../components/MasterDetailModal';
 import { EntityDetailModal } from '../components/EntityDetailModal';
-import { FormModal } from '../components/FormModal';
-import { PolicyFormContent } from '../components/PolicyFormContent';
-import { InwardReinsuranceFormContent } from '../components/InwardReinsuranceFormContent';
 import { formatDate } from '../utils/dateUtils';
 import { DatePickerInput, toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
@@ -335,14 +332,6 @@ const Dashboard: React.FC = () => {
   // Create Entity Confirmation State
   const [createEntityConfirm, setCreateEntityConfirm] = useState<{ isOpen: boolean; name: string }>({ isOpen: false, name: '' });
 
-  // Policy Form Modal State
-  const [showPolicyModal, setShowPolicyModal] = useState(false);
-  const [editingPolicyId, setEditingPolicyId] = useState<string | null>(null);
-
-  // Inward Reinsurance Form Modal State
-  const [showInwardModal, setShowInwardModal] = useState(false);
-  const [editingInwardId, setEditingInwardId] = useState<string | null>(null);
-  const [editingInwardOrigin, setEditingInwardOrigin] = useState<'FOREIGN' | 'DOMESTIC'>('FOREIGN');
 
   const fetchData = useCallback(async () => {
     const isFirstPage = currentPage === 1;
@@ -471,21 +460,16 @@ const Dashboard: React.FC = () => {
   const handleEdit = (e: React.MouseEvent, row: PortfolioRow) => {
     e.preventDefault();
     e.stopPropagation();
-    // Open modal based on source type
+    // Navigate to full-page form based on source type
     switch (row.source) {
       case 'direct':
-        setEditingPolicyId(row.id);
-        setShowPolicyModal(true);
+        navigate(`/edit/${row.id}`);
         break;
       case 'inward-foreign':
-        setEditingInwardId(row.id);
-        setEditingInwardOrigin('FOREIGN');
-        setShowInwardModal(true);
+        navigate(`/inward-reinsurance/foreign/edit/${row.id}`);
         break;
       case 'inward-domestic':
-        setEditingInwardId(row.id);
-        setEditingInwardOrigin('DOMESTIC');
-        setShowInwardModal(true);
+        navigate(`/inward-reinsurance/domestic/edit/${row.id}`);
         break;
     }
   };
@@ -1188,16 +1172,11 @@ const Dashboard: React.FC = () => {
             onEdit={(r) => {
               setSelectedRow(null);
               if (r.source === 'direct') {
-                setEditingPolicyId(r.id);
-                setShowPolicyModal(true);
+                navigate(`/edit/${r.id}`);
               } else if (r.source === 'inward-foreign') {
-                setEditingInwardId(r.id);
-                setEditingInwardOrigin('FOREIGN');
-                setShowInwardModal(true);
+                navigate(`/inward-reinsurance/foreign/edit/${r.id}`);
               } else if (r.source === 'inward-domestic') {
-                setEditingInwardId(r.id);
-                setEditingInwardOrigin('DOMESTIC');
-                setShowInwardModal(true);
+                navigate(`/inward-reinsurance/domestic/edit/${r.id}`);
               }
             }}
           />
@@ -1209,54 +1188,6 @@ const Dashboard: React.FC = () => {
         onEdit={(id) => { setSelectedEntity(null); navigate(`/entities/edit/${id}`); }}
       />
 
-      {/* Policy Form Modal */}
-      <FormModal
-        isOpen={showPolicyModal}
-        onClose={() => {
-          setShowPolicyModal(false);
-          setEditingPolicyId(null);
-        }}
-        title={editingPolicyId ? 'Edit Policy' : 'New Policy Record'}
-        subtitle={editingPolicyId ? 'Editing policy' : 'Create a new insurance policy'}
-      >
-        <PolicyFormContent
-          id={editingPolicyId || undefined}
-          onSave={() => {
-            setShowPolicyModal(false);
-            setEditingPolicyId(null);
-            fetchData();
-          }}
-          onCancel={() => {
-            setShowPolicyModal(false);
-            setEditingPolicyId(null);
-          }}
-        />
-      </FormModal>
-
-      {/* Inward Reinsurance Form Modal */}
-      <FormModal
-        isOpen={showInwardModal}
-        onClose={() => {
-          setShowInwardModal(false);
-          setEditingInwardId(null);
-        }}
-        title={editingInwardId ? 'Edit Inward Reinsurance' : 'New Inward Reinsurance'}
-        subtitle={editingInwardOrigin === 'FOREIGN' ? 'Foreign Contract' : 'Domestic Contract'}
-      >
-        <InwardReinsuranceFormContent
-          id={editingInwardId || undefined}
-          origin={editingInwardOrigin}
-          onSave={() => {
-            setShowInwardModal(false);
-            setEditingInwardId(null);
-            fetchData();
-          }}
-          onCancel={() => {
-            setShowInwardModal(false);
-            setEditingInwardId(null);
-          }}
-        />
-      </FormModal>
 
     </div>
   );

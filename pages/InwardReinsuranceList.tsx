@@ -4,8 +4,6 @@ import { supabase } from '../services/supabase';
 import { InwardReinsurance, InwardReinsuranceOrigin, Currency } from '../types';
 import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { FormModal } from '../components/FormModal';
-import { InwardReinsuranceFormContent } from '../components/InwardReinsuranceFormContent';
 import {
   Plus, Search, Filter, RefreshCw, Trash2, Edit, Eye,
   Globe, Home, FileSpreadsheet, Layers, Calendar, DollarSign,
@@ -70,8 +68,6 @@ const InwardReinsuranceList: React.FC = () => {
   const [migrationRequired, setMigrationRequired] = useState(false);
 
   // Modal state
-  const [showFormModal, setShowFormModal] = useState(false);
-  const [editingContractId, setEditingContractId] = useState<string | null>(null);
 
   // Side panel state
   const [selectedContract, setSelectedContract] = useState<InwardReinsurance | null>(null);
@@ -446,10 +442,7 @@ const InwardReinsuranceList: React.FC = () => {
 
           {/* New Contract Button */}
           <button
-            onClick={() => {
-              setEditingContractId(null);
-              setShowFormModal(true);
-            }}
+            onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}
             className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
             style={{ background: t.accent, color: '#fff' }}
           >
@@ -505,10 +498,7 @@ const InwardReinsuranceList: React.FC = () => {
             <FileSpreadsheet size={48} className="mx-auto mb-4" style={{ color: t.text5 }} />
             <p style={{ color: t.text4 }}>No contracts found</p>
             <button
-              onClick={() => {
-                setEditingContractId(null);
-                setShowFormModal(true);
-              }}
+              onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}
               className="mt-4 font-medium"
               style={{ color: t.accent }}
             >
@@ -581,12 +571,12 @@ const InwardReinsuranceList: React.FC = () => {
                       </button>
                       {actionMenuOpen === contract.id && (
                         <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
+                          <button onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${contract.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
                             onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
                             onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <Eye size={14} /> View
                           </button>
-                          <button onClick={() => { setActionMenuOpen(null); setEditingContractId(contract.id); setShowFormModal(true); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
+                          <button onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${contract.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
                             onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
                             onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <Edit size={14} /> Edit
@@ -649,8 +639,7 @@ const InwardReinsuranceList: React.FC = () => {
             <button
               onClick={() => {
                 if (selectedContract) {
-                  setEditingContractId(selectedContract.id);
-                  setShowFormModal(true);
+                  navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${selectedContract.id}`);
                 }
               }}
               style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.bgInput, color: t.text1, border: `1px solid ${t.border}`, cursor: 'pointer' }}
@@ -661,8 +650,7 @@ const InwardReinsuranceList: React.FC = () => {
             <button
               onClick={() => {
                 if (selectedContract) {
-                  setEditingContractId(selectedContract.id);
-                  setShowFormModal(true);
+                  navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${selectedContract.id}`);
                 }
               }}
               style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.accent, color: '#fff', border: 'none', cursor: 'pointer' }}
@@ -711,30 +699,6 @@ const InwardReinsuranceList: React.FC = () => {
         variant="danger"
       />
 
-      {/* Form Modal */}
-      <FormModal
-        isOpen={showFormModal}
-        onClose={() => {
-          setShowFormModal(false);
-          setEditingContractId(null);
-        }}
-        title={editingContractId ? 'Edit Contract' : `New ${origin === 'FOREIGN' ? 'Foreign' : 'Domestic'} Inward Reinsurance`}
-        subtitle={origin === 'FOREIGN' ? 'Overseas/International Contract' : 'Domestic Contract'}
-      >
-        <InwardReinsuranceFormContent
-          id={editingContractId || undefined}
-          origin={origin}
-          onSave={() => {
-            setShowFormModal(false);
-            setEditingContractId(null);
-            fetchContracts();
-          }}
-          onCancel={() => {
-            setShowFormModal(false);
-            setEditingContractId(null);
-          }}
-        />
-      </FormModal>
     </div>
   );
 };

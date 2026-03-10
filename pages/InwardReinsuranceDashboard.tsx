@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DB } from '../services/db';
 import { InwardReinsurance, Currency } from '../types';
 import { useToast } from '../context/ToastContext';
 import { formatDate } from '../utils/dateUtils';
 import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
-import { FormModal } from '../components/FormModal';
-import { InwardReinsuranceFormContent } from '../components/InwardReinsuranceFormContent';
 import {
   Search, RefreshCw, Download,
   Globe, Home, TrendingUp, DollarSign,
@@ -18,6 +17,7 @@ import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
 
 const InwardReinsuranceDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const toast = useToast();
   const { setHeaderActions, setHeaderLeft } = usePageHeader();
   const { t } = useTheme();
@@ -74,10 +74,6 @@ const InwardReinsuranceDashboard: React.FC = () => {
     }
   }, [openMenuId]);
 
-  // Modal state
-  const [showFormModal, setShowFormModal] = useState(false);
-  const [editingContractId, setEditingContractId] = useState<string | null>(null);
-  const [editingOrigin, setEditingOrigin] = useState<'FOREIGN' | 'DOMESTIC'>('FOREIGN');
 
   // Load stats (separate lightweight queries)
   const loadStats = useCallback(async () => {
@@ -432,9 +428,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
                     <tr
                       key={contract.id}
                       onClick={() => {
-                        setEditingContractId(contract.id);
-                        setEditingOrigin(origin as 'FOREIGN' | 'DOMESTIC');
-                        setShowFormModal(true);
+                        navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${contract.id}`);
                       }}
                       className="transition-colors cursor-pointer"
                       style={{ borderBottom: `1px solid ${t.border}` }}
@@ -488,7 +482,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
                         </button>
                         {openMenuId === contract.id && (
                           <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-                            <button onClick={() => { setOpenMenuId(null); setEditingContractId(contract.id); setEditingOrigin(origin as 'FOREIGN' | 'DOMESTIC'); setShowFormModal(true); }}
+                            <button onClick={() => { setOpenMenuId(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${contract.id}`); }}
                               className="w-full flex items-center gap-2 px-3 py-2 text-sm"
                               style={{ color: t.text2, background: 'transparent' }}
                               onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
@@ -496,7 +490,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
                             >
                               <Eye size={14} /> View
                             </button>
-                            <button onClick={() => { setOpenMenuId(null); setEditingContractId(contract.id); setEditingOrigin(origin as 'FOREIGN' | 'DOMESTIC'); setShowFormModal(true); }}
+                            <button onClick={() => { setOpenMenuId(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${contract.id}`); }}
                               className="w-full flex items-center gap-2 px-3 py-2 text-sm"
                               style={{ color: t.text2, background: 'transparent' }}
                               onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
@@ -544,31 +538,6 @@ const InwardReinsuranceDashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Form Modal */}
-      <FormModal
-        isOpen={showFormModal}
-        onClose={() => {
-          setShowFormModal(false);
-          setEditingContractId(null);
-        }}
-        title={editingContractId ? 'Edit Inward Reinsurance' : 'New Inward Reinsurance'}
-        subtitle={editingOrigin === 'FOREIGN' ? 'Foreign Contract' : 'Domestic Contract'}
-      >
-        <InwardReinsuranceFormContent
-          id={editingContractId || undefined}
-          origin={editingOrigin}
-          onSave={() => {
-            setShowFormModal(false);
-            setEditingContractId(null);
-            fetchData();
-            loadStats();
-          }}
-          onCancel={() => {
-            setShowFormModal(false);
-            setEditingContractId(null);
-          }}
-        />
-      </FormModal>
     </div>
   );
 };
