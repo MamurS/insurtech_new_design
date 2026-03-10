@@ -115,9 +115,9 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
                         <span
                             className="text-xs uppercase px-2 py-0.5 rounded"
                             style={
-                                log.action === 'CREATE' ? { background: t.success + '18', color: t.success } :
-                                log.action === 'UPDATE' ? { background: t.accent + '18', color: t.accent } :
-                                { background: t.danger + '18', color: t.danger }
+                                log.action === 'CREATE' ? { background: t.success + '18', color: t.success, fontWeight: 700 } :
+                                log.action === 'UPDATE' ? { background: t.accent + '18', color: t.accent, fontWeight: 700 } :
+                                { background: t.danger + '18', color: t.danger, fontWeight: 700 }
                             }
                         >{log.action}</span>
                         <span className="text-xs" style={{ color: t.text4 }}>{formatDateTime(log.timestamp)}</span>
@@ -142,8 +142,8 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
            <div className="flex gap-4">
               <button
                 onClick={() => setActiveTab('details')}
-                className="pb-1 font-medium transition-colors"
-                style={activeTab === 'details' ? { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: t.accent, color: t.accent } : { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: 'transparent', color: t.text4 }}
+                className="pb-1 transition-colors"
+                style={activeTab === 'details' ? { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: t.accent, color: t.accent, fontWeight: 500 } : { borderBottomWidth: 2, borderBottomStyle: 'solid', borderBottomColor: 'transparent', color: t.text4, fontWeight: 500 }}
               >
                 Overview
               </button>
