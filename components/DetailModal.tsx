@@ -308,18 +308,18 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         {/* Header Badge */}
         <div className="flex flex-wrap items-center gap-3 mb-4 justify-between">
             <div className="flex gap-3">
-                <span className="px-3 py-1 rounded-full text-sm font-bold" style={policy.channel === 'Direct' ? { background: t.accent + '18', color: t.accent } : { background: '#a855f718', color: '#a855f7' }}>{policy.channel} Insurance</span>
-                <span className="px-3 py-1 rounded-full text-sm font-bold" style={{ background: t.bgCard, color: t.text2 }}>{policy.status}</span>
-                {policy.isDeleted && <span className="px-3 py-1 rounded-full text-sm font-bold animate-pulse" style={{ background: t.danger, color: '#fff' }}>DELETED</span>}
+                <span className="px-3 py-1 rounded-full text-sm" style={{ fontWeight: 700, ...(policy.channel === 'Direct' ? { background: t.accent + '18', color: t.accent } : { background: '#a855f718', color: '#a855f7' }) }}>{policy.channel} Insurance</span>
+                <span className="px-3 py-1 rounded-full text-sm" style={{ background: t.bgCard, color: t.text2, fontWeight: 700 }}>{policy.status}</span>
+                {policy.isDeleted && <span className="px-3 py-1 rounded-full text-sm animate-pulse" style={{ background: t.danger, color: '#fff', fontWeight: 700 }}>DELETED</span>}
             </div>
         </div>
 
         {/* WORKFLOW ACTIONS */}
         {policy.status === PolicyStatus.PENDING && (
             <div className="rounded-xl p-5 mb-6" style={{ background: t.warningBg, border: `1px solid ${t.warning}40`, boxShadow: t.shadow }}>
-                <h4 className="font-bold flex items-center gap-2 mb-3" style={{ color: t.warning }}><AlertCircle size={18} /> Underwriting Workflow</h4>
+                <h4 className="flex items-center gap-2 mb-3" style={{ color: t.warning, fontWeight: 700 }}><AlertCircle size={18} /> Underwriting Workflow</h4>
                 <div className="p-4 rounded-lg mb-4 flex items-center gap-3" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40` }}>
-                    <label className="cursor-pointer px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2" style={{ background: t.bgCard, color: t.text2 }}><Upload size={16} /> {uploadFile ? uploadFile.name : "Choose PDF..."}<input type="file" accept=".pdf" className="hidden" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} /></label>
+                    <label className="cursor-pointer px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgCard, color: t.text2, fontWeight: 500 }}><Upload size={16} /> {uploadFile ? uploadFile.name : "Choose PDF..."}<input type="file" accept=".pdf" className="hidden" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} /></label>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                     <button onClick={() => setShowNTUConfirm(true)} className="w-full py-2.5 font-bold rounded-lg text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2 }}>Mark as NTU</button>
