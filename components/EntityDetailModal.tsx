@@ -38,8 +38,8 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
           <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{entity.fullName}</h2>
           <p style={{ color: t.text4, fontWeight: 500 }}>{entity.shortName || '-'}</p>
           <div className="flex gap-2 mt-2">
-            <span className="px-3 py-1 text-xs font-bold rounded-full uppercase" style={{ background: t.accent + '18', color: t.accent }}>{entity.type}</span>
-            <span className="px-3 py-1 text-xs font-bold rounded-full" style={{ background: t.bgCard, color: t.text2, borderWidth: 1, borderStyle: 'solid', borderColor: t.bgHover }}>
+            <span className="px-3 py-1 text-xs rounded-full uppercase" style={{ background: t.accent + '18', color: t.accent, fontWeight: 700 }}>{entity.type}</span>
+            <span className="px-3 py-1 text-xs rounded-full" style={{ background: t.bgCard, color: t.text2, borderWidth: 1, borderStyle: 'solid', borderColor: t.bgHover, fontWeight: 700 }}>
                {entity.regCodeType}: {entity.regCodeValue}
             </span>
           </div>
@@ -47,8 +47,8 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
         {onEdit && (
             <button
                 onClick={() => onEdit(entity.id)}
-                className="px-4 py-2 font-medium rounded-lg transition-colors text-sm"
-                style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.borderL, color: t.text2 }}
+                className="px-4 py-2 rounded-lg transition-colors text-sm"
+                style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.borderL, color: t.text2, fontWeight: 500 }}
             >
                 Edit Entity
             </button>
@@ -58,11 +58,11 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Contact Info */}
         <div className="p-5 rounded-xl" style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.border, boxShadow: t.shadow }}>
-          <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><MapPin size={18} style={{ color: t.accent }}/> Contact & Address</h3>
+          <h3 className="mb-4 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><MapPin size={18} style={{ color: t.accent }}/> Contact & Address</h3>
           <div className="space-y-3 text-sm">
-             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Country</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.country}</span></div>
-             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>City</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.city || '-'}</span></div>
-             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Address</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.address || '-'}</span></div>
+             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Country</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.country}</span></div>
+             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>City</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.city || '-'}</span></div>
+             <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Address</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.address || '-'}</span></div>
 
              <div className="pt-3 mt-3 space-y-2" style={{ borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: t.border }}>
                  <div className="flex items-center gap-2"><Phone size={14} style={{ color: t.text4 }}/> {entity.phone || '-'}</div>
@@ -74,23 +74,23 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
 
         {/* Corporate Info */}
         <div className="p-5 rounded-xl" style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.border, boxShadow: t.shadow }}>
-           <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><Building2 size={18} style={{ color: t.accent }}/> Corporate Details</h3>
+           <h3 className="mb-4 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><Building2 size={18} style={{ color: t.accent }}/> Corporate Details</h3>
            <div className="space-y-3 text-sm">
-              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Director</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.directorName || '-'}</span></div>
-              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Line of Business</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.lineOfBusiness || '-'}</span></div>
-              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Shareholders</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.shareholders || '-'}</span></div>
+              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Director</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.directorName || '-'}</span></div>
+              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Line of Business</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.lineOfBusiness || '-'}</span></div>
+              <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Shareholders</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.shareholders || '-'}</span></div>
            </div>
         </div>
       </div>
 
        {/* Banking Info */}
        <div className="p-5 rounded-xl" style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.border, boxShadow: t.shadow }}>
-           <h3 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><Landmark size={18} style={{ color: t.accent }}/> Banking Details</h3>
+           <h3 className="mb-4 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><Landmark size={18} style={{ color: t.accent }}/> Banking Details</h3>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Bank Name</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.bankName || '-'}</span></div>
-               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Account Number</span> <span className="font-mono font-medium px-2 py-1 rounded inline-block" style={{ color: t.text1, background: t.bgCard }}>{entity.bankAccount || '-'}</span></div>
-               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>MFO / SWIFT / IBAN</span> <span className="font-mono font-medium" style={{ color: t.text1 }}>{entity.bankMFO || '-'}</span></div>
-               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Bank Address</span> <span className="font-medium" style={{ color: t.text1 }}>{entity.bankAddress || '-'}</span></div>
+               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Bank Name</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.bankName || '-'}</span></div>
+               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Account Number</span> <span className="font-mono px-2 py-1 rounded inline-block" style={{ color: t.text1, background: t.bgCard, fontWeight: 500 }}>{entity.bankAccount || '-'}</span></div>
+               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>MFO / SWIFT / IBAN</span> <span className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{entity.bankMFO || '-'}</span></div>
+               <div><span className="block text-xs uppercase" style={{ color: t.text4 }}>Bank Address</span> <span style={{ color: t.text1, fontWeight: 500 }}>{entity.bankAddress || '-'}</span></div>
            </div>
        </div>
     </div>
@@ -99,7 +99,7 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
   const renderHistory = () => (
     <div className="space-y-4">
       <div className="flex justify-between items-center mb-4">
-         <h3 className="font-bold" style={{ color: t.text1 }}>Audit Log</h3>
+         <h3 style={{ color: t.text1, fontWeight: 700 }}>Audit Log</h3>
          <button onClick={() => { setLoadingLogs(true); DB.getEntityLogs(entity.id).then(d => { setLogs(d); setLoadingLogs(false); })}} className="text-sm hover:underline" style={{ color: t.accent }}>Refresh</button>
       </div>
 
@@ -113,7 +113,7 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
                 <div key={log.id} className="p-4 rounded-lg text-sm" style={{ background: t.bgCard, borderWidth: 1, borderStyle: 'solid', borderColor: t.border }}>
                     <div className="flex justify-between mb-2">
                         <span
-                            className="font-bold text-xs uppercase px-2 py-0.5 rounded"
+                            className="text-xs uppercase px-2 py-0.5 rounded"
                             style={
                                 log.action === 'CREATE' ? { background: t.success + '18', color: t.success } :
                                 log.action === 'UPDATE' ? { background: t.accent + '18', color: t.accent } :
@@ -123,7 +123,7 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
                         <span className="text-xs" style={{ color: t.text4 }}>{formatDateTime(log.timestamp)}</span>
                     </div>
                     <div className="mb-2">
-                        <span className="font-medium" style={{ color: t.text1 }}>{log.userName}</span> <span style={{ color: t.text4 }}>performed this action.</span>
+                        <span style={{ color: t.text1, fontWeight: 500 }}>{log.userName}</span> <span style={{ color: t.text4 }}>performed this action.</span>
                     </div>
                     <div className="p-2 rounded font-mono text-xs overflow-x-auto" style={{ background: t.bgPanel, borderWidth: 1, borderStyle: 'solid', borderColor: t.border, color: t.text3 }}>
                         {log.changes}
