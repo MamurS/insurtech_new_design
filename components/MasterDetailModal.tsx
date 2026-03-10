@@ -133,8 +133,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
             {row.insuredAddress && <Field label="Insured Address" value={row.insuredAddress} className="col-span-2" />}
             {row.cedantName && (
               <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
-                <div className="text-[11px] uppercase font-bold" style={{ color: '#a855f7' }}>Cedant</div>
-                <div className="text-sm font-medium" style={{ color: '#a855f7' }}>{row.cedantName}</div>
+                <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Cedant</div>
+                <div className="text-sm" style={{ color: '#a855f7', fontWeight: 500 }}>{row.cedantName}</div>
               </div>
             )}
             {row.brokerName && <Field label="Broker" value={row.brokerName} />}
@@ -237,7 +237,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Tax %</div>
-            <div className="font-medium" style={{ color: t.text1 }}>{row.taxPercent != null ? `${row.taxPercent}%` : '-'}</div>
+            <div style={{ color: t.text1, fontWeight: 500 }}>{row.taxPercent != null ? `${row.taxPercent}%` : '-'}</div>
           </div>
           <div>
             <div className="text-[11px] uppercase" style={{ color: t.text4 }}>FX Rate</div>
@@ -269,7 +269,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         const retention = Math.max(0, 100 - totalCeded);
         return (
           <div className="p-4 rounded-xl" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
-            <h4 className="font-bold mb-3 flex items-center gap-2 text-sm" style={{ color: t.accent }}><Shield size={14} /> Outward Reinsurance Summary</h4>
+            <h4 className="mb-3 flex items-center gap-2 text-sm" style={{ color: t.accent, fontWeight: 700 }}><Shield size={14} /> Outward Reinsurance Summary</h4>
             <div className="flex gap-4">
               <div className="flex-1 text-center">
                 <div className="text-[11px] uppercase font-bold" style={{ color: t.accent }}>Total Ceded</div>
@@ -518,15 +518,15 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         {/* Structure summary */}
         <div className="flex gap-4">
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: '#a855f7' }}>Type</div>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Type</div>
             <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{inward.type}</div>
           </div>
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: '#a855f7' }}>Structure</div>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Structure</div>
             <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{inward.structure === 'PROPORTIONAL' ? 'Proportional' : 'Non-Proportional'}</div>
           </div>
           <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
-            <div className="text-[11px] uppercase font-bold" style={{ color: '#a855f7' }}>Our Share</div>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Our Share</div>
             <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{pct(inward.ourShare)}</div>
           </div>
         </div>
