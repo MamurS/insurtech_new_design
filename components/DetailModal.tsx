@@ -332,14 +332,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         {policy.status === PolicyStatus.ACTIVE && (
             <div className="rounded-xl p-4 mb-6 flex justify-between items-center relative z-20" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
                 <div className="text-sm flex items-center gap-2" style={{ color: t.text3 }}><CheckCircle style={{ color: t.success }} size={18} /><span style={{ color: t.text1, fontWeight: 700 }}>Policy is Active.</span></div>
-                <button onClick={() => setShowTerminationConfirm(true)} className="px-4 py-2 font-bold rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40`, color: t.warning }}><XCircle size={16} /> Early Termination</button>
+                <button onClick={() => setShowTerminationConfirm(true)} className="px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40`, color: t.warning, fontWeight: 700 }}><XCircle size={16} /> Early Termination</button>
             </div>
         )}
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-                <h4 className="font-bold pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}><Building2 size={16}/> Core Information</h4>
+                <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={16}/> Core Information</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                     <div><div style={{ color: t.text4 }}>Insured Name</div><div className="font-medium" style={{ color: t.text1 }}>{policy.insuredName}</div></div>
                     <div><div style={{ color: t.text4 }}>Ref / Policy No</div><div className="font-medium font-mono" style={{ color: t.text1 }}>{policy.policyNumber}</div></div>
@@ -360,7 +360,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
             </div>
 
             <div className="space-y-4">
-                 <h4 className="font-bold pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}><Calendar size={16}/> Dates & Terms</h4>
+                 <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={16}/> Dates & Terms</h4>
                  <div className="grid grid-cols-2 gap-4 text-sm">
                     <div><div style={{ color: t.text4 }}>Inception</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.inceptionDate)}</div></div>
                     <div><div style={{ color: t.text4 }}>Expiry</div><div className="font-medium" style={{ color: t.text1 }}>{formatDate(policy.expiryDate)}</div></div>
