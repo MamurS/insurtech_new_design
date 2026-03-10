@@ -75,7 +75,7 @@ const ClauseManager: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Clause Library</h2>
+          <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Clause Library</h2>
           <p style={{ color: t.text3 }}>Manage standard clauses and warranties used in policies.</p>
         </div>
         <button
@@ -95,7 +95,7 @@ const ClauseManager: React.FC = () => {
           {clauses.map(clause => (
             <div
               key={clause.id}
-              className="p-5 rounded-xl flex flex-col hover:shadow-md transition-shadow"
+              className="p-5 rounded-xl flex flex-col transition-shadow"
               style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}
             >
               <div className="flex justify-between items-start mb-3">
@@ -132,7 +132,7 @@ const ClauseManager: React.FC = () => {
             className="rounded-xl max-w-2xl w-full animate-in fade-in zoom-in duration-200"
             style={{ background: t.bgPanel, boxShadow: t.shadowLg }}
           >
-            <h3 className="text-xl font-bold p-6 pb-0" style={{ color: t.text1 }}>New Clause Template</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text1, padding: '24px 24px 0' }}>New Clause Template</h3>
 
             <ContextBar
               status="NEW"

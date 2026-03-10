@@ -291,7 +291,7 @@ const RegulatoryReporting: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>Failed to load data</h3>
           <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
           <button onClick={refetch}
             style={{ background: t.accent, color: '#fff' }}

@@ -377,10 +377,10 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         <div className="p-6 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
              <h4 className="font-bold mb-4 flex items-center gap-2" style={{ color: t.text1 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
-                 <div><div style={{ color: t.text4 }}>Sum Insured</div><div className="font-bold text-lg" style={{ color: t.text1 }}>{formatMoney(policy.sumInsured, policy.currency)}</div></div>
+                 <div><div style={{ color: t.text4 }}>Sum Insured</div><div style={{ color: t.text1, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.sumInsured, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Limit of Liability</div><div className="font-medium" style={{ color: t.text1 }}>{formatMoney(policy.limitForeignCurrency, policy.currency)}</div></div>
-                 <div><div style={{ color: t.text4 }}>Gross Premium</div><div className="font-bold text-lg" style={{ color: t.success }}>{formatMoney(policy.grossPremium, policy.currency)}</div></div>
-                 <div><div style={{ color: t.text4 }}>Net Premium</div><div className="font-bold text-lg" style={{ color: t.accent }}>{formatMoney(policy.netPremium, policy.currency)}</div></div>
+                 <div><div style={{ color: t.text4 }}>Gross Premium</div><div style={{ color: t.success, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.grossPremium, policy.currency)}</div></div>
+                 <div><div style={{ color: t.text4 }}>Net Premium</div><div style={{ color: t.accent, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.netPremium, policy.currency)}</div></div>
              </div>
              {policy.hasOutwardReinsurance && (
                  <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
@@ -600,7 +600,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
       <div className="space-y-4">
           <div className="flex justify-between items-start">
               <div>
-                  <h3 className="text-xl font-bold" style={{ color: t.text1 }}>{clause.title}</h3>
+                  <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{clause.title}</h3>
                   <span className="text-xs px-2 py-0.5 rounded uppercase font-bold mt-1 inline-block" style={
                       clause.category === 'Exclusion' ? { background: t.danger + '18', color: t.danger } :
                       clause.category === 'Warranty' ? { background: t.warning + '18', color: t.warning } :
@@ -626,7 +626,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
         {/* Header */}
         <div className="p-4 flex justify-between items-center sticky top-0 z-10" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
-           <h3 className="font-bold text-lg" style={{ color: t.text1 }}>{title || 'Details'}</h3>
+           <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{title || 'Details'}</h3>
            <button onClick={onClose} className="p-1 rounded-full transition-colors" style={{ color: t.text4 }}><X size={20}/></button>
         </div>
 

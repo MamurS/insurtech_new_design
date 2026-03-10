@@ -18,10 +18,10 @@ export const MosaicLogo: React.FC<MosaicLogoProps> = ({
 
   // Size configurations
   const sizes = {
-    sm: { icon: 'w-8 h-8', text: 'text-lg', subtext: 'text-xs' },
-    md: { icon: 'w-10 h-10', text: 'text-xl', subtext: 'text-xs' },
-    lg: { icon: 'w-12 h-12', text: 'text-2xl', subtext: 'text-sm' },
-    xl: { icon: 'w-16 h-16', text: 'text-3xl', subtext: 'text-base' },
+    sm: { icon: 'w-8 h-8', textSize: 15, subtext: 'text-xs' },
+    md: { icon: 'w-10 h-10', textSize: 20, subtext: 'text-xs' },
+    lg: { icon: 'w-12 h-12', textSize: 24, subtext: 'text-sm' },
+    xl: { icon: 'w-16 h-16', textSize: 24, subtext: 'text-base' },
   };
 
   // Color palettes
@@ -94,14 +94,13 @@ export const MosaicLogo: React.FC<MosaicLogoProps> = ({
         <div className={`flex flex-col ${textPosition === 'bottom' ? 'items-center' : 'items-start'}`}>
           <div className="flex items-baseline gap-1.5">
             <span
-              className={`font-bold tracking-tight ${sizeConfig.text}`}
-              style={{ color: palette.text }}
+              className="tracking-tight"
+              style={{ color: palette.text, fontSize: sizeConfig.textSize, fontWeight: 700 }}
             >
               Mosaic
             </span>
             <span
-              className={`font-semibold ${sizeConfig.text}`}
-              style={{ color: palette.tiles[0] }}
+              style={{ color: palette.tiles[0], fontSize: sizeConfig.textSize, fontWeight: 600 }}
             >
               ERP
             </span>
@@ -127,10 +126,10 @@ export const MosaicLogoStripe: React.FC<MosaicLogoProps> = ({
 }) => {
 
   const sizes = {
-    sm: { width: 'w-24', height: 'h-6', text: 'text-sm' },
-    md: { width: 'w-32', height: 'h-8', text: 'text-base' },
-    lg: { width: 'w-40', height: 'h-10', text: 'text-lg' },
-    xl: { width: 'w-48', height: 'h-12', text: 'text-xl' },
+    sm: { width: 'w-24', height: 'h-6', fontSize: 13 },
+    md: { width: 'w-32', height: 'h-8', fontSize: 13 },
+    lg: { width: 'w-40', height: 'h-10', fontSize: 15 },
+    xl: { width: 'w-48', height: 'h-12', fontSize: 20 },
   };
 
   const colors = variant === 'white'
@@ -155,10 +154,10 @@ export const MosaicLogoStripe: React.FC<MosaicLogoProps> = ({
 
       {showText && (
         <div className="flex items-baseline gap-1">
-          <span className={`font-bold ${sizeConfig.text}`} style={{ color: textColor }}>
+          <span style={{ color: textColor, fontSize: sizeConfig.fontSize, fontWeight: 700 }}>
             Mosaic
           </span>
-          <span className={`font-semibold ${sizeConfig.text}`} style={{ color: colors[0] }}>
+          <span style={{ color: colors[0], fontSize: sizeConfig.fontSize, fontWeight: 600 }}>
             ERP
           </span>
         </div>

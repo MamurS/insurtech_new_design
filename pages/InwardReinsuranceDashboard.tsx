@@ -213,19 +213,19 @@ const InwardReinsuranceDashboard: React.FC = () => {
       <>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 12, color: t.text4, fontWeight: 500 }}>Contracts</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: t.text1 }}>{stats.total}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.text1 }}>{stats.total}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 12, color: '#a78bfa', fontWeight: 500 }}>🌍 Foreign</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: '#a78bfa' }}>{stats.foreign}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#a78bfa' }}>{stats.foreign}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: `${t.accent}15`, border: `1px solid ${t.accent}33`, borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 12, color: t.accent, fontWeight: 500 }}>🏠 Domestic</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: t.accent }}>{stats.domestic}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>{stats.domestic}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: t.successBg, border: `1px solid ${t.success}33`, borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 12, color: t.success, fontWeight: 500 }}>Active</span>
-          <span style={{ fontSize: 14, fontWeight: 700, color: t.success }}>{stats.active}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: t.success }}>{stats.active}</span>
         </div>
       </>
     );
@@ -233,7 +233,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
       <button
         onClick={() => handleExport()}
         disabled={exporting || contracts.length === 0}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.success, color: '#fff', fontSize: 14, fontWeight: 600, borderRadius: 8, border: 'none', cursor: exporting || contracts.length === 0 ? 'not-allowed' : 'pointer', opacity: exporting || contracts.length === 0 ? 0.5 : 1, boxShadow: t.shadow, whiteSpace: 'nowrap' }}
+        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.success, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: exporting || contracts.length === 0 ? 'not-allowed' : 'pointer', opacity: exporting || contracts.length === 0 ? 0.5 : 1, boxShadow: t.shadow, whiteSpace: 'nowrap' }}
       >
         <Download size={16} /> Export
       </button>
@@ -290,7 +290,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
     border: `1px solid ${t.borderL}`,
     borderRadius: 8,
     outline: 'none',
-    fontSize: 14,
+    fontSize: 13,
     background: t.bgPanel,
     color: t.text1,
   };
@@ -310,7 +310,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full pl-8 pr-3 py-2 rounded-lg outline-none"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1, fontSize: 14 }}
+            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1, fontSize: 13 }}
           />
         </div>
 
@@ -401,7 +401,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
         ) : contracts.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64" style={{ color: t.text5 }}>
             <FileText size={48} className="mb-4" style={{ opacity: 0.5 }} />
-            <p className="text-lg font-medium">No contracts found</p>
+            <p style={{ fontSize: 15, fontWeight: 500 }}>No contracts found</p>
             <p className="text-sm">Try adjusting your filters or create new contracts</p>
           </div>
         ) : (

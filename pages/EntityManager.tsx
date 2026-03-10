@@ -60,7 +60,7 @@ const EntityManager: React.FC = () => {
     <div className="space-y-6">
        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Legal Entities</h2>
+          <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Legal Entities</h2>
           <p className="text-sm" style={{ color: t.text4 }}>Manage company registry, counterparties, and insureds.</p>
         </div>
         <button

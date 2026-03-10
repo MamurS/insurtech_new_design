@@ -211,7 +211,7 @@ const SlipForm: React.FC = () => {
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{isEdit ? 'Edit Slip' : 'New Slip Record'}</h2>
+                    <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{isEdit ? 'Edit Slip' : 'New Slip Record'}</h2>
                     <p className="text-xs" style={{ color: t.text4 }}>
                        Outward Reinsurance Registry
                     </p>
@@ -349,7 +349,7 @@ const SlipForm: React.FC = () => {
 
             {/* Form Fields */}
             <div className="md:col-span-2 rounded-xl p-6" style={{ backgroundColor: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
-                <h3 className="text-lg font-bold mb-6 pb-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}` }}>Slip Details</h3>
+                <h3 className="mb-6 pb-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontSize: 15, fontWeight: 700 }}>Slip Details</h3>
                 
                 <div className="space-y-5">
                     <div>

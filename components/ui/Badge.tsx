@@ -70,7 +70,7 @@ export const TypeBadge: React.FC<{ type: string }> = ({ type }) => {
       color: c,
       padding: '4px 10px',
       borderRadius: 20,
-      fontSize: 10,
+      fontSize: 11,
       fontWeight: 600,
     }}>
       {type}

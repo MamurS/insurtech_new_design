@@ -162,7 +162,7 @@ const PolicyWording: React.FC = () => {
                         <FileText className="w-6 h-6" style={{ color: '#fff' }} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-serif font-bold" style={{ color: t.text1 }}>Policy Manager</h1>
+                        <h1 className="font-serif" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Policy Manager</h1>
                         <p className="text-sm uppercase tracking-widest" style={{ color: t.text4 }}>{template.name}</p>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ const PolicyWording: React.FC = () => {
             {/* Attached Clauses */}
             {attachedClauses.length > 0 && (
                 <div className="mt-12 pt-8 break-before-page" style={{ borderTop: `2px solid ${t.border}` }}>
-                    <h3 className="font-bold text-lg uppercase mb-6 text-center">Attached Clauses & Warranties</h3>
+                    <h3 className="uppercase mb-6 text-center" style={{ fontSize: 15, fontWeight: 700 }}>Attached Clauses & Warranties</h3>
                     {attachedClauses.map((clause, idx) => (
                         <div key={clause.id} className="mb-6">
                             <h4 className="font-bold text-sm mb-2">{idx + 1}. {clause.title}</h4>
@@ -207,7 +207,7 @@ const PolicyWording: React.FC = () => {
         </div>
 
         <div className="text-center mb-8 pb-4" style={{ borderBottom: `4px double ${t.text1}` }}>
-            <h1 className="text-2xl font-bold uppercase tracking-widest">Reinsurance Slip</h1>
+            <h1 className="uppercase tracking-widest" style={{ fontSize: 24, fontWeight: 700 }}>Reinsurance Slip</h1>
             <p className="text-sm uppercase mt-1" style={{ color: t.text2 }}>{policy.channel}</p>
         </div>
 
@@ -265,7 +265,7 @@ const PolicyWording: React.FC = () => {
                 <FileText className="w-6 h-6" style={{ color: '#fff' }} />
             </div>
             <div>
-                 <h1 className="text-xl font-bold" style={{ color: t.text1 }}>Policy Manager</h1>
+                 <h1 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Policy Manager</h1>
                  <p className="text-sm" style={{ color: t.text4 }}>INTERNAL SLIP ALLOCATION NOTE</p>
             </div>
         </div>
@@ -340,7 +340,7 @@ const PolicyWording: React.FC = () => {
          )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-8 rounded-xl print:p-0 print:bg-white" style={{ background: t.bgApp, border: `1px solid ${t.border}` }}>
+      <div className="flex-1 overflow-y-auto p-8 rounded-xl print:p-0" style={{ background: t.bgApp, border: `1px solid ${t.border}` }}>
         {isPolicy(item)
             ? (item.channel === 'Direct'
                 ? renderDynamicPolicy(item) // New dynamic render

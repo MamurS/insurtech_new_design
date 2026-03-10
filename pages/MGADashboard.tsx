@@ -294,7 +294,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
         {/* Header */}
         <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: t.bgPanel, borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottom: `1px solid ${t.border}` }}>
           <div>
-            <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{agreement.agreementNumber}</h2>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{agreement.agreementNumber}</h2>
             <p className="text-sm" style={{ color: t.text4 }}>{agreement.mgaName} &middot; {agreement.agreementType.replace('_', ' ')}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -326,21 +326,21 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
               <div className="grid grid-cols-4 gap-4">
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>EPI</p>
-                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{formatCurrency(agreement.epi)}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{formatCurrency(agreement.epi)}</p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Actual GWP</p>
-                  <p className="text-xl font-bold" style={{ color: actualGwp > 0 ? t.success : t.text5 }}>{formatCurrency(actualGwp)}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: actualGwp > 0 ? t.success : t.text5 }}>{formatCurrency(actualGwp)}</p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Utilization</p>
-                  <p className="text-xl font-bold" style={{ color: utilization > 80 ? t.success : utilization > 50 ? t.warning : t.danger }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: utilization > 80 ? t.success : utilization > 50 ? t.warning : t.danger }}>
                     {agreement.epi > 0 ? `${utilization.toFixed(1)}%` : 'N/A'}
                   </p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Our Share</p>
-                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{(agreement.ourShare * 100).toFixed(1)}%</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{(agreement.ourShare * 100).toFixed(1)}%</p>
                 </div>
               </div>
 
@@ -615,7 +615,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <BarChart3 size={14} />
             Avg Utilization
           </div>
-          <p className="text-2xl font-bold" style={{ color: avgUtilization >= 75 ? t.success : avgUtilization >= 50 ? t.warning : t.danger }}>
+          <p style={{ color: avgUtilization >= 75 ? t.success : avgUtilization >= 50 ? t.warning : t.danger, fontSize: 24, fontWeight: 700 }}>
             {avgUtilization.toFixed(1)}%
           </p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>{activeRows.length} active agreements</p>
@@ -633,7 +633,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <AlertCircle size={14} />
             Underperformers
           </div>
-          <p className="text-2xl font-bold" style={{ color: t.danger }}>{underperformerCount}</p>
+          <p style={{ color: t.danger, fontSize: 24, fontWeight: 700 }}>{underperformerCount}</p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>Below 50% utilization</p>
         </div>
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
@@ -641,7 +641,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <ClipboardList size={14} />
             Total Bordereaux
           </div>
-          <p className="text-2xl font-bold" style={{ color: t.accent }}>{totalBdxCount}</p>
+          <p style={{ color: t.accent, fontSize: 24, fontWeight: 700 }}>{totalBdxCount}</p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>All submissions</p>
         </div>
       </div>
@@ -1180,7 +1180,7 @@ const MGADashboard: React.FC = () => {
         ) : pageAgreements.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64" style={{ color: t.text4 }}>
             <FileSignature size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium">No agreements found</p>
+            <p style={{ fontSize: 15, fontWeight: 500 }}>No agreements found</p>
             <p className="text-sm">Try adjusting your filters or create a new agreement</p>
           </div>
         ) : (

@@ -163,7 +163,7 @@ const RegisterClaimModal: React.FC<RegisterClaimModalProps> = ({ isOpen, onClose
             <div className="rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 sticky top-0 z-20" style={{ borderBottom: '1px solid ' + t.border, background: t.bgPanel }}>
-                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>Register New Claim</h2>
+                    <h2 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>Register New Claim</h2>
                     <button onClick={onClose} className="p-2 rounded-lg" style={{ color: t.text4 }}>
                         <X size={20} />
                     </button>

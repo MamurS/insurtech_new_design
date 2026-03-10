@@ -121,7 +121,7 @@ const InwardReinsuranceForm: React.FC = () => {
   const selectStyle: React.CSSProperties = { ...inputStyle, cursor: 'pointer' };
   const selectErrorStyle: React.CSSProperties = { ...inputErrorStyle, cursor: 'pointer' };
   const cardStyle: React.CSSProperties = { background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 10, padding: 24, boxShadow: t.shadow };
-  const sectionTitleStyle: React.CSSProperties = { fontSize: 18, fontWeight: 700, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
+  const sectionTitleStyle: React.CSSProperties = { fontSize: 15, fontWeight: 600, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
   const textareaStyle: React.CSSProperties = { ...inputStyle, height: 'auto', resize: 'none' };
 
   // Layout-only Tailwind class helpers (no color classes — colors via style props)
@@ -583,7 +583,7 @@ const InwardReinsuranceForm: React.FC = () => {
           >
             <ArrowLeft size={20} />
           </button>
-          <h1 className="text-2xl font-bold" style={{ color: t.text1 }}>
+          <h1 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>
             {pathOrigin === 'FOREIGN' ? 'Foreign' : 'Domestic'} Inward Reinsurance
           </h1>
         </div>
@@ -593,7 +593,7 @@ const InwardReinsuranceForm: React.FC = () => {
               <FileText size={20} style={{ color: t.warning }} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold" style={{ color: t.warning }}>Database Setup Required</h3>
+              <h3 style={{ color: t.warning, fontSize: 15, fontWeight: 600 }}>Database Setup Required</h3>
               <p className="mt-1" style={{ color: t.text2 }}>
                 The Inward Reinsurance tables have not been created in the database yet.
               </p>
@@ -651,7 +651,7 @@ const InwardReinsuranceForm: React.FC = () => {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-xl font-semibold" style={{ color: t.text1 }}>
+            <h1 style={{ color: t.text1, fontSize: 24, fontWeight: 600 }}>
               {isEdit ? 'Edit' : 'New'} {pathOrigin === 'FOREIGN' ? 'Foreign' : 'Domestic'} Inward Reinsurance
             </h1>
             <p className="text-sm flex items-center gap-1.5 mt-0.5" style={{ color: t.text4 }}>

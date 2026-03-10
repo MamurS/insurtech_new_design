@@ -115,7 +115,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
                 <div className="p-4 border-b flex justify-between items-center" style={{ background: t.bgCard, borderColor: t.border }}>
-                    <h3 className="font-bold text-lg" style={{ color: t.text1 }}>{role ? 'Edit Role' : 'Create New Role'}</h3>
+                    <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{role ? 'Edit Role' : 'Create New Role'}</h3>
                     <button onClick={onClose}><X style={{ color: t.text4 }} size={20}/></button>
                 </div>
 

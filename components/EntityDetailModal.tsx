@@ -35,8 +35,8 @@ export const EntityDetailModal: React.FC<EntityDetailModalProps> = ({ entity, on
       {/* Header Info */}
       <div className="flex justify-between items-start p-6 rounded-xl" style={{ background: t.bgCard, borderWidth: 1, borderStyle: 'solid', borderColor: t.border }}>
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>{entity.fullName}</h2>
-          <p className="font-medium" style={{ color: t.text4 }}>{entity.shortName || '-'}</p>
+          <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{entity.fullName}</h2>
+          <p style={{ color: t.text4, fontWeight: 500 }}>{entity.shortName || '-'}</p>
           <div className="flex gap-2 mt-2">
             <span className="px-3 py-1 text-xs font-bold rounded-full uppercase" style={{ background: t.accent + '18', color: t.accent }}>{entity.type}</span>
             <span className="px-3 py-1 text-xs font-bold rounded-full" style={{ background: t.bgCard, color: t.text2, borderWidth: 1, borderStyle: 'solid', borderColor: t.bgHover }}>

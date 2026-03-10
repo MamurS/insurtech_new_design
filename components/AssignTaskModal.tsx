@@ -113,7 +113,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }}>
             <div className="w-full max-w-md animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadowLg }}>
                 <div className="p-5 flex justify-between items-center rounded-t-xl" style={{ background: t.bgInput, borderBottom: `1px solid ${t.border}` }}>
-                    <h3 className="font-bold text-lg" style={{ color: t.text1 }}>Create New Task</h3>
+                    <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>Create New Task</h3>
                     <button onClick={onClose} style={{ color: t.text4 }}><X size={20}/></button>
                 </div>
 

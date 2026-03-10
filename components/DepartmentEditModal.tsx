@@ -52,7 +52,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200">
             <div className="rounded-xl w-full max-w-lg overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
                 <div className="p-4 border-b flex justify-between items-center" style={{ background: t.bgCard, borderColor: t.border }}>
-                    <h3 className="font-bold text-lg flex items-center gap-2" style={{ color: t.text1 }}>
+                    <h3 className="flex items-center gap-2" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>
                         <Building2 size={20} style={{ color: t.accent }}/>
                         {department ? 'Edit Department' : 'Create Department'}
                     </h3>

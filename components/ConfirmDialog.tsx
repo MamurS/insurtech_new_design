@@ -78,7 +78,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               <Icon className="w-6 h-6" style={config.iconColorStyle} />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold mb-1" style={{ color: t.text1 }}>{title}</h3>
+              <h3 className="mb-1" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{title}</h3>
               <p className="leading-relaxed text-sm" style={{ color: t.text3 }}>{message}</p>
             </div>
           </div>

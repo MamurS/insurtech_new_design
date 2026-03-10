@@ -123,7 +123,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                             {getPriorityBadge(task.priority)}
                             {getStatusBadge(task.status)}
                         </div>
-                        <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{task.title}</h2>
+                        <h2 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{task.title}</h2>
                     </div>
                     <button onClick={onClose} style={{ color: t.text4 }}><X size={20}/></button>
                 </div>

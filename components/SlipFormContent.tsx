@@ -336,7 +336,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
           {/* Form Fields */}
           <div className="md:col-span-2 rounded-xl p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
-            <h3 className="text-lg font-bold mb-6 pb-2" style={{ color: t.text1, borderBottom: '1px solid ' + t.border }}>Slip Details</h3>
+            <h3 className="mb-6 pb-2" style={{ color: t.text1, borderBottom: '1px solid ' + t.border, fontSize: 15, fontWeight: 700 }}>Slip Details</h3>
 
             <div className="space-y-5">
               <div>

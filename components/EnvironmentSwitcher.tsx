@@ -157,7 +157,7 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
             style={{ background: t.bgPanel, boxShadow: t.shadowLg }}
           >
             <div className="p-6">
-              <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>
+              <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>
                 Switch to {envConfig[showConfirm].label}?
               </h3>
               <p className="mt-2 text-sm" style={{ color: t.text3 }}>

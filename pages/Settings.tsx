@@ -192,7 +192,7 @@ const Settings: React.FC = () => {
 
       <div className="flex justify-between items-center">
         <div>
-            <h2 className="text-3xl font-bold" style={{ color: t.text1 }}>Settings & Tools</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Settings & Tools</h2>
             <p style={{ color: t.text3 }}>Configure application preferences and manage data.</p>
         </div>
         <button

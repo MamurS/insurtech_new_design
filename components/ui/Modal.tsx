@@ -57,7 +57,7 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, title, width, size = 'md',
             justifyContent: 'space-between',
             alignItems: 'center',
           }}>
-            <span style={{ fontWeight: 700, color: t.text1, fontSize: 18 }}>{title}</span>
+            <span style={{ fontWeight: 700, color: t.text1, fontSize: 15 }}>{title}</span>
             <button
               onClick={onClose}
               style={{

@@ -67,11 +67,11 @@ export const EntityFormContent: React.FC<EntityFormContentProps> = ({ id, onSave
 
   const labelClass = "block text-sm font-medium mb-1.5";
   const inputClass = "w-full p-2.5 rounded-lg focus:ring-2 outline-none transition-all text-sm";
-  const sectionTitleClass = "text-lg font-bold mb-4 pb-2 flex items-center gap-2";
+  const sectionTitleClass = "mb-4 pb-2 flex items-center gap-2";
 
   const labelStyle = { color: t.text3 };
   const inputStyle = { background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text1, '--tw-ring-color': t.accent } as React.CSSProperties;
-  const sectionTitleStyle = { color: t.text1, borderBottom: `1px solid ${t.bgInput}` };
+  const sectionTitleStyle = { color: t.text1, borderBottom: `1px solid ${t.bgInput}`, fontSize: 15, fontWeight: 700 } as React.CSSProperties;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -89,7 +89,7 @@ export const EntityFormContent: React.FC<EntityFormContentProps> = ({ id, onSave
           {/* Identity Section */}
           <div className="rounded-xl p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
               <div className="flex justify-between items-start mb-4 pb-2" style={{ borderBottom: `1px solid ${t.bgInput}` }}>
-                  <h3 className="text-lg font-bold flex items-center gap-2" style={{ color: t.text1 }}><Building2 size={18} style={{ color: t.accent }}/> Corporate Identity</h3>
+                  <h3 className="flex items-center gap-2" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}><Building2 size={18} style={{ color: t.accent }}/> Corporate Identity</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -521,7 +521,7 @@ const PolicyForm: React.FC = () => {
 
   if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const sectionTitleStyle: React.CSSProperties = { fontSize: 18, fontWeight: 700, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
+  const sectionTitleStyle: React.CSSProperties = { fontSize: 15, fontWeight: 600, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
   const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' };
   const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' };
   const selectStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' };
@@ -546,7 +546,7 @@ const PolicyForm: React.FC = () => {
                     <ArrowLeft size={24} />
                 </button>
                 <div>
-                    <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{isEdit ? 'Edit Policy' : 'New Policy Record'}</h2>
+                    <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{isEdit ? 'Edit Policy' : 'New Policy Record'}</h2>
                     <p className="text-xs flex items-center gap-1" style={{ color: t.text4 }}>
                        Ref: {formData.policyNumber} 
                        <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase" style={{ background: formData.status === PolicyStatus.ACTIVE ? t.successBg : t.warningBg, color: formData.status === PolicyStatus.ACTIVE ? t.success : t.warning }}>
@@ -997,7 +997,7 @@ const PolicyForm: React.FC = () => {
                 {/* 8. OUTWARD REINSURANCE (MULTI-ROW) */}
                 <div className="p-6" style={{ ...cardStyle, borderLeft: `4px solid ${t.warning}` }}>
                      <div className="flex justify-between items-center mb-4 pb-2" style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                         <h3 className="text-lg font-bold flex items-center gap-2" style={{ color: t.text1 }}>
+                         <h3 className="flex items-center gap-2" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>
                              <ArrowRightLeft size={18} style={{ color: t.warning }}/> Outward Reinsurance
                          </h3>
                          <div className="flex items-center gap-2">
@@ -1134,8 +1134,9 @@ const PolicyForm: React.FC = () => {
                         border: `1px solid ${formData.status === PolicyStatus.ACTIVE ? t.success : formData.status === PolicyStatus.NTU ? t.danger : t.warning}`,
                         boxShadow: t.shadow
                     }}>
-                        <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{
-                            color: formData.status === PolicyStatus.ACTIVE ? t.success : formData.status === PolicyStatus.NTU ? t.danger : t.warning
+                        <h3 className="mb-4 flex items-center gap-2" style={{
+                            color: formData.status === PolicyStatus.ACTIVE ? t.success : formData.status === PolicyStatus.NTU ? t.danger : t.warning,
+                            fontSize: 15, fontWeight: 700
                         }}>
                             {formData.status === PolicyStatus.ACTIVE ? <CheckCircle size={20}/> :
                             formData.status === PolicyStatus.NTU ? <XCircle size={20}/> :
@@ -1197,7 +1198,7 @@ const PolicyForm: React.FC = () => {
 
                 {/* Key Dates Summary (New) */}
                 <div className="rounded-xl p-6" style={{ background: t.accentMuted, border: `1px solid ${t.accent}`, boxShadow: t.shadow }}>
-                    <h3 className="text-lg font-bold mb-4 pb-2 flex items-center gap-2" style={{ color: t.accent, borderBottom: `1px solid ${t.accent}` }}>
+                    <h3 className="mb-4 pb-2 flex items-center gap-2" style={{ color: t.accent, borderBottom: `1px solid ${t.accent}`, fontSize: 15, fontWeight: 700 }}>
                         <Calendar size={18}/> Key Dates Summary
                     </h3>
                     <div className="space-y-3 text-sm">

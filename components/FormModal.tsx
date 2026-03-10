@@ -50,7 +50,7 @@ export const FormModal: React.FC<FormModalProps> = ({
         {/* Header */}
         <div className="sticky top-0 z-10 rounded-t-2xl border-b px-6 py-4 flex items-center justify-between" style={{ background: t.bgPanel, borderColor: t.border }}>
           <div>
-            <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{title}</h2>
+            <h2 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{title}</h2>
             {subtitle && <p className="text-sm mt-0.5" style={{ color: t.text4 }}>{subtitle}</p>}
           </div>
           <button

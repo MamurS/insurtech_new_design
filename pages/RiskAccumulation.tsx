@@ -327,7 +327,7 @@ const RiskAccumulation: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load data</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Failed to load data</h3>
           <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
           <button onClick={fetchData} className="mt-4 px-4 py-2 text-white rounded-lg"
             style={{ background: t.accent }}>
@@ -346,24 +346,24 @@ const RiskAccumulation: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
           <p className="text-sm font-medium" style={{ color: t.text3 }}>Total Exposure</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : formatCurrency(totalExposure)}</p>
+          <p className="mt-1" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{loading ? '-' : formatCurrency(totalExposure)}</p>
           <p className="text-xs mt-1" style={{ color: t.text4 }}>{rows.length} active policies</p>
         </div>
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
           <p className="text-sm font-medium" style={{ color: t.text3 }}>Largest Single Risk</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : formatCurrency(largestSingleRisk)}</p>
+          <p className="mt-1" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{loading ? '-' : formatCurrency(largestSingleRisk)}</p>
           <p className="text-xs mt-1" style={{ color: t.text4 }}>
             {totalExposure > 0 ? formatPercent((largestSingleRisk / totalExposure) * 100) : '0%'} of total
           </p>
         </div>
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
           <p className="text-sm font-medium" style={{ color: t.text3 }}>Territory Count</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : distinctTerritories}</p>
+          <p className="mt-1" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{loading ? '-' : distinctTerritories}</p>
           <p className="text-xs mt-1" style={{ color: t.text4 }}>Distinct territories</p>
         </div>
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
           <p className="text-sm font-medium" style={{ color: t.text3 }}>Class Count</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{loading ? '-' : distinctClasses}</p>
+          <p className="mt-1" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{loading ? '-' : distinctClasses}</p>
           <p className="text-xs mt-1" style={{ color: t.text4 }}>Distinct classes</p>
         </div>
       </div>

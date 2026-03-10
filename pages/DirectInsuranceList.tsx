@@ -404,7 +404,7 @@ const DirectInsuranceList: React.FC = () => {
         ) : policies.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 256, color: t.text4 }}>
             <FileText size={48} style={{ marginBottom: 16, opacity: 0.5 }} />
-            <p style={{ fontSize: 16, fontWeight: 500 }}>No policies found</p>
+            <p style={{ fontSize: 13, fontWeight: 500 }}>No policies found</p>
             <p style={{ fontSize: 13 }}>Create your first direct insurance policy</p>
             <button
               onClick={handleNewPolicy}

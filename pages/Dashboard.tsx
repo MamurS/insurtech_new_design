@@ -650,12 +650,12 @@ const Dashboard: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: t.accentMuted, border: `1px solid ${t.accent}33`, borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 11, color: t.accent, fontWeight: 500 }}>Sum Insured</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: t.accent }}>{formatCompact(totalSumInsured)}</span>
-          <span style={{ fontSize: 10, color: t.text4, fontWeight: 500 }}>USD</span>
+          <span style={{ fontSize: 11, color: t.text4, fontWeight: 500 }}>USD</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: t.successBg, border: `1px solid ${t.success}33`, borderRadius: 8, padding: '4px 12px' }}>
           <span style={{ fontSize: 11, color: t.success, fontWeight: 500 }}>GWP</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: t.success }}>{formatCompact(totalGWP)}</span>
-          <span style={{ fontSize: 10, color: t.text4, fontWeight: 500 }}>USD</span>
+          <span style={{ fontSize: 11, color: t.text4, fontWeight: 500 }}>USD</span>
         </div>
       </>
     );
@@ -689,7 +689,7 @@ const Dashboard: React.FC = () => {
   };
 
   const SourceBadge = ({ source }: { source: PortfolioSource }) => {
-      const pill: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20 };
+      const pill: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20 };
       switch (source) {
         case 'direct':
           return (
@@ -710,7 +710,7 @@ const Dashboard: React.FC = () => {
             </span>
           );
         default:
-          return <span style={{ fontSize: 10, color: t.text4 }}>{source}</span>;
+          return <span style={{ fontSize: 11, color: t.text4 }}>{source}</span>;
       }
   };
 
@@ -904,7 +904,7 @@ const Dashboard: React.FC = () => {
                         >
                                     <td className="px-2 py-3 text-center overflow-hidden">
                                         <span style={{
-                                          display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 20,
+                                          display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20,
                                           ...(row.normalizedStatus === 'Active' ? { color: t.success, background: t.successBg } :
                                               row.normalizedStatus === 'Expired' ? { color: t.warning, background: t.warningBg } :
                                               row.normalizedStatus === 'Pending' ? { color: t.warning, background: t.warningBg } :
@@ -929,7 +929,7 @@ const Dashboard: React.FC = () => {
                                                 >
                                                     {row.cedantName}
                                                 </span>
-                                                <span style={{ fontSize: 10, color: t.text4, display: 'flex', gap: 4 }} className="truncate">
+                                                <span style={{ fontSize: 11, color: t.text4, display: 'flex', gap: 4 }} className="truncate">
                                                     Orig:
                                                     <span
                                                         style={{ cursor: 'pointer' }}

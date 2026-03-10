@@ -33,10 +33,10 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
               <Clock className="w-6 h-6" style={{ color: t.warning }} />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold mb-1" style={{ color: t.text1 }}>Session Expiring</h3>
+              <h3 className="mb-1" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>Session Expiring</h3>
               <p className="leading-relaxed text-sm" style={{ color: t.text3 }}>
                 Your session will expire in{' '}
-                <span className="font-semibold" style={{ color: t.warning }}>{timeDisplay}</span>{' '}
+                <span style={{ color: t.warning, fontWeight: 600 }}>{timeDisplay}</span>{' '}
                 due to inactivity. Click Continue to stay logged in.
               </p>
             </div>

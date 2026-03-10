@@ -97,7 +97,7 @@ const Login: React.FC = () => {
     background: t.bgInput,
     border: `1px solid ${t.border}`,
     color: t.text1,
-    fontSize: 14,
+    fontSize: 13,
     outline: 'none',
     fontFamily: 'inherit',
     boxSizing: 'border-box',
@@ -110,7 +110,7 @@ const Login: React.FC = () => {
     borderRadius: 10,
     background: t.accent,
     color: '#fff',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 600,
     border: 'none',
     cursor: 'pointer',
@@ -151,7 +151,7 @@ const Login: React.FC = () => {
               fontWeight: 700, fontSize: 18, color: '#fff',
               margin: '0 auto 16px',
             }}>M</div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: t.text1 }}>Reset Password</h2>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: t.text1 }}>Reset Password</h2>
           </div>
           <form onSubmit={handlePasswordReset} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div style={{ position: 'relative' }}>
@@ -294,7 +294,7 @@ const Login: React.FC = () => {
 
           {/* Form Header */}
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: t.text1, letterSpacing: '-0.3px' }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, color: t.text1, letterSpacing: '-0.3px' }}>
               Insurance Management System
             </h2>
             <p style={{ color: t.text3, marginTop: 8, fontSize: 13 }}>Sign in to continue</p>

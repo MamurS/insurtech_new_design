@@ -726,7 +726,7 @@ const AdminConsole: React.FC = () => {
   const renderDashboardHome = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>System Overview</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>System Overview</h2>
             <button onClick={loadAllData} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/> Refresh</button>
         </div>
 
@@ -746,8 +746,8 @@ const AdminConsole: React.FC = () => {
                     <stat.icon size={20} style={{ color: stat.fg }} />
                   </div>
                   <div>
-                    <div className="text-xs font-medium" style={{ color: t.text3 }}>{stat.label}</div>
-                    <div className="text-2xl font-bold" style={{ color: stat.textRed ? t.danger : t.text1 }}>{stat.value}</div>
+                    <div style={{ color: t.text3, fontSize: 12, fontWeight: 500 }}>{stat.label}</div>
+                    <div style={{ color: stat.textRed ? t.danger : t.text1, fontSize: 24, fontWeight: 700 }}>{stat.value}</div>
                   </div>
                 </div>
               </div>
@@ -760,7 +760,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Total Premium</p>
-                        <p className="text-3xl font-bold mt-1">${totalPremium.toLocaleString()}</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>${totalPremium.toLocaleString()}</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{rawPolicies.length} policies</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><DollarSign size={28}/></div>
@@ -770,7 +770,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Claims Paid</p>
-                        <p className="text-3xl font-bold mt-1">${totalClaimsPaid.toLocaleString()}</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>${totalClaimsPaid.toLocaleString()}</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{claims.length} claims</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><TrendingDown size={28}/></div>
@@ -780,7 +780,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Loss Ratio</p>
-                        <p className="text-3xl font-bold mt-1">{lossRatio.toFixed(1)}%</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>{lossRatio.toFixed(1)}%</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{lossRatio > 70 ? 'Above target' : 'Within target'}</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><PieChart size={28}/></div>
@@ -791,7 +791,7 @@ const AdminConsole: React.FC = () => {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
-                <h3 className="text-lg font-semibold mb-4" style={{ color: t.text1 }}>Policy Status</h3>
+                <h3 className="mb-4" style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Policy Status</h3>
                 <div className="flex items-center justify-center gap-8">
                     <div className="relative w-40 h-40">
                         <svg viewBox="0 0 36 36" className="w-40 h-40 transform -rotate-90">
@@ -800,7 +800,7 @@ const AdminConsole: React.FC = () => {
                             <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#eab308" strokeWidth="3" strokeDasharray={`${(pendingPolicies/Math.max(stats.totalPolicies,1))*100} 100`} strokeDashoffset={`-${(activePolicies/Math.max(stats.totalPolicies,1))*100}`}/>
                             <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray={`${(expiredPolicies/Math.max(stats.totalPolicies,1))*100} 100`} strokeDashoffset={`-${((activePolicies+pendingPolicies)/Math.max(stats.totalPolicies,1))*100}`}/>
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center"><span className="text-2xl font-bold">{stats.totalPolicies}</span></div>
+                        <div className="absolute inset-0 flex items-center justify-center"><span style={{ fontSize: 24, fontWeight: 700 }}>{stats.totalPolicies}</span></div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full" style={{ background: t.success }}></div><span className="text-sm">Active ({activePolicies})</span></div>
@@ -810,7 +810,7 @@ const AdminConsole: React.FC = () => {
                 </div>
             </div>
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
-                <h3 className="text-lg font-semibold mb-4" style={{ color: t.text1 }}>Slip Status</h3>
+                <h3 className="mb-4" style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Slip Status</h3>
                 <div className="space-y-3">
                     {['DRAFT','PENDING','QUOTED','BOUND','CLOSED','DECLINED'].map(status => {
                         const count = rawSlips.filter(s => s.status === status).length;
@@ -834,7 +834,7 @@ const AdminConsole: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Recent Activity</h3>
+                    <h3 style={{ fontSize: 15, fontWeight: 600 }}>Recent Activity</h3>
                     <button onClick={() => setActiveSection('activity-log')} className="text-sm" style={{ color: t.accent }}>View All →</button>
                 </div>
                 <div className="space-y-3">
@@ -855,7 +855,7 @@ const AdminConsole: React.FC = () => {
             </div>
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Pending Tasks</h3>
+                    <h3 style={{ fontSize: 15, fontWeight: 600 }}>Pending Tasks</h3>
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: t.warningBg, color: t.warning }}>{tasks.filter(t=>t.status==='PENDING').length} pending</span>
                 </div>
                 <div className="space-y-3">
@@ -882,7 +882,7 @@ const AdminConsole: React.FC = () => {
   const renderActivityLog = () => (
     <div className="space-y-4 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
-            <div><h2 className="text-xl font-bold" style={{ color: t.text1 }}>Activity Log</h2><p className="text-sm" style={{ color: t.text3 }}>Track all system activities</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Activity Log</h2><p className="text-sm" style={{ color: t.text3 }}>Track all system activities</p></div>
             <button onClick={fetchActivityLogs} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/>Refresh</button>
         </div>
         <div className="p-4 rounded-xl border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -950,7 +950,7 @@ const AdminConsole: React.FC = () => {
   const renderDepartments = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Departments</h2><p className="text-sm" style={{ color: t.text3 }}>Manage organization structure.</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Departments</h2><p className="text-sm" style={{ color: t.text3 }}>Manage organization structure.</p></div>
             <button onClick={()=>handleEditDepartment()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add Department</button>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -978,7 +978,7 @@ const AdminConsole: React.FC = () => {
   const renderRoles = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>RBAC Roles</h2><p className="text-sm" style={{ color: t.text3 }}>Manage roles and permissions.</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>RBAC Roles</h2><p className="text-sm" style={{ color: t.text3 }}>Manage roles and permissions.</p></div>
             <button onClick={()=>handleEditRole()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add Role</button>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -1015,7 +1015,7 @@ const AdminConsole: React.FC = () => {
     return (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>User Management</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>User Management</h2>
             <button onClick={()=>handleEditUser()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add User</button>
         </div>
         <div className="rounded-xl border overflow-hidden min-h-[300px]" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -1071,7 +1071,7 @@ const AdminConsole: React.FC = () => {
         {showUserModal && (
             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                 <div className="rounded-xl w-full max-w-lg" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
-                    <div className="p-6 border-b flex justify-between items-center"><h3 className="font-bold text-xl" style={{ color: t.text1 }}>{currentUser.id?'Edit User':'Create User'}</h3><button onClick={()=>setShowUserModal(false)} style={{ color: t.text4 }}><X size={24}/></button></div>
+                    <div className="p-6 border-b flex justify-between items-center"><h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{currentUser.id?'Edit User':'Create User'}</h3><button onClick={()=>setShowUserModal(false)} style={{ color: t.text4 }}><X size={24}/></button></div>
                     <div className="p-6 space-y-4">
                         <div><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Full Name *</label><input className="w-full p-2.5 border rounded-lg" value={currentUser.fullName||''} onChange={e=>setCurrentUser({...currentUser,fullName:e.target.value})}/></div>
                         <div><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Email *</label><input type="email" className="w-full p-2.5 border rounded-lg" value={currentUser.email||''} onChange={e=>setCurrentUser({...currentUser,email:e.target.value})} disabled={!!currentUser.id}/></div>
@@ -1126,7 +1126,7 @@ const AdminConsole: React.FC = () => {
   const renderDatabaseBrowser = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Database Browser</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Database Browser</h2>
             <div className="flex rounded-lg p-1 border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>{(['policies','slips','clauses'] as const).map(type=><button key={type} onClick={()=>setDbViewType(type)} className={`px-4 py-2 text-sm font-bold capitalize rounded-md transition-colors ${dbViewType===type?' ':' hover:'}`} style={{ color: t.accent, background: `${t.accent}20` }}>{type}</button>)}</div>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -1147,7 +1147,7 @@ const AdminConsole: React.FC = () => {
   const renderRecycleBin = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Recycle Bin</h2><p className="text-sm" style={{ color: t.text3 }}>Recover or purge deleted items.</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Recycle Bin</h2><p className="text-sm" style={{ color: t.text3 }}>Recover or purge deleted items.</p></div>
             <div className="flex rounded-lg p-1 border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>{(['policies','slips','clauses'] as const).map(type=><button key={type} onClick={()=>setRecycleType(type)} className={`px-4 py-2 text-sm font-bold capitalize rounded-md transition-colors ${recycleType===type?' ':' hover:'}`} style={{ color: t.danger, background: t.dangerBg }}>{type}</button>)}</div>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -1167,7 +1167,7 @@ const AdminConsole: React.FC = () => {
   const renderTemplates = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Policy Templates</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Policy Templates</h2>
             <button onClick={()=>handleEditTemplate()} className="px-4 py-2 rounded-lg font-bold flex items-center gap-2" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/>New</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1204,7 +1204,7 @@ const AdminConsole: React.FC = () => {
       <div className="space-y-6 animate-in fade-in duration-300">
         {/* Header */}
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: t.text1 }}>
+          <h2 className="flex items-center gap-2" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>
             <Globe style={{ color: t.accent }} size={28} />
             Exchange Rates
           </h2>
@@ -1343,7 +1343,7 @@ const AdminConsole: React.FC = () => {
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-2xl">{getCurrencyFlag(rate.code)}</span>
+                          <span style={{ fontSize: 24 }}>{getCurrencyFlag(rate.code)}</span>
                           <span className="font-medium" style={{ color: t.text1 }}>{rate.name}</span>
                         </div>
                       </td>
@@ -1356,7 +1356,7 @@ const AdminConsole: React.FC = () => {
                         {rate.nominal}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-lg" style={{ color: t.text1 }}>
+                        <span style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>
                           {rate.rawRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
@@ -1416,7 +1416,7 @@ const AdminConsole: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Inward Reinsurance Presets</h2>
+          <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Inward Reinsurance Presets</h2>
           <p className="text-sm mt-1" style={{ color: t.text3 }}>Manage dropdown options for Type of Cover, Class of Cover, and Industry</p>
         </div>
         <button onClick={fetchPresets} className="p-2 rounded-lg" style={{ color: t.text3 }} title="Refresh">
@@ -1624,14 +1624,14 @@ const AdminConsole: React.FC = () => {
   const renderSettings = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Settings</h2>
+        <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Settings</h2>
       </div>
 
       {/* Session Timeout Section */}
       <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, borderColor: t.border }}>
         <div className="flex items-center gap-3 mb-4">
           <Timer size={22} style={{ color: t.accent }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Session Timeout</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Session Timeout</h3>
         </div>
         <p className="text-sm mb-4" style={{ color: t.text3 }}>
           Auto-logout after inactivity. This setting applies globally to all users. Users will see a warning 2 minutes before being logged out.
@@ -1669,7 +1669,7 @@ const AdminConsole: React.FC = () => {
       <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, borderColor: t.border }}>
         <div className="flex items-center gap-3 mb-4">
           <DollarSign size={22} style={{ color: t.accent }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Operating Expenses (Annual)</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Operating Expenses (Annual)</h3>
         </div>
         <p className="text-sm mb-4" style={{ color: t.text3 }}>
           Enter total annual operating expenses (salaries, rent, IT, etc.)
@@ -1715,7 +1715,7 @@ const AdminConsole: React.FC = () => {
   return (
     <div className="min-h-screen flex" style={{ background: t.bgCard }}>
       <aside className={`w-64 flex-shrink-0 flex flex-col transition-all duration-300 ${isSidebarOpen?'':'-ml-64'}`} style={{ background: t.bgSidebar, color: '#fff' }}>
-        <div className="p-6 border-b" style={{ borderColor: t.border }}><h1 className="font-bold text-xl flex items-center gap-2"><Lock style={{ color: t.danger }}/>Admin Console</h1></div>
+        <div className="p-6 border-b" style={{ borderColor: t.border }}><h1 className="flex items-center gap-2" style={{ fontSize: 15, fontWeight: 700 }}><Lock style={{ color: t.danger }}/>Admin Console</h1></div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           <button onClick={()=>setActiveSection('dashboard')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='dashboard' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='dashboard') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='dashboard') e.currentTarget.style.background = ''; }}><Activity size={20}/>Dashboard</button>
           <div className="pt-4 pb-2 px-4 text-xs font-bold uppercase" style={{ color: t.text3 }}>Access Control</div>
