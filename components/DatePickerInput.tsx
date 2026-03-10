@@ -3,6 +3,7 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import { getStoredDateFormat } from '../utils/dateUtils';
 import { Calendar } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 interface DatePickerInputProps {
     value: Date | null;
@@ -31,6 +32,12 @@ const getPickerFormat = (): string => {
     return formatMap[appFormat] || 'dd.MM.yyyy';
 };
 
+const ThemedDateInput = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement> & { themeStyles: React.CSSProperties; extraClass: string }>(
+    ({ themeStyles, extraClass, ...props }, ref) => (
+        <input ref={ref} {...props} className={`${props.className || ''} ${extraClass}`} style={themeStyles} />
+    )
+);
+
 export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     value,
     onChange,
@@ -43,6 +50,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
     label,
     wrapperClassName = ''
 }) => {
+    const { t } = useTheme();
     const format = getPickerFormat();
 
     React.useEffect(() => {
@@ -53,16 +61,27 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
         }
     }, []);
 
+    const inputStyles: React.CSSProperties = {
+        background: disabled ? t.bgCard : t.bgPanel,
+        border: `1px solid ${t.border}`,
+        color: t.text1,
+    };
+
     return (
         <div className={`${wrapperClassName || 'w-full'} flex-shrink-0`}>
-            {label && <label className="block text-sm font-medium text-gray-600 mb-1.5">{label} {required && <span className="text-red-500">*</span>}</label>}
+            {label && <label className="block text-sm font-medium mb-1.5" style={{ color: t.text3 }}>{label} {required && <span style={{ color: t.danger }}>*</span>}</label>}
             <div className="relative flex-shrink-0">
                 <DatePicker
                     selected={value}
                     onChange={onChange}
                     dateFormat={format}
                     placeholderText={placeholder || format.toLowerCase()}
-                    className={`${!wrapperClassName ? 'w-full' : ''} p-2.5 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm text-gray-900 ${className} ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                    customInput={
+                        <ThemedDateInput
+                            themeStyles={inputStyles}
+                            extraClass={`${!wrapperClassName ? 'w-full' : ''} p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-sm ${className} ${disabled ? 'cursor-not-allowed' : ''}`}
+                        />
+                    }
                     minDate={minDate}
                     maxDate={maxDate}
                     disabled={disabled}
@@ -76,7 +95,7 @@ export const DatePickerInput: React.FC<DatePickerInputProps> = ({
                     popperProps={{ strategy: 'fixed' }}
                     portalId="datepicker-portal"
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
                     <Calendar size={16} />
                 </div>
             </div>

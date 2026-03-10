@@ -186,7 +186,7 @@ const ClaimDetail: React.FC = () => {
              <ArrowLeft size={20}/>
            </button>
            <div>
-               <h2 className="text-2xl font-bold flex items-center gap-3" style={{ color: t.text1 }}>
+               <h2 className="flex items-center gap-3" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>
                    {claim.claimNumber}
                    <span className="px-2 py-1 text-sm rounded-full" style={getStatusBadgeStyle(claim.status, claim.liabilityType)}>
                        {claim.status === 'OPEN' ? (claim.liabilityType === 'ACTIVE' ? 'ACTIVE' : 'INFO') : claim.status}
@@ -289,7 +289,7 @@ const ClaimDetail: React.FC = () => {
                     <div className="p-6 rounded-xl" style={{ backgroundColor: t.warningBg, border: `1px solid ${t.warning}`, color: t.warning }}>
                         <h3 className="font-bold mb-2">Informational Only</h3>
                         <p className="text-sm mb-2">This claim is tracked for record-keeping. Financials are imported in bulk.</p>
-                        <div className="font-mono text-xl font-bold">{formatMoney(claim.importedTotalIncurred || 0)} {policy.currency}</div>
+                        <div className="font-mono" style={{ fontSize: 15, fontWeight: 700 }}>{formatMoney(claim.importedTotalIncurred || 0)} {policy.currency}</div>
                         <div className="text-xs" style={{ opacity: 0.75 }}>Imported Incurred Estimate</div>
                     </div>
                 )}
@@ -317,15 +317,15 @@ const ClaimDetail: React.FC = () => {
                        <div className="grid grid-cols-3 p-4 text-center" style={{ backgroundColor: t.accentMuted, borderBottom: `1px solid ${t.border}` }}>
                            <div>
                                <div className="text-xs uppercase font-bold" style={{ color: t.accent }}>Incurred (Our Share)</div>
-                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(totalIncurredOurShare)} {policy.currency}</div>
+                               <div style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{formatMoney(totalIncurredOurShare)} {policy.currency}</div>
                            </div>
                            <div>
                                <div className="text-xs uppercase font-bold" style={{ color: t.success }}>Paid (Our Share)</div>
-                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(totalPaidOurShare)} {policy.currency}</div>
+                               <div style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{formatMoney(totalPaidOurShare)} {policy.currency}</div>
                            </div>
                            <div>
                                <div className="text-xs uppercase font-bold" style={{ color: t.danger }}>Outstanding (Our Share)</div>
-                               <div className="text-xl font-bold" style={{ color: t.text1 }}>{formatMoney(outstandingOurShare)} {policy.currency}</div>
+                               <div style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{formatMoney(outstandingOurShare)} {policy.currency}</div>
                            </div>
                        </div>
                    )}
@@ -376,7 +376,7 @@ const ClaimDetail: React.FC = () => {
        {showTransModal && (
            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                <div className="rounded-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200" style={{ backgroundColor: t.bgPanel, boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
-                   <h3 className="font-bold text-lg mb-4" style={{ color: t.text1 }}>Add Financial Transaction</h3>
+                   <h3 className="mb-4" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>Add Financial Transaction</h3>
                    <div className="space-y-4">
                        <div>
                            <label className="block text-sm font-bold mb-1" style={{ color: t.text1 }}>Type</label>

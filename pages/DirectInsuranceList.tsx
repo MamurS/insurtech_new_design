@@ -4,9 +4,6 @@ import { DB } from '../services/db';
 import { Policy, PolicyStatus } from '../types';
 import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { FormModal } from '../components/FormModal';
-import { DirectInsuranceFormContent } from '../components/DirectInsuranceFormContent';
-import { NewRequestForm } from '../components/NewRequestForm';
 import { formatDate } from '../utils/dateUtils';
 import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
@@ -75,8 +72,6 @@ const DirectInsuranceList: React.FC = () => {
   }, [openMenuId]);
 
   // Modal states
-  const [showFormModal, setShowFormModal] = useState(false);
-  const [editingPolicyId, setEditingPolicyId] = useState<string | undefined>(undefined);
   const [deleteConfirm, setDeleteConfirm] = useState<{ show: boolean; id: string; number: string }>({
     show: false, id: '', number: ''
   });
@@ -196,15 +191,11 @@ const DirectInsuranceList: React.FC = () => {
   };
 
   const handleEditPolicy = (id: string) => {
-    setEditingPolicyId(id);
-    setShowFormModal(true);
-    setSelectedPolicy(null);
+    navigate(`/edit/${id}`);
   };
 
   const handleViewPolicy = (id: string) => {
-    setEditingPolicyId(id);
-    setShowFormModal(true);
-    setSelectedPolicy(null);
+    navigate(`/edit/${id}`);
   };
 
   const handleRowClick = (policy: any) => {
@@ -229,18 +220,6 @@ const DirectInsuranceList: React.FC = () => {
     }
   };
 
-  const handleFormSave = () => {
-    setShowFormModal(false);
-    setEditingPolicyId(undefined);
-    fetchData();
-    loadStats();
-    toast.success(editingPolicyId ? 'Policy updated' : 'Policy created');
-  };
-
-  const handleFormCancel = () => {
-    setShowFormModal(false);
-    setEditingPolicyId(undefined);
-  };
 
   const getStatusBadge = (status: PolicyStatus | string) => {
     const colorMap: Record<string, { color: string; bg: string }> = {
@@ -425,7 +404,7 @@ const DirectInsuranceList: React.FC = () => {
         ) : policies.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 256, color: t.text4 }}>
             <FileText size={48} style={{ marginBottom: 16, opacity: 0.5 }} />
-            <p style={{ fontSize: 16, fontWeight: 500 }}>No policies found</p>
+            <p style={{ fontSize: 13, fontWeight: 500 }}>No policies found</p>
             <p style={{ fontSize: 13 }}>Create your first direct insurance policy</p>
             <button
               onClick={handleNewPolicy}
@@ -522,33 +501,13 @@ const DirectInsuranceList: React.FC = () => {
         )}
       </div>
 
-      {/* Form Modal (for editing) */}
-      <FormModal
-        isOpen={showFormModal}
-        onClose={handleFormCancel}
-        title={editingPolicyId ? 'Edit Policy' : 'New Request'}
-        subtitle={editingPolicyId ? undefined : 'Direct Insurance'}
-      >
-        {editingPolicyId ? (
-          <DirectInsuranceFormContent
-            id={editingPolicyId}
-            onSave={handleFormSave}
-            onCancel={handleFormCancel}
-          />
-        ) : (
-          <NewRequestForm
-            onSave={handleFormSave}
-            onCancel={handleFormCancel}
-          />
-        )}
-      </FormModal>
 
       {/* Delete Confirmation */}
       <ConfirmDialog
         isOpen={deleteConfirm.show}
         title="Delete Policy"
         message={`Are you sure you want to delete policy "${deleteConfirm.number}"? This action cannot be undone.`}
-        confirmLabel="Delete"
+        confirmText="Delete"
         onConfirm={handleDeletePolicy}
         onCancel={() => setDeleteConfirm({ show: false, id: '', number: '' })}
         variant="danger"

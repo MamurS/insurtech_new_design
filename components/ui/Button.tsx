@@ -19,9 +19,9 @@ const Button: React.FC<ButtonProps> = ({
   const t = useThemeTokens();
 
   const sizes = {
-    sm: { padding: '6px 12px', fontSize: 12 },
+    sm: { padding: '6px 12px', fontSize: 11 },
     md: { padding: '10px 18px', fontSize: 13 },
-    lg: { padding: '12px 24px', fontSize: 14 },
+    lg: { padding: '12px 24px', fontSize: 13 },
   };
 
   const variants: Record<string, React.CSSProperties> = {

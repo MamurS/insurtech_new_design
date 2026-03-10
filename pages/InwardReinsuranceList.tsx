@@ -463,7 +463,7 @@ const InwardReinsuranceList: React.FC = () => {
               <FileSpreadsheet size={20} style={{ color: t.warning }} />
             </div>
             <div>
-              <h3 className="text-lg font-semibold" style={{ color: t.warning }}>{`Database Setup Required`}</h3>
+              <h3 style={{ color: t.warning, fontSize: 15, fontWeight: 600 }}>{`Database Setup Required`}</h3>
               <p className="mt-1" style={{ color: t.warning }}>
                 The Inward Reinsurance tables have not been created in the database yet.
               </p>

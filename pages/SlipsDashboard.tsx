@@ -5,8 +5,6 @@ import { ReinsuranceSlip, PolicyStatus } from '../types';
 import { exportToExcel } from '../services/excelExport';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailModal } from '../components/DetailModal';
-import { FormModal } from '../components/FormModal';
-import { SlipFormContent } from '../components/SlipFormContent';
 import { formatDate } from '../utils/dateUtils';
 import { toISODateString } from '../components/DatePickerInput';
 import { CompactDateFilter } from '../components/CompactDateFilter';
@@ -94,8 +92,6 @@ const SlipsDashboard: React.FC = () => {
   });
 
   // Modal State
-  const [showSlipModal, setShowSlipModal] = useState(false);
-  const [editingSlipId, setEditingSlipId] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -137,8 +133,7 @@ const SlipsDashboard: React.FC = () => {
   const handleEdit = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    setEditingSlipId(id);
-    setShowSlipModal(true);
+    navigate(`/slips/edit/${id}`);
   };
 
   const handleWording = (e: React.MouseEvent, id: string) => {
@@ -415,7 +410,7 @@ const SlipsDashboard: React.FC = () => {
           {/* New Slip Button */}
           <button
             type="button"
-            onClick={() => { setEditingSlipId(null); setShowSlipModal(true); }}
+            onClick={() => navigate('/slips/new')}
             className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
             style={{ background: t.accent, color: '#fff' }}
           >
@@ -527,7 +522,7 @@ const SlipsDashboard: React.FC = () => {
               <Eye size={14} /> View Full Detail
             </button>
             <button
-              onClick={() => { setEditingSlipId(selectedSlipForPanel.id); setShowSlipModal(true); }}
+              onClick={() => navigate(`/slips/edit/${selectedSlipForPanel.id}`)}
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
               style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
             >
@@ -572,19 +567,6 @@ const SlipsDashboard: React.FC = () => {
           />
       )}
 
-      {/* Slip Form Modal */}
-      <FormModal
-        isOpen={showSlipModal}
-        onClose={() => { setShowSlipModal(false); setEditingSlipId(null); }}
-        title={editingSlipId ? 'Edit Reinsurance Slip' : 'New Reinsurance Slip'}
-        subtitle={editingSlipId ? 'Editing slip details' : 'Create a new outward reinsurance slip'}
-      >
-        <SlipFormContent
-          id={editingSlipId || undefined}
-          onSave={() => { setShowSlipModal(false); setEditingSlipId(null); fetchData(); }}
-          onCancel={() => { setShowSlipModal(false); setEditingSlipId(null); }}
-        />
-      </FormModal>
     </div>
   );
 };

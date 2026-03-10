@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PortfolioRow, Policy, InwardReinsurance, PolicyStatus } from '../types';
 import { formatDate } from '../utils/dateUtils';
+import { useTheme } from '../theme/useTheme';
 import {
   X, Building2, Calendar, DollarSign, FileText, Layers,
   CheckCircle, AlertCircle, XCircle, AlertTriangle, Upload,
@@ -47,36 +48,11 @@ const pct = (v: number | undefined): string => {
 // Normalize cededShare: values <= 1 are decimals (0.95 = 95%), values > 1 are already percentages
 const normalizeCededShare = (v: number): number => v <= 1 ? v * 100 : v;
 
-const sourceColor: Record<string, string> = {
-  direct: 'bg-blue-100 text-blue-700',
-  'inward-foreign': 'bg-purple-100 text-purple-700',
-  'inward-domestic': 'bg-emerald-100 text-emerald-700',
-};
-
 const sourceLabel: Record<string, string> = {
   direct: 'Direct Insurance',
   'inward-foreign': 'Inward Reinsurance — Foreign',
   'inward-domestic': 'Inward Reinsurance — Domestic',
 };
-
-const statusBadge = (status: string, isDeleted?: boolean) => {
-  if (isDeleted) return 'bg-red-600 text-white';
-  const s = status?.toUpperCase() || '';
-  if (s.includes('ACTIVE') || s === 'BOUND' || s === 'SIGNED') return 'bg-emerald-100 text-emerald-700';
-  if (s.includes('PENDING') || s === 'DRAFT' || s === 'QUOTED') return 'bg-amber-100 text-amber-700';
-  if (s.includes('CANCEL') || s === 'NTU' || s === 'DECLINED') return 'bg-red-100 text-red-700';
-  if (s.includes('EXPIRED') || s === 'CLOSED') return 'bg-slate-100 text-slate-600';
-  return 'bg-gray-100 text-gray-700';
-};
-
-// ── Field row helper ──
-
-const Field: React.FC<{ label: string; value?: string | number | null; mono?: boolean; className?: string }> = ({ label, value, mono, className }) => (
-  <div className={className}>
-    <div className="text-[11px] text-gray-500 uppercase tracking-wide">{label}</div>
-    <div className={`text-sm font-medium text-gray-900 ${mono ? 'font-mono' : ''}`}>{value ?? '-'}</div>
-  </div>
-);
 
 // ══════════════════════════════════════════
 // MAIN COMPONENT
@@ -90,9 +66,38 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
   onEdit,
 }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('summary');
+  const { t } = useTheme();
   const currency = row.currency || 'USD';
   const isInward = row.source === 'inward-foreign' || row.source === 'inward-domestic';
   const isDirect = row.source === 'direct';
+
+  // sourceColor as inline style objects
+  const sourceColorStyle: Record<string, React.CSSProperties> = {
+    direct: { background: t.accent + '30', color: t.accent },
+    'inward-foreign': { background: '#a855f730', color: '#a855f7' },
+    'inward-domestic': { background: t.success + '30', color: t.success },
+  };
+
+  const defaultSourceStyle: React.CSSProperties = { background: t.bgHover, color: t.text2 };
+
+  // statusBadge as inline style objects
+  const getStatusBadgeStyle = (status: string, isDeleted?: boolean): React.CSSProperties => {
+    if (isDeleted) return { background: '#dc2626', color: '#ffffff' };
+    const s = status?.toUpperCase() || '';
+    if (s.includes('ACTIVE') || s === 'BOUND' || s === 'SIGNED') return { background: t.success + '30', color: t.success };
+    if (s.includes('PENDING') || s === 'DRAFT' || s === 'QUOTED') return { background: t.warning + '30', color: t.warning };
+    if (s.includes('CANCEL') || s === 'NTU' || s === 'DECLINED') return { background: '#ef444430', color: '#ef4444' };
+    if (s.includes('EXPIRED') || s === 'CLOSED') return { background: t.bgHover, color: t.text3 };
+    return { background: t.bgHover, color: t.text2 };
+  };
+
+  // Field row helper (inline, uses theme)
+  const Field: React.FC<{ label: string; value?: string | number | null; mono?: boolean; className?: string }> = ({ label, value, mono, className }) => (
+    <div className={className}>
+      <div className="text-[11px] uppercase tracking-wide" style={{ color: t.text4 }}>{label}</div>
+      <div className={`text-sm ${mono ? 'font-mono' : ''}`} style={{ color: t.text1, fontWeight: 500 }}>{value ?? '-'}</div>
+    </div>
+  );
 
   // Get original data
   const policy = isDirect ? (row.originalData as Policy) : null;
@@ -120,16 +125,16 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Core Info */}
         <div>
-          <h4 className="font-bold text-gray-800 border-b pb-2 mb-3 flex items-center gap-2 text-sm"><Building2 size={14} /> Core Information</h4>
+          <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={14} /> Core Information</h4>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Policy / Ref No" value={row.referenceNumber} mono />
             {row.secondaryRef && <Field label="Secondary Ref" value={row.secondaryRef} mono />}
             <Field label="Insured Name" value={row.insuredName} className="col-span-2" />
             {row.insuredAddress && <Field label="Insured Address" value={row.insuredAddress} className="col-span-2" />}
             {row.cedantName && (
-              <div className="col-span-2 bg-purple-50 p-2 rounded border border-purple-100">
-                <div className="text-[11px] text-purple-600 uppercase font-bold">Cedant</div>
-                <div className="text-sm font-medium text-purple-900">{row.cedantName}</div>
+              <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
+                <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Cedant</div>
+                <div className="text-sm" style={{ color: '#a855f7', fontWeight: 500 }}>{row.cedantName}</div>
               </div>
             )}
             {row.brokerName && <Field label="Broker" value={row.brokerName} />}
@@ -148,7 +153,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Right: Dates */}
         <div>
-          <h4 className="font-bold text-gray-800 border-b pb-2 mb-3 flex items-center gap-2 text-sm"><Calendar size={14} /> Key Dates</h4>
+          <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={14} /> Key Dates</h4>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Inception Date" value={formatDate(row.inceptionDate)} />
             <Field label="Expiry Date" value={formatDate(row.expiryDate)} />
@@ -166,7 +171,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
           {/* Contract info for inward */}
           {isInward && (
             <div className="mt-5">
-              <h4 className="font-bold text-gray-800 border-b pb-2 mb-3 flex items-center gap-2 text-sm"><Layers size={14} /> Contract Structure</h4>
+              <h4 className="pb-2 mb-3 flex items-center gap-2 text-sm" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Layers size={14} /> Contract Structure</h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                 {row.contractType && <Field label="Type" value={row.contractType} />}
                 {row.structure && <Field label="Structure" value={row.structure} />}
@@ -179,72 +184,72 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
       </div>
 
       {/* Financial Summary */}
-      <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
-        <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm"><DollarSign size={14} /> Financial Summary ({currency})</h4>
+      <div className="p-5 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+        <h4 className="mb-4 flex items-center gap-2 text-sm" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={14} /> Financial Summary ({currency})</h4>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Sum Insured</div>
-            <div className="text-base font-bold text-gray-900 font-mono">{fmt(row.sumInsured, currency)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Sum Insured</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.sumInsured, currency)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Limit (FC)</div>
-            <div className="text-base font-bold text-gray-900 font-mono">{fmt(row.limit, currency)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Limit (FC)</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.limit, currency)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Limit (NC)</div>
-            <div className="text-base font-bold text-gray-900 font-mono">{fmt(row.limitNational)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Limit (NC)</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 700 }}>{fmt(row.limitNational)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Excess</div>
-            <div className="text-base font-medium text-gray-900 font-mono">{fmt(row.excess, currency)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Excess</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.excess, currency)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Priority Sum</div>
-            <div className="text-base font-medium text-gray-900 font-mono">{fmt(row.prioritySum, currency)}</div>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4 border-t border-slate-200">
-          <div>
-            <div className="text-[11px] text-gray-500 uppercase">Gross Premium</div>
-            <div className="text-base font-bold text-green-700 font-mono">{fmt(row.grossPremium, currency)}</div>
-          </div>
-          <div>
-            <div className="text-[11px] text-gray-500 uppercase">Net Premium</div>
-            <div className="text-base font-bold text-blue-700 font-mono">{fmt(row.netPremium, currency)}</div>
-          </div>
-          <div>
-            <div className="text-[11px] text-gray-500 uppercase">Our Share</div>
-            <div className="text-base font-bold text-gray-900">{pct(row.ourShare)}</div>
-          </div>
-          <div>
-            <div className="text-[11px] text-gray-500 uppercase">Premium Rate</div>
-            <div className="text-base font-medium text-gray-900">{row.premiumRate != null ? `${row.premiumRate}%` : '-'}</div>
-          </div>
-          <div>
-            <div className="text-[11px] text-gray-500 uppercase">Commission %</div>
-            <div className="text-base font-medium text-gray-900">{pct(row.commissionPercent)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Priority Sum</div>
+            <div className="text-base font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.prioritySum, currency)}</div>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4 border-t border-slate-200">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Commission (NC)</div>
-            <div className="font-medium text-gray-900 font-mono">{fmt(row.commissionNational)}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Gross Premium</div>
+            <div className="text-base font-mono" style={{ color: t.success, fontWeight: 700 }}>{fmt(row.grossPremium, currency)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Tax %</div>
-            <div className="font-medium text-gray-900">{row.taxPercent != null ? `${row.taxPercent}%` : '-'}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Net Premium</div>
+            <div className="text-base font-mono" style={{ color: t.accent, fontWeight: 700 }}>{fmt(row.netPremium, currency)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">FX Rate</div>
-            <div className="font-medium text-gray-900 font-mono">{row.exchangeRate ?? '-'}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Our Share</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 700 }}>{pct(row.ourShare)}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">FX Rate (USD)</div>
-            <div className="font-medium text-gray-900 font-mono">{row.exchangeRateUSD ?? '-'}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Premium Rate</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 500 }}>{row.premiumRate != null ? `${row.premiumRate}%` : '-'}</div>
           </div>
           <div>
-            <div className="text-[11px] text-gray-500 uppercase">Equivalent USD</div>
-            <div className="font-medium text-gray-900 font-mono">{fmt(row.equivalentUSD, 'USD')}</div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Commission %</div>
+            <div className="text-base" style={{ color: t.text1, fontWeight: 500 }}>{pct(row.commissionPercent)}</div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Commission (NC)</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.commissionNational)}</div>
+          </div>
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Tax %</div>
+            <div style={{ color: t.text1, fontWeight: 500 }}>{row.taxPercent != null ? `${row.taxPercent}%` : '-'}</div>
+          </div>
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>FX Rate</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{row.exchangeRate ?? '-'}</div>
+          </div>
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>FX Rate (USD)</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{row.exchangeRateUSD ?? '-'}</div>
+          </div>
+          <div>
+            <div className="text-[11px] uppercase" style={{ color: t.text4 }}>Equivalent USD</div>
+            <div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{fmt(row.equivalentUSD, 'USD')}</div>
           </div>
         </div>
       </div>
@@ -263,20 +268,20 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         const totalCeded = Array.from(uniqueShares.values()).reduce((a, b) => a + b, 0);
         const retention = Math.max(0, 100 - totalCeded);
         return (
-          <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-            <h4 className="font-bold text-blue-800 mb-3 flex items-center gap-2 text-sm"><Shield size={14} /> Outward Reinsurance Summary</h4>
+          <div className="p-4 rounded-xl" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
+            <h4 className="mb-3 flex items-center gap-2 text-sm" style={{ color: t.accent, fontWeight: 700 }}><Shield size={14} /> Outward Reinsurance Summary</h4>
             <div className="flex gap-4">
               <div className="flex-1 text-center">
-                <div className="text-[11px] text-blue-600 uppercase font-bold">Total Ceded</div>
-                <div className="text-lg font-bold text-blue-800">{totalCeded.toFixed(2)}%</div>
+                <div className="text-[11px] uppercase" style={{ color: t.accent, fontWeight: 700 }}>Total Ceded</div>
+                <div style={{ color: t.accent, fontSize: 15, fontWeight: 700 }}>{totalCeded.toFixed(2)}%</div>
               </div>
               <div className="flex-1 text-center">
-                <div className="text-[11px] text-emerald-600 uppercase font-bold">Retention</div>
-                <div className="text-lg font-bold text-emerald-800">{retention.toFixed(2)}%</div>
+                <div className="text-[11px] uppercase" style={{ color: t.success, fontWeight: 700 }}>Retention</div>
+                <div style={{ color: t.success, fontSize: 15, fontWeight: 700 }}>{retention.toFixed(2)}%</div>
               </div>
               <div className="flex-1 text-center">
-                <div className="text-[11px] text-amber-600 uppercase font-bold">Reinsurers</div>
-                <div className="text-lg font-bold text-amber-800">{uniqueShares.size}</div>
+                <div className="text-[11px] uppercase" style={{ color: t.warning, fontWeight: 700 }}>Reinsurers</div>
+                <div style={{ color: t.warning, fontSize: 15, fontWeight: 700 }}>{uniqueShares.size}</div>
               </div>
             </div>
           </div>
@@ -292,10 +297,10 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
     return (
       <div className="space-y-5">
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="rounded-lg overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 border-b text-xs font-semibold text-gray-600 uppercase">
+              <thead className="text-xs uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3, fontWeight: 600 }}>
                 <tr>
                   <th className="px-4 py-3 text-left">#</th>
                   <th className="px-4 py-3 text-left">Ref Number</th>
@@ -307,7 +312,7 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                   <th className="px-4 py-3 text-center">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y" style={{ borderColor: t.border }}>
                 {installments.map((inst: any, idx: number) => {
                   const refNum = isDirectSource
                     ? (inst.policyNumber || inst.policy_number || '-')
@@ -320,16 +325,16 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                   const instStatus = inst.status || '-';
 
                   return (
-                    <tr key={inst.id || idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
-                      <td className="px-4 py-2.5 text-gray-500">{idx + 1}</td>
-                      <td className="px-4 py-2.5 font-mono text-xs text-blue-600 font-medium">{refNum}</td>
+                    <tr key={inst.id || idx} style={{ background: idx % 2 === 0 ? t.bgPanel : t.bgRowAlt }}>
+                      <td className="px-4 py-2.5" style={{ color: t.text4 }}>{idx + 1}</td>
+                      <td className="px-4 py-2.5 font-mono text-xs" style={{ color: t.accent, fontWeight: 500 }}>{refNum}</td>
                       <td className="px-4 py-2.5 text-right font-mono">{fmtFull(gross, currency)}</td>
                       <td className="px-4 py-2.5 text-right font-mono">{fmtFull(net, currency)}</td>
                       <td className="px-4 py-2.5 text-right">{pct(comm)}</td>
-                      <td className="px-4 py-2.5 text-right font-mono text-gray-600">{fx}</td>
-                      <td className="px-4 py-2.5 text-gray-600">{payDate ? formatDate(payDate) : '-'}</td>
+                      <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text3 }}>{fx}</td>
+                      <td className="px-4 py-2.5" style={{ color: t.text3 }}>{payDate ? formatDate(payDate) : '-'}</td>
                       <td className="px-4 py-2.5 text-center">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(instStatus)}`}>
+                        <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ fontWeight: 700, ...getStatusBadgeStyle(instStatus) }}>
                           {instStatus}
                         </span>
                       </td>
@@ -338,11 +343,11 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                 })}
               </tbody>
               {/* Total row */}
-              <tfoot className="bg-slate-100 border-t-2 border-slate-300 font-bold text-sm">
+              <tfoot className="text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}`, fontWeight: 700 }}>
                 <tr>
                   <td className="px-4 py-3" colSpan={2}>TOTAL</td>
-                  <td className="px-4 py-3 text-right font-mono text-green-700">{fmtFull(row.grossPremium, currency)}</td>
-                  <td className="px-4 py-3 text-right font-mono text-blue-700">{fmtFull(row.netPremium, currency)}</td>
+                  <td className="px-4 py-3 text-right font-mono" style={{ color: t.success }}>{fmtFull(row.grossPremium, currency)}</td>
+                  <td className="px-4 py-3 text-right font-mono" style={{ color: t.accent }}>{fmtFull(row.netPremium, currency)}</td>
                   <td className="px-4 py-3" colSpan={4}></td>
                 </tr>
               </tfoot>
@@ -351,8 +356,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         </div>
 
         {/* Additional premium details */}
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <h4 className="font-bold text-gray-800 mb-3 text-sm">Premium Details</h4>
+        <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Premium Details</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <Field label="Full Premium (FC)" value={fmt(row.fullPremiumForeign, currency)} mono />
             <Field label="Full Premium (NC)" value={fmt(row.fullPremiumNational)} mono />
@@ -384,9 +389,9 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
   const renderDirectReinsurance = () => {
     if (outwardPolicies.length === 0) {
       return (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16" style={{ color: t.text4 }}>
           <Shield size={48} className="mx-auto mb-4 opacity-30" />
-          <p className="text-lg font-medium">No outward reinsurance arrangements</p>
+          <p style={{ fontSize: 15, fontWeight: 500 }}>No outward reinsurance arrangements</p>
           <p className="text-sm mt-1">This policy has no recorded outward cessions</p>
         </div>
       );
@@ -424,25 +429,25 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
       <div className="space-y-5">
         {/* Summary bar */}
         <div className="flex gap-4">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-blue-600 uppercase font-bold">Total Ceded</div>
-            <div className="text-xl font-bold text-blue-800">{totalCededShare.toFixed(2)}%</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
+            <div className="text-[11px] uppercase" style={{ color: t.accent, fontWeight: 700 }}>Total Ceded</div>
+            <div style={{ color: t.accent, fontSize: 15, fontWeight: 700 }}>{totalCededShare.toFixed(2)}%</div>
           </div>
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-emerald-600 uppercase font-bold">Retention</div>
-            <div className="text-xl font-bold text-emerald-800">{Math.max(0, 100 - totalCededShare).toFixed(2)}%</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.success + '18', border: `1px solid ${t.success}40` }}>
+            <div className="text-[11px] uppercase" style={{ color: t.success, fontWeight: 700 }}>Retention</div>
+            <div style={{ color: t.success, fontSize: 15, fontWeight: 700 }}>{Math.max(0, 100 - totalCededShare).toFixed(2)}%</div>
           </div>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-amber-600 uppercase font-bold">Reinsurers</div>
-            <div className="text-xl font-bold text-amber-800">{reinsurerRows.length}</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: t.warning + '18', border: `1px solid ${t.warning}40` }}>
+            <div className="text-[11px] uppercase" style={{ color: t.warning, fontWeight: 700 }}>Reinsurers</div>
+            <div style={{ color: t.warning, fontSize: 15, fontWeight: 700 }}>{reinsurerRows.length}</div>
           </div>
         </div>
 
         {/* Reinsurer table */}
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="rounded-lg overflow-hidden" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b text-xs font-semibold text-gray-600 uppercase">
+            <thead className="text-xs uppercase" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}`, color: t.text3, fontWeight: 600 }}>
               <tr>
                 <th className="px-4 py-3 text-left">Reinsurer</th>
                 <th className="px-4 py-3 text-right">Share %</th>
@@ -453,28 +458,28 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
                 <th className="px-4 py-3 text-center">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y" style={{ borderColor: t.border }}>
               {reinsurerRows.map((rr, idx) => (
-                <tr key={rr.name + idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
-                  <td className="px-4 py-2.5 font-medium text-gray-900">{rr.name}</td>
+                <tr key={rr.name + idx} style={{ background: idx % 2 === 0 ? t.bgPanel : t.bgRowAlt }}>
+                  <td className="px-4 py-2.5" style={{ color: t.text1, fontWeight: 500 }}>{rr.name}</td>
                   <td className="px-4 py-2.5 text-right font-mono">{rr.share.toFixed(2)}%</td>
                   <td className="px-4 py-2.5 text-right font-mono">{fmtFull(rr.cededPremium, currency)}</td>
                   <td className="px-4 py-2.5 text-right">{pct(rr.commission)}</td>
                   <td className="px-4 py-2.5 text-right font-mono">{fmtFull(rr.netPremium, currency)}</td>
-                  <td className="px-4 py-2.5 text-xs font-mono text-gray-600">{rr.slipNo}</td>
+                  <td className="px-4 py-2.5 text-xs font-mono" style={{ color: t.text3 }}>{rr.slipNo}</td>
                   <td className="px-4 py-2.5 text-center">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusBadge(rr.status)}`}>
+                    <span className="px-2 py-0.5 rounded-full text-[10px]" style={{ fontWeight: 700, ...getStatusBadgeStyle(rr.status) }}>
                       {rr.status}
                     </span>
                   </td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="bg-slate-100 border-t-2 border-slate-300 font-bold text-sm">
+            <tfoot className="text-sm" style={{ background: t.bgHover, borderTop: `2px solid ${t.border}`, fontWeight: 700 }}>
               <tr>
                 <td className="px-4 py-3">TOTAL</td>
                 <td className="px-4 py-3 text-right font-mono">{totalCededShare.toFixed(2)}%</td>
-                <td className="px-4 py-3 text-right font-mono text-green-700">{fmtFull(totalCededPremium, currency)}</td>
+                <td className="px-4 py-3 text-right font-mono" style={{ color: t.success }}>{fmtFull(totalCededPremium, currency)}</td>
                 <td className="px-4 py-3" colSpan={4}></td>
               </tr>
             </tfoot>
@@ -484,8 +489,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Additional reinsurance fields from the policy */}
         {policy && (
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <h4 className="font-bold text-gray-800 mb-3 text-sm">Reinsurance Details</h4>
+          <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+            <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Reinsurance Details</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <Field label="Sum Reinsured (FC)" value={fmt(row.sumReinsuredForeign, currency)} mono />
               <Field label="Sum Reinsured (NC)" value={fmt(row.sumReinsuredNational)} mono />
@@ -512,23 +517,23 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
       <div className="space-y-5">
         {/* Structure summary */}
         <div className="flex gap-4">
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-purple-600 uppercase font-bold">Type</div>
-            <div className="text-lg font-bold text-purple-800">{inward.type}</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Type</div>
+            <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{inward.type}</div>
           </div>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-purple-600 uppercase font-bold">Structure</div>
-            <div className="text-lg font-bold text-purple-800">{inward.structure === 'PROPORTIONAL' ? 'Proportional' : 'Non-Proportional'}</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Structure</div>
+            <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{inward.structure === 'PROPORTIONAL' ? 'Proportional' : 'Non-Proportional'}</div>
           </div>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 flex-1 text-center">
-            <div className="text-[11px] text-purple-600 uppercase font-bold">Our Share</div>
-            <div className="text-lg font-bold text-purple-800">{pct(inward.ourShare)}</div>
+          <div className="rounded-lg p-3 flex-1 text-center" style={{ background: '#a855f718', border: `1px solid #a855f740` }}>
+            <div className="text-[11px] uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Our Share</div>
+            <div style={{ color: '#a855f7', fontSize: 15, fontWeight: 700 }}>{pct(inward.ourShare)}</div>
           </div>
         </div>
 
         {/* Treaty details */}
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <h4 className="font-bold text-gray-800 mb-3 text-sm">Contract Details</h4>
+        <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Contract Details</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {inward.treatyName && <Field label="Treaty Name" value={inward.treatyName} />}
             {inward.treatyNumber && <Field label="Treaty Number" value={inward.treatyNumber} mono />}
@@ -543,14 +548,14 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         </div>
 
         {/* Reinstatements & special premiums */}
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <h4 className="font-bold text-gray-800 mb-3 text-sm">Reinstatements & Premium</h4>
+        <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Reinstatements & Premium</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {inward.reinstatements != null && <Field label="Reinstatements" value={inward.reinstatements} />}
             {inward.reinstatementPremium != null && <Field label="Reinstatement Premium" value={fmt(inward.reinstatementPremium, currency)} mono />}
             {inward.minimumPremium != null && <Field label="Minimum Premium" value={fmt(inward.minimumPremium, currency)} mono />}
             {inward.depositPremium != null && <Field label="Deposit Premium" value={fmt(inward.depositPremium, currency)} mono />}
-            {inward.adjustablePremium != null && <Field label="Adjustable Premium" value={fmt(inward.adjustablePremium, currency)} mono />}
+            {inward.adjustablePremium != null && <Field label="Adjustable Premium" value={fmt(Number(inward.adjustablePremium), currency)} mono />}
             <Field label="Gross Premium" value={fmt(row.grossPremium, currency)} mono />
             <Field label="Net Premium" value={fmt(row.netPremium, currency)} mono />
             <Field label="Commission %" value={pct(inward.commissionPercent)} />
@@ -559,8 +564,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Retrocession details */}
         {(row.retroSumReinsured != null || row.retroPremium != null || row.risksCount != null) && (
-          <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
-            <h4 className="font-bold text-amber-800 mb-3 text-sm flex items-center gap-2"><Shield size={14} /> Retrocession</h4>
+          <div className="p-4 rounded-xl" style={{ background: t.warning + '18', border: `1px solid ${t.warning}40` }}>
+            <h4 className="mb-3 text-sm flex items-center gap-2" style={{ color: t.warning, fontWeight: 700 }}><Shield size={14} /> Retrocession</h4>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {row.retroSumReinsured != null && <Field label="Retro Sum Reinsured" value={fmt(row.retroSumReinsured, currency)} mono />}
               {row.retroPremium != null && <Field label="Retro Premium" value={fmt(row.retroPremium, currency)} mono />}
@@ -571,8 +576,8 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
         {/* Slip information */}
         {row.slipNumber && (
-          <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-            <h4 className="font-bold text-blue-800 mb-3 text-sm flex items-center gap-2"><FileText size={14} /> Slip Information</h4>
+          <div className="p-4 rounded-xl" style={{ background: t.accent + '18', border: `1px solid ${t.accent}40` }}>
+            <h4 className="mb-3 text-sm flex items-center gap-2" style={{ color: t.accent, fontWeight: 700 }}><FileText size={14} /> Slip Information</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <Field label="Slip Number" value={row.slipNumber} mono />
               {row.dateOfSlip && <Field label="Date of Slip" value={formatDate(row.dateOfSlip)} />}
@@ -589,9 +594,9 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
   const renderClaims = () => {
     // Claims tab is a placeholder — linking claims requires a separate data fetch.
     return (
-      <div className="text-center py-16 text-gray-400">
-        <CheckCircle size={48} className="mx-auto mb-4 text-emerald-300" />
-        <p className="text-lg font-medium text-gray-500">Claims data not yet linked</p>
+      <div className="text-center py-16" style={{ color: t.text4 }}>
+        <CheckCircle size={48} className="mx-auto mb-4" style={{ color: t.success }} />
+        <p style={{ color: t.text4, fontSize: 15, fontWeight: 500 }}>Claims data not yet linked</p>
         <p className="text-sm mt-1">Claims matching will be available in a future update</p>
       </div>
     );
@@ -599,9 +604,9 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
 
   // ── Tab: Documents ──
   const renderDocuments = () => (
-    <div className="text-center py-16 text-gray-400">
+    <div className="text-center py-16" style={{ color: t.text4 }}>
       <Archive size={48} className="mx-auto mb-4 opacity-30" />
-      <p className="text-lg font-medium text-gray-500">Document management coming soon</p>
+      <p style={{ color: t.text4, fontSize: 15, fontWeight: 500 }}>Document management coming soon</p>
       <p className="text-sm mt-1">Upload PDFs, slips, endorsements, and more</p>
     </div>
   );
@@ -619,46 +624,48 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
       <div
-        className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200"
+        className="rounded-xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200"
+        style={{ background: t.bgPanel, boxShadow: t.shadowLg }}
         onClick={e => e.stopPropagation()}
       >
         {/* ── Header ── */}
-        <div className="border-b bg-white px-5 py-3 flex-shrink-0">
+        <div className="px-5 py-3 flex-shrink-0" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgPanel }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0 ${statusBadge(row.status, row.isDeleted)}`}>
+              <span className="px-2.5 py-1 rounded-full text-xs flex-shrink-0" style={{ fontWeight: 700, ...getStatusBadgeStyle(row.status, row.isDeleted) }}>
                 {row.isDeleted ? 'DELETED' : row.status}
               </span>
-              <h2 className="text-lg font-bold text-gray-900 truncate font-mono">{row.referenceNumber}</h2>
-              <span className="text-gray-400">—</span>
-              <span className="text-gray-700 font-medium truncate">{row.insuredName || row.cedantName || '-'}</span>
+              <h2 className="truncate font-mono" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{row.referenceNumber}</h2>
+              <span style={{ color: t.text4 }}>—</span>
+              <span className="truncate" style={{ color: t.text2, fontWeight: 500 }}>{row.insuredName || row.cedantName || '-'}</span>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0 ml-4">
               {onEdit && (
                 <button
                   onClick={() => onEdit(row)}
-                  className="px-3 py-1.5 text-sm font-medium text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50"
+                  className="px-3 py-1.5 text-sm rounded-lg"
+                  style={{ color: t.accent, border: `1px solid ${t.accent}40`, fontWeight: 500 }}
                 >
                   Edit
                 </button>
               )}
-              <button onClick={onClose} className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+              <button onClick={onClose} className="p-1.5 rounded-lg" style={{ color: t.text4 }}>
                 <X size={20} />
               </button>
             </div>
           </div>
           {/* Sub-header metadata */}
-          <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
-            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${sourceColor[row.source] || 'bg-gray-100 text-gray-700'}`}>
+          <div className="flex items-center gap-3 mt-1.5 text-xs" style={{ color: t.text4 }}>
+            <span className="px-2 py-0.5 rounded text-[10px]" style={{ fontWeight: 700, ...(sourceColorStyle[row.source] || defaultSourceStyle) }}>
               {sourceLabel[row.source] || row.source}
             </span>
             <span>{currency}</span>
             <span>Inception: {formatDate(row.inceptionDate)}</span>
             <span>— Expiry: {formatDate(row.expiryDate)}</span>
             {(row.installmentCount || 0) > 1 && (
-              <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded-full font-bold">
+              <span className="px-1.5 py-0.5 rounded-full" style={{ background: t.accent + '30', color: t.accent, fontWeight: 700 }}>
                 {row.installmentCount} installments
               </span>
             )}
@@ -666,17 +673,18 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         </div>
 
         {/* ── Tab bar ── */}
-        <div className="border-b bg-gray-50 px-5 flex-shrink-0">
+        <div className="px-5 flex-shrink-0" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
           <div className="flex gap-0 -mb-px">
             {tabs.map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                className="flex items-center gap-1.5 px-4 py-2.5 text-sm"
+                style={
                   activeTab === tab.key
-                    ? 'border-blue-600 text-blue-600 bg-white'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                    ? { borderBottom: `2px solid ${t.accent}`, color: t.accent, background: t.bgPanel, fontWeight: 500 }
+                    : { borderBottom: '2px solid transparent', color: t.text4, fontWeight: 500 }
+                }
               >
                 {tab.icon}
                 {tab.label}
@@ -686,15 +694,16 @@ export const MasterDetailModal: React.FC<MasterDetailModalProps> = ({
         </div>
 
         {/* ── Content ── */}
-        <div className="h-[70vh] overflow-y-auto p-5 bg-white">
+        <div className="h-[70vh] overflow-y-auto p-5" style={{ background: t.bgPanel }}>
           {renderActiveTab()}
         </div>
 
         {/* ── Footer ── */}
-        <div className="border-t bg-gray-50 px-5 py-3 flex justify-end gap-2 flex-shrink-0">
+        <div className="px-5 py-3 flex justify-end gap-2 flex-shrink-0" style={{ borderTop: `1px solid ${t.border}`, background: t.bgCard }}>
           <button
             onClick={onClose}
-            className="px-5 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-800 font-medium text-sm"
+            className="px-5 py-2 rounded-lg text-sm"
+            style={{ background: t.bgHover, color: t.text1, fontWeight: 500 }}
           >
             Close
           </button>

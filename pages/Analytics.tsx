@@ -98,7 +98,7 @@ const ChannelCard: React.FC<ChannelCardProps> = ({ channel, isSelected, onClick 
         </span>
       </div>
       <h3 className="font-semibold text-sm" style={{ color: t.text1 }}>{channel.label}</h3>
-      <p className="text-lg font-bold mt-1" style={{ color: channel.color }}>
+      <p className="mt-1" style={{ color: channel.color, fontSize: 15, fontWeight: 700 }}>
         {formatCurrency(channel.grossWrittenPremium)}
       </p>
       <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: t.text4 }}>
@@ -135,7 +135,7 @@ const KPICard: React.FC<KPICardProps> = ({ title, value, subtitle, icon, color, 
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate" style={{ color: t.text4 }}>{title}</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: t.text1 }}>{value}</p>
+          <p className="mt-1" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{value}</p>
           {subtitle && <p className="text-xs mt-1 truncate" style={{ color: t.text5 }}>{subtitle}</p>}
           {trend && (
             <div
@@ -166,7 +166,7 @@ const StatCard: React.FC<StatCardProps> = ({ label, value, color }) => {
   const { t } = useTheme();
   return (
     <div className="text-center p-3 rounded-lg" style={{ background: t.bgCard }}>
-      <p className="text-xl font-bold" style={{ color: color || t.text1 }}>{value}</p>
+      <p style={{ color: color || t.text1, fontSize: 24, fontWeight: 700 }}>{value}</p>
       <p className="text-xs mt-0.5" style={{ color: t.text4 }}>{label}</p>
     </div>
   );
@@ -347,7 +347,7 @@ const Analytics: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Failed to load analytics</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Failed to load analytics</h3>
           <p className="mt-1" style={{ color: t.text4 }}>{error}</p>
           <button
             onClick={refetch}
@@ -853,14 +853,14 @@ const Analytics: React.FC = () => {
                     <AlertTriangle className="w-4 h-4" style={{ color: t.warning }} />
                     <span className="text-xs" style={{ color: t.text4 }}>Open Claims</span>
                   </div>
-                  <p className="text-2xl font-bold" style={{ color: t.warning }}>{data.claims.openClaims}</p>
+                  <p style={{ color: t.warning, fontSize: 24, fontWeight: 700 }}>{data.claims.openClaims}</p>
                 </div>
                 <div className="p-4 rounded-lg" style={{ background: t.bgCard }}>
                   <div className="flex items-center gap-2 mb-2">
                     <Shield className="w-4 h-4" style={{ color: t.success }} />
                     <span className="text-xs" style={{ color: t.text4 }}>Closed Claims</span>
                   </div>
-                  <p className="text-2xl font-bold" style={{ color: t.success }}>{data.claims.closedClaims}</p>
+                  <p style={{ color: t.success, fontSize: 24, fontWeight: 700 }}>{data.claims.closedClaims}</p>
                 </div>
               </div>
 
@@ -889,10 +889,10 @@ const Analytics: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium" style={{ color: t.text3 }}>Loss Ratio</span>
                   <span
-                    className="text-lg font-bold"
                     style={{
                       color: data.claims.lossRatio > 80 ? t.danger :
                              data.claims.lossRatio > 60 ? t.warning : t.success,
+                      fontSize: 15, fontWeight: 700,
                     }}
                   >
                     {formatPercent(data.claims.lossRatio)}
@@ -953,27 +953,27 @@ const Analytics: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Total Records</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data?.total.recordCount.toLocaleString() || '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data?.total.recordCount.toLocaleString() || '-'}</p>
           </div>
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Total GWP</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? formatCurrency(data.total.grossWrittenPremium) : '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data ? formatCurrency(data.total.grossWrittenPremium) : '-'}</p>
           </div>
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Total NWP</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? formatCurrency(data.total.netWrittenPremium) : '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data ? formatCurrency(data.total.netWrittenPremium) : '-'}</p>
           </div>
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Total Claims</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data?.claims.totalClaims.toLocaleString() || '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data?.claims.totalClaims.toLocaleString() || '-'}</p>
           </div>
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Classes Written</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? Object.keys(data.total.classBreakdown).length : '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data ? Object.keys(data.total.classBreakdown).length : '-'}</p>
           </div>
           <div>
             <p className="text-xs" style={{ color: t.text4 }}>Currencies</p>
-            <p className="text-2xl font-bold" style={{ color: t.text1 }}>{data ? Object.keys(data.total.currencyBreakdown).length : '-'}</p>
+            <p style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{data ? Object.keys(data.total.currencyBreakdown).length : '-'}</p>
           </div>
         </div>
       </div>

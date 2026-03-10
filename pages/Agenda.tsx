@@ -218,7 +218,7 @@ const Agenda: React.FC = () => {
                 ) : displayTasks.length === 0 ? (
                     <div className="p-12 text-center flex flex-col items-center" style={{ color: t.text4 }}>
                         <CheckCircle size={48} className="mb-4" style={{ color: t.success, opacity: 0.3 }}/>
-                        <p className="text-lg font-medium" style={{ color: t.text3 }}>All caught up!</p>
+                        <p style={{ color: t.text3, fontSize: 15, fontWeight: 500 }}>All caught up!</p>
                         <p className="text-sm">No tasks found for the selected filter.</p>
                     </div>
                 ) : (

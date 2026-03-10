@@ -78,7 +78,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
 
   // Reusable style constants
   const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 12, fontWeight: 600, marginBottom: 6, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' };
-  const inputStyle: React.CSSProperties = { width: '100%', height: 40, padding: '0 12px', background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 14, outline: 'none', fontFamily: 'inherit', transition: 'box-shadow 0.15s' };
+  const inputStyle: React.CSSProperties = { width: '100%', height: 40, padding: '0 12px', background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit', transition: 'box-shadow 0.15s' };
   const inputErrorStyle: React.CSSProperties = { border: `1px solid ${t.danger}`, boxShadow: `0 0 0 2px ${t.dangerBg}` };
   const selectStyle: React.CSSProperties = { ...inputStyle, cursor: 'pointer' };
   const selectErrorStyle: React.CSSProperties = { ...inputErrorStyle };
@@ -535,7 +535,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             <FileText size={20} style={{ color: t.warning }} />
           </div>
           <div>
-            <h3 style={{ fontSize: 18, fontWeight: 600, color: t.text1 }}>Database Setup Required</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>Database Setup Required</h3>
             <p style={{ color: t.text2, marginTop: 4 }}>
               The Inward Reinsurance tables have not been created in the database yet.
             </p>
@@ -1167,7 +1167,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
             <button
               type="button"
               onClick={onCancel}
-              style={{ padding: '10px 16px', color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}`, borderRadius: 8, fontWeight: 500, fontSize: 14, cursor: 'pointer', transition: 'background 0.15s' }}
+              style={{ padding: '10px 16px', color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}`, borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer', transition: 'background 0.15s' }}
             >
               Cancel
             </button>
@@ -1175,7 +1175,7 @@ export const InwardReinsuranceFormContent: React.FC<InwardReinsuranceFormContent
               type="submit"
               disabled={saving}
               className="flex items-center gap-2"
-              style={{ padding: '10px 24px', background: t.accent, color: '#fff', borderRadius: 8, fontWeight: 500, fontSize: 14, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1, transition: 'background 0.15s' }}
+              style={{ padding: '10px 24px', background: t.accent, color: '#fff', borderRadius: 8, fontWeight: 600, fontSize: 13, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.5 : 1, transition: 'background 0.15s' }}
             >
               <Save size={16} />
               {saving ? 'Saving...' : (isEdit ? 'Update Contract' : 'Create Contract')}

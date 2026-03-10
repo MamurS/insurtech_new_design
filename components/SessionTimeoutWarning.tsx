@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock, LogOut } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 interface SessionTimeoutWarningProps {
   remainingSeconds: number;
@@ -12,6 +13,7 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
   onContinue,
   onLogout,
 }) => {
+  const { t } = useTheme();
   const minutes = Math.floor(remainingSeconds / 60);
   const seconds = remainingSeconds % 60;
   const timeDisplay = minutes > 0
@@ -21,38 +23,40 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div
-        className="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 border border-gray-100"
+        className="rounded-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200 border"
+        style={{ background: t.bgPanel, boxShadow: t.shadowLg, borderColor: t.border }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-full bg-amber-100">
-              <Clock className="w-6 h-6 text-amber-600" />
+            <div className="p-3 rounded-full" style={{ background: t.warningBg }}>
+              <Clock className="w-6 h-6" style={{ color: t.warning }} />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-900 mb-1">Session Expiring</h3>
-              <p className="text-gray-600 leading-relaxed text-sm">
+              <h3 className="mb-1" style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>Session Expiring</h3>
+              <p className="leading-relaxed text-sm" style={{ color: t.text3 }}>
                 Your session will expire in{' '}
-                <span className="font-semibold text-amber-600">{timeDisplay}</span>{' '}
+                <span style={{ color: t.warning, fontWeight: 600 }}>{timeDisplay}</span>{' '}
                 due to inactivity. Click Continue to stay logged in.
               </p>
             </div>
           </div>
 
           {/* Countdown progress bar */}
-          <div className="mt-4 w-full bg-gray-200 rounded-full h-1.5">
+          <div className="mt-4 w-full rounded-full h-1.5" style={{ background: t.bgHover }}>
             <div
-              className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000 ease-linear"
-              style={{ width: `${Math.min(100, (remainingSeconds / 120) * 100)}%` }}
+              className="h-1.5 rounded-full transition-all duration-1000 ease-linear"
+              style={{ background: t.warning, width: `${Math.min(100, (remainingSeconds / 120) * 100)}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-gray-50 px-6 py-4 flex justify-end gap-3 border-t border-gray-100">
+        <div className="px-6 py-4 flex justify-end gap-3 border-t" style={{ background: t.bgCard, borderColor: t.border }}>
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 font-medium hover:bg-gray-200 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors"
+            style={{ color: t.text2 }}
           >
             <LogOut size={16} />
             Logout Now
@@ -60,7 +64,8 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
           <button
             type="button"
             onClick={onContinue}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition-colors"
+            className="px-4 py-2 font-medium rounded-lg transition-colors"
+            style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
           >
             Continue Session
           </button>

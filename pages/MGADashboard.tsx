@@ -294,7 +294,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
         {/* Header */}
         <div className="sticky top-0 z-10 px-6 py-4 flex items-center justify-between" style={{ background: t.bgPanel, borderTopLeftRadius: 16, borderTopRightRadius: 16, borderBottom: `1px solid ${t.border}` }}>
           <div>
-            <h2 className="text-xl font-bold" style={{ color: t.text1 }}>{agreement.agreementNumber}</h2>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{agreement.agreementNumber}</h2>
             <p className="text-sm" style={{ color: t.text4 }}>{agreement.mgaName} &middot; {agreement.agreementType.replace('_', ' ')}</p>
           </div>
           <div className="flex items-center gap-2">
@@ -326,21 +326,21 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
               <div className="grid grid-cols-4 gap-4">
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>EPI</p>
-                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{formatCurrency(agreement.epi)}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{formatCurrency(agreement.epi)}</p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Actual GWP</p>
-                  <p className="text-xl font-bold" style={{ color: actualGwp > 0 ? t.success : t.text5 }}>{formatCurrency(actualGwp)}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: actualGwp > 0 ? t.success : t.text5 }}>{formatCurrency(actualGwp)}</p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Utilization</p>
-                  <p className="text-xl font-bold" style={{ color: utilization > 80 ? t.success : utilization > 50 ? t.warning : t.danger }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: utilization > 80 ? t.success : utilization > 50 ? t.warning : t.danger }}>
                     {agreement.epi > 0 ? `${utilization.toFixed(1)}%` : 'N/A'}
                   </p>
                 </div>
                 <div className="rounded-xl p-4" style={{ background: t.bgInput }}>
                   <p className="text-xs uppercase tracking-wide" style={{ color: t.text4 }}>Our Share</p>
-                  <p className="text-xl font-bold" style={{ color: t.text1 }}>{(agreement.ourShare * 100).toFixed(1)}%</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>{(agreement.ourShare * 100).toFixed(1)}%</p>
                 </div>
               </div>
 
@@ -615,7 +615,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <BarChart3 size={14} />
             Avg Utilization
           </div>
-          <p className="text-2xl font-bold" style={{ color: avgUtilization >= 75 ? t.success : avgUtilization >= 50 ? t.warning : t.danger }}>
+          <p style={{ color: avgUtilization >= 75 ? t.success : avgUtilization >= 50 ? t.warning : t.danger, fontSize: 24, fontWeight: 700 }}>
             {avgUtilization.toFixed(1)}%
           </p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>{activeRows.length} active agreements</p>
@@ -633,7 +633,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <AlertCircle size={14} />
             Underperformers
           </div>
-          <p className="text-2xl font-bold" style={{ color: t.danger }}>{underperformerCount}</p>
+          <p style={{ color: t.danger, fontSize: 24, fontWeight: 700 }}>{underperformerCount}</p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>Below 50% utilization</p>
         </div>
         <div className="rounded-xl p-4" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
@@ -641,7 +641,7 @@ const PerformanceTab: React.FC<PerformanceTabProps> = ({ agreements, bdxGwpMap, 
             <ClipboardList size={14} />
             Total Bordereaux
           </div>
-          <p className="text-2xl font-bold" style={{ color: t.accent }}>{totalBdxCount}</p>
+          <p style={{ color: t.accent, fontSize: 24, fontWeight: 700 }}>{totalBdxCount}</p>
           <p className="text-xs mt-0.5" style={{ color: t.text5 }}>All submissions</p>
         </div>
       </div>
@@ -1172,36 +1172,36 @@ const MGADashboard: React.FC = () => {
 
       {/* Agreements Tab */}
       {activePageTab === 'agreements' && (
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm mt-1">
+      <div className="mt-1" style={{ background: t.bgPanel, borderRadius: 12, border: '1px solid ' + t.border, boxShadow: t.shadow }}>
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <RefreshCw className="animate-spin text-blue-600" size={32} />
+            <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
           </div>
         ) : pageAgreements.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+          <div className="flex flex-col items-center justify-center h-64" style={{ color: t.text4 }}>
             <FileSignature size={48} className="mb-4 opacity-50" />
-            <p className="text-lg font-medium">No agreements found</p>
+            <p style={{ fontSize: 15, fontWeight: 500 }}>No agreements found</p>
             <p className="text-sm">Try adjusting your filters or create a new agreement</p>
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 sticky z-20 shadow-sm" style={{ top: `${filterHeight}px` }}>
+                <thead className="sticky z-20" style={{ top: `${filterHeight}px`, background: t.bgCard, boxShadow: t.shadow }}>
                   <tr>
-                    <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide w-24">Status</th>
-                    <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide w-20">Type</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Agreement #</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">MGA / Partner</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Broker</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide max-w-[100px]">Class</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide max-w-[100px]">Territory</th>
-                    <th className="text-right px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">EPI</th>
-                    <th className="text-right px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Actual GWP</th>
-                    <th className="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide w-16">Util.</th>
-                    <th className="text-right px-2 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide w-16">Share</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Inception</th>
-                    <th className="text-left px-3 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Expiry</th>
+                    <th className="text-center px-2 py-3 text-xs font-semibold uppercase tracking-wide w-24" style={{ color: t.text4 }}>Status</th>
+                    <th className="text-center px-2 py-3 text-xs font-semibold uppercase tracking-wide w-20" style={{ color: t.text4 }}>Type</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Agreement #</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>MGA / Partner</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Broker</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide max-w-[100px]" style={{ color: t.text4 }}>Class</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide max-w-[100px]" style={{ color: t.text4 }}>Territory</th>
+                    <th className="text-right px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>EPI</th>
+                    <th className="text-right px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Actual GWP</th>
+                    <th className="text-center px-2 py-3 text-xs font-semibold uppercase tracking-wide w-16" style={{ color: t.text4 }}>Util.</th>
+                    <th className="text-right px-2 py-3 text-xs font-semibold uppercase tracking-wide w-16" style={{ color: t.text4 }}>Share</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Inception</th>
+                    <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Expiry</th>
                     <th className="px-1 py-3 w-10"></th>
                   </tr>
                 </thead>
@@ -1209,49 +1209,49 @@ const MGADashboard: React.FC = () => {
                   {pageAgreements.map(ag => {
                     const gwp = bdxGwpMap[ag.id] || 0;
                     return (
-                      <tr key={ag.id} onClick={() => setDetailAgreement(ag)} className="hover:bg-slate-50 transition-colors cursor-pointer">
+                      <tr key={ag.id} onClick={() => setDetailAgreement(ag)} className="transition-colors cursor-pointer">
                         <td className="px-2 py-3 text-center">{getStatusBadge(ag.status)}</td>
                         <td className="px-2 py-3 text-center">{getTypeBadge(ag.agreementType)}</td>
-                        <td className="px-3 py-3 font-medium text-slate-800">{ag.agreementNumber}</td>
+                        <td className="px-3 py-3 font-medium" style={{ color: t.text1 }}>{ag.agreementNumber}</td>
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
-                            <Building2 size={14} className="text-slate-400 flex-shrink-0" />
-                            <span className="text-slate-700 truncate max-w-[160px]">{ag.mgaName}</span>
+                            <Building2 size={14} className="flex-shrink-0" style={{ color: t.text4 }} />
+                            <span className="truncate max-w-[160px]" style={{ color: t.text2 }}>{ag.mgaName}</span>
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-slate-600 text-sm">{ag.brokerName || '-'}</td>
-                        <td className="px-3 py-3 text-slate-600 text-sm max-w-[100px] truncate" title={ag.classOfBusiness || ''}>{ag.classOfBusiness || '-'}</td>
-                        <td className="px-3 py-3 text-slate-600 text-sm max-w-[100px] truncate" title={ag.territoryScope || ''}>{ag.territoryScope || '-'}</td>
-                        <td className="px-3 py-3 text-right text-slate-500 italic text-sm">{formatCurrency(ag.epi)}</td>
+                        <td className="px-3 py-3 text-sm" style={{ color: t.text3 }}>{ag.brokerName || '-'}</td>
+                        <td className="px-3 py-3 text-sm max-w-[100px] truncate" style={{ color: t.text3 }} title={ag.classOfBusiness || ''}>{ag.classOfBusiness || '-'}</td>
+                        <td className="px-3 py-3 text-sm max-w-[100px] truncate" style={{ color: t.text3 }} title={ag.territoryScope || ''}>{ag.territoryScope || '-'}</td>
+                        <td className="px-3 py-3 text-right italic text-sm" style={{ color: t.text4 }}>{formatCurrency(ag.epi)}</td>
                         <td className="px-3 py-3 text-right">
-                          <span className={`font-semibold ${gwp > 0 ? 'text-emerald-600' : 'text-slate-400'}`}>{gwp > 0 ? formatCurrency(gwp) : '-'}</span>
+                          <span className="font-semibold" style={{ color: gwp > 0 ? t.success : t.text4 }}>{gwp > 0 ? formatCurrency(gwp) : '-'}</span>
                         </td>
                         <td className="px-2 py-3 text-center">{getUtilizationDisplay(ag.id, ag.epi)}</td>
-                        <td className="px-2 py-3 text-right text-sm text-slate-700 font-medium">{(ag.ourShare * 100).toFixed(0)}%</td>
-                        <td className="px-3 py-3 text-sm text-slate-600 whitespace-nowrap">
+                        <td className="px-2 py-3 text-right text-sm font-medium" style={{ color: t.text2 }}>{(ag.ourShare * 100).toFixed(0)}%</td>
+                        <td className="px-3 py-3 text-sm whitespace-nowrap" style={{ color: t.text3 }}>
                           <div className="flex items-center gap-1">
-                            <Calendar size={12} className="text-slate-400" />
+                            <Calendar size={12} style={{ color: t.text4 }} />
                             {formatDate(ag.inceptionDate)}
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-sm text-slate-600 whitespace-nowrap">{formatDate(ag.expiryDate)}</td>
+                        <td className="px-3 py-3 text-sm whitespace-nowrap" style={{ color: t.text3 }}>{formatDate(ag.expiryDate)}</td>
                         <td className="px-1 py-2 text-center relative" onClick={e => e.stopPropagation()}>
                           <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === ag.id ? null : ag.id); }}
-                            className="p-1.5 hover:bg-gray-100 rounded-lg">
-                            <MoreVertical size={16} className="text-gray-500" />
+                            className="p-1.5 rounded-lg">
+                            <MoreVertical size={16} style={{ color: t.text4 }} />
                           </button>
                           {openMenuId === ag.id && (
-                            <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 min-w-[120px]">
+                            <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, boxShadow: t.shadowMd, border: '1px solid ' + t.border }}>
                               <button onClick={() => { setOpenMenuId(null); setDetailAgreement(ag); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
                                 <Eye size={14} /> View
                               </button>
                               <button onClick={() => { setOpenMenuId(null); setEditingId(ag.id); setShowFormModal(true); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
                                 <Edit size={14} /> Edit
                               </button>
                               <button onClick={() => { setOpenMenuId(null); handleDelete(ag.id); }}
-                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger }}>
                                 <Trash2 size={14} /> Delete
                               </button>
                             </div>
@@ -1268,7 +1268,7 @@ const MGADashboard: React.FC = () => {
             <div ref={sentinelRef} className="h-1" />
             {hasMoreAgreements && (
               <div className="flex justify-center py-4">
-                <RefreshCw size={20} className="animate-spin text-blue-600" />
+                <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
               </div>
             )}
           </>

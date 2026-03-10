@@ -381,7 +381,7 @@ const ProductSearch: React.FC<{
 // ─── Currency Badge Amount Input (OUTSIDE main component to prevent focus loss) ─
 const CurrencyInput: React.FC<{
   value: number; onChange: (v: number) => void; currency: string; placeholder?: string;
-  bold?: boolean; bgClass?: string; borderClass?: string;
+  bold?: boolean;
 }> = React.memo(({ value, onChange, currency, placeholder = '0', bold }) => {
   const { t } = useTheme();
   const [localValue, setLocalValue] = useState(value ? fmtNum(value) : '');
@@ -861,7 +861,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           <label className="font-semibold w-48 shrink-0" style={{ fontSize: 13, color: t.text1 }}>Total Sum Insured</label>
           <CurrencyInput currency={form.currency} value={form.totalSumInsured}
             onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })}
-            bold bgClass="bg-blue-50/50" borderClass="border-2 border-blue-200" />
+            bold />
         </div>
       </SectionCard>
 
@@ -1014,7 +1014,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 const rate = basis > 0 ? Math.round((v / basis) * 10000) / 100 : 0;
                 updateForm({ grossPremium: v, premiumRate: rate, grossPremiumManual: true });
               }}
-              bold bgClass="bg-blue-50/50" borderClass="border-2 border-blue-200" />
+              bold />
           </div>
         </div>
 

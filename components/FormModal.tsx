@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useTheme } from '../theme/useTheme';
 
 interface FormModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export const FormModal: React.FC<FormModalProps> = ({
   subtitle,
   children
 }) => {
+  const { t } = useTheme();
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -44,16 +46,17 @@ export const FormModal: React.FC<FormModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl mx-4 my-auto min-h-0">
+      <div className="relative rounded-2xl w-full max-w-6xl mx-4 my-auto min-h-0" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white rounded-t-2xl border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 z-10 rounded-t-2xl border-b px-6 py-4 flex items-center justify-between" style={{ background: t.bgPanel, borderColor: t.border }}>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">{title}</h2>
-            {subtitle && <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>}
+            <h2 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{title}</h2>
+            {subtitle && <p className="text-sm mt-0.5" style={{ color: t.text4 }}>{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors"
+            style={{ color: t.text4 }}
             title="Close"
           >
             <X size={20} />

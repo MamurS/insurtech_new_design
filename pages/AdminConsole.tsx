@@ -726,28 +726,28 @@ const AdminConsole: React.FC = () => {
   const renderDashboardHome = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>System Overview</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>System Overview</h2>
             <button onClick={loadAllData} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/> Refresh</button>
         </div>
 
         {/* Top Stats */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { label: 'Policies', value: stats.totalPolicies, icon: FileText, color: 'blue' },
-              { label: 'Slips', value: stats.totalSlips, icon: ScrollText, color: 'orange' },
-              { label: 'Open Claims', value: stats.activeClaims, icon: AlertCircle, color: 'red' },
-              { label: 'Pending Tasks', value: stats.pendingTasks, icon: Clock, color: 'yellow' },
-              { label: 'Users', value: stats.totalUsers, icon: Users, color: 'purple' },
-              { label: 'Deleted', value: stats.deletedItems, icon: Trash2, color: 'gray', textRed: true },
+              { label: 'Policies', value: stats.totalPolicies, icon: FileText, bg: `${t.accent}20`, fg: t.accent },
+              { label: 'Slips', value: stats.totalSlips, icon: ScrollText, bg: t.warningBg, fg: t.warning },
+              { label: 'Open Claims', value: stats.activeClaims, icon: AlertCircle, bg: t.dangerBg, fg: t.danger },
+              { label: 'Pending Tasks', value: stats.pendingTasks, icon: Clock, bg: t.warningBg, fg: t.warning },
+              { label: 'Users', value: stats.totalUsers, icon: Users, bg: '#f3e8ff', fg: '#a855f7' },
+              { label: 'Deleted', value: stats.deletedItems, icon: Trash2, bg: t.bgCard, fg: t.text3, textRed: true },
             ].map((stat, i) => (
               <div key={i} className="p-5 rounded-xl border" style={{ background: t.bgPanel, borderColor: t.border, boxShadow: t.shadow }}>
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 bg-${stat.color}-100 rounded-lg flex items-center justify-center`}>
-                    <stat.icon size={20} className={`text-${stat.color}-600`} />
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: stat.bg }}>
+                    <stat.icon size={20} style={{ color: stat.fg }} />
                   </div>
                   <div>
-                    <div className="text-xs font-medium" style={{ color: t.text3 }}>{stat.label}</div>
-                    <div className={`text-2xl font-bold ${stat.textRed ? '' : ''}`} style={{ color: t.danger }}>{stat.value}</div>
+                    <div style={{ color: t.text3, fontSize: 12, fontWeight: 500 }}>{stat.label}</div>
+                    <div style={{ color: stat.textRed ? t.danger : t.text1, fontSize: 24, fontWeight: 700 }}>{stat.value}</div>
                   </div>
                 </div>
               </div>
@@ -760,7 +760,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Total Premium</p>
-                        <p className="text-3xl font-bold mt-1">${totalPremium.toLocaleString()}</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>${totalPremium.toLocaleString()}</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{rawPolicies.length} policies</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><DollarSign size={28}/></div>
@@ -770,7 +770,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Claims Paid</p>
-                        <p className="text-3xl font-bold mt-1">${totalClaimsPaid.toLocaleString()}</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>${totalClaimsPaid.toLocaleString()}</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{claims.length} claims</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><TrendingDown size={28}/></div>
@@ -780,7 +780,7 @@ const AdminConsole: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div>
                         <p className="text-sm" style={{ opacity: 0.8 }}>Loss Ratio</p>
-                        <p className="text-3xl font-bold mt-1">{lossRatio.toFixed(1)}%</p>
+                        <p className="mt-1" style={{ fontSize: 24, fontWeight: 700 }}>{lossRatio.toFixed(1)}%</p>
                         <p className="text-xs mt-2" style={{ opacity: 0.7 }}>{lossRatio > 70 ? 'Above target' : 'Within target'}</p>
                     </div>
                     <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}><PieChart size={28}/></div>
@@ -791,7 +791,7 @@ const AdminConsole: React.FC = () => {
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
-                <h3 className="text-lg font-semibold mb-4" style={{ color: t.text1 }}>Policy Status</h3>
+                <h3 className="mb-4" style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Policy Status</h3>
                 <div className="flex items-center justify-center gap-8">
                     <div className="relative w-40 h-40">
                         <svg viewBox="0 0 36 36" className="w-40 h-40 transform -rotate-90">
@@ -800,7 +800,7 @@ const AdminConsole: React.FC = () => {
                             <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#eab308" strokeWidth="3" strokeDasharray={`${(pendingPolicies/Math.max(stats.totalPolicies,1))*100} 100`} strokeDashoffset={`-${(activePolicies/Math.max(stats.totalPolicies,1))*100}`}/>
                             <circle cx="18" cy="18" r="15.9155" fill="none" stroke="#ef4444" strokeWidth="3" strokeDasharray={`${(expiredPolicies/Math.max(stats.totalPolicies,1))*100} 100`} strokeDashoffset={`-${((activePolicies+pendingPolicies)/Math.max(stats.totalPolicies,1))*100}`}/>
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center"><span className="text-2xl font-bold">{stats.totalPolicies}</span></div>
+                        <div className="absolute inset-0 flex items-center justify-center"><span style={{ fontSize: 24, fontWeight: 700 }}>{stats.totalPolicies}</span></div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex items-center gap-3"><div className="w-4 h-4 rounded-full" style={{ background: t.success }}></div><span className="text-sm">Active ({activePolicies})</span></div>
@@ -810,7 +810,7 @@ const AdminConsole: React.FC = () => {
                 </div>
             </div>
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
-                <h3 className="text-lg font-semibold mb-4" style={{ color: t.text1 }}>Slip Status</h3>
+                <h3 className="mb-4" style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Slip Status</h3>
                 <div className="space-y-3">
                     {['DRAFT','PENDING','QUOTED','BOUND','CLOSED','DECLINED'].map(status => {
                         const count = rawSlips.filter(s => s.status === status).length;
@@ -834,7 +834,7 @@ const AdminConsole: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Recent Activity</h3>
+                    <h3 style={{ fontSize: 15, fontWeight: 600 }}>Recent Activity</h3>
                     <button onClick={() => setActiveSection('activity-log')} className="text-sm" style={{ color: t.accent }}>View All →</button>
                 </div>
                 <div className="space-y-3">
@@ -855,7 +855,7 @@ const AdminConsole: React.FC = () => {
             </div>
             <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Pending Tasks</h3>
+                    <h3 style={{ fontSize: 15, fontWeight: 600 }}>Pending Tasks</h3>
                     <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{ background: t.warningBg, color: t.warning }}>{tasks.filter(t=>t.status==='PENDING').length} pending</span>
                 </div>
                 <div className="space-y-3">
@@ -882,7 +882,7 @@ const AdminConsole: React.FC = () => {
   const renderActivityLog = () => (
     <div className="space-y-4 animate-in fade-in duration-300">
         <div className="flex items-center justify-between">
-            <div><h2 className="text-xl font-bold" style={{ color: t.text1 }}>Activity Log</h2><p className="text-sm" style={{ color: t.text3 }}>Track all system activities</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Activity Log</h2><p className="text-sm" style={{ color: t.text3 }}>Track all system activities</p></div>
             <button onClick={fetchActivityLogs} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium" style={{ background: t.bgCard }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = t.bgCard)}><RefreshCw size={16}/>Refresh</button>
         </div>
         <div className="p-4 rounded-xl border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
@@ -950,8 +950,8 @@ const AdminConsole: React.FC = () => {
   const renderDepartments = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Departments</h2><p className="text-sm" style={{ color: t.text3 }}>Manage organization structure.</p></div>
-            <button onClick={()=>handleEditDepartment()} className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-medium" style={{ background: t.accent }}><Plus size={18}/> Add Department</button>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Departments</h2><p className="text-sm" style={{ color: t.text3 }}>Manage organization structure.</p></div>
+            <button onClick={()=>handleEditDepartment()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add Department</button>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <table className="w-full text-left">
@@ -978,21 +978,21 @@ const AdminConsole: React.FC = () => {
   const renderRoles = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>RBAC Roles</h2><p className="text-sm" style={{ color: t.text3 }}>Manage roles and permissions.</p></div>
-            <button onClick={()=>handleEditRole()} className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-medium" style={{ background: t.accent }}><Plus size={18}/> Add Role</button>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>RBAC Roles</h2><p className="text-sm" style={{ color: t.text3 }}>Manage roles and permissions.</p></div>
+            <button onClick={()=>handleEditRole()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add Role</button>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <table className="w-full text-left">
                 <thead style={{ background: t.bgCard, color: t.text2 }}><tr><th className="px-6 py-4 w-12">Lvl</th><th className="px-6 py-4">Role</th><th className="px-6 py-4">Department</th><th className="px-6 py-4 text-center">System</th><th className="px-6 py-4 text-center">Status</th><th className="px-6 py-4 text-right">Actions</th></tr></thead>
                 <tbody className="divide-y">
                     {roles.map(role => (
-                        <tr key={role.id} className="hover:bg-gray-50">
+                        <tr key={role.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                             <td className="px-6 py-4 font-mono font-bold" style={{ color: t.text3 }}>{role.level}</td>
                             <td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{role.name}</div><div className="text-xs" style={{ color: t.text3 }}>{role.description}</div></td>
                             <td className="px-6 py-4 text-sm" style={{ color: t.text2 }}>{role.department||'-'}</td>
                             <td className="px-6 py-4 text-center">{role.isSystemRole && <Lock size={14} className="inline" style={{ color: t.warning }}/>}</td>
                             <td className="px-6 py-4 text-center">{role.isActive ? <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.successBg, color: t.success }}>Active</span> : <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.bgCard, color: t.text3 }}>Inactive</span>}</td>
-                            <td className="px-6 py-4 text-right"><button onClick={()=>handleEditRole(role)} className="hover:bg-blue-50 p-2 rounded" style={{ color: t.accent }}><Edit size={16}/></button></td>
+                            <td className="px-6 py-4 text-right"><button onClick={()=>handleEditRole(role)} className="p-2 rounded" style={{ color: t.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = t.accentMuted)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Edit size={16}/></button></td>
                         </tr>
                     ))}
                 </tbody>
@@ -1015,8 +1015,8 @@ const AdminConsole: React.FC = () => {
     return (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>User Management</h2>
-            <button onClick={()=>handleEditUser()} className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-medium" style={{ background: t.accent }}><Plus size={18}/> Add User</button>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>User Management</h2>
+            <button onClick={()=>handleEditUser()} className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/> Add User</button>
         </div>
         <div className="rounded-xl border overflow-hidden min-h-[300px]" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <div className="p-4 border-b text-sm flex items-center justify-between" style={{ background: `${t.accent}18`, color: t.accent }}>
@@ -1036,7 +1036,7 @@ const AdminConsole: React.FC = () => {
                             <tr key={u.id} className={`${u.isActive ? 'hover:' : '/50 opacity-60'}`} style={{ background: t.bgCard }}>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${u.isActive ? 'bg-slate-200 ' : ' '}`} style={{ background: t.bgHover, color: t.text4 }}>{u.avatarUrl||u.fullName.substring(0,2).toUpperCase()}</div>
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs" style={{ background: t.bgHover, color: t.text4 }}>{u.avatarUrl||u.fullName.substring(0,2).toUpperCase()}</div>
                                         <div>
                                             <div className="flex items-center gap-2">
                                                 <span className={`font-bold ${u.isActive ? '' : ''}`} style={{ color: t.text3 }}>{u.fullName}</span>
@@ -1049,7 +1049,7 @@ const AdminConsole: React.FC = () => {
                                 <td className="px-6 py-4"><div className={`text-sm font-medium ${u.isActive ? '' : ''}`} style={{ color: t.text3 }}>{u.role}</div><div className="text-xs" style={{ color: t.text3 }}>{u.department||'No Dept'}</div></td>
                                 <td className="px-6 py-4 text-center">{u.isActive ? <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.successBg, color: t.success }}>Active</span> : <span className="text-xs px-2 py-1 rounded-full" style={{ background: t.dangerBg, color: t.danger }}>Deactivated</span>}</td>
                                 <td className="px-6 py-4 text-right">
-                                    <button onClick={()=>handleEditUser(u)} className="hover:bg-blue-50 p-2 rounded" style={{ color: t.accent }} title="Edit user"><Edit size={16}/></button>
+                                    <button onClick={()=>handleEditUser(u)} className="p-2 rounded" style={{ color: t.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = t.accentMuted)} onMouseLeave={(e) => (e.currentTarget.style.background = '')} title="Edit user"><Edit size={16}/></button>
                                 </td>
                             </tr>
                         ))}
@@ -1071,7 +1071,7 @@ const AdminConsole: React.FC = () => {
         {showUserModal && (
             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                 <div className="rounded-xl w-full max-w-lg" style={{ background: t.bgPanel, boxShadow: t.shadowLg }}>
-                    <div className="p-6 border-b flex justify-between items-center"><h3 className="font-bold text-xl" style={{ color: t.text1 }}>{currentUser.id?'Edit User':'Create User'}</h3><button onClick={()=>setShowUserModal(false)} className="hover:text-gray-600" style={{ color: t.text4 }}><X size={24}/></button></div>
+                    <div className="p-6 border-b flex justify-between items-center"><h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{currentUser.id?'Edit User':'Create User'}</h3><button onClick={()=>setShowUserModal(false)} style={{ color: t.text4 }}><X size={24}/></button></div>
                     <div className="p-6 space-y-4">
                         <div><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Full Name *</label><input className="w-full p-2.5 border rounded-lg" value={currentUser.fullName||''} onChange={e=>setCurrentUser({...currentUser,fullName:e.target.value})}/></div>
                         <div><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Email *</label><input type="email" className="w-full p-2.5 border rounded-lg" value={currentUser.email||''} onChange={e=>setCurrentUser({...currentUser,email:e.target.value})} disabled={!!currentUser.id}/></div>
@@ -1084,8 +1084,8 @@ const AdminConsole: React.FC = () => {
                     </div>
                     <div className="p-6 border-t rounded-b-xl" style={{ background: t.bgCard }}>
                         <div className="flex justify-end gap-3">
-                            <button onClick={()=>setShowUserModal(false)} className="px-4 py-2 font-medium hover:bg-gray-200 rounded-lg" style={{ color: t.text2 }}>Cancel</button>
-                            <button onClick={handleSaveUser} disabled={actionLoading} className="px-4 py-2 text-white font-bold rounded-lg flex items-center gap-2 disabled:opacity-70" style={{ background: t.accent }}>{actionLoading?<Loader2 className="animate-spin" size={16}/>:<Save size={16}/>}Save</button>
+                            <button onClick={()=>setShowUserModal(false)} className="px-4 py-2 font-medium rounded-lg" style={{ color: t.text2 }} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>Cancel</button>
+                            <button onClick={handleSaveUser} disabled={actionLoading} className="px-4 py-2 font-bold rounded-lg flex items-center gap-2 disabled:opacity-70" style={{ background: t.accent, color: '#fff' }}>{actionLoading?<Loader2 className="animate-spin" size={16}/>:<Save size={16}/>}Save</button>
                         </div>
                         {currentUser.id && (
                             <div className="border-t pt-4 mt-4" style={{ borderColor: t.border }}>
@@ -1102,7 +1102,7 @@ const AdminConsole: React.FC = () => {
                                         {isSuperAdmin && currentUser.id !== user?.id && (
                                             <button
                                                 onClick={() => { setShowUserModal(false); setDeactivateConfirm({ show: true, user: currentUser as Profile }); }}
-                                                className="flex items-center gap-1.5 px-3 py-2 text-sm border border-red-300 rounded-lg hover:bg-red-50" style={{ color: t.danger }}
+                                                className="flex items-center gap-1.5 px-3 py-2 text-sm border rounded-lg" style={{ color: t.danger, borderColor: t.danger }}
                                             >
                                                 <UserX size={14}/> Deactivate User
                                             </button>
@@ -1126,17 +1126,17 @@ const AdminConsole: React.FC = () => {
   const renderDatabaseBrowser = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Database Browser</h2>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Database Browser</h2>
             <div className="flex rounded-lg p-1 border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>{(['policies','slips','clauses'] as const).map(type=><button key={type} onClick={()=>setDbViewType(type)} className={`px-4 py-2 text-sm font-bold capitalize rounded-md transition-colors ${dbViewType===type?' ':' hover:'}`} style={{ color: t.accent, background: `${t.accent}20` }}>{type}</button>)}</div>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <div className="max-h-[600px] overflow-auto">
                 <table className="w-full text-left text-sm">
                     <thead className="font-semibold sticky top-0" style={{ background: t.bgCard, color: t.text2 }}><tr><th className="px-6 py-3 border-b">ID</th><th className="px-6 py-3 border-b">Reference</th><th className="px-6 py-3 border-b">Status</th><th className="px-6 py-3 border-b text-right">Raw</th></tr></thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {dbViewType==='policies' && rawPolicies.map(p=><tr key={p.id} className="hover:bg-gray-50"><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{p.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{p.policyNumber}</td><td className="px-6 py-3">{p.status} | {p.insuredName}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(p)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
-                        {dbViewType==='slips' && rawSlips.map(s=><tr key={s.id} className="hover:bg-gray-50"><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{s.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{s.slipNumber}</td><td className="px-6 py-3">{s.status||'Active'} | {s.insuredName}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(s)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
-                        {dbViewType==='clauses' && rawClauses.map(c=><tr key={c.id} className="hover:bg-gray-50"><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{c.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{c.title}</td><td className="px-6 py-3">{c.category}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(c)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
+                    <tbody className="divide-y">
+                        {dbViewType==='policies' && rawPolicies.map(p=><tr key={p.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{p.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{p.policyNumber}</td><td className="px-6 py-3">{p.status} | {p.insuredName}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(p)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
+                        {dbViewType==='slips' && rawSlips.map(s=><tr key={s.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{s.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{s.slipNumber}</td><td className="px-6 py-3">{s.status||'Active'} | {s.insuredName}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(s)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
+                        {dbViewType==='clauses' && rawClauses.map(c=><tr key={c.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-3 font-mono text-xs" style={{ color: t.text3 }}>{c.id.substring(0,8)}...</td><td className="px-6 py-3 font-medium">{c.title}</td><td className="px-6 py-3">{c.category}</td><td className="px-6 py-3 text-right"><button onClick={()=>console.log(c)} className="hover:underline text-xs" style={{ color: t.accent }}>Log</button></td></tr>)}
                     </tbody>
                 </table>
             </div>
@@ -1147,16 +1147,16 @@ const AdminConsole: React.FC = () => {
   const renderRecycleBin = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <div><h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Recycle Bin</h2><p className="text-sm" style={{ color: t.text3 }}>Recover or purge deleted items.</p></div>
+            <div><h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Recycle Bin</h2><p className="text-sm" style={{ color: t.text3 }}>Recover or purge deleted items.</p></div>
             <div className="flex rounded-lg p-1 border" style={{ background: t.bgPanel, boxShadow: t.shadow }}>{(['policies','slips','clauses'] as const).map(type=><button key={type} onClick={()=>setRecycleType(type)} className={`px-4 py-2 text-sm font-bold capitalize rounded-md transition-colors ${recycleType===type?' ':' hover:'}`} style={{ color: t.danger, background: t.dangerBg }}>{type}</button>)}</div>
         </div>
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow }}>
             <table className="w-full text-left">
                 <thead style={{ background: t.bgCard, color: t.text2 }}><tr><th className="px-6 py-4">Item</th><th className="px-6 py-4 text-center">Actions</th></tr></thead>
-                <tbody className="divide-y divide-gray-100">
-                    {recycleType==='policies' && deletedPolicies.map(p=><tr key={p.id} className="hover:bg-gray-50"><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{p.policyNumber}</div><div className="text-sm" style={{ color: t.text3 }}>{p.insuredName}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,p.id)} className="hover:bg-green-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,p.id)} className="hover:bg-red-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }}><Trash2 size={14}/>Purge</button></td></tr>)}
-                    {recycleType==='slips' && deletedSlips.map(s=><tr key={s.id} className="hover:bg-gray-50"><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{s.slipNumber}</div><div className="text-sm" style={{ color: t.text3 }}>{s.insuredName}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,s.id)} className="hover:bg-green-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,s.id)} className="hover:bg-red-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }}><Trash2 size={14}/>Purge</button></td></tr>)}
-                    {recycleType==='clauses' && deletedClauses.map(c=><tr key={c.id} className="hover:bg-gray-50"><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{c.title}</div><div className="text-sm" style={{ color: t.text3 }}>{c.category}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,c.id)} className="hover:bg-green-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,c.id)} className="hover:bg-red-50 px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }}><Trash2 size={14}/>Purge</button></td></tr>)}
+                <tbody className="divide-y">
+                    {recycleType==='policies' && deletedPolicies.map(p=><tr key={p.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{p.policyNumber}</div><div className="text-sm" style={{ color: t.text3 }}>{p.insuredName}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,p.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }} onMouseEnter={(e) => (e.currentTarget.style.background = t.successBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,p.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Trash2 size={14}/>Purge</button></td></tr>)}
+                    {recycleType==='slips' && deletedSlips.map(s=><tr key={s.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{s.slipNumber}</div><div className="text-sm" style={{ color: t.text3 }}>{s.insuredName}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,s.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }} onMouseEnter={(e) => (e.currentTarget.style.background = t.successBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,s.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Trash2 size={14}/>Purge</button></td></tr>)}
+                    {recycleType==='clauses' && deletedClauses.map(c=><tr key={c.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><td className="px-6 py-4"><div className="font-bold" style={{ color: t.text1 }}>{c.title}</div><div className="text-sm" style={{ color: t.text3 }}>{c.category}</div></td><td className="px-6 py-4 text-center flex justify-center gap-3"><button onClick={e=>handleRestore(e,c.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.success }} onMouseEnter={(e) => (e.currentTarget.style.background = t.successBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><RefreshCw size={14}/>Restore</button><button onClick={e=>handleHardDelete(e,c.id)} className="px-3 py-1 rounded font-bold text-sm flex items-center gap-1" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Trash2 size={14}/>Purge</button></td></tr>)}
                     {((recycleType==='policies'&&deletedPolicies.length===0)||(recycleType==='slips'&&deletedSlips.length===0)||(recycleType==='clauses'&&deletedClauses.length===0)) && <tr><td colSpan={2} className="px-6 py-8 text-center italic" style={{ color: t.text4 }}>No deleted items.</td></tr>}
                 </tbody>
             </table>
@@ -1167,11 +1167,11 @@ const AdminConsole: React.FC = () => {
   const renderTemplates = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Policy Templates</h2>
-            <button onClick={()=>handleEditTemplate()} className="text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2" style={{ background: t.accent }}><Plus size={18}/>New</button>
+            <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Policy Templates</h2>
+            <button onClick={()=>handleEditTemplate()} className="px-4 py-2 rounded-lg font-bold flex items-center gap-2" style={{ background: t.accent, color: '#fff' }}><Plus size={18}/>New</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {templates.map(t=><div key={t.id} className="p-5 rounded-xl border" style={{ background: t.bgPanel, boxShadow: t.shadow }}><div className="flex justify-between items-start mb-3"><h3 className="font-bold" style={{ color: t.text1 }}>{t.name}</h3><div className="flex gap-2"><button onClick={()=>handleEditTemplate(t)} className="hover:bg-blue-50 p-1.5 rounded" style={{ color: t.accent }}><Edit size={16}/></button><button onClick={()=>handleDeleteTemplate(t.id)} className="hover:bg-red-50 p-1.5 rounded" style={{ color: t.danger }}><Trash2 size={16}/></button></div></div><p className="text-sm mb-2" style={{ color: t.text2 }}>{t.description||'No description.'}</p><div className="p-2 rounded text-xs font-mono truncate" style={{ background: t.bgCard, color: t.text3 }}>{t.id}</div></div>)}
+            {templates.map(tpl=><div key={tpl.id} className="p-5 rounded-xl border" style={{ background: t.bgPanel, boxShadow: t.shadow }}><div className="flex justify-between items-start mb-3"><h3 className="font-bold" style={{ color: t.text1 }}>{tpl.name}</h3><div className="flex gap-2"><button onClick={()=>handleEditTemplate(tpl)} className="p-1.5 rounded" style={{ color: t.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = t.accentMuted)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Edit size={16}/></button><button onClick={()=>handleDeleteTemplate(tpl.id)} className="p-1.5 rounded" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}><Trash2 size={16}/></button></div></div><p className="text-sm mb-2" style={{ color: t.text2 }}>{tpl.description||'No description.'}</p><div className="p-2 rounded text-xs font-mono truncate" style={{ background: t.bgCard, color: t.text3 }}>{tpl.id}</div></div>)}
         </div>
         {isEditingTemplate && (
             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1182,7 +1182,7 @@ const AdminConsole: React.FC = () => {
                         <div><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label><input className="w-full p-2 border rounded" value={currentTemplate.description} onChange={e=>setCurrentTemplate({...currentTemplate,description:e.target.value})}/></div>
                         <div className="flex-1 flex flex-col"><label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>HTML Content</label><textarea className="w-full flex-1 p-2 border rounded font-mono text-xs min-h-[300px]" value={currentTemplate.content} onChange={e=>setCurrentTemplate({...currentTemplate,content:e.target.value})}/></div>
                     </div>
-                    <div className="p-4 border-t flex justify-end gap-2"><button onClick={()=>setIsEditingTemplate(false)} className="px-4 py-2 font-medium" style={{ color: t.text2 }}>Cancel</button><button onClick={handleSaveTemplate} className="px-4 py-2 text-white font-bold rounded" style={{ background: t.accent }}>Save</button></div>
+                    <div className="p-4 border-t flex justify-end gap-2"><button onClick={()=>setIsEditingTemplate(false)} className="px-4 py-2 font-medium" style={{ color: t.text2 }}>Cancel</button><button onClick={handleSaveTemplate} className="px-4 py-2 font-bold rounded" style={{ background: t.accent, color: '#fff' }}>Save</button></div>
                 </div>
             </div>
         )}
@@ -1204,7 +1204,7 @@ const AdminConsole: React.FC = () => {
       <div className="space-y-6 animate-in fade-in duration-300">
         {/* Header */}
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2" style={{ color: t.text1 }}>
+          <h2 className="flex items-center gap-2" style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>
             <Globe style={{ color: t.accent }} size={28} />
             Exchange Rates
           </h2>
@@ -1216,12 +1216,12 @@ const AdminConsole: React.FC = () => {
         {/* Exchange Rates Card */}
         <div className="rounded-xl border overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow, borderColor: t.border }}>
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 text-white">
+          <div className="p-4 flex items-center justify-between" style={{ background: t.accent }}>
+            <div className="flex items-center gap-3" style={{ color: '#fff' }}>
               <Globe size={24} />
               <div>
                 <h3 className="font-bold">CBU Exchange Rates</h3>
-                <p className="text-blue-100 text-sm">
+                <p className="text-sm" style={{ opacity: 0.8 }}>
                   {cbuLastUpdated
                     ? `Last synced: ${cbuLastUpdated.toLocaleTimeString()}`
                     : 'Click on date to load rates'}
@@ -1234,7 +1234,10 @@ const AdminConsole: React.FC = () => {
                   setPopupDate(cbuSelectedDate);
                   setShowDatePopup(true);
                 }}
-                className="text-white text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full cursor-pointer transition-colors flex items-center gap-2"
+                className="text-sm px-3 py-1.5 rounded-full cursor-pointer transition-colors flex items-center gap-2"
+                style={{ color: '#fff', background: 'rgba(255,255,255,0.2)' }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.3)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.2)')}
               >
                 <span>Rate Date: {cbuRates.length > 0 && cbuRates[0]?.date ? formatDate(cbuRates[0].date) : formatDate(toISODateString(cbuSelectedDate) || '')}</span>
                 <Edit size={14} />
@@ -1258,7 +1261,7 @@ const AdminConsole: React.FC = () => {
                       <h4 className="font-semibold" style={{ color: t.text1 }}>Select Date</h4>
                       <button
                         onClick={() => setShowDatePopup(false)}
-                        className="hover:text-gray-600" style={{ color: t.text4 }}
+                        style={{ color: t.text4 }}
                       >
                         <X size={18} />
                       </button>
@@ -1273,7 +1276,7 @@ const AdminConsole: React.FC = () => {
                       <button
                         onClick={() => refreshCBURates(popupDate)}
                         disabled={cbuLoading}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-white rounded-lg font-medium transition-colors disabled:opacity-50" style={{ background: t.accent }}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors disabled:opacity-50" style={{ background: t.accent, color: '#fff' }}
                       >
                         <RefreshCw size={18} className={cbuLoading ? 'animate-spin' : ''} />
                         {cbuLoading ? 'Syncing...' : 'Refresh Rates'}
@@ -1290,7 +1293,7 @@ const AdminConsole: React.FC = () => {
 
           {/* Warning State (cached rates) */}
           {cbuError && cbuUsingCachedRates && cbuRates.length > 0 && (
-            <div className="p-4 border-b border-amber-200 flex items-center gap-2" style={{ background: t.warningBg, color: t.warning }}>
+            <div className="p-4 border-b flex items-center gap-2" style={{ background: t.warningBg, color: t.warning, borderColor: t.warning }}>
               <AlertTriangle size={18} />
               <span>{cbuError}</span>
             </div>
@@ -1298,12 +1301,12 @@ const AdminConsole: React.FC = () => {
 
           {/* Error State (no rates available) */}
           {cbuError && !cbuUsingCachedRates && (
-            <div className="p-4 border-b border-red-200 flex items-center gap-2" style={{ background: t.dangerBg, color: t.danger }}>
+            <div className="p-4 border-b flex items-center gap-2" style={{ background: t.dangerBg, color: t.danger, borderColor: t.danger }}>
               <AlertTriangle size={18} />
               <span>{cbuError}</span>
               <button
                 onClick={loadCBURates}
-                className="ml-auto text-sm px-3 py-1 hover:bg-red-200 rounded transition-colors" style={{ background: t.dangerBg }}
+                className="ml-auto text-sm px-3 py-1 rounded transition-colors" style={{ background: t.dangerBg }}
               >
                 Retry
               </button>
@@ -1332,7 +1335,7 @@ const AdminConsole: React.FC = () => {
                     <th className="text-right px-4 py-3 font-semibold">Per 1 Unit</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y">
                   {cbuRates.map((rate, idx) => (
                     <tr
                       key={rate.code}
@@ -1340,7 +1343,7 @@ const AdminConsole: React.FC = () => {
                     >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-2xl">{getCurrencyFlag(rate.code)}</span>
+                          <span style={{ fontSize: 24 }}>{getCurrencyFlag(rate.code)}</span>
                           <span className="font-medium" style={{ color: t.text1 }}>{rate.name}</span>
                         </div>
                       </td>
@@ -1353,7 +1356,7 @@ const AdminConsole: React.FC = () => {
                         {rate.nominal}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <span className="font-semibold text-lg" style={{ color: t.text1 }}>
+                        <span style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>
                           {rate.rawRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
@@ -1413,7 +1416,7 @@ const AdminConsole: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Inward Reinsurance Presets</h2>
+          <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Inward Reinsurance Presets</h2>
           <p className="text-sm mt-1" style={{ color: t.text3 }}>Manage dropdown options for Type of Cover, Class of Cover, and Industry</p>
         </div>
         <button onClick={fetchPresets} className="p-2 rounded-lg" style={{ color: t.text3 }} title="Refresh">
@@ -1425,19 +1428,19 @@ const AdminConsole: React.FC = () => {
       <div className="flex gap-2 border-b">
         <button
           onClick={() => setPresetCategory('TYPE_OF_COVER')}
-          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'TYPE_OF_COVER' ? ' border-b-2 border-blue-600' : ' hover:' }`} style={{ color: t.accent }}
+          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'TYPE_OF_COVER' ? ' border-b-2' : '' }`} style={{ color: t.accent, borderColor: presetCategory === 'TYPE_OF_COVER' ? t.accent : undefined }}
         >
           Type of Cover
         </button>
         <button
           onClick={() => setPresetCategory('CLASS_OF_COVER')}
-          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'CLASS_OF_COVER' ? ' border-b-2 border-blue-600' : ' hover:' }`} style={{ color: t.accent }}
+          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'CLASS_OF_COVER' ? ' border-b-2' : '' }`} style={{ color: t.accent, borderColor: presetCategory === 'CLASS_OF_COVER' ? t.accent : undefined }}
         >
           Class of Cover
         </button>
         <button
           onClick={() => setPresetCategory('INDUSTRY')}
-          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'INDUSTRY' ? ' border-b-2 border-blue-600' : ' hover:' }`} style={{ color: t.accent }}
+          className={`px-4 py-2 font-medium transition-colors ${ presetCategory === 'INDUSTRY' ? ' border-b-2' : '' }`} style={{ color: t.accent, borderColor: presetCategory === 'INDUSTRY' ? t.accent : undefined }}
         >
           Industry
         </button>
@@ -1452,7 +1455,7 @@ const AdminConsole: React.FC = () => {
             <input
               type="text"
               placeholder="e.g., Property, Casualty, Marine..."
-              className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full p-2.5 border rounded-lg outline-none"
               value={newPresetValue}
               onChange={(e) => setNewPresetValue(e.target.value)}
             />
@@ -1462,14 +1465,15 @@ const AdminConsole: React.FC = () => {
             <input
               type="text"
               placeholder="Optional description..."
-              className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full p-2.5 border rounded-lg outline-none"
               value={newPresetDescription}
               onChange={(e) => setNewPresetDescription(e.target.value)}
             />
           </div>
           <button
             onClick={handleAddPreset}
-            className="bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-green-700 flex items-center gap-2"
+            className="px-6 py-2.5 rounded-lg font-bold flex items-center gap-2"
+            style={{ background: t.success, color: '#fff' }}
           >
             <Plus size={18} />
             Add
@@ -1500,9 +1504,9 @@ const AdminConsole: React.FC = () => {
                 <th className="px-6 py-3 text-xs font-bold uppercase text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y">
               {presets.map((preset) => (
-                <tr key={preset.id} className="hover:bg-gray-50">
+                <tr key={preset.id} onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
                   <td className="px-6 py-3">
                     {editingPreset?.id === preset.id ? (
                       <input
@@ -1548,7 +1552,7 @@ const AdminConsole: React.FC = () => {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={handleUpdatePreset}
-                          className="hover:bg-green-50 p-1.5 rounded" style={{ color: t.success }}
+                          className="p-1.5 rounded" style={{ color: t.success }} onMouseEnter={(e) => (e.currentTarget.style.background = t.successBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}
                         >
                           <Save size={16} />
                         </button>
@@ -1563,13 +1567,13 @@ const AdminConsole: React.FC = () => {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => setEditingPreset(preset)}
-                          className="hover:bg-blue-50 p-1.5 rounded" style={{ color: t.accent }}
+                          className="p-1.5 rounded" style={{ color: t.accent }} onMouseEnter={(e) => (e.currentTarget.style.background = t.accentMuted)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}
                         >
                           <Edit size={16} />
                         </button>
                         <button
                           onClick={() => handleDeletePreset(preset.id, preset.value)}
-                          className="hover:bg-red-50 p-1.5 rounded" style={{ color: t.danger }}
+                          className="p-1.5 rounded" style={{ color: t.danger }} onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)} onMouseLeave={(e) => (e.currentTarget.style.background = '')}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -1620,14 +1624,14 @@ const AdminConsole: React.FC = () => {
   const renderSettings = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold" style={{ color: t.text1 }}>Settings</h2>
+        <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Settings</h2>
       </div>
 
       {/* Session Timeout Section */}
       <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, borderColor: t.border }}>
         <div className="flex items-center gap-3 mb-4">
           <Timer size={22} style={{ color: t.accent }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Session Timeout</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Session Timeout</h3>
         </div>
         <p className="text-sm mb-4" style={{ color: t.text3 }}>
           Auto-logout after inactivity. This setting applies globally to all users. Users will see a warning 2 minutes before being logged out.
@@ -1639,7 +1643,7 @@ const AdminConsole: React.FC = () => {
               <button
                 key={opt.value}
                 onClick={() => setSessionTimeoutMinutes(opt.value)}
-                className={`px-4 py-2 text-sm font-medium transition-colors border-r last:border-r-0 ${ sessionTimeoutMinutes === opt.value ? ' text-white' : ' hover:' }`} style={{ background: t.accent, color: t.text2, borderColor: t.borderL }}
+                className="px-4 py-2 text-sm font-medium transition-colors border-r last:border-r-0" style={{ background: sessionTimeoutMinutes === opt.value ? t.accent : 'transparent', color: sessionTimeoutMinutes === opt.value ? '#fff' : t.text2, borderColor: t.borderL }}
               >
                 {opt.label}
               </button>
@@ -1650,7 +1654,7 @@ const AdminConsole: React.FC = () => {
           <button
             onClick={handleSaveSessionTimeout}
             disabled={sessionTimeoutSaving}
-            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg disabled:opacity-50 transition-colors text-sm font-medium" style={{ background: t.accent }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg disabled:opacity-50 transition-colors text-sm font-medium" style={{ background: t.accent, color: '#fff' }}
           >
             {sessionTimeoutSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             Save
@@ -1665,7 +1669,7 @@ const AdminConsole: React.FC = () => {
       <div className="rounded-xl border p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, borderColor: t.border }}>
         <div className="flex items-center gap-3 mb-4">
           <DollarSign size={22} style={{ color: t.accent }} />
-          <h3 className="text-lg font-semibold" style={{ color: t.text1 }}>Operating Expenses (Annual)</h3>
+          <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Operating Expenses (Annual)</h3>
         </div>
         <p className="text-sm mb-4" style={{ color: t.text3 }}>
           Enter total annual operating expenses (salaries, rent, IT, etc.)
@@ -1681,7 +1685,7 @@ const AdminConsole: React.FC = () => {
               value={annualOperatingExpenses}
               onChange={(e) => setAnnualOperatingExpenses(e.target.value)}
               placeholder="0"
-              className="pl-7 pr-4 py-2 border rounded-lg text-sm w-56 focus:ring-purple-500 focus:border-purple-500 outline-none" style={{ borderColor: t.borderL }}
+              className="pl-7 pr-4 py-2 border rounded-lg text-sm w-56 outline-none" style={{ borderColor: t.borderL }}
             />
           </div>
         </div>
@@ -1692,7 +1696,8 @@ const AdminConsole: React.FC = () => {
           <button
             onClick={handleSaveOperatingExpenses}
             disabled={operatingExpensesSaving}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg disabled:opacity-50 transition-colors text-sm font-medium"
+            style={{ background: '#a855f7', color: '#fff' }}
           >
             {operatingExpensesSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
             Save
@@ -1709,24 +1714,24 @@ const AdminConsole: React.FC = () => {
 
   return (
     <div className="min-h-screen flex" style={{ background: t.bgCard }}>
-      <aside className={`bg-slate-900 text-white w-64 flex-shrink-0 flex flex-col transition-all duration-300 ${isSidebarOpen?'':'-ml-64'}`}>
-        <div className="p-6 border-b border-slate-800"><h1 className="font-bold text-xl flex items-center gap-2"><Lock style={{ color: t.danger }}/>Admin Console</h1></div>
+      <aside className={`w-64 flex-shrink-0 flex flex-col transition-all duration-300 ${isSidebarOpen?'':'-ml-64'}`} style={{ background: t.bgSidebar, color: '#fff' }}>
+        <div className="p-6 border-b" style={{ borderColor: t.border }}><h1 className="flex items-center gap-2" style={{ fontSize: 15, fontWeight: 700 }}><Lock style={{ color: t.danger }}/>Admin Console</h1></div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          <button onClick={()=>setActiveSection('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='dashboard'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Activity size={20}/>Dashboard</button>
+          <button onClick={()=>setActiveSection('dashboard')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='dashboard' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='dashboard') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='dashboard') e.currentTarget.style.background = ''; }}><Activity size={20}/>Dashboard</button>
           <div className="pt-4 pb-2 px-4 text-xs font-bold uppercase" style={{ color: t.text3 }}>Access Control</div>
-          <button onClick={()=>setActiveSection('users')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='users'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Users size={20}/>Users</button>
-          <button onClick={()=>setActiveSection('roles')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='roles'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><ShieldCheck size={20}/>Roles & Permissions</button>
-          <button onClick={()=>setActiveSection('departments')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='departments'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Building2 size={20}/>Departments</button>
+          <button onClick={()=>setActiveSection('users')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='users' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='users') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='users') e.currentTarget.style.background = ''; }}><Users size={20}/>Users</button>
+          <button onClick={()=>setActiveSection('roles')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='roles' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='roles') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='roles') e.currentTarget.style.background = ''; }}><ShieldCheck size={20}/>Roles & Permissions</button>
+          <button onClick={()=>setActiveSection('departments')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='departments' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='departments') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='departments') e.currentTarget.style.background = ''; }}><Building2 size={20}/>Departments</button>
           <div className="pt-4 pb-2 px-4 text-xs font-bold uppercase" style={{ color: t.text3 }}>System</div>
-          <button onClick={()=>setActiveSection('database')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='database'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Table size={20}/>Database Browser</button>
-          <button onClick={()=>setActiveSection('recycle')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='recycle'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Trash2 size={20}/>Recycle Bin</button>
-          <button onClick={()=>setActiveSection('activity-log')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='activity-log'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><ScrollText size={20}/>Activity Log</button>
+          <button onClick={()=>setActiveSection('database')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='database' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='database') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='database') e.currentTarget.style.background = ''; }}><Table size={20}/>Database Browser</button>
+          <button onClick={()=>setActiveSection('recycle')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='recycle' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='recycle') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='recycle') e.currentTarget.style.background = ''; }}><Trash2 size={20}/>Recycle Bin</button>
+          <button onClick={()=>setActiveSection('activity-log')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='activity-log' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='activity-log') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='activity-log') e.currentTarget.style.background = ''; }}><ScrollText size={20}/>Activity Log</button>
           <div className="pt-4 pb-2 px-4 text-xs font-bold uppercase" style={{ color: t.text3 }}>Configuration</div>
-          <button onClick={()=>setActiveSection('templates')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='templates'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><FileText size={20}/>Policy Templates</button>
-          <button onClick={()=>setActiveSection('fx')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='fx'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Coins size={20}/>Exchange Rates</button>
-          <button onClick={()=>setActiveSection('presets')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='presets'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><List size={20}/>Reinsurance Presets</button>
-          <button onClick={()=>setActiveSection('settings')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${activeSection==='settings'?' text-white':' hover:bg-slate-800'}`} style={{ color: t.text4, background: t.accent }}><Timer size={20}/>Settings</button>
-          <div className="pt-8 mt-auto"><button onClick={()=>navigate('/')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors" style={{ color: t.text4 }}><LogOut size={20}/>Exit Console</button></div>
+          <button onClick={()=>setActiveSection('templates')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='templates' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='templates') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='templates') e.currentTarget.style.background = ''; }}><FileText size={20}/>Policy Templates</button>
+          <button onClick={()=>setActiveSection('fx')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='fx' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='fx') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='fx') e.currentTarget.style.background = ''; }}><Coins size={20}/>Exchange Rates</button>
+          <button onClick={()=>setActiveSection('presets')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='presets' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='presets') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='presets') e.currentTarget.style.background = ''; }}><List size={20}/>Reinsurance Presets</button>
+          <button onClick={()=>setActiveSection('settings')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={activeSection==='settings' ? { background: t.accent, color: '#fff' } : { color: t.text4 }} onMouseEnter={(e) => { if (activeSection!=='settings') e.currentTarget.style.background = t.bgHover; }} onMouseLeave={(e) => { if (activeSection!=='settings') e.currentTarget.style.background = ''; }}><Timer size={20}/>Settings</button>
+          <div className="pt-8 mt-auto"><button onClick={()=>navigate('/')} className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style={{ color: t.text4 }} onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; e.currentTarget.style.color = '#fff'; }} onMouseLeave={(e) => { e.currentTarget.style.background = ''; e.currentTarget.style.color = t.text4; }}><LogOut size={20}/>Exit Console</button></div>
         </nav>
       </aside>
       <main className="flex-1 p-8 overflow-y-auto h-screen">
