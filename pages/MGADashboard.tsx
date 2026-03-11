@@ -278,8 +278,9 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
   const tabClass = (tabName: string) => {
     const isActive = tab === tabName;
     return {
-      className: 'transition-colors cursor-pointer',
+      className: 'transition-colors',
       style: {
+        cursor: 'pointer',
         paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8,
         fontSize: 14, fontWeight: 500, borderTopLeftRadius: 8, borderTopRightRadius: 8,
         borderBottom: `2px solid ${isActive ? t.accent : 'transparent'}`,
