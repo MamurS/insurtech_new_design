@@ -87,7 +87,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
             'HIGH': { background: t.warningBg, color: t.warning, border: `1px solid ${t.warning}40` },
             'URGENT': { background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}40` }
         };
-        return <span className="px-2 py-1 text-xs font-bold" style={{ ...styles[p], borderRadius: 20 }}>{p}</span>;
+        return <span className="px-2 py-1 text-xs" style={{ ...styles[p], borderRadius: 20, fontWeight: 700 }}>{p}</span>;
     };
 
     const getStatusBadge = (s: TaskStatus) => {
@@ -97,7 +97,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
             'COMPLETED': { background: t.successBg, color: t.success, border: `1px solid ${t.success}40` },
             'CANCELLED': { background: t.bgInput, color: t.text3, border: `1px solid ${t.border}` }
         };
-        return <span className="px-3 py-1 text-xs font-bold" style={{ ...styles[s], borderRadius: 20 }}>{s.replace('_', ' ')}</span>;
+        return <span className="px-3 py-1 text-xs" style={{ ...styles[s], borderRadius: 20, fontWeight: 700 }}>{s.replace('_', ' ')}</span>;
     };
 
     const formatFileSize = (bytes?: number) => {
@@ -152,7 +152,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
 
                     {/* Description */}
                     <div>
-                        <h3 className="font-bold mb-2 text-sm uppercase tracking-wide" style={{ color: t.text1 }}>Description</h3>
+                        <h3 className="mb-2 text-sm uppercase tracking-wide" style={{ color: t.text1, fontWeight: 700 }}>Description</h3>
                         <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: t.text2 }}>
                             {task.description || "No description provided."}
                         </p>
@@ -161,10 +161,10 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                     {/* Attachments */}
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <h3 className="font-bold text-sm uppercase tracking-wide flex items-center gap-2" style={{ color: t.text1 }}>
+                            <h3 className="text-sm uppercase tracking-wide flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}>
                                 <Paperclip size={16}/> Attachments
                             </h3>
-                            <label className={`cursor-pointer text-xs font-bold px-2 py-1 rounded transition-colors flex items-center gap-1 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`} style={{ color: t.accent }}>
+                            <label className={`cursor-pointer text-xs px-2 py-1 rounded transition-colors flex items-center gap-1 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`} style={{ color: t.accent, fontWeight: 700 }}>
                                 {isUploading ? <Loader2 size={12} className="animate-spin"/> : <div className="flex items-center gap-1">+ Add File</div>}
                                 <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={isUploading}/>
                             </label>
@@ -185,7 +185,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                                                 {getFileIcon(file.fileType)}
                                             </div>
                                             <div className="min-w-0">
-                                                <div className="text-sm font-medium truncate" style={{ color: t.text1 }} title={file.fileName}>{file.fileName}</div>
+                                                <div className="text-sm truncate" style={{ color: t.text1, fontWeight: 500 }} title={file.fileName}>{file.fileName}</div>
                                                 <div className="text-xs" style={{ color: t.text4 }}>{formatFileSize(file.fileSize)} • {formatDate(file.uploadedAt)}</div>
                                             </div>
                                         </div>
@@ -220,8 +220,8 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                 <div className="p-4 flex justify-between items-center" style={{ borderTop: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '0 0 12px 12px' }}>
                     <button
                         onClick={handleDeleteTask}
-                        className="px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
-                        style={{ color: t.danger }}
+                        className="px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
+                        style={{ color: t.danger, fontWeight: 500 }}
                     >
                         <Trash2 size={16}/> Delete Task
                     </button>
@@ -230,16 +230,16 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                         {task.status !== 'COMPLETED' ? (
                             <button
                                 onClick={() => handleStatusChange('COMPLETED')}
-                                className="px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2"
-                                style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+                                className="px-4 py-2 rounded-lg text-sm flex items-center gap-2"
+                                style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                             >
                                 <CheckCircle size={16}/> Mark Complete
                             </button>
                         ) : (
                             <button
                                 onClick={() => handleStatusChange('PENDING')}
-                                className="px-4 py-2 rounded-lg text-sm font-medium"
-                                style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }}
+                                className="px-4 py-2 rounded-lg text-sm"
+                                style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2, fontWeight: 500 }}
                             >
                                 Reopen Task
                             </button>

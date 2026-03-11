@@ -124,10 +124,11 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className="flex-1 py-3 text-sm font-bold uppercase tracking-wide border-b-2 transition-colors"
+                            className="flex-1 py-3 text-sm uppercase tracking-wide border-b-2 transition-colors"
                             style={{
                                 borderColor: activeTab === tab ? t.accent : 'transparent',
-                                color: activeTab === tab ? t.accent : t.text4
+                                color: activeTab === tab ? t.accent : t.text4,
+                                fontWeight: 700
                             }}
                         >
                             {tab}
@@ -139,7 +140,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                     {activeTab === 'details' && (
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Role Name</label>
+                                <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Role Name</label>
                                 <input
                                     className="w-full p-2 border rounded"
                                     style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
@@ -148,7 +149,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label>
+                                <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Description</label>
                                 <textarea
                                     className="w-full p-2 border rounded"
                                     style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
@@ -158,7 +159,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Department</label>
+                                    <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Department</label>
                                     <input
                                         className="w-full p-2 border rounded"
                                         style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
@@ -167,7 +168,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Hierarchy Level</label>
+                                    <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Hierarchy Level</label>
                                     <input
                                         type="number"
                                         className="w-full p-2 border rounded"
@@ -186,7 +187,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                     onChange={e => setFormData({...formData, isActive: e.target.checked})}
                                     className="w-5 h-5 rounded"
                                 />
-                                <label htmlFor="isActive" className="font-medium" style={{ color: t.text2 }}>Role is Active</label>
+                                <label htmlFor="isActive" style={{ color: t.text2, fontWeight: 500 }}>Role is Active</label>
                             </div>
                         </div>
                     )}
@@ -197,7 +198,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                 const typedPerms = perms as Permission[];
                                 return (
                                 <div key={module} className="border rounded-lg overflow-hidden" style={{ borderColor: t.border }}>
-                                    <div className="px-4 py-2 font-bold uppercase text-xs flex justify-between items-center" style={{ background: t.bgCard, color: t.text2 }}>
+                                    <div className="px-4 py-2 uppercase text-xs flex justify-between items-center" style={{ background: t.bgCard, color: t.text2, fontWeight: 700 }}>
                                         {module}
                                         <span className="text-xs font-normal" style={{ color: t.text4 }}>{typedPerms.filter(p => selectedPermissions.includes(p.id)).length}/{typedPerms.length}</span>
                                     </div>
@@ -215,7 +216,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                                         {isSelected ? <CheckSquare size={16}/> : <Square size={16}/>}
                                                     </div>
                                                     <div>
-                                                        <div className="text-sm font-medium">{p.name}</div>
+                                                        <div className="text-sm" style={{ fontWeight: 500 }}>{p.name}</div>
                                                         <div className="text-xs" style={{ color: t.text4 }}>{p.description}</div>
                                                     </div>
                                                 </div>
@@ -232,7 +233,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                             {limits.map((limit, idx) => (
                                 <div key={limit.id || idx} className="border p-4 rounded-xl" style={{ background: t.bgCard, borderColor: t.border }}>
                                     <div className="flex justify-between mb-4">
-                                        <h4 className="font-bold uppercase text-sm" style={{ color: t.text1 }}>
+                                        <h4 className="uppercase text-sm" style={{ color: t.text1, fontWeight: 700 }}>
                                             {limit.limitType === 'policy_lol' ? 'Policy Limit of Liability' : 'Claim Payment Limit'}
                                         </h4>
                                         <button
@@ -244,7 +245,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                     </div>
                                     <div className="grid grid-cols-2 gap-4 mb-4">
                                         <div>
-                                            <label className="block text-xs font-bold mb-1" style={{ color: t.text4 }}>Max Amount</label>
+                                            <label className="block text-xs mb-1" style={{ color: t.text4, fontWeight: 700 }}>Max Amount</label>
                                             <input
                                                 type="number"
                                                 className="w-full p-2 border rounded font-mono"
@@ -254,7 +255,7 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-bold mb-1" style={{ color: t.text4 }}>Currency</label>
+                                            <label className="block text-xs mb-1" style={{ color: t.text4, fontWeight: 700 }}>Currency</label>
                                             <select
                                                 className="w-full p-2 border rounded"
                                                 style={{ borderColor: t.border, background: t.bgPanel, color: t.text1 }}
@@ -297,8 +298,8 @@ export const RoleEditModal: React.FC<RoleEditModalProps> = ({ role, onClose, onS
                 </div>
 
                 <div className="p-4 border-t flex justify-end gap-3" style={{ background: t.bgCard, borderColor: t.border }}>
-                    <button onClick={onClose} className="px-4 py-2 rounded font-medium" style={{ color: t.text3 }}>Cancel</button>
-                    <button onClick={handleSave} className="px-6 py-2 rounded font-bold flex items-center gap-2" style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}>
+                    <button onClick={onClose} className="px-4 py-2 rounded" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
+                    <button onClick={handleSave} className="px-6 py-2 rounded flex items-center gap-2" style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>
                         <Save size={16}/> Save Role
                     </button>
                 </div>

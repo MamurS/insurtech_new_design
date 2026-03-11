@@ -141,7 +141,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     )}
 
                     <div>
-                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Task Title <span style={{ color: t.danger }}>*</span></label>
+                        <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Task Title <span style={{ color: t.danger }}>*</span></label>
                         <input
                             required
                             style={inputStyle}
@@ -152,7 +152,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Assign To <span style={{ color: t.danger }}>*</span></label>
+                        <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Assign To <span style={{ color: t.danger }}>*</span></label>
                         {loadingProfiles ? (
                             <div className="text-sm" style={{ color: t.text4 }}><Loader2 className="animate-spin inline mr-2"/> Loading users...</div>
                         ) : (
@@ -172,7 +172,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Priority</label>
+                            <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Priority</label>
                             <select
                                 style={selectStyle}
                                 value={priority}
@@ -193,7 +193,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label>
+                        <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Description</label>
                         <textarea
                             rows={3}
                             style={{ ...inputStyle, resize: 'none' }}
@@ -205,7 +205,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
                     {/* Attachments Section */}
                     <div className="pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
-                        <label className="block text-sm font-bold mb-2 flex items-center gap-2" style={{ color: t.text2 }}>
+                        <label className="block text-sm mb-2 flex items-center gap-2" style={{ color: t.text2, fontWeight: 700 }}>
                             <Paperclip size={16}/> Attachments
                         </label>
                         <div className="space-y-2">
@@ -221,7 +221,7 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                             ))}
                             <label className="flex items-center justify-center w-full p-3 rounded-lg cursor-pointer transition-colors" style={{ border: `2px dashed ${t.borderL}` }}>
                                 <div className="text-center text-sm" style={{ color: t.text4 }}>
-                                    <span className="font-medium" style={{ color: t.accent }}>+ Add Files</span>
+                                    <span style={{ color: t.accent, fontWeight: 500 }}>+ Add Files</span>
                                 </div>
                                 <input type="file" className="hidden" multiple onChange={handleFileSelect} />
                             </label>
@@ -232,8 +232,8 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 rounded-lg text-sm font-medium"
-                            style={{ color: t.text3 }}
+                            className="px-4 py-2 rounded-lg text-sm"
+                            style={{ color: t.text3, fontWeight: 500 }}
                             disabled={isSubmitting}
                         >
                             Cancel
@@ -241,8 +241,8 @@ const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                         <button
                             type="submit"
                             disabled={isSubmitting || !title || !assignedTo}
-                            className="px-6 py-2 rounded-lg text-sm font-bold flex items-center gap-2 disabled:opacity-50"
-                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                            className="px-6 py-2 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50"
+                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             {isSubmitting ? <Loader2 size={16} className="animate-spin"/> : null}
                             {uploadStatus ? uploadStatus : 'Assign Task'}

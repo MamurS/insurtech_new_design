@@ -86,8 +86,8 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
                     value={viewCurrency}
                     onChange={(e) => setViewCurrency(e.target.value)}
                     disabled={disabled}
-                    className="inline-flex items-center px-3 py-2 rounded-l-lg sm:text-sm outline-none font-bold min-w-[80px]"
-                    style={{ border: `1px solid ${t.border}`, borderRight: 'none', background: t.bgInput, color: t.text3 }}
+                    className="inline-flex items-center px-3 py-2 rounded-l-lg sm:text-sm outline-none min-w-[80px]"
+                    style={{ border: `1px solid ${t.border}`, borderRight: 'none', background: t.bgInput, color: t.text3, fontWeight: 700 }}
                 >
                     {currencyOptions.map(opt => (
                         <option key={opt} value={opt}>{opt}</option>
@@ -547,10 +547,10 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                         <div>
                             <label style={labelStyle}>Business Channel</label>
                             <div className="flex p-1 rounded-lg" style={{ background: t.bgInput }}>
-                                <button type="button" onClick={() => handleChannelChange('Direct')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none' }}>
+                                <button type="button" onClick={() => handleChannelChange('Direct')} className="flex-1 py-2 text-sm rounded-md transition-all" style={{ background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none', fontWeight: 500 }}>
                                     Direct Insurance
                                 </button>
-                                <button type="button" onClick={() => handleChannelChange('Inward')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none' }}>
+                                <button type="button" onClick={() => handleChannelChange('Inward')} className="flex-1 py-2 text-sm rounded-md transition-all" style={{ background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none', fontWeight: 500 }}>
                                     Inward Reinsurance
                                 </button>
                             </div>
@@ -835,8 +835,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                                     type="number"
                                                     value={inst.dueAmount || ''}
                                                     onChange={(e) => handleInstallmentChange(idx, 'dueAmount', Number(e.target.value))}
-                                                    className="w-full rounded px-2 py-1 text-sm font-medium"
-                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
+                                                    className="w-full rounded px-2 py-1 text-sm"
+                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1, fontWeight: 500 }}
                                                     placeholder="0.00"
                                                 />
                                             </td>
@@ -852,13 +852,13 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                                     type="number"
                                                     value={inst.paidAmount || ''}
                                                     onChange={(e) => handleInstallmentChange(idx, 'paidAmount', Number(e.target.value))}
-                                                    className="w-full rounded px-2 py-1 text-sm font-medium"
-                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.success }}
+                                                    className="w-full rounded px-2 py-1 text-sm"
+                                                    style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.success, fontWeight: 500 }}
                                                     placeholder="0.00"
                                                 />
                                             </td>
                                             <td className="px-4 py-2">
-                                                <div className="font-mono font-bold" style={{ color: balance > 0 ? t.danger : t.success }}>
+                                                <div className="font-mono" style={{ color: balance > 0 ? t.danger : t.success, fontWeight: 700 }}>
                                                     {balance.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                                 </div>
                                             </td>
@@ -882,7 +882,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                             </tfoot>
                         </table>
                     </div>
-                    <button type="button" onClick={addInstallment} className="text-xs font-bold flex items-center gap-1" style={{ color: t.accent }}>
+                    <button type="button" onClick={addInstallment} className="text-xs flex items-center gap-1" style={{ color: t.accent, fontWeight: 700 }}>
                         <Plus size={12}/> Add Installment
                     </button>
                 </div>
@@ -950,7 +950,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                              <ArrowRightLeft size={18} style={{ color: t.warning }}/> Outward Reinsurance
                          </h3>
                          <div className="flex items-center gap-2">
-                             <label className="text-sm font-medium" style={{ color: t.text3 }}>Applicable?</label>
+                             <label className="text-sm" style={{ color: t.text3, fontWeight: 500 }}>Applicable?</label>
                              <input
                                 type="checkbox"
                                 checked={formData.hasOutwardReinsurance || false}
@@ -1011,7 +1011,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                     <tfoot style={{ background: t.bgInput }}>
                                         <tr>
                                             <td colSpan={4} className="px-4 py-2">
-                                                <button type="button" onClick={addReinsurer} className="text-xs font-bold flex items-center gap-1" style={{ color: t.accent }}>
+                                                <button type="button" onClick={addReinsurer} className="text-xs flex items-center gap-1" style={{ color: t.accent, fontWeight: 700 }}>
                                                     <Plus size={12}/> Add Reinsurer
                                                 </button>
                                             </td>
@@ -1023,7 +1023,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-4 rounded-lg" style={{ background: t.warningBg }}>
                                  <div>
                                     <label style={labelStyle}>Total Premium Ceded ({formData.currency})</label>
-                                    <div className="font-bold p-2 rounded" style={{ color: t.text1, background: t.bgPanel, border: `1px solid ${t.warning}` }}>
+                                    <div className="p-2 rounded" style={{ color: t.text1, background: t.bgPanel, border: `1px solid ${t.warning}`, fontWeight: 700 }}>
                                         {formData.cededPremiumForeign?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
                                     <div className="text-xs mt-1" style={{ color: t.text4 }}>
@@ -1032,7 +1032,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                  </div>
                                  <div className="md:col-span-2">
                                     <label style={labelStyle}>Net Payable to Reinsurers ({formData.currency})</label>
-                                    <div className="font-bold p-2 rounded" style={{ color: t.text1, background: t.warningBg, border: `1px solid ${t.warning}` }}>
+                                    <div className="p-2 rounded" style={{ color: t.text1, background: t.warningBg, border: `1px solid ${t.warning}`, fontWeight: 700 }}>
                                         {formData.netReinsurancePremium?.toLocaleString(undefined, {minimumFractionDigits: 2})}
                                     </div>
                                     <div className="text-xs mt-1" style={{ color: t.text4 }}>
@@ -1092,7 +1092,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                         {formData.status === PolicyStatus.PENDING && (
                             <div className="space-y-4">
                                 <div className="pt-4" style={{ borderTop: `1px dashed ${t.warning}` }}>
-                                    <label className="block text-sm font-bold mb-2" style={{ color: t.text1 }}>
+                                    <label className="block text-sm mb-2" style={{ color: t.text1, fontWeight: 700 }}>
                                         Upload Signed Document
                                     </label>
                                     <div className="flex items-center gap-2">
@@ -1107,8 +1107,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                     <button
                                         type="button"
                                         onClick={handleNTU}
-                                        className="w-full py-2 rounded-lg text-sm font-bold transition-colors"
-                                        style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger }}
+                                        className="w-full py-2 rounded-lg text-sm transition-colors"
+                                        style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger, fontWeight: 700 }}
                                     >
                                         Mark NTU
                                     </button>
@@ -1117,8 +1117,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                         type="button"
                                         onClick={handleActivate}
                                         disabled={!!processingAction}
-                                        className="w-full py-2 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2"
-                                        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+                                        className="w-full py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-2"
+                                        style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                                     >
                                         {processingAction === 'activate' ? <Loader2 className="animate-spin" size={16}/> : 'Activate'}
                                     </button>
@@ -1131,8 +1131,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                 <button
                                     onClick={handlePolicyCancel}
                                     type="button"
-                                    className="w-full py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-2"
-                                    style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger }}
+                                    className="w-full py-2 rounded-lg text-sm flex items-center justify-center gap-2"
+                                    style={{ background: t.bgPanel, border: `1px solid ${t.danger}`, color: t.danger, fontWeight: 700 }}
                                 >
                                     <XCircle size={16}/> Cancel Policy
                                 </button>
@@ -1149,15 +1149,15 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                     <div className="space-y-3 text-sm">
                         <div className="flex justify-between">
                             <span style={{ color: t.accent }}>Inception:</span>
-                            <span className="font-mono font-bold" style={{ color: t.text1 }}>{formatDate(formData.inceptionDate)}</span>
+                            <span className="font-mono" style={{ color: t.text1, fontWeight: 700 }}>{formatDate(formData.inceptionDate)}</span>
                         </div>
                         <div className="flex justify-between">
                             <span style={{ color: t.accent }}>Expiry:</span>
-                            <span className="font-mono font-bold" style={{ color: t.text1 }}>{formatDate(formData.expiryDate)}</span>
+                            <span className="font-mono" style={{ color: t.text1, fontWeight: 700 }}>{formatDate(formData.expiryDate)}</span>
                         </div>
                         <div className="flex justify-between pt-2 mt-2" style={{ borderTop: `1px solid ${t.accent}` }}>
                             <span style={{ color: t.accent }}>Payment Due:</span>
-                            <span className="font-mono font-bold" style={{ color: t.danger }}>{formatDate(formData.paymentDate)}</span>
+                            <span className="font-mono" style={{ color: t.danger, fontWeight: 700 }}>{formatDate(formData.paymentDate)}</span>
                         </div>
                     </div>
                 </div>
@@ -1236,8 +1236,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
-            style={{ color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}` }}
+            className="px-4 py-2.5 rounded-lg text-sm transition-colors"
+            style={{ color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}`, fontWeight: 500 }}
           >
             Cancel
           </button>
@@ -1245,8 +1245,8 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
             type="button"
             onClick={handleSubmit}
             disabled={!!processingAction}
-            className="px-6 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ background: t.accent, color: '#fff' }}
+            className="px-6 py-2.5 rounded-lg text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: t.accent, color: '#fff', fontWeight: 500 }}
           >
             {processingAction === 'save' ? <Loader2 className="animate-spin" size={16}/> : <Save size={16} />}
             {processingAction === 'save' ? 'Saving...' : (isEdit ? 'Update Policy' : 'Create Policy')}

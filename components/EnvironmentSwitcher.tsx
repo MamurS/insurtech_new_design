@@ -103,7 +103,7 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
                   <span className="w-2.5 h-2.5 rounded-full" style={{ background: t.success }} />
                   <span className="flex-1" style={{ color: t.text2 }}>Production</span>
                   {currentEnv === 'production' && (
-                    <span className="text-xs font-medium" style={{ color: t.success }}>Active</span>
+                    <span className="text-xs" style={{ color: t.success, fontWeight: 500 }}>Active</span>
                   )}
                 </button>
 
@@ -131,7 +131,7 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
                   {!stagingAvailable ? (
                     <span className="text-xs" style={{ color: t.text4 }}>Not configured</span>
                   ) : currentEnv === 'staging' ? (
-                    <span className="text-xs font-medium" style={{ color: t.warning }}>Active</span>
+                    <span className="text-xs" style={{ color: t.warning, fontWeight: 500 }}>Active</span>
                   ) : null}
                 </button>
               </div>
@@ -163,7 +163,7 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
               <p className="mt-2 text-sm" style={{ color: t.text3 }}>
                 The page will reload to connect to the {showConfirm} database.
                 {showConfirm === 'staging' && (
-                  <span className="block mt-2 font-medium" style={{ color: t.warning }}>
+                  <span className="block mt-2" style={{ color: t.warning, fontWeight: 500 }}>
                     Changes in staging do not affect production data.
                   </span>
                 )}
@@ -175,16 +175,17 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
             >
               <button
                 onClick={() => setShowConfirm(null)}
-                className="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors"
-                style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL }}
+                className="flex-1 px-4 py-2 text-sm rounded-lg transition-colors"
+                style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
               >
                 Cancel
               </button>
               <button
                 onClick={confirmSwitch}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 text-sm text-white rounded-lg transition-colors"
                 style={{
                   background: showConfirm === 'staging' ? t.warning : t.success,
+                  fontWeight: 500,
                 }}
               >
                 Switch & Reload

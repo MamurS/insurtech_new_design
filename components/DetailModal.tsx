@@ -452,7 +452,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         <button
                             onClick={() => handleSlipDecline()}
                             className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.danger, color: '#fff', boxShadow: t.shadow }}
+                            style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Decline
@@ -466,7 +466,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         <button
                             onClick={() => requestSlipStatusChange('SIGNED', { signed_date: new Date().toISOString().split('T')[0] })}
                             className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <CheckCircle size={16} />
                             Accept & Sign
@@ -474,7 +474,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
                             className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
+                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Not Taken Up
@@ -500,7 +500,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         <button
                             onClick={() => requestSlipStatusChange('BOUND', { bound_date: new Date().toISOString().split('T')[0] })}
                             className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <CheckCircle size={16} />
                             Confirm Bound
@@ -508,7 +508,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
                             className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
+                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Withdrawn
@@ -521,7 +521,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <button
                         onClick={() => requestSlipStatusChange('CLOSED', { closed_date: new Date().toISOString().split('T')[0] })}
                         className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.text3, color: '#fff', boxShadow: t.shadow }}
+                        style={{ background: t.text3, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Archive size={16} />
                         Close Slip
@@ -533,7 +533,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <button
                         onClick={() => requestSlipStatusChange('PENDING')}
                         className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.warning, color: '#fff', boxShadow: t.shadow }}
+                        style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <RefreshCw size={16} />
                         Reopen
@@ -544,25 +544,25 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-4 rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                  <h4 className="font-bold mb-3 flex items-center gap-2" style={{ color: t.text1 }}><FileText size={16}/> Slip Details</h4>
+                  <h4 className="mb-3 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><FileText size={16}/> Slip Details</h4>
                   <div className="space-y-3 text-sm">
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Slip Number</div><div className="font-mono font-bold text-lg" style={{ color: t.accent }}>{slip.slipNumber}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Date</div><div className="font-medium">{formatDate(slip.date)}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Insured Name</div><div className="font-medium">{slip.insuredName}</div></div>
+                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Slip Number</div><div className="font-mono" style={{ color: t.accent, fontWeight: 700, fontSize: 15 }}>{slip.slipNumber}</div></div>
+                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Date</div><div style={{ fontWeight: 500 }}>{formatDate(slip.date)}</div></div>
+                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Insured Name</div><div style={{ fontWeight: 500 }}>{slip.insuredName}</div></div>
                   </div>
               </div>
               <div className="p-4 rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                  <h4 className="font-bold mb-3 flex items-center gap-2" style={{ color: t.text1 }}><DollarSign size={16}/> Values</h4>
+                  <h4 className="mb-3 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Values</h4>
                   <div className="space-y-3 text-sm">
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Limit of Liability</div><div className="font-mono font-bold text-lg">{formatMoney(slip.limitOfLiability, slip.currency as string)}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Broker / Reinsurer</div><div className="font-medium">{slip.brokerReinsurer}</div></div>
+                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Limit of Liability</div><div className="font-mono" style={{ fontWeight: 700, fontSize: 15 }}>{formatMoney(slip.limitOfLiability, slip.currency as string)}</div></div>
+                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Broker / Reinsurer</div><div style={{ fontWeight: 500 }}>{slip.brokerReinsurer}</div></div>
                   </div>
               </div>
           </div>
 
           {reinsurers.length > 0 && (
               <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-                  <h4 className="font-bold mb-3 text-sm" style={{ color: t.text1 }}>Market Panel</h4>
+                  <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Market Panel</h4>
                   <table className="w-full text-sm text-left">
                       <thead>
                           <tr style={{ color: t.text4, borderBottom: `1px solid ${t.border}` }}>
@@ -574,7 +574,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                       <tbody>
                           {reinsurers.map((r: any, i: number) => (
                               <tr key={i} className="last:border-0" style={{ borderBottom: `1px solid ${t.border}` }}>
-                                  <td className="py-2 font-medium">{r.name}</td>
+                                  <td className="py-2" style={{ fontWeight: 500 }}>{r.name}</td>
                                   <td className="py-2 text-right">{r.share}%</td>
                                   <td className="py-2 text-right">{r.commission}%</td>
                               </tr>
@@ -601,13 +601,13 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
           <div className="flex justify-between items-start">
               <div>
                   <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{clause.title}</h3>
-                  <span className="text-xs px-2 py-0.5 rounded uppercase font-bold mt-1 inline-block" style={
-                      clause.category === 'Exclusion' ? { background: t.danger + '18', color: t.danger } :
-                      clause.category === 'Warranty' ? { background: t.warning + '18', color: t.warning } :
-                      { background: t.accent + '18', color: t.accent }
+                  <span className="text-xs px-2 py-0.5 rounded uppercase mt-1 inline-block" style={
+                      clause.category === 'Exclusion' ? { background: t.danger + '18', color: t.danger, fontWeight: 700 } :
+                      clause.category === 'Warranty' ? { background: t.warning + '18', color: t.warning, fontWeight: 700 } :
+                      { background: t.accent + '18', color: t.accent, fontWeight: 700 }
                   }>{clause.category}</span>
               </div>
-              {clause.isStandard && <span className="text-xs px-2 py-1 rounded font-bold" style={{ background: t.success + '18', color: t.success }}>Standard</span>}
+              {clause.isStandard && <span className="text-xs px-2 py-1 rounded" style={{ background: t.success + '18', color: t.success, fontWeight: 700 }}>Standard</span>}
           </div>
           <div className="p-4 rounded-xl font-serif text-sm leading-relaxed whitespace-pre-wrap" style={{ background: t.bgCard, border: `1px solid ${t.border}`, color: t.text1 }}>
               {clause.content}
@@ -646,7 +646,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
         {/* Footer */}
         <div className="p-4 flex justify-end" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-            <button onClick={onClose} className="px-5 py-2 rounded-lg font-bold text-sm transition-colors" style={{ background: t.bgHover, color: t.text1 }}>Close</button>
+            <button onClick={onClose} className="px-5 py-2 rounded-lg text-sm transition-colors" style={{ background: t.bgHover, color: t.text1, fontWeight: 700 }}>Close</button>
         </div>
 
         {/* Overlays */}

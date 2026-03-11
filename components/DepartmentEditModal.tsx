@@ -62,7 +62,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div className="grid grid-cols-3 gap-4">
                         <div className="col-span-2">
-                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Department Name <span style={{ color: t.danger }}>*</span></label>
+                            <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Department Name <span style={{ color: t.danger }}>*</span></label>
                             <input
                                 required
                                 value={formData.name}
@@ -73,7 +73,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Code <span style={{ color: t.danger }}>*</span></label>
+                            <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Code <span style={{ color: t.danger }}>*</span></label>
                             <div className="relative">
                                 <Hash size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: t.text4 }}/>
                                 <input
@@ -89,7 +89,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Description</label>
+                        <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Description</label>
                         <textarea
                             rows={3}
                             value={formData.description || ''}
@@ -102,7 +102,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Head of Department</label>
+                            <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Head of Department</label>
                             <select
                                 value={formData.headOfDepartment || ''}
                                 onChange={e => setFormData({...formData, headOfDepartment: e.target.value})}
@@ -116,7 +116,7 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1" style={{ color: t.text2 }}>Max Staff Capacity</label>
+                            <label className="block text-sm mb-1" style={{ color: t.text2, fontWeight: 700 }}>Max Staff Capacity</label>
                             <div className="relative">
                                 <Users size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: t.text4 }}/>
                                 <input
@@ -139,23 +139,23 @@ export const DepartmentEditModal: React.FC<DepartmentEditModalProps> = ({ depart
                             onChange={e => setFormData({...formData, isActive: e.target.checked})}
                             className="w-5 h-5 rounded"
                         />
-                        <label htmlFor="isActive" className="text-sm font-medium" style={{ color: t.text2 }}>Department is Active</label>
+                        <label htmlFor="isActive" className="text-sm" style={{ color: t.text2, fontWeight: 500 }}>Department is Active</label>
                     </div>
 
                     <div className="pt-4 flex justify-end gap-3 border-t" style={{ borderColor: t.border }}>
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 rounded-lg font-medium"
-                            style={{ color: t.text3 }}
+                            className="px-4 py-2 rounded-lg"
+                            style={{ color: t.text3, fontWeight: 500 }}
                             disabled={loading}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="px-6 py-2 rounded-lg font-bold flex items-center gap-2 disabled:opacity-70"
-                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                            className="px-6 py-2 rounded-lg flex items-center gap-2 disabled:opacity-70"
+                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                             disabled={loading}
                         >
                             {loading ? <Loader2 size={16} className="animate-spin"/> : <Save size={16}/>}
