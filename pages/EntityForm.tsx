@@ -66,11 +66,11 @@ const EntityForm: React.FC = () => {
   if (loading) return <div>Loading...</div>;
 
   const sectionTitleClass = "mb-4 pb-2 flex items-center gap-2";
-  const labelClass = "block text-sm font-medium mb-1.5";
+  const labelClass = "block text-sm mb-1.5";
   const inputClass = "w-full p-2.5 rounded-lg focus:ring-2 outline-none transition-all text-sm";
 
   const sectionTitleStyle = { color: t.text1, borderBottom: `1px solid ${t.bgInput}`, fontSize: 15, fontWeight: 700 } as React.CSSProperties;
-  const labelStyle = { color: t.text3 };
+  const labelStyle = { color: t.text3, fontWeight: 500 as const };
   const inputStyle = { background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text1, '--tw-ring-color': t.accent } as React.CSSProperties;
 
   return (
@@ -90,8 +90,8 @@ const EntityForm: React.FC = () => {
             <div className="flex gap-3">
                  <button
                     type="submit"
-                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all"
-                    style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                    className="flex items-center gap-2 px-6 py-2 text-sm rounded-lg transition-all"
+                    style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                 >
                     <Save size={18} /> Save Entity
                 </button>

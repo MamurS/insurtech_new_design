@@ -80,8 +80,8 @@ const ClauseManager: React.FC = () => {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          style={{ background: t.accent }}
+          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition-colors"
+          style={{ background: t.accent, fontWeight: 500 }}
         >
           <Plus size={18} />
           Add Clause
@@ -100,14 +100,14 @@ const ClauseManager: React.FC = () => {
             >
               <div className="flex justify-between items-start mb-3">
                 <span
-                  className="px-2 py-1 rounded text-xs font-semibold"
-                  style={categoryStyle(clause.category)}
+                  className="px-2 py-1 rounded text-xs"
+                  style={{ ...categoryStyle(clause.category), fontWeight: 600 }}
                 >
                   {clause.category}
                 </span>
-                {clause.isStandard && <span className="text-xs font-medium" style={{ color: t.text4 }}>Standard</span>}
+                {clause.isStandard && <span className="text-xs" style={{ color: t.text4, fontWeight: 500 }}>Standard</span>}
               </div>
-              <h3 className="font-bold mb-2" style={{ color: t.text1 }}>{clause.title}</h3>
+              <h3 className="mb-2" style={{ color: t.text1, fontWeight: 700 }}>{clause.title}</h3>
               <p className="text-sm flex-1 line-clamp-4 leading-relaxed mb-4" style={{ color: t.text2 }}>
                 {clause.content}
               </p>
@@ -145,7 +145,7 @@ const ClauseManager: React.FC = () => {
             <div className="p-6 pt-0 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Title</label>
+                  <label className="block text-sm mb-1" style={{ color: t.text1, fontWeight: 500 }}>Title</label>
                   <input
                     className="w-full rounded p-2"
                     style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
@@ -155,7 +155,7 @@ const ClauseManager: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Category</label>
+                  <label className="block text-sm mb-1" style={{ color: t.text1, fontWeight: 500 }}>Category</label>
                   <select
                     className="w-full rounded p-2"
                     style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}
@@ -172,7 +172,7 @@ const ClauseManager: React.FC = () => {
 
               {/* AI Assistant Section */}
               <div className="p-4 rounded-lg" style={{ background: `${t.accent}10`, border: `1px solid ${t.accent}20` }}>
-                <div className="flex items-center gap-2 mb-2 font-medium" style={{ color: t.accent }}>
+                <div className="flex items-center gap-2 mb-2" style={{ color: t.accent, fontWeight: 500 }}>
                   <Sparkles size={16} />
                   <span>AI Drafting Assistant</span>
                 </div>
@@ -187,8 +187,8 @@ const ClauseManager: React.FC = () => {
                   <button
                     onClick={handleAiDraft}
                     disabled={isGenerating || !aiPrompt}
-                    className="text-white px-4 py-2 rounded text-sm font-medium disabled:opacity-50 flex items-center gap-2"
-                    style={{ background: t.accent }}
+                    className="text-white px-4 py-2 rounded text-sm disabled:opacity-50 flex items-center gap-2"
+                    style={{ background: t.accent, fontWeight: 500 }}
                   >
                     {isGenerating ? <Loader2 className="animate-spin" size={16}/> : 'Draft'}
                   </button>
@@ -196,7 +196,7 @@ const ClauseManager: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1" style={{ color: t.text1 }}>Content</label>
+                <label className="block text-sm mb-1" style={{ color: t.text1, fontWeight: 500 }}>Content</label>
                 <textarea
                   className="w-full rounded p-2 h-32 font-serif"
                   style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text1 }}

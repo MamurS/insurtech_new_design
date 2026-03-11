@@ -65,11 +65,11 @@ export const EntityFormContent: React.FC<EntityFormContentProps> = ({ id, onSave
 
   if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const labelClass = "block text-sm font-medium mb-1.5";
+  const labelClass = "block text-sm mb-1.5";
   const inputClass = "w-full p-2.5 rounded-lg focus:ring-2 outline-none transition-all text-sm";
   const sectionTitleClass = "mb-4 pb-2 flex items-center gap-2";
 
-  const labelStyle = { color: t.text3 };
+  const labelStyle = { color: t.text3, fontWeight: 500 as const };
   const inputStyle = { background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text1, '--tw-ring-color': t.accent } as React.CSSProperties;
   const sectionTitleStyle = { color: t.text1, borderBottom: `1px solid ${t.bgInput}`, fontSize: 15, fontWeight: 700 } as React.CSSProperties;
 
@@ -205,15 +205,15 @@ export const EntityFormContent: React.FC<EntityFormContentProps> = ({ id, onSave
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium rounded-lg transition-all"
-                style={{ color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}` }}
+                className="flex items-center gap-2 px-6 py-2.5 text-sm rounded-lg transition-all"
+                style={{ color: t.text2, background: t.bgPanel, border: `1px solid ${t.borderL}`, fontWeight: 500 }}
               >
                 <X size={18} /> Cancel
               </button>
               <button
                 type="submit"
-                className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold rounded-lg transition-all"
-                style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                className="flex items-center gap-2 px-6 py-2.5 text-sm rounded-lg transition-all"
+                style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
               >
                 <Save size={18} /> Save Entity
               </button>

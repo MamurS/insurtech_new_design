@@ -88,8 +88,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             type="button"
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 font-medium rounded-lg transition-colors disabled:opacity-50"
-            style={{ color: t.text2 }}
+            className="px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+            style={{ color: t.text2, fontWeight: 500 }}
           >
             {cancelText}
           </button>
@@ -97,8 +97,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={isLoading}
-            className="px-4 py-2 font-medium rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
-            style={{ ...config.confirmBgStyle, boxShadow: t.shadow }}
+            className="px-4 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+            style={{ ...config.confirmBgStyle, boxShadow: t.shadow, fontWeight: 500 }}
           >
             {isLoading && (
               <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">

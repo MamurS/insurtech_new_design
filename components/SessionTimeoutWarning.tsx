@@ -55,8 +55,8 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
           <button
             type="button"
             onClick={onLogout}
-            className="flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors"
-            style={{ color: t.text2 }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors"
+            style={{ color: t.text2, fontWeight: 500 }}
           >
             <LogOut size={16} />
             Logout Now
@@ -64,8 +64,8 @@ const SessionTimeoutWarning: React.FC<SessionTimeoutWarningProps> = ({
           <button
             type="button"
             onClick={onContinue}
-            className="px-4 py-2 font-medium rounded-lg transition-colors"
-            style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+            className="px-4 py-2 rounded-lg transition-colors"
+            style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 500 }}
           >
             Continue Session
           </button>

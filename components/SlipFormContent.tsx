@@ -185,7 +185,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
   if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
 
-  const labelClass = "block text-sm font-medium mb-1.5";
+  const labelClass = "block text-sm mb-1.5";
   const inputStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
   const inputClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-sm";
   const selectClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all text-sm";
@@ -229,8 +229,8 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
           <div className="rounded-xl p-4 mb-6" style={{ background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
             <div className="flex items-center gap-2 mb-3">
               <Settings size={16} style={{ color: t.text4 }} />
-              <span className="font-semibold" style={{ color: t.text2 }}>WORKFLOW ACTIONS</span>
-              <span className="ml-2 px-2 py-1 rounded text-xs font-medium" style={getStatusBadgeStyle()}>
+              <span style={{ color: t.text2, fontWeight: 600 }}>WORKFLOW ACTIONS</span>
+              <span className="ml-2 px-2 py-1 rounded text-xs" style={{ ...getStatusBadgeStyle(), fontWeight: 500 }}>
                 {slipStatus}
               </span>
             </div>
@@ -324,7 +324,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: t.warningBg, color: t.warning }}>
                 <FileSpreadsheet size={24} />
               </div>
-              <h3 className="font-bold mb-2" style={{ color: t.warning }}>Slip Registry</h3>
+              <h3 className="mb-2" style={{ color: t.warning, fontWeight: 700 }}>Slip Registry</h3>
               <p className="text-sm leading-relaxed mb-4" style={{ color: t.warning, opacity: 0.8 }}>
                 Register a new Outward Reinsurance Slip. Support for multiple reinsurers (panel) is now enabled.
               </p>
@@ -340,7 +340,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
             <div className="space-y-5">
               <div>
-                <label className={labelClass} style={{ color: t.text3 }}><span className="flex items-center gap-2"><Hash size={14}/> Slip Number</span></label>
+                <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><Hash size={14}/> Slip Number</span></label>
                 <input
                   required
                   type="text"
@@ -363,7 +363,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                   />
                 </div>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3 }}><span className="flex items-center gap-2"><Activity size={14}/> Status</span></label>
+                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><Activity size={14}/> Status</span></label>
                   <select
                     name="status"
                     value={formData.status || 'DRAFT'}
@@ -403,7 +403,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               {/* Financials Section */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4" style={{ borderTop: '1px solid ' + t.border }}>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3 }}><span className="flex items-center gap-2"><DollarSign size={14}/> Currency</span></label>
+                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><DollarSign size={14}/> Currency</span></label>
                   <select
                     name="currency"
                     value={formData.currency}
@@ -415,7 +415,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3 }}>Limit of Liability</label>
+                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}>Limit of Liability</label>
                   <input
                     type="number"
                     name="limitOfLiability"
@@ -430,7 +430,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
               {/* REINSURERS PANEL */}
               <div className="pt-4" style={{ borderTop: '1px solid ' + t.border }}>
-                <label className="block text-sm font-bold mb-3" style={{ color: t.text1 }}>Reinsurance Market / Panel</label>
+                <label className="block text-sm mb-3" style={{ color: t.text1, fontWeight: 700 }}>Reinsurance Market / Panel</label>
                 <div className="rounded-lg overflow-hidden mb-2" style={{ border: '1px solid ' + t.border }}>
                   <table className="w-full text-sm text-left">
                     <thead style={{ background: t.bgCard, color: t.text2 }}>
@@ -479,7 +479,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                     </tbody>
                   </table>
                 </div>
-                <button type="button" onClick={addReinsurer} className="text-xs font-bold flex items-center gap-1" style={{ color: t.warning }}>
+                <button type="button" onClick={addReinsurer} className="text-xs flex items-center gap-1" style={{ color: t.warning, fontWeight: 700 }}>
                   <Plus size={12}/> Add Market
                 </button>
               </div>
@@ -489,16 +489,16 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="px-4 py-2.5 rounded-lg font-medium text-sm transition-colors"
-                  style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL }}
+                  className="px-4 py-2.5 rounded-lg text-sm transition-colors"
+                  style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg font-medium text-sm transition-colors"
-                  style={{ background: t.warning, color: '#fff' }}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm transition-colors"
+                  style={{ background: t.warning, color: '#fff', fontWeight: 500 }}
                 >
                   <Save size={16} /> {isEdit ? 'Update Slip' : 'Create Slip'}
                 </button>
@@ -524,11 +524,11 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
           <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: '1px solid ' + t.border }}>
             <div className="p-4 flex items-center gap-3" style={{ background: t.dangerBg, borderBottom: '1px solid ' + t.danger + '40' }}>
               <div className="p-2 rounded-full" style={{ background: t.dangerBg, color: t.danger }}><XCircle size={20}/></div>
-              <h3 className="font-bold" style={{ color: t.text1 }}>Decline Slip</h3>
+              <h3 style={{ color: t.text1, fontWeight: 700 }}>Decline Slip</h3>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase mb-1" style={{ color: t.text4 }}>Reason for Declining</label>
+                <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
                 <textarea
                   rows={3}
                   value={declineReason}
@@ -540,8 +540,8 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               </div>
             </div>
             <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: '1px solid ' + t.border }}>
-              <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 font-medium rounded-lg text-sm" style={{ color: t.text3 }}>Cancel</button>
-              <button onClick={confirmSlipDecline} className="px-4 py-2 font-bold rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow }}>Decline Slip</button>
+              <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
+              <button onClick={confirmSlipDecline} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
             </div>
           </div>
         </div>
