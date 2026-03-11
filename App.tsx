@@ -26,6 +26,7 @@ import InwardReinsuranceDashboard from './pages/InwardReinsuranceDashboard';
 import Analytics from './pages/Analytics';
 import DirectInsuranceList from './pages/DirectInsuranceList';
 import MGADashboard from './pages/MGADashboard';
+import MGAForm from './pages/MGAForm';
 import FinancialStatements from './pages/FinancialStatements';
 import RiskAccumulation from './pages/RiskAccumulation';
 import IBNREstimation from './pages/IBNREstimation';
@@ -86,6 +87,8 @@ const AppRoutes = () => {
               <Route path="/policy/:id" element={<PolicyForm />} />
 
               <Route path="/mga" element={<MGADashboard />} />
+              <Route path="/mga/new" element={<MGAForm />} />
+              <Route path="/mga/edit/:id" element={<MGAForm />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/financial-statements" element={<FinancialStatements />} />
               <Route path="/risk-accumulation" element={<RiskAccumulation />} />

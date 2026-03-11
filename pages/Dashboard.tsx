@@ -7,7 +7,6 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { DetailModal } from '../components/DetailModal';
-import { MasterDetailModal } from '../components/MasterDetailModal';
 import { EntityDetailModal } from '../components/EntityDetailModal';
 import { formatDate } from '../utils/dateUtils';
 import { DatePickerInput, toISODateString } from '../components/DatePickerInput';
@@ -311,13 +310,12 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   // Selection State
-  const [selectedRow, setSelectedRow] = useState<PortfolioRow | null>(null);
   const [selectedRowForPanel, setSelectedRowForPanel] = useState<PortfolioRow | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<LegalEntity | null>(null); // State for Entity Modal
 
   // Delete State
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; source: PortfolioSource } | null>(null);
-  
+
   // Sorting State
   const [sortConfig, setSortConfig] = useState<{ key: keyof Policy | string; direction: 'asc' | 'desc' }>({
     key: 'inceptionDate',
@@ -492,18 +490,15 @@ const Dashboard: React.FC = () => {
   };
 
   const handleViewFullDetail = async (row: PortfolioRow) => {
-    // Open MasterDetailModal for direct and inward rows
     switch (row.source) {
       case 'direct':
+        navigate(`/edit/${row.id}`);
+        break;
       case 'inward-foreign':
+        navigate(`/inward-reinsurance/foreign/view/${row.id}`);
+        break;
       case 'inward-domestic':
-        // Lazy-load installment data if not already present
-        if (!row.installments) {
-          const installments = await DB.getInstallmentsByRef(row.referenceNumber, row.source);
-          row.installments = installments;
-          row.installmentCount = installments.length || row.installmentCount;
-        }
-        setSelectedRow(row);
+        navigate(`/inward-reinsurance/domestic/view/${row.id}`);
         break;
     }
   };
@@ -672,13 +667,15 @@ const Dashboard: React.FC = () => {
 
   const SortableHeader = ({ label, sortKey, className = "", style }: { label: string, sortKey: string, className?: string, style?: React.CSSProperties }) => {
     const isActive = sortConfig.key === sortKey;
+    // Parse className for text-right
+    const textAlign = className.includes('text-right') ? 'right' as const : undefined;
     return (
       <th
-        className={`px-3 py-3 font-semibold text-xs uppercase tracking-wider cursor-pointer transition-colors group select-none whitespace-nowrap ${className}`}
+        className="transition-colors group select-none"
         onClick={() => handleSort(sortKey)}
-        style={{ borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel, ...style }}
+        style={{ padding: '12px 12px', fontWeight: 600, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer', whiteSpace: 'nowrap', borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel, textAlign, ...style }}
       >
-        <div className="flex items-center gap-1">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
           {label}
           <div style={{ color: isActive ? t.accent : t.text5 }}>
              {isActive ? (sortConfig.direction === 'asc' ? <ArrowUp size={12}/> : <ArrowDown size={12}/>) : <ArrowUpDown size={12} className="opacity-0 group-hover:opacity-50"/>}
@@ -715,15 +712,15 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '0' }}>
+    <div style={{ padding: 0 }}>
       {/* Sticky group: filter bar + table header */}
-      <div className="sticky top-0 z-30" style={{ background: t.bgApp }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
       {/* Row 1: All Filters in One Row */}
       <div style={{ background: t.bgPanel, borderRadius: 10, boxShadow: t.shadow, border: `1px solid ${t.border}`, padding: 12 }}>
-      <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
         {/* Search */}
-        <div className="relative flex-1 min-w-[180px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+        <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: t.text4 }} />
           <input
             type="text"
             placeholder="Search... (try broker:Howden or class:Fire)"
@@ -762,7 +759,7 @@ const Dashboard: React.FC = () => {
         </select>
 
         {/* Date Filter */}
-        <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: 380 }}>
         <select
           value={dateFilterField}
           onChange={(e) => handleDateFilterChange(e.target.value, dateFrom, dateTo)}
@@ -803,7 +800,7 @@ const Dashboard: React.FC = () => {
       </div>
         {/* Header table — inside sticky group, synced with body scroll */}
         <div ref={headerScrollRef} style={{ border: `1px solid ${t.border}`, borderBottom: 'none', marginTop: 4, overflow: 'hidden', borderRadius: '10px 10px 0 0' }}>
-          <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed', minWidth: '1280px' }}>
+          <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', tableLayout: 'fixed', minWidth: 1280 }}>
                 <colgroup>
                     <col style={{ width: '80px' }} />   {/* STATUS */}
                     <col style={{ width: '90px' }} />   {/* Source */}
@@ -822,7 +819,7 @@ const Dashboard: React.FC = () => {
                 </colgroup>
                 <thead>
                         <tr>
-                            <th className="px-2 py-3 text-center font-semibold text-xs" style={{ borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel }}>STATUS</th>
+                            <th style={{ padding: '12px 8px', textAlign: 'center', fontWeight: 600, fontSize: 12, borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel }}>STATUS</th>
                             <SortableHeader label="Source" sortKey="source" />
                             <SortableHeader label="Ref No" sortKey="referenceNumber" />
                             <SortableHeader label="Insured / Cedant" sortKey="insuredName" />
@@ -832,10 +829,10 @@ const Dashboard: React.FC = () => {
                             <SortableHeader label="Sum Insured" sortKey="sumInsuredNational" className="text-right" />
                             <SortableHeader label="Gross Prem" sortKey="grossPremium" className="text-right" />
                             <SortableHeader label="Our %" sortKey="ourShare" className="text-right" />
-                            <th className="px-2 py-3 font-semibold text-xs uppercase tracking-wider whitespace-nowrap text-right" style={{ borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel }}>Ceded %</th>
+                            <th style={{ padding: '12px 8px', fontWeight: 600, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em', whiteSpace: 'nowrap', textAlign: 'right', borderBottom: `1px solid ${t.border}`, color: t.text4, background: t.bgPanel }}>Ceded %</th>
                             <SortableHeader label="Inception" sortKey="inceptionDate" />
                             <SortableHeader label="Expiry" sortKey="expiryDate" />
-                            <th className="px-1 py-3" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgPanel }}></th>
+                            <th style={{ padding: '12px 4px', borderBottom: `1px solid ${t.border}`, background: t.bgPanel }}></th>
                         </tr>
                 </thead>
           </table>
@@ -847,15 +844,14 @@ const Dashboard: React.FC = () => {
       {/* Body table — scrollable, horizontal scroll synced to header */}
       <div
         ref={bodyScrollRef}
-        className="overflow-x-auto"
-        style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderTop: 'none', borderRadius: '0 0 10px 10px', boxShadow: t.shadow, marginTop: -1, minWidth: 0 }}
+        style={{ overflowX: 'auto', background: t.bgPanel, border: `1px solid ${t.border}`, borderTop: 'none', borderRadius: '0 0 10px 10px', boxShadow: t.shadow, marginTop: -1, minWidth: 0 }}
         onScroll={() => {
           if (headerScrollRef.current && bodyScrollRef.current) {
             headerScrollRef.current.scrollLeft = bodyScrollRef.current.scrollLeft;
           }
         }}
       >
-            <table className="w-full text-left border-collapse" style={{ tableLayout: 'fixed', minWidth: '1280px' }}>
+            <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', tableLayout: 'fixed', minWidth: 1280 }}>
                 <colgroup>
                     <col style={{ width: '80px' }} />   {/* STATUS */}
                     <col style={{ width: '90px' }} />   {/* Source */}
@@ -872,7 +868,7 @@ const Dashboard: React.FC = () => {
                     <col style={{ width: '90px' }} />   {/* Expiry */}
                     <col style={{ width: '40px' }} />   {/* Actions */}
                 </colgroup>
-                <tbody className="text-sm">
+                <tbody style={{ fontSize: 14 }}>
                     {paginatedRows.map(row => {
                         // Compute ceded % from outward reinsurance data (matches both direct and inward rows)
                         // Deduplicate: one share per reinsurer (installments repeat the same cededShare)
@@ -893,16 +889,17 @@ const Dashboard: React.FC = () => {
                         <tr
                             key={`${row.source}-${row.id}`}
                             onClick={() => handleRowClick(row)}
-                            className="group transition-colors cursor-pointer"
+                            className="group transition-colors"
                             style={{
                               borderBottom: `1px solid ${t.borderS}`,
                               opacity: row.isDeleted ? 0.6 : 1,
+                              cursor: 'pointer',
                               background: selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source ? t.bgActive : undefined,
                             }}
                             onMouseEnter={e => { if (!(selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source)) e.currentTarget.style.background = t.bgHover; }}
                             onMouseLeave={e => { e.currentTarget.style.background = selectedRowForPanel && selectedRowForPanel.id === row.id && selectedRowForPanel.source === row.source ? t.bgActive : 'transparent'; }}
                         >
-                                    <td className="px-2 py-3 text-center overflow-hidden">
+                                    <td style={{ padding: '12px 8px', textAlign: 'center', overflow: 'hidden' }}>
                                         <span style={{
                                           display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20,
                                           ...(row.normalizedStatus === 'Active' ? { color: t.success, background: t.successBg } :
@@ -914,26 +911,27 @@ const Dashboard: React.FC = () => {
                                           {row.isDeleted ? <><Trash2 size={10}/> DELETED</> : row.normalizedStatus.toUpperCase()}
                                         </span>
                                     </td>
-                                    <td className="px-2 py-3 overflow-hidden">
+                                    <td style={{ padding: '12px 8px', overflow: 'hidden' }}>
                                         <SourceBadge source={row.source} />
                                     </td>
-                                    <td className="px-2 py-3 text-xs font-medium truncate overflow-hidden" style={{ fontFamily: "'JetBrains Mono', monospace", color: t.accent }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: "'JetBrains Mono', monospace", color: t.accent }}>
                                         {row.referenceNumber}
                                     </td>
-                                    <td className="px-2 py-3 font-medium overflow-hidden" style={{ color: t.text1 }}>
+                                    <td style={{ padding: '12px 8px', fontWeight: 500, overflow: 'hidden', color: t.text1 }}>
                                         {row.cedantName ? (
-                                            <div className="flex flex-col min-w-0">
+                                            <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                                                 <span
-                                                    className="hover:underline cursor-pointer truncate"
+                                                    className="hover:underline"
+                                                    style={{ cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                                                     onClick={(e) => handleEntityClick(e, row.cedantName)}
                                                 >
                                                     {row.cedantName}
                                                 </span>
-                                                <span style={{ fontSize: 11, color: t.text4, display: 'flex', gap: 4 }} className="truncate">
+                                                <span style={{ fontSize: 11, color: t.text4, display: 'flex', gap: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                     Orig:
                                                     <span
-                                                        style={{ cursor: 'pointer' }}
-                                                        className="hover:underline truncate"
+                                                        style={{ cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                                        className="hover:underline"
                                                         onClick={(e) => handleEntityClick(e, row.insuredName)}
                                                     >
                                                         {row.insuredName}
@@ -942,14 +940,15 @@ const Dashboard: React.FC = () => {
                                             </div>
                                         ) : (
                                             <span
-                                                className="hover:underline cursor-pointer truncate block"
+                                                className="hover:underline"
+                                                style={{ cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}
                                                 onClick={(e) => handleEntityClick(e, row.insuredName)}
                                             >
                                                 {row.insuredName}
                                             </span>
                                         )}
                                     </td>
-                                    <td className="px-2 py-3 text-xs truncate overflow-hidden" style={{ color: t.text3 }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text3 }}>
                                         {row.brokerName ? (
                                             <span
                                                 style={{ color: t.accent, cursor: 'pointer' }}
@@ -962,22 +961,22 @@ const Dashboard: React.FC = () => {
                                             <span style={{ color: t.text5, fontStyle: 'italic' }}>-</span>
                                         )}
                                     </td>
-                                    <td className="px-2 py-3 text-xs truncate overflow-hidden" style={{ color: t.text3 }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text3 }}>
                                         {row.classOfBusiness}
                                     </td>
-                                    <td className="px-2 py-3 text-xs truncate overflow-hidden" style={{ color: t.text3 }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text3 }}>
                                         {row.territory || '-'}
                                     </td>
-                                    <td className="px-2 py-3 text-right font-medium whitespace-nowrap" style={{ color: t.text2, fontVariantNumeric: 'tabular-nums' }}>
+                                    <td style={{ padding: '12px 8px', textAlign: 'right', fontWeight: 500, whiteSpace: 'nowrap', color: t.text2, fontVariantNumeric: 'tabular-nums' }}>
                                         {row.sumInsuredNational ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(row.sumInsuredNational) : '-'}
                                     </td>
-                                    <td className="px-2 py-3 text-right font-bold whitespace-nowrap" style={{ color: t.text1, fontVariantNumeric: 'tabular-nums' }}>
+                                    <td style={{ padding: '12px 8px', textAlign: 'right', fontWeight: 700, whiteSpace: 'nowrap', color: t.text1, fontVariantNumeric: 'tabular-nums' }}>
                                         {formatMoney(row.grossPremium, row.currency)}
                                     </td>
-                                    <td className="px-2 py-3 text-right text-xs whitespace-nowrap" style={{ color: t.text3 }}>
+                                    <td style={{ padding: '12px 8px', textAlign: 'right', fontSize: 12, whiteSpace: 'nowrap', color: t.text3 }}>
                                         {row.ourShare}%
                                     </td>
-                                    <td className="px-2 py-3 text-right text-xs whitespace-nowrap">
+                                    <td style={{ padding: '12px 8px', textAlign: 'right', fontSize: 12, whiteSpace: 'nowrap' }}>
                                         {cededPct > 100 ? (
                                           <span style={{ fontWeight: 500, color: t.danger }}>100%+</span>
                                         ) : cededPct > 0 ? (
@@ -988,14 +987,14 @@ const Dashboard: React.FC = () => {
                                           <span style={{ color: t.text5 }}>-</span>
                                         )}
                                     </td>
-                                    <td className="px-2 py-3 text-xs whitespace-nowrap" style={{ color: t.text3 }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, whiteSpace: 'nowrap', color: t.text3 }}>
                                         {formatDate(row.inceptionDate)}
                                     </td>
-                                    <td className="px-2 py-3 text-xs whitespace-nowrap" style={{ color: t.text4 }}>
+                                    <td style={{ padding: '12px 8px', fontSize: 12, whiteSpace: 'nowrap', color: t.text4 }}>
                                         {formatDate(row.expiryDate)}
                                     </td>
 
-                                    <td className="px-1 py-2 text-center relative overflow-hidden" onClick={e => e.stopPropagation()}>
+                                    <td style={{ padding: '8px 4px', textAlign: 'center', position: 'relative', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
                                         {row.isDeleted ? (
                                             user?.role === 'Super Admin' && row.source === 'direct' && (
                                                 <button onClick={(e) => handleRestore(e, row)} title="Restore" style={{ padding: 6, color: t.success, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 7 }}>
@@ -1012,21 +1011,21 @@ const Dashboard: React.FC = () => {
                                                 </button>
                                                 {openMenuId === `${row.source}-${row.id}` && (
                                                     <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
-                                                        <button onClick={() => { setOpenMenuId(null); handleViewFullDetail(row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                                                        <button onClick={() => { setOpenMenuId(null); handleViewFullDetail(row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                                                           onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                             <Eye size={14} /> View
                                                         </button>
-                                                        <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                                                        <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                                                           onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                             <Edit size={14} /> Edit
                                                         </button>
                                                         {row.source === 'direct' && (
                                                             <>
-                                                                <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                                                                <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                                                                   onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                                     <FileText size={14} /> Wording
                                                                 </button>
-                                                                <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, row); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                                                                <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                                                                   onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                                     <Trash2 size={14} /> Delete
                                                                 </button>
@@ -1067,7 +1066,7 @@ const Dashboard: React.FC = () => {
                 </tbody>
             </table>
             {/* Infinite scroll sentinel */}
-            <div ref={sentinelRef} className="h-1" />
+            <div ref={sentinelRef} style={{ height: 4 }} />
             {loadingMore && (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
                 <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
@@ -1162,25 +1161,6 @@ const Dashboard: React.FC = () => {
         variant="info"
         confirmText="Create Entity"
       />
-
-      {selectedRow && (selectedRow.source === 'direct' || selectedRow.source === 'inward-foreign' || selectedRow.source === 'inward-domestic') && (
-          <MasterDetailModal
-            row={selectedRow}
-            outwardPolicies={outwardByPolicyRef.current.get(selectedRow.referenceNumber) || []}
-            onClose={() => setSelectedRow(null)}
-            onRefresh={fetchData}
-            onEdit={(r) => {
-              setSelectedRow(null);
-              if (r.source === 'direct') {
-                navigate(`/edit/${r.id}`);
-              } else if (r.source === 'inward-foreign') {
-                navigate(`/inward-reinsurance/foreign/edit/${r.id}`);
-              } else if (r.source === 'inward-domestic') {
-                navigate(`/inward-reinsurance/domestic/edit/${r.id}`);
-              }
-            }}
-          />
-      )}
 
       <EntityDetailModal
         entity={selectedEntity}
