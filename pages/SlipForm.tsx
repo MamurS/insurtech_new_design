@@ -252,7 +252,8 @@ const SlipForm: React.FC = () => {
                         slipStatus === 'DECLINED' ? { backgroundColor: t.dangerBg, color: t.danger } :
                         slipStatus === 'NTU' ? { backgroundColor: t.warningBg, color: t.warning } :
                         { backgroundColor: t.bgInput, color: t.text1 }
-                    }>
+                    )
+                    }}>
                         {slipStatus}
                     </span>
                 </div>

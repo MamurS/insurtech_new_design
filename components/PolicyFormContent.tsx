@@ -81,13 +81,12 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
     return (
         <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
-            <div className="flex rounded-lg" style={{ boxShadow: t.shadow }}>
+            <div style={{ display: 'flex', borderRadius: 8, boxShadow: t.shadow }}>
                 <select
                     value={viewCurrency}
                     onChange={(e) => setViewCurrency(e.target.value)}
                     disabled={disabled}
-                    className="inline-flex items-center px-3 py-2 rounded-l-lg sm:text-sm outline-none min-w-[80px]"
-                    style={{ border: `1px solid ${t.border}`, borderRight: 'none', background: t.bgInput, color: t.text3, fontWeight: 700 }}
+                    style={{ display: 'inline-flex', alignItems: 'center', padding: '8px 12px', borderRadius: '8px 0 0 8px', fontSize: 14, outline: 'none', minWidth: 80, border: `1px solid ${t.border}`, borderRight: 'none', background: t.bgInput, color: t.text3, fontWeight: 700 }}
                 >
                     {currencyOptions.map(opt => (
                         <option key={opt} value={opt}>{opt}</option>
@@ -99,8 +98,8 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
                     onChange={handleAmountChange}
                     disabled={disabled}
                     onWheel={(e) => e.currentTarget.blur()}
-                    className="flex-1 min-w-0 block w-full px-3 py-2.5 rounded-r-lg outline-none transition-all text-sm"
-                    style={{ border: `1px solid ${t.border}`, color: t.text1, background: disabled ? t.bgInput : t.bgPanel }}
+                    className="transition-all"
+                    style={{ flex: 1, minWidth: 0, display: 'block', width: '100%', padding: '10px 12px', borderRadius: '0 8px 8px 0', outline: 'none', fontSize: 14, border: `1px solid ${t.border}`, color: t.text1, background: disabled ? t.bgInput : t.bgPanel }}
                 />
             </div>
         </div>
@@ -147,9 +146,9 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
   };
 
   return (
-    <div className="relative w-full" ref={wrapperRef}>
+    <div style={{ position: 'relative', width: '100%' }} ref={wrapperRef}>
       <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
-      <div className="relative">
+      <div style={{ position: 'relative' }}>
         <input
           type="text"
           name={name}
@@ -159,22 +158,21 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
           required={required}
           placeholder={placeholder || "Type to search..."}
           autoComplete="off"
-          className="w-full p-2.5 rounded-lg outline-none transition-all text-sm pr-8"
-          style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
+          className="transition-all"
+          style={{ width: '100%', padding: '10px 32px 10px 12px', borderRadius: 8, outline: 'none', fontSize: 14, background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
         />
-        <div className="absolute right-2 top-1/2 -translate-x-1/2 pointer-events-none" style={{ color: t.text5 }}>
+        <div style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateX(-50%) translateY(-50%)', pointerEvents: 'none', color: t.text5 }}>
           {isOpen ? <Search size={14}/> : <ChevronDown size={14}/>}
         </div>
       </div>
 
       {isOpen && filteredOptions.length > 0 && (
-        <ul className="absolute z-50 w-full rounded-lg mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+        <ul className="animate-in fade-in zoom-in-95 duration-100" style={{ position: 'absolute', zIndex: 50, width: '100%', borderRadius: 8, marginTop: 4, maxHeight: 240, overflowY: 'auto', background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
           {filteredOptions.map((opt) => (
             <li
               key={opt}
               onClick={() => handleSelect(opt)}
-              className="px-3 py-2 text-sm cursor-pointer last:border-0"
-              style={{ color: t.text2, borderBottom: `1px solid ${t.borderL}` }}
+              style={{ padding: '8px 12px', fontSize: 14, cursor: 'pointer', color: t.text2, borderBottom: `1px solid ${t.borderL}` }}
               onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; e.currentTarget.style.color = t.accent; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text2; }}
             >
@@ -507,7 +505,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
   const totalInstallmentsDue = formData.installments?.reduce((acc, curr) => acc + (curr.dueAmount || 0), 0) || 0;
   const totalInstallmentsPaid = formData.installments?.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0) || 0;
 
-  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
+  if (loading) return <div style={{ padding: 32, textAlign: 'center', color: t.text4 }}>Loading...</div>;
 
   const sectionTitleStyle: React.CSSProperties = { color: t.text1, fontSize: 15, fontWeight: 600, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
   const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' };
@@ -533,24 +531,24 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
         ]}
       />
 
-      <div className="p-6">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+      <div style={{ padding: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 24 }}>
 
             {/* Left Column (Main Data) */}
-            <div className="xl:col-span-8 space-y-6">
+            <div style={{ gridColumn: 'span 8', display: 'flex', flexDirection: 'column', gap: 24 }}>
 
                 {/* 1. Channel & Intermediary */}
-                <div className="rounded-xl p-6" style={sectionCardStyle}>
+                <div style={{ ...sectionCardStyle, borderRadius: 12, padding: 24 }}>
                     <h3 style={sectionTitleStyle}><ArrowRightLeft size={18} style={{ color: t.accent }}/> Business Channel & Source</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 16 }}>
                         <div>
                             <label style={labelStyle}>Business Channel</label>
-                            <div className="flex p-1 rounded-lg" style={{ background: t.bgInput }}>
-                                <button type="button" onClick={() => handleChannelChange('Direct')} className="flex-1 py-2 text-sm rounded-md transition-all" style={{ background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none', fontWeight: 500 }}>
+                            <div style={{ display: 'flex', padding: 4, borderRadius: 8, background: t.bgInput }}>
+                                <button type="button" onClick={() => handleChannelChange('Direct')} className="transition-all" style={{ flex: 1, padding: '8px 0', fontSize: 14, borderRadius: 6, background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none', fontWeight: 500, border: 'none', cursor: 'pointer' }}>
                                     Direct Insurance
                                 </button>
-                                <button type="button" onClick={() => handleChannelChange('Inward')} className="flex-1 py-2 text-sm rounded-md transition-all" style={{ background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none', fontWeight: 500 }}>
+                                <button type="button" onClick={() => handleChannelChange('Inward')} className="transition-all" style={{ flex: 1, padding: '8px 0', fontSize: 14, borderRadius: 6, background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none', fontWeight: 500, border: 'none', cursor: 'pointer' }}>
                                     Inward Reinsurance
                                 </button>
                             </div>
@@ -571,7 +569,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24 }}>
                         {formData.intermediaryType !== 'Direct' && (
                             <div className="animate-in fade-in slide-in-from-top-1">
                                 <SearchableInput
@@ -596,11 +594,11 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                 </div>
 
                 {/* 2. Risk & Core Details */}
-                <div className="rounded-xl p-6" style={sectionCardStyle}>
+                <div style={{ ...sectionCardStyle, borderRadius: 12, padding: 24 }}>
                     <h3 style={sectionTitleStyle}><Building2 size={18} style={{ color: t.accent }}/> Risk Details</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="md:col-span-2">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
+                        <div style={{ gridColumn: 'span 2' }}>
                              <EntitySearchInput
                                 label="Original Insured Name (Legal Entity)"
                                 value={formData.insuredName || ''}
@@ -613,7 +611,7 @@ export const PolicyFormContent: React.FC<PolicyFormContentProps> = ({
                                 required
                             />
                             {formData.insuredSicCode && (
-                                <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+                                <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 8, borderRadius: 8, padding: '6px 12px', fontSize: 12, background: t.bgInput, border: `1px solid ${t.border}` }}>
                                     <span style={{ color: t.text5 }}>Industry:</span>
                                     <span style={{ color: t.text2 }}>{formatSICDisplay(formData.insuredSicCode)}</span>
                                 </div>

@@ -132,18 +132,18 @@ const ClaimsList: React.FC = () => {
   // Header actions: Export + Register Claim
   useEffect(() => {
     setHeaderActions(
-      <div className="flex items-center gap-2">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <button
           onClick={handleExport}
-          style={{ background: t.success, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
-          className="flex items-center gap-2 transition-all whitespace-nowrap"
+          style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
+          className="transition-all"
         >
           <Download size={16} /> Export
         </button>
         <button
           onClick={() => setShowRegisterModal(true)}
-          style={{ background: t.danger, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
-          className="flex items-center gap-2 transition-all whitespace-nowrap"
+          style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', background: t.danger, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
+          className="transition-all"
         >
           <Plus size={16} /> Register Claim
         </button>
@@ -173,12 +173,12 @@ const ClaimsList: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
-      <div className="rounded-xl p-3" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-        <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
+      <div ref={filterRef} className="sticky-filter-blur" style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
+      <div style={{ borderRadius: 12, padding: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
           {/* Search */}
-          <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }}/>
+          <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text5 }}/>
             <input
               type="text"
               placeholder="Search..."
@@ -190,16 +190,16 @@ const ClaimsList: React.FC = () => {
 
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+            className="transition-colors"
             style={showFilters
-              ? { background: t.accentMuted, border: `1px solid ${t.accent}`, color: t.accent }
-              : { background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }
+              ? { display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.accentMuted, border: `1px solid ${t.accent}`, color: t.accent }
+              : { display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }
             }
           >
             <Filter size={14}/> Filters
           </button>
           {/* Date Filter */}
-          <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: 380 }}>
           <select
             value={dateFilterField}
             onChange={(e) => setDateFilterField(e.target.value)}
@@ -220,7 +220,7 @@ const ClaimsList: React.FC = () => {
           />
           </div>
 
-          <button onClick={() => refetch()} className="p-2 rounded-lg" style={{ color: t.text4 }}>
+          <button onClick={() => refetch()} style={{ padding: 8, borderRadius: 8, color: t.text4 }}>
             <RefreshCw size={16}/>
           </button>
 
@@ -228,13 +228,13 @@ const ClaimsList: React.FC = () => {
       </div>
       </div>{/* end sticky filter bar */}
 
-      <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+      <div style={{ borderRadius: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
 
         {/* Expandable Filter Panel */}
         {showFilters && (
-            <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-200" style={{ background: t.accentMuted, borderBottom: `1px solid ${t.border}` }}>
+            <div className="animate-in slide-in-from-top-2" style={{ padding: 16, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, background: t.accentMuted, borderBottom: `1px solid ${t.border}` }}>
                 <div>
-                    <label style={{ color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }} className="block mb-1">Status</label>
+                    <label style={{ display: 'block', marginBottom: 4, color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }}>Status</label>
                     <select
                         style={{ width: '100%', padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 13, background: t.bgPanel, color: t.text1 }}
                         value={filters.status}
@@ -248,7 +248,7 @@ const ClaimsList: React.FC = () => {
                     </select>
                 </div>
                 <div>
-                    <label style={{ color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }} className="block mb-1">Liability Type</label>
+                    <label style={{ display: 'block', marginBottom: 4, color: t.text4, fontSize: 11, fontWeight: 700, textTransform: 'uppercase' as const }}>Liability Type</label>
                     <select
                         style={{ width: '100%', padding: '8px 12px', border: `1px solid ${t.border}`, borderRadius: 8, fontSize: 13, background: t.bgPanel, color: t.text1 }}
                         value={filters.liabilityType}
@@ -264,91 +264,91 @@ const ClaimsList: React.FC = () => {
 
         {/* Loading State */}
         {isLoading && (
-            <div className="py-20 text-center flex flex-col items-center justify-center" style={{ color: t.text4 }}>
-                <Loader2 size={32} className="animate-spin mb-3" style={{ color: t.accent }}/>
+            <div style={{ paddingTop: 80, paddingBottom: 80, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: t.text4 }}>
+                <Loader2 size={32} className="animate-spin" style={{ marginBottom: 12, color: t.accent }}/>
                 Loading claims...
             </div>
         )}
 
         {/* Error State */}
         {isError && (
-            <div className="py-12 text-center flex flex-col items-center justify-center" style={{ color: t.danger }}>
-                <AlertOctagon size={32} className="mb-3"/>
-                <p className="font-medium">Failed to load claims.</p>
-                <button onClick={() => refetch()} className="mt-3 text-sm hover:underline" style={{ color: t.accent }}>Try Again</button>
+            <div style={{ paddingTop: 48, paddingBottom: 48, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: t.danger }}>
+                <AlertOctagon size={32} style={{ marginBottom: 12 }}/>
+                <p style={{ fontWeight: 500 }}>Failed to load claims.</p>
+                <button onClick={() => refetch()} style={{ marginTop: 12, fontSize: 14, color: t.accent }}>Try Again</button>
             </div>
         )}
 
         {/* Table */}
         {!isLoading && !isError && (
             <>
-                    <table className="w-full text-left text-sm whitespace-nowrap table-fixed">
-                        <thead className="sticky z-20" style={{ top: `${filterHeight}px`, background: t.bgApp, boxShadow: t.shadow }}>
+                    <table style={{ width: '100%', textAlign: 'left', fontSize: 14, whiteSpace: 'nowrap', tableLayout: 'fixed' }}>
+                        <thead style={{ position: 'sticky', zIndex: 20, top: `${filterHeight}px`, background: t.bgApp, boxShadow: t.shadow }}>
                             <tr>
-                                <th className="px-4 py-4 w-[120px]" style={{ color: t.text2 }}>Claim Ref</th>
-                                <th className="px-4 py-4 w-[110px]" style={{ color: t.text2 }}>Policy Ref</th>
-                                <th className="px-4 py-4 w-[80px]" style={{ color: t.text2 }}>Status</th>
-                                <th className="px-4 py-4 w-[90px]" style={{ color: t.text2 }}>Loss Date</th>
-                                <th className="px-4 py-4" style={{ color: t.text2 }}>Insured / Claimant</th>
-                                <th className="px-4 py-4 text-right w-[110px]" style={{ color: t.text2, background: t.bgApp }}>Incurred (100%)</th>
-                                <th className="px-4 py-4 text-right w-[120px]" style={{ color: t.text2, background: t.accentMuted }}>Incurred (Ours)</th>
-                                <th className="px-4 py-4 text-right w-[110px]" style={{ color: t.text2, background: t.successBg }}>Paid (Ours)</th>
-                                <th className="px-4 py-4 text-right w-[100px]" style={{ color: t.text2, background: t.dangerBg }}>Outstanding</th>
-                                <th className="px-1 py-3 w-10" style={{ background: t.bgApp }}></th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 120, color: t.text2 }}>Claim Ref</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 110, color: t.text2 }}>Policy Ref</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 80, color: t.text2 }}>Status</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 90, color: t.text2 }}>Loss Date</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, color: t.text2 }}>Insured / Claimant</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', width: 110, color: t.text2, background: t.bgApp }}>Incurred (100%)</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', width: 120, color: t.text2, background: t.accentMuted }}>Incurred (Ours)</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', width: 110, color: t.text2, background: t.successBg }}>Paid (Ours)</th>
+                                <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', width: 100, color: t.text2, background: t.dangerBg }}>Outstanding</th>
+                                <th style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 12, paddingBottom: 12, width: 40, background: t.bgApp }}></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y" style={{ borderColor: t.border }}>
+                        <tbody style={{ borderColor: t.border }}>
                             {claims.map(claim => {
                                 const badgeStyle = getStatusBadgeStyle(claim.status);
                                 return (
                                 <tr
                                     key={claim.id}
                                     onClick={() => navigate(`/claims/${claim.id}`)}
-                                    className="cursor-pointer transition-colors"
+                                    className="transition-colors"
+                                    style={{ cursor: 'pointer' }}
                                     onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
                                     onMouseLeave={e => (e.currentTarget.style.background = '')}
                                 >
-                                    <td className="px-4 py-4 font-bold truncate" style={{ color: t.text1 }}>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text1 }}>
                                         {claim.claimNumber}
                                         {claim.liabilityType === 'INFORMATIONAL' && (
-                                            <span className="ml-2 px-1.5 py-0.5 rounded text-[10px]" style={{ background: t.bgInput, color: t.text3, border: `1px solid ${t.borderL}` }}>INFO</span>
+                                            <span style={{ marginLeft: 8, paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2, borderRadius: 4, fontSize: 10, background: t.bgInput, color: t.text3, border: `1px solid ${t.borderL}` }}>INFO</span>
                                         )}
                                     </td>
-                                    <td className="px-4 py-4 font-mono text-xs truncate" style={{ color: t.accent }}>{claim.policyNumber}</td>
-                                    <td className="px-4 py-4">
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.accent }}>{claim.policyNumber}</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16 }}>
                                         <span style={{ padding: '4px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, color: badgeStyle.color, background: badgeStyle.background }}>
                                             {claim.status}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-4 text-xs" style={{ color: t.text3 }}>{formatDate(claim.lossDate)}</td>
-                                    <td className="px-4 py-4 overflow-hidden">
-                                        <div className="font-medium truncate" style={{ color: t.text1 }} title={claim.insuredName}>{claim.insuredName}</div>
-                                        <div className="text-xs truncate" style={{ color: t.text4 }}>{claim.claimantName}</div>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontSize: 12, color: t.text3 }}>{formatDate(claim.lossDate)}</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, overflow: 'hidden' }}>
+                                        <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text1 }} title={claim.insuredName}>{claim.insuredName}</div>
+                                        <div style={{ fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text4 }}>{claim.claimantName}</div>
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.text3 }}>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text3 }}>
                                         {formatMoney(claim.totalIncurred100)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono font-bold" style={{ color: t.text1 }}>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: t.text1 }}>
                                         {formatMoney(claim.totalIncurredOurShare)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.success }}>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.success }}>
                                         {formatMoney(claim.totalPaidOurShare)}
                                     </td>
-                                    <td className="px-4 py-4 text-right font-mono" style={{ color: t.danger }}>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.danger }}>
                                         {formatMoney(claim.outstandingOurShare)}
                                     </td>
-                                    <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
+                                    <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
                                         <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === claim.id ? null : claim.id); }}
-                                            className="p-1.5 rounded-lg"
+                                            style={{ padding: 6, borderRadius: 8 }}
                                             onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
                                             onMouseLeave={e => (e.currentTarget.style.background = '')}
                                         >
                                             <MoreVertical size={16} style={{ color: t.text4 }} />
                                         </button>
                                         {openMenuId === claim.id && (
-                                            <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-                                                <button onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm"
-                                                  style={{ color: t.text2 }}
+                                            <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, borderRadius: 8, paddingTop: 4, paddingBottom: 4, zIndex: 50, minWidth: 120, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
+                                                <button onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}
                                                   onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
                                                   onMouseLeave={e => (e.currentTarget.style.background = '')}
                                                 >
@@ -362,8 +362,8 @@ const ClaimsList: React.FC = () => {
                             })}
                             {claims.length === 0 && (
                                 <tr>
-                                    <td colSpan={10} className="py-12 text-center" style={{ color: t.text5 }}>
-                                        <AlertOctagon size={48} className="mx-auto mb-4 opacity-20"/>
+                                    <td colSpan={10} style={{ paddingTop: 48, paddingBottom: 48, textAlign: 'center', color: t.text5 }}>
+                                        <AlertOctagon size={48} style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: 16, opacity: 0.2 }}/>
                                         No claims found matching your criteria.
                                     </td>
                                 </tr>
@@ -372,13 +372,13 @@ const ClaimsList: React.FC = () => {
 
                         {/* Summary Row */}
                         {claims.length > 0 && (
-                            <tfoot className="font-bold text-xs" style={{ background: t.bgApp, borderTop: `2px solid ${t.border}`, color: t.text2 }}>
+                            <tfoot style={{ fontWeight: 700, fontSize: 12, background: t.bgApp, borderTop: `2px solid ${t.border}`, color: t.text2 }}>
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-3 text-right uppercase tracking-wider">Page Summary:</td>
-                                    <td className="px-4 py-3 text-right">-</td>
-                                    <td className="px-4 py-3 text-right font-mono">{formatMoney(summaryIncurred)}</td>
-                                    <td className="px-4 py-3 text-right font-mono" style={{ color: t.success }}>{formatMoney(summaryPaid)}</td>
-                                    <td className="px-4 py-3 text-right font-mono" style={{ color: t.danger }}>{formatMoney(summaryOutstanding)}</td>
+                                    <td colSpan={5} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, textAlign: 'right', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Page Summary:</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, textAlign: 'right' }}>-</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace" }}>{formatMoney(summaryIncurred)}</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.success }}>{formatMoney(summaryPaid)}</td>
+                                    <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.danger }}>{formatMoney(summaryOutstanding)}</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -386,9 +386,9 @@ const ClaimsList: React.FC = () => {
                     </table>
 
                 {/* Infinite scroll sentinel */}
-                <div ref={sentinelRef} className="h-1" />
+                <div ref={sentinelRef} style={{ height: 4 }} />
                 {isLoading && filters.page > 1 && (
-                  <div className="flex justify-center py-4">
+                  <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 16, paddingBottom: 16 }}>
                     <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
                   </div>
                 )}
