@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClaimFilters } from '../types';
@@ -11,6 +10,8 @@ import { AlertOctagon, Search, Plus, Filter, Loader2, RefreshCw, Download, MoreV
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 const PAGE_SIZE = 20;
 
@@ -133,20 +134,12 @@ const ClaimsList: React.FC = () => {
   useEffect(() => {
     setHeaderActions(
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <button
-          onClick={handleExport}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
-          className="transition-all"
-        >
-          <Download size={16} /> Export
-        </button>
-        <button
-          onClick={() => setShowRegisterModal(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', background: t.danger, color: '#fff', borderRadius: 8, padding: '8px 16px', fontWeight: 600, fontSize: 13, boxShadow: t.shadow }}
-          className="transition-all"
-        >
-          <Plus size={16} /> Register Claim
-        </button>
+        <Button variant="primary" icon={<Download size={16} />} onClick={handleExport} style={{ whiteSpace: 'nowrap', background: t.success }}>
+          Export
+        </Button>
+        <Button variant="primary" icon={<Plus size={16} />} onClick={() => setShowRegisterModal(true)} style={{ whiteSpace: 'nowrap', background: t.danger }}>
+          Register Claim
+        </Button>
       </div>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
@@ -178,26 +171,28 @@ const ClaimsList: React.FC = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text5 }}/>
-            <input
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text5, zIndex: 1 }}/>
+            <Input
               type="text"
               placeholder="Search..."
-              style={{ width: '100%', padding: '8px 12px 8px 32px', background: t.bgInput, border: `1px solid ${t.borderL}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none' }}
               value={filters.searchTerm}
-              onChange={e => handleFilterChange('searchTerm', e.target.value)}
+              onChange={(val) => handleFilterChange('searchTerm', val)}
+              style={{ paddingLeft: 32 }}
             />
           </div>
 
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="transition-colors"
+            icon={<Filter size={14}/>}
             style={showFilters
-              ? { display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.accentMuted, border: `1px solid ${t.accent}`, color: t.accent }
-              : { display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2 }
+              ? { background: t.accentMuted, border: `1px solid ${t.accent}`, color: t.accent }
+              : { color: t.text2 }
             }
           >
-            <Filter size={14}/> Filters
-          </button>
+            Filters
+          </Button>
           {/* Date Filter */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: 380 }}>
           <select
@@ -220,9 +215,9 @@ const ClaimsList: React.FC = () => {
           />
           </div>
 
-          <button onClick={() => refetch()} style={{ padding: 8, borderRadius: 8, color: t.text4 }}>
-            <RefreshCw size={16}/>
-          </button>
+          <Button variant="ghost" size="sm" onClick={() => refetch()} style={{ padding: 8, border: 'none' }}>
+            <RefreshCw size={16} style={{ color: t.text4 }}/>
+          </Button>
 
         </div>
       </div>
@@ -275,7 +270,7 @@ const ClaimsList: React.FC = () => {
             <div style={{ paddingTop: 48, paddingBottom: 48, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: t.danger }}>
                 <AlertOctagon size={32} style={{ marginBottom: 12 }}/>
                 <p style={{ fontWeight: 500 }}>Failed to load claims.</p>
-                <button onClick={() => refetch()} style={{ marginTop: 12, fontSize: 14, color: t.accent }}>Try Again</button>
+                <Button variant="ghost" size="sm" onClick={() => refetch()} style={{ marginTop: 12, color: t.accent, border: 'none' }}>Try Again</Button>
             </div>
         )}
 
@@ -339,21 +334,14 @@ const ClaimsList: React.FC = () => {
                                         {formatMoney(claim.outstandingOurShare)}
                                     </td>
                                     <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-                                        <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === claim.id ? null : claim.id); }}
-                                            style={{ padding: 6, borderRadius: 8 }}
-                                            onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
-                                            onMouseLeave={e => (e.currentTarget.style.background = '')}
-                                        >
+                                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === claim.id ? null : claim.id); }} style={{ padding: 6, border: 'none' }}>
                                             <MoreVertical size={16} style={{ color: t.text4 }} />
-                                        </button>
+                                        </Button>
                                         {openMenuId === claim.id && (
                                             <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, borderRadius: 8, paddingTop: 4, paddingBottom: 4, zIndex: 50, minWidth: 120, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-                                                <button onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}
-                                                  onMouseEnter={e => (e.currentTarget.style.background = t.bgHover)}
-                                                  onMouseLeave={e => (e.currentTarget.style.background = '')}
-                                                >
+                                                <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); navigate(`/claims/${claim.id}`); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                                     <Eye size={14} /> View
-                                                </button>
+                                                </Button>
                                             </div>
                                         )}
                                     </td>
