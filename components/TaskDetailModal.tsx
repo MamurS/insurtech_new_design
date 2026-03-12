@@ -87,7 +87,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
             'HIGH': { background: t.warningBg, color: t.warning, border: `1px solid ${t.warning}40` },
             'URGENT': { background: t.dangerBg, color: t.danger, border: `1px solid ${t.danger}40` }
         };
-        return <span className="px-2 py-1 text-xs" style={{ ...styles[p], borderRadius: 20, fontWeight: 700 }}>{p}</span>;
+        return <span style={{ ...styles[p], paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, fontSize: 12, borderRadius: 20, fontWeight: 700 }}>{p}</span>;
     };
 
     const getStatusBadge = (s: TaskStatus) => {
@@ -97,7 +97,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
             'COMPLETED': { background: t.successBg, color: t.success, border: `1px solid ${t.success}40` },
             'CANCELLED': { background: t.bgInput, color: t.text3, border: `1px solid ${t.border}` }
         };
-        return <span className="px-3 py-1 text-xs" style={{ ...styles[s], borderRadius: 20, fontWeight: 700 }}>{s.replace('_', ' ')}</span>;
+        return <span style={{ ...styles[s], paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, fontSize: 12, borderRadius: 20, fontWeight: 700 }}>{s.replace('_', ' ')}</span>;
     };
 
     const formatFileSize = (bytes?: number) => {
@@ -114,12 +114,12 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
     };
 
     return (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 backdrop-blur-sm" style={{ background: 'rgba(0,0,0,0.5)' }}>
-            <div className="w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadowLg }}>
+        <div className="backdrop-blur-sm" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'rgba(0,0,0,0.5)' }}>
+            <div className="animate-in fade-in zoom-in" style={{ width: '100%', maxWidth: 672, maxHeight: '90vh', display: 'flex', flexDirection: 'column', background: t.bgPanel, borderRadius: 12, boxShadow: t.shadowLg }}>
                 {/* Header */}
-                <div className="p-6 flex justify-between items-start" style={{ background: t.bgInput, borderBottom: `1px solid ${t.border}`, borderRadius: '12px 12px 0 0' }}>
+                <div style={{ padding: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: t.bgInput, borderBottom: `1px solid ${t.border}`, borderRadius: '12px 12px 0 0' }}>
                     <div>
-                        <div className="flex items-center gap-3 mb-2">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                             {getPriorityBadge(task.priority)}
                             {getStatusBadge(task.status)}
                         </div>
@@ -129,22 +129,22 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                 </div>
 
                 {/* Body */}
-                <div className="p-6 overflow-y-auto flex-1 space-y-6">
+                <div style={{ padding: 24, overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 24 }}>
                     {/* Metadata */}
-                    <div className="grid grid-cols-2 gap-4 text-sm p-4 rounded-lg" style={{ color: t.text3, background: t.bgInput, border: `1px solid ${t.border}` }}>
-                        <div className="flex items-center gap-2">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, fontSize: 14, padding: 16, borderRadius: 8, color: t.text3, background: t.bgInput, border: `1px solid ${t.border}` }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <User size={16} style={{ color: t.text4 }}/>
                             <span>Assigned to: <strong style={{ color: t.text1 }}>{task.assignedToName || 'Unassigned'}</strong></span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <User size={16} style={{ color: t.text4 }}/>
                             <span>From: <strong style={{ color: t.text1 }}>{task.assignedByName || 'System'}</strong></span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <Calendar size={16} style={{ color: t.text4 }}/>
                             <span>Due: <span style={task.isOverdue ? { color: t.danger, fontWeight: 700 } : undefined}>{formatDate(task.dueDate)}</span></span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <Calendar size={16} style={{ color: t.text4 }}/>
                             <span>Created: {formatDate(task.createdAt)}</span>
                         </div>
@@ -152,59 +152,59 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
 
                     {/* Description */}
                     <div>
-                        <h3 className="mb-2 text-sm uppercase tracking-wide" style={{ color: t.text1, fontWeight: 700 }}>Description</h3>
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: t.text2 }}>
+                        <h3 style={{ marginBottom: 8, fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1, fontWeight: 700 }}>Description</h3>
+                        <p style={{ fontSize: 14, lineHeight: 1.625, whiteSpace: 'pre-wrap', color: t.text2 }}>
                             {task.description || "No description provided."}
                         </p>
                     </div>
 
                     {/* Attachments */}
                     <div>
-                        <div className="flex justify-between items-center mb-3">
-                            <h3 className="text-sm uppercase tracking-wide flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                            <h3 style={{ fontSize: 14, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 8, color: t.text1, fontWeight: 700 }}>
                                 <Paperclip size={16}/> Attachments
                             </h3>
-                            <label className={`cursor-pointer text-xs px-2 py-1 rounded transition-colors flex items-center gap-1 ${isUploading ? 'opacity-50 pointer-events-none' : ''}`} style={{ color: t.accent, fontWeight: 700 }}>
-                                {isUploading ? <Loader2 size={12} className="animate-spin"/> : <div className="flex items-center gap-1">+ Add File</div>}
-                                <input type="file" multiple className="hidden" onChange={handleFileUpload} disabled={isUploading}/>
+                            <label style={{ cursor: 'pointer', fontSize: 12, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 4, color: t.accent, fontWeight: 700, ...(isUploading ? { opacity: 0.5, pointerEvents: 'none' as const } : {}) }}>
+                                {isUploading ? <Loader2 size={12} className="animate-spin"/> : <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>+ Add File</div>}
+                                <input type="file" multiple style={{ display: 'none' }} onChange={handleFileUpload} disabled={isUploading}/>
                             </label>
                         </div>
 
                         {loadingAttachments ? (
-                            <div className="text-center py-4 text-xs" style={{ color: t.text4 }}><Loader2 className="animate-spin inline mr-1"/> Loading files...</div>
+                            <div style={{ textAlign: 'center', paddingTop: 16, paddingBottom: 16, fontSize: 12, color: t.text4 }}><Loader2 className="animate-spin" style={{ display: 'inline', marginRight: 4 }}/> Loading files...</div>
                         ) : (!attachments || attachments.length === 0) ? (
-                            <div className="text-center py-6 rounded-lg text-xs" style={{ border: `2px dashed ${t.borderL}`, color: t.text4 }}>
+                            <div style={{ textAlign: 'center', paddingTop: 24, paddingBottom: 24, borderRadius: 8, fontSize: 12, border: `2px dashed ${t.borderL}`, color: t.text4 }}>
                                 No attachments found.
                             </div>
                         ) : (
-                            <div className="space-y-2">
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                 {attachments.map(file => (
-                                    <div key={file.id} className="flex items-center justify-between p-3 rounded-lg transition-colors group" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
-                                        <div className="flex items-center gap-3 overflow-hidden">
-                                            <div className="p-2 rounded shrink-0" style={{ background: t.bgPanel, border: `1px solid ${t.border}` }}>
+                                    <div key={file.id} className="transition-colors" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 12, borderRadius: 8, background: t.bgInput, border: `1px solid ${t.border}` }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, overflow: 'hidden' }}>
+                                            <div style={{ padding: 8, borderRadius: 4, flexShrink: 0, background: t.bgPanel, border: `1px solid ${t.border}` }}>
                                                 {getFileIcon(file.fileType)}
                                             </div>
-                                            <div className="min-w-0">
-                                                <div className="text-sm truncate" style={{ color: t.text1, fontWeight: 500 }} title={file.fileName}>{file.fileName}</div>
-                                                <div className="text-xs" style={{ color: t.text4 }}>{formatFileSize(file.fileSize)} • {formatDate(file.uploadedAt)}</div>
+                                            <div style={{ minWidth: 0 }}>
+                                                <div style={{ fontSize: 14, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text1, fontWeight: 500 }} title={file.fileName}>{file.fileName}</div>
+                                                <div style={{ fontSize: 12, color: t.text4 }}>{formatFileSize(file.fileSize)} • {formatDate(file.uploadedAt)}</div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-1">
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                             <a
                                                 href={file.fileUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="p-2 rounded transition-colors"
+                                                className="transition-colors"
                                                 title="Download"
-                                                style={{ color: t.text4 }}
+                                                style={{ padding: 8, borderRadius: 4, color: t.text4 }}
                                             >
                                                 <Download size={16}/>
                                             </a>
                                             <button
                                                 onClick={() => handleDeleteFile(file.id)}
-                                                className="p-2 rounded transition-colors"
+                                                className="transition-colors"
                                                 title="Delete"
-                                                style={{ color: t.text4 }}
+                                                style={{ padding: 8, borderRadius: 4, color: t.text4 }}
                                             >
                                                 <Trash2 size={16}/>
                                             </button>
@@ -217,29 +217,27 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, isOpen, onClose
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 flex justify-between items-center" style={{ borderTop: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '0 0 12px 12px' }}>
+                <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '0 0 12px 12px' }}>
                     <button
                         onClick={handleDeleteTask}
-                        className="px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors"
-                        style={{ color: t.danger, fontWeight: 500 }}
+                        className="transition-colors"
+                        style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, color: t.danger, fontWeight: 500 }}
                     >
                         <Trash2 size={16}/> Delete Task
                     </button>
 
-                    <div className="flex gap-2">
+                    <div style={{ display: 'flex', gap: 8 }}>
                         {task.status !== 'COMPLETED' ? (
                             <button
                                 onClick={() => handleStatusChange('COMPLETED')}
-                                className="px-4 py-2 rounded-lg text-sm flex items-center gap-2"
-                                style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                                style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                             >
                                 <CheckCircle size={16}/> Mark Complete
                             </button>
                         ) : (
                             <button
                                 onClick={() => handleStatusChange('PENDING')}
-                                className="px-4 py-2 rounded-lg text-sm"
-                                style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2, fontWeight: 500 }}
+                                style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.bgPanel, border: `1px solid ${t.borderL}`, color: t.text2, fontWeight: 500 }}
                             >
                                 Reopen Task
                             </button>

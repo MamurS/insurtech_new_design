@@ -264,20 +264,17 @@ const RegulatoryReporting: React.FC = () => {
 
   useEffect(() => {
     setHeaderActions(
-      <div className="flex items-center gap-2">
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <button onClick={handleExport} disabled={!data}
-          style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg disabled:opacity-50">
+          style={{ background: t.success, color: '#fff', boxShadow: t.shadow, display: 'flex', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, fontWeight: 600, borderRadius: 8, opacity: !data ? 0.5 : undefined }}>
           <Download size={14} /> Export
         </button>
         <button onClick={handlePrint}
-          style={{ background: t.bgCard, color: t.text2 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold rounded-lg">
+          style={{ background: t.bgCard, color: t.text2, display: 'flex', alignItems: 'center', gap: 6, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, fontWeight: 600, borderRadius: 8 }}>
           <Printer size={14} /> Print
         </button>
         <button onClick={refetch} disabled={loading}
-          style={{ color: t.text3 }}
-          className="p-2 rounded-lg disabled:opacity-50" title="Refresh">
+          style={{ color: t.text3, padding: 8, borderRadius: 8, opacity: loading ? 0.5 : undefined }} title="Refresh">
           <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
         </button>
       </div>
@@ -288,14 +285,13 @@ const RegulatoryReporting: React.FC = () => {
   // ── Error state ──
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 384 }}>
+        <div style={{ textAlign: 'center' }}>
+          <AlertCircle style={{ width: 48, height: 48, marginLeft: 'auto', marginRight: 'auto', marginBottom: 16, color: t.danger }} />
           <h3 style={{ fontSize: 15, fontWeight: 600, color: t.text1 }}>Failed to load data</h3>
-          <p className="mt-1" style={{ color: t.text3 }}>{error}</p>
+          <p style={{ marginTop: 4, color: t.text3 }}>{error}</p>
           <button onClick={refetch}
-            style={{ background: t.accent, color: '#fff' }}
-            className="mt-4 px-4 py-2 rounded-lg">
+            style={{ background: t.accent, color: '#fff', marginTop: 16, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8 }}>
             Retry
           </button>
         </div>
@@ -333,73 +329,69 @@ const RegulatoryReporting: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div style={{ maxWidth: 1024, marginLeft: 'auto', marginRight: 'auto' }}>
       {/* Filter Bar */}
-      <div className="sticky top-0 z-30 mb-6 sticky-filter-blur" style={{ background: t.bgApp }}>
-        <div className="rounded-xl p-3" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
-          <div className="flex flex-wrap items-center gap-3">
+      <div className="sticky-filter-blur" style={{ position: 'sticky', top: 0, zIndex: 30, marginBottom: 24, background: t.bgApp }}>
+        <div style={{ borderRadius: 12, padding: 12, background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 }}>
             <select value={activeTab} onChange={(e) => setActiveTab(e.target.value as TabKey)}
-              style={selectStyle}
-              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium">
+              style={{ ...selectStyle, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 500, outline: 'none' }}>
               <option value="form1">Form 1: Business Summary</option>
               <option value="form2">Form 2: Solvency</option>
               <option value="form3">Form 3: Reserves</option>
               <option value="form4">Form 4: Reinsurance</option>
             </select>
-            <div className="w-px h-5" style={{ background: t.borderL }} />
+            <div style={{ width: 1, height: 20, background: t.borderL }} />
             <select value={quarter} onChange={(e) => setQuarter(e.target.value)}
-              style={selectStyle}
-              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              style={{ ...selectStyle, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, outline: 'none' }}>
               {QUARTERS.map(q => <option key={q} value={q}>{q}</option>)}
             </select>
             <select value={year} onChange={(e) => setYear(Number(e.target.value))}
-              style={selectStyle}
-              className="px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+              style={{ ...selectStyle, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, outline: 'none' }}>
               {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <div className="w-px h-5" style={{ background: t.borderL }} />
-            <div className="flex items-center gap-1 text-sm">
+            <div style={{ width: 1, height: 20, background: t.borderL }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 14 }}>
               <span style={{ color: t.text3 }}>UZS/USD:</span>
               <input type="number" value={exchangeRate} onChange={(e) => setExchangeRate(Number(e.target.value) || 12800)}
-                style={inputStyle}
-                className="w-20 rounded-lg px-2 py-2 text-sm text-right font-mono focus:ring-2 focus:ring-blue-500 outline-none" />
+                style={{ ...inputStyle, width: 80, borderRadius: 8, paddingLeft: 8, paddingRight: 8, paddingTop: 8, paddingBottom: 8, fontSize: 14, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", outline: 'none' }} />
             </div>
           </div>
         </div>
       </div>
 
       {loading && !data ? (
-        <div className="flex items-center justify-center h-64">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
           <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
         </div>
       ) : data ? (
-        <div className="print:shadow-none">
+        <div>
           {/* ═══════════════════════════════════════════════════════ */}
           {/* FORM 1: Business Summary                                */}
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form1' && (
-            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }} className="print:border-black">
+            <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
               {/* Form header */}
-              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 1 / Form 1</p>
-                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, textAlign: 'center', borderBottom: `1px solid ${t.borderL}` }}>
+                <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4, color: t.text4 }}>Форма 1 / Form 1</p>
+                <h2 style={{ fontSize: 16, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1 }}>
                   ОТЧЕТ О СТРАХОВОЙ ДЕЯТЕЛЬНОСТИ
                 </h2>
-                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Insurance Activity Report</p>
-                <p className="text-xs mt-2" style={{ color: t.text4 }}>
+                <p style={{ fontSize: 14, marginTop: 2, color: t.text2 }}>Insurance Activity Report</p>
+                <p style={{ fontSize: 12, marginTop: 8, color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD / UZS
                 </p>
               </div>
 
               {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
-                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-40" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Amount (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (UZS)</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 48, color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 160, color: t.text2, borderRight: `1px solid ${t.border}` }}>Amount (USD)</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 192, color: t.text2 }}>Amount (UZS)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -412,17 +404,14 @@ const RegulatoryReporting: React.FC = () => {
                           ...(r.isGrandTotal ? { borderTop: `2px solid ${t.text4}` } : {}),
                         }}
                       >
-                        <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>{r.row}</td>
-                        <td className={`px-4 py-2 ${r.indent ? 'pl-10' : ''} ${r.isTotal || r.isGrandTotal ? 'font-semibold' : ''}`}
-                          style={{ color: r.isTotal || r.isGrandTotal ? t.text1 : t.text2, borderRight: `1px solid ${t.border}` }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>{r.row}</td>
+                        <td style={{ paddingLeft: r.indent ? 40 : 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: (r.isTotal || r.isGrandTotal) ? 600 : undefined, color: r.isTotal || r.isGrandTotal ? t.text1 : t.text2, borderRight: `1px solid ${t.border}` }}>
                           {r.label}
                         </td>
-                        <td className={`px-4 py-2 text-right font-mono ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}
-                          style={{ color: r.usd < 0 ? t.danger : t.text1, borderRight: `1px solid ${t.border}` }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: r.isGrandTotal ? 700 : r.isTotal ? 600 : undefined, fontSize: r.isGrandTotal ? 16 : undefined, color: r.usd < 0 ? t.danger : t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(r.usd)}
                         </td>
-                        <td className={`px-4 py-2 text-right font-mono ${r.isGrandTotal ? 'font-bold text-base' : r.isTotal ? 'font-semibold' : ''}`}
-                          style={{ color: r.usd < 0 ? t.danger : t.text1 }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: r.isGrandTotal ? 700 : r.isTotal ? 600 : undefined, fontSize: r.isGrandTotal ? 16 : undefined, color: r.usd < 0 ? t.danger : t.text1 }}>
                           {fmt(toUZS(r.usd))}
                         </td>
                       </tr>
@@ -432,11 +421,11 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Key Ratios */}
-              <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
-                <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, borderTop: `1px solid ${t.borderL}` }}>
+                <h3 style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12, color: t.text4 }}>
                   Key Ratios / Ключевые коэффициенты
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-2">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', columnGap: 32, rowGap: 8 }}>
                   {[
                     ['Loss Ratio / Убыточность', lossRatio],
                     ['Commission Ratio / Коэффициент комиссии', commissionRatio],
@@ -444,10 +433,9 @@ const RegulatoryReporting: React.FC = () => {
                     ['Combined Ratio / Комбинированный коэффициент', combinedRatio],
                     ['Retention Ratio / Коэффициент удержания', retentionRatio],
                   ].map(([label, value]) => (
-                    <div key={label as string} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
-                      <span className="text-sm" style={{ color: t.text2 }}>{label as string}</span>
-                      <span className="font-mono text-sm font-medium" style={{
-                        color: (label as string).includes('Combined') && (value as number) >= 100
+                    <div key={label as string} style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, paddingBottom: 6, borderBottom: `1px solid ${t.borderS}` }}>
+                      <span style={{ fontSize: 14, color: t.text2 }}>{label as string}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: 500, color: (label as string).includes('Combined') && (value as number) >= 100
                           ? t.danger
                           : (label as string).includes('Combined') && (value as number) < 100
                             ? t.success
@@ -467,112 +455,107 @@ const RegulatoryReporting: React.FC = () => {
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form2' && (
             <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
-              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 2 / Form 2</p>
-                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, textAlign: 'center', borderBottom: `1px solid ${t.borderL}` }}>
+                <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4, color: t.text4 }}>Форма 2 / Form 2</p>
+                <h2 style={{ fontSize: 16, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1 }}>
                   ОТЧЕТ О ПЛАТЕЖЕСПОСОБНОСТИ
                 </h2>
-                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Solvency Report</p>
-                <p className="text-xs mt-2" style={{ color: t.text4 }}>
+                <p style={{ fontSize: 14, marginTop: 2, color: t.text2 }}>Solvency Report</p>
+                <p style={{ fontSize: 12, marginTop: 8, color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
-                <div className="mt-3">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full"
-                    style={{ background: getSolvencyBadge().bg, color: getSolvencyBadge().color }}>
+                <div style={{ marginTop: 12 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, background: getSolvencyBadge().bg, color: getSolvencyBadge().color }}>
                     {getSolvencyBadge().label} {solvencyRatio > 0 ? `(${fmtPct(solvencyRatio)})` : ''}
                   </span>
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
-                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (USD)</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 48, color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 192, color: t.text2 }}>Amount (USD)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Row 1 - Total Assets (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Total Assets / Итого активы
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={solvency.totalAssets || ''}
                           onChange={(e) => setSolvency({ ...solvency, totalAssets: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 2 - Total Liabilities (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Total Liabilities / Итого обязательства
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={solvency.totalLiabilities || ''}
                           onChange={(e) => setSolvency({ ...solvency, totalLiabilities: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 3 - Net Assets (auto) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
-                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 600, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Net Assets (1-2) / Чистые активы
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: netAssets < 0 ? t.danger : t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: netAssets < 0 ? t.danger : t.text1 }}>
                         {fmt(netAssets)}
                       </td>
                     </tr>
                     {/* Row 4 - MCR (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Minimum Capital Requirement / Минимальный размер уставного капитала
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={solvency.minCapitalRequirement || ''}
                           onChange={(e) => setSolvency({ ...solvency, minCapitalRequirement: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 5 - Solvency Margin (auto) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
-                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 600, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Solvency Margin (3-4) / Маржа платежеспособности
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: solvencyMargin < 0 ? t.danger : t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: solvencyMargin < 0 ? t.danger : t.text1 }}>
                         {fmt(solvencyMargin)}
                       </td>
                     </tr>
                     {/* Row 6 - Solvency Ratio (auto) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
-                      <td className="px-4 py-2 font-bold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 700, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Solvency Ratio (3/4 × 100%) / Коэффициент платежеспособности
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-bold text-base" style={{
-                        color: solvencyRatio >= 120 ? t.success :
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, fontSize: 16, color: solvencyRatio >= 120 ? t.success :
                           solvencyRatio >= 100 ? t.warning : t.danger
                       }}>
                         {solvencyRatio > 0 ? fmtPct(solvencyRatio) : '—'}
@@ -581,45 +564,45 @@ const RegulatoryReporting: React.FC = () => {
 
                     {/* Separator */}
                     <tr style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                      <td colSpan={3} className="px-4 py-3 text-xs font-semibold uppercase tracking-widest" style={{ background: t.bgCard, color: t.text4 }}>
+                      <td colSpan={3} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', background: t.bgCard, color: t.text4 }}>
                         Technical Reserves / Страховые резервы
                       </td>
                     </tr>
 
                     {/* Row 7 - Total Tech Reserves */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7</td>
-                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>7</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 600, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Technical Reserves - Total / Страховые резервы — Итого
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: t.text1 }}>
                         {fmt(upr + claimsReserve + ibnrTotal)}
                       </td>
                     </tr>
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.1</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>7.1</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Unearned Premium Reserve (UPR) / Резерв незаработанной премии
                       </td>
-                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1 }}>
                         {fmt(upr)}
                       </td>
                     </tr>
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.2</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>7.2</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Outstanding Claims Reserve / Резерв заявленных убытков
                       </td>
-                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1 }}>
                         {fmt(claimsReserve)}
                       </td>
                     </tr>
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>7.3</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>7.3</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         IBNR Reserve / Резерв РПНУ (IBNR)
                       </td>
-                      <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1 }}>
                         {fmt(ibnrTotal)}
                       </td>
                     </tr>
@@ -628,12 +611,11 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Save button */}
-              <div className="px-8 py-4 flex justify-end" style={{ borderTop: `1px solid ${t.borderL}` }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 16, paddingBottom: 16, display: 'flex', justifyContent: 'flex-end', borderTop: `1px solid ${t.borderL}` }}>
                 <button
                   onClick={saveSolvency}
                   disabled={solvencySaving}
-                  style={{ background: t.accent, color: '#fff' }}
-                  className="px-4 py-2 text-sm font-semibold rounded-lg disabled:opacity-50"
+                  style={{ background: t.accent, color: '#fff', paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8, opacity: solvencySaving ? 0.5 : undefined }}
                 >
                   {solvencySaving ? 'Saving...' : 'Save Solvency Data'}
                 </button>
@@ -646,58 +628,58 @@ const RegulatoryReporting: React.FC = () => {
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form3' && (
             <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
-              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 3 / Form 3</p>
-                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, textAlign: 'center', borderBottom: `1px solid ${t.borderL}` }}>
+                <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4, color: t.text4 }}>Форма 3 / Form 3</p>
+                <h2 style={{ fontSize: 16, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1 }}>
                   ОТЧЕТ О СТРАХОВЫХ РЕЗЕРВАХ
                 </h2>
-                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Insurance Reserves Report</p>
-                <p className="text-xs mt-2" style={{ color: t.text4 }}>
+                <p style={{ fontSize: 14, marginTop: 2, color: t.text2 }}>Insurance Reserves Report</p>
+                <p style={{ fontSize: 12, marginTop: 8, color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
-                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Class of Business / Вид страхования</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-36" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>UPR (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-44" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Outstanding Claims</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-36" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>IBNR (USD)</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-44" style={{ color: t.text2 }}>Total Reserves</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, color: t.text2, borderRight: `1px solid ${t.border}` }}>Class of Business / Вид страхования</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 144, color: t.text2, borderRight: `1px solid ${t.border}` }}>UPR (USD)</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 176, color: t.text2, borderRight: `1px solid ${t.border}` }}>Outstanding Claims</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 144, color: t.text2, borderRight: `1px solid ${t.border}` }}>IBNR (USD)</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 176, color: t.text2 }}>Total Reserves</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reservesByClass.length > 0 ? reservesByClass.map((r, i) => (
                       <tr key={r.class} style={{ borderBottom: `1px solid ${t.border}`, background: i % 2 !== 0 ? t.bgRowAlt : undefined }}>
-                        <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>{r.class}</td>
-                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.upr)}</td>
-                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.outstandingClaims)}</td>
-                        <td className="px-4 py-2 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.ibnr)}</td>
-                        <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>{fmt(r.totalReserves)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>{r.class}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.upr)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.outstandingClaims)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>{fmt(r.ibnr)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: t.text1 }}>{fmt(r.totalReserves)}</td>
                       </tr>
                     )) : (
                       <tr>
-                        <td colSpan={5} className="px-4 py-8 text-center italic" style={{ color: t.text4 }}>
+                        <td colSpan={5} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 32, paddingBottom: 32, textAlign: 'center', fontStyle: 'italic', color: t.text4 }}>
                           No class data available. Configure IBNR estimates and ensure claims data is loaded.
                         </td>
                       </tr>
                     )}
                     {/* Total row */}
                     {reservesByClass.length > 0 && (
-                      <tr className="font-semibold" style={{ background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
-                        <td className="px-4 py-2.5" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>TOTAL / ИТОГО</td>
-                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <tr style={{ fontWeight: 600, background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, color: t.text1, borderRight: `1px solid ${t.border}` }}>TOTAL / ИТОГО</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.upr, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.outstandingClaims, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", color: t.text1, borderRight: `1px solid ${t.border}` }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.ibnr, 0))}
                         </td>
-                        <td className="px-4 py-2.5 text-right font-mono font-bold" style={{ color: t.text1 }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: t.text1 }}>
                           {fmt(reservesByClass.reduce((s, r) => s + r.totalReserves, 0))}
                         </td>
                       </tr>
@@ -707,20 +689,20 @@ const RegulatoryReporting: React.FC = () => {
               </div>
 
               {/* Additional totals summary */}
-              <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
-                <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, borderTop: `1px solid ${t.borderL}` }}>
+                <h3 style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12, color: t.text4 }}>
                   Aggregate Reserves Summary / Сводка резервов
                 </h3>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: 32, rowGap: 8 }}>
                   {[
                     ['Unearned Premium Reserve (UPR)', upr],
                     ['Outstanding Claims Reserve', claimsReserve],
                     ['IBNR Reserve', ibnrTotal],
                     ['Total Technical Reserves', upr + claimsReserve + ibnrTotal],
                   ].map(([label, value]) => (
-                    <div key={label as string} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
-                      <span className="text-sm" style={{ color: t.text2 }}>{label as string}</span>
-                      <span className="font-mono text-sm font-medium" style={{ color: t.text1 }}>${fmt(value as number)}</span>
+                    <div key={label as string} style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, paddingBottom: 6, borderBottom: `1px solid ${t.borderS}` }}>
+                      <span style={{ fontSize: 14, color: t.text2 }}>{label as string}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, fontWeight: 500, color: t.text1 }}>${fmt(value as number)}</span>
                     </div>
                   ))}
                 </div>
@@ -733,155 +715,149 @@ const RegulatoryReporting: React.FC = () => {
           {/* ═══════════════════════════════════════════════════════ */}
           {activeTab === 'form4' && (
             <div style={{ background: t.bgPanel, border: `1px solid ${t.borderL}`, boxShadow: t.shadow }}>
-              <div className="px-8 py-5 text-center" style={{ borderBottom: `1px solid ${t.borderL}` }}>
-                <p className="text-xs uppercase tracking-widest mb-1" style={{ color: t.text4 }}>Форма 4 / Form 4</p>
-                <h2 className="text-base font-bold uppercase tracking-wide" style={{ color: t.text1 }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, textAlign: 'center', borderBottom: `1px solid ${t.borderL}` }}>
+                <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4, color: t.text4 }}>Форма 4 / Form 4</p>
+                <h2 style={{ fontSize: 16, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1 }}>
                   ОТЧЕТ О ПЕРЕСТРАХОВАНИИ
                 </h2>
-                <p className="text-sm mt-0.5" style={{ color: t.text2 }}>Reinsurance Report</p>
-                <p className="text-xs mt-2" style={{ color: t.text4 }}>
+                <p style={{ fontSize: 14, marginTop: 2, color: t.text2 }}>Reinsurance Report</p>
+                <p style={{ fontSize: 12, marginTop: 8, color: t.text4 }}>
                   Period: {quarter} {year} &nbsp;|&nbsp; Company: Mosaic Insurance Group JIC &nbsp;|&nbsp; Currency: USD
                 </p>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', fontSize: 14, borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: t.bgCard, borderBottom: `1px solid ${t.borderL}` }}>
-                      <th className="text-left px-4 py-2.5 font-semibold w-12" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
-                      <th className="text-left px-4 py-2.5 font-semibold" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
-                      <th className="text-right px-4 py-2.5 font-semibold w-48" style={{ color: t.text2 }}>Amount (USD)</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 48, color: t.text2, borderRight: `1px solid ${t.border}` }}>Row</th>
+                      <th style={{ textAlign: 'left', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, color: t.text2, borderRight: `1px solid ${t.border}` }}>Indicator / Показатель</th>
+                      <th style={{ textAlign: 'right', paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, fontWeight: 600, width: 192, color: t.text2 }}>Amount (USD)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Row 1 - Ceded Total (from analytics) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
-                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>1</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 600, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Reinsurance Premium Ceded - Total / Перестраховочная премия — Итого
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: t.text1 }}>
                         {fmt(ceded)}
                       </td>
                     </tr>
                     {/* Row 1.1 - Proportional (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.1</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>1.1</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Proportional Treaties / Пропорциональное перестрахование
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={reinsurance.proportional || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, proportional: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 1.2 - Non-Proportional (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.2</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>1.2</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Non-Proportional (XL) / Непропорциональное перестрахование
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={reinsurance.nonProportional || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, nonProportional: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 1.3 - Facultative (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>1.3</td>
-                      <td className="px-4 py-2 pl-10" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>1.3</td>
+                      <td style={{ paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Facultative / Факультативное перестрахование
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={reinsurance.facultative || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, facultative: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 2 - Recoveries (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>2</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Reinsurance Recoveries / Возмещение по перестрахованию
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={reinsurance.recoveries || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, recoveries: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 3 - Net position (auto) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgCard }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
-                      <td className="px-4 py-2 font-semibold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>3</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 600, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Net Reinsurance Position (1-2) / Чистая перестраховочная позиция
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: t.text1 }}>
                         {fmt(netReinsPosition)}
                       </td>
                     </tr>
                     {/* Row 4 - Cession Ratio (auto) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}`, background: t.bgHover, borderTop: `2px solid ${t.text4}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
-                      <td className="px-4 py-2 font-bold" style={{ color: t.text1, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>4</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 700, color: t.text1, borderRight: `1px solid ${t.border}` }}>
                         Cession Ratio (1 / GWP × 100%) / Коэффициент цессии
                       </td>
-                      <td className="px-4 py-2 text-right font-mono font-bold" style={{ color: t.text1 }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, color: t.text1 }}>
                         {fmtPct(cessionRatio)}
                       </td>
                     </tr>
                     {/* Row 5 - Contract count (manual) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>5</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Number of Reinsurance Contracts / Количество договоров перестрахования
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="number"
                           value={reinsurance.contractCount || ''}
                           onChange={(e) => setReinsurance({ ...reinsurance, contractCount: Number(e.target.value) || 0 })}
-                          style={manualInputStyle}
-                          className="w-40 text-right font-mono text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: 160, textAlign: 'right', fontFamily: "'JetBrains Mono', monospace", fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="0"
                         />
                       </td>
                     </tr>
                     {/* Row 6 - Top Reinsurers (manual text) */}
                     <tr style={{ borderBottom: `1px solid ${t.border}` }}>
-                      <td className="px-4 py-2 font-mono text-xs" style={{ color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
-                      <td className="px-4 py-2" style={{ color: t.text2, borderRight: `1px solid ${t.border}` }}>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: t.text3, borderRight: `1px solid ${t.border}` }}>6</td>
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, color: t.text2, borderRight: `1px solid ${t.border}` }}>
                         Top 5 Reinsurers / Топ-5 перестраховщиков
                       </td>
-                      <td className="px-4 py-2 text-right">
+                      <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>
                         <input
                           type="text"
                           value={reinsurance.topReinsurers}
                           onChange={(e) => setReinsurance({ ...reinsurance, topReinsurers: e.target.value })}
-                          style={manualInputStyle}
-                          className="w-full text-right text-sm rounded px-2 py-1 focus:ring-2 focus:ring-amber-400 outline-none"
+                          style={{ ...manualInputStyle, width: '100%', textAlign: 'right', fontSize: 14, borderRadius: 4, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, outline: 'none' }}
                           placeholder="e.g. Swiss Re, Munich Re, ..."
                         />
                       </td>
@@ -892,15 +868,15 @@ const RegulatoryReporting: React.FC = () => {
 
               {/* Outward channel summary from analytics */}
               {outward && outward.topCedants.length > 0 && (
-                <div className="px-8 py-5" style={{ borderTop: `1px solid ${t.borderL}` }}>
-                  <h3 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: t.text4 }}>
+                <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 20, paddingBottom: 20, borderTop: `1px solid ${t.borderL}` }}>
+                  <h3 style={{ fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12, color: t.text4 }}>
                     Top Reinsurers (from data) / Перестраховщики (из данных)
                   </h3>
-                  <div className="space-y-1">
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {outward.topCedants.slice(0, 5).map((r, i) => (
-                      <div key={r.name} className="flex justify-between py-1.5" style={{ borderBottom: `1px solid ${t.borderS}` }}>
-                        <span className="text-sm" style={{ color: t.text2 }}>{i + 1}. {r.name}</span>
-                        <span className="font-mono text-sm" style={{ color: t.text1 }}>${fmt(r.premium)}</span>
+                      <div key={r.name} style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, paddingBottom: 6, borderBottom: `1px solid ${t.borderS}` }}>
+                        <span style={{ fontSize: 14, color: t.text2 }}>{i + 1}. {r.name}</span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: t.text1 }}>${fmt(r.premium)}</span>
                       </div>
                     ))}
                   </div>
@@ -908,11 +884,10 @@ const RegulatoryReporting: React.FC = () => {
               )}
 
               {/* Save button */}
-              <div className="px-8 py-4 flex justify-end" style={{ borderTop: `1px solid ${t.borderL}` }}>
+              <div style={{ paddingLeft: 32, paddingRight: 32, paddingTop: 16, paddingBottom: 16, display: 'flex', justifyContent: 'flex-end', borderTop: `1px solid ${t.borderL}` }}>
                 <button
                   onClick={saveReinsurance}
-                  style={{ background: t.accent, color: '#fff' }}
-                  className="px-4 py-2 text-sm font-semibold rounded-lg"
+                  style={{ background: t.accent, color: '#fff', paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8 }}
                 >
                   Save Reinsurance Data
                 </button>

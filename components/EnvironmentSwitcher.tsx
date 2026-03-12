@@ -55,19 +55,26 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
 
   return (
     <>
-      <div className="relative">
+      <div style={{ position: 'relative' }}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-2 rounded-lg border transition-colors ${
-            compact
-              ? 'px-2 py-1.5 text-xs'
-              : 'px-3 py-2 text-sm'
-          }`}
-          style={{ borderColor: t.border }}
+          className="transition-colors"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+            borderRadius: 8,
+            border: '1px solid',
+            borderColor: t.border,
+            ...(compact
+              ? { paddingLeft: 8, paddingRight: 8, paddingTop: 6, paddingBottom: 6, fontSize: 12 }
+              : { paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14 }
+            ),
+          }}
         >
           <Database size={compact ? 14 : 16} style={{ color: t.text4 }} />
-          <span className="flex items-center gap-1.5" style={current.textStyle}>
-            <span className="w-2 h-2 rounded-full" style={current.dotStyle} />
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, ...current.textStyle }}>
+            <span style={{ width: 8, height: 8, borderRadius: 9999, ...current.dotStyle }} />
             {current.label}
           </span>
           <ChevronDown
@@ -82,28 +89,37 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 z-40"
+              style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 40 }}
               onClick={() => setIsOpen(false)}
             />
 
             {/* Menu */}
             <div
-              className="absolute right-0 mt-1 w-48 rounded-lg z-50 overflow-hidden"
-              style={{ background: t.bgPanel, boxShadow: t.shadowMd, border: '1px solid ' + t.border }}
+              style={{ position: 'absolute', right: 0, marginTop: 4, width: 192, borderRadius: 8, zIndex: 50, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowMd, border: '1px solid ' + t.border }}
             >
-              <div className="py-1">
+              <div style={{ paddingTop: 4, paddingBottom: 4 }}>
                 {/* Production Option */}
                 <button
                   onClick={() => handleSelect('production')}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors"
+                  className="transition-colors"
                   style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    textAlign: 'left',
+                    fontSize: 14,
                     background: currentEnv === 'production' ? t.successBg : undefined,
                   }}
                 >
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ background: t.success }} />
-                  <span className="flex-1" style={{ color: t.text2 }}>Production</span>
+                  <span style={{ width: 10, height: 10, borderRadius: 9999, background: t.success }} />
+                  <span style={{ flex: 1, color: t.text2 }}>Production</span>
                   {currentEnv === 'production' && (
-                    <span className="text-xs" style={{ color: t.success, fontWeight: 500 }}>Active</span>
+                    <span style={{ fontSize: 12, color: t.success, fontWeight: 500 }}>Active</span>
                   )}
                 </button>
 
@@ -111,35 +127,41 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
                 <button
                   onClick={() => stagingAvailable && handleSelect('staging')}
                   disabled={!stagingAvailable}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
-                    !stagingAvailable ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className="transition-colors"
                   style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    textAlign: 'left',
+                    fontSize: 14,
                     background: stagingAvailable && currentEnv === 'staging' ? t.warningBg : undefined,
+                    ...(!stagingAvailable ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
                   }}
                 >
                   <span
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ background: stagingAvailable ? t.warning : t.text5 }}
+                    style={{ width: 10, height: 10, borderRadius: 9999, background: stagingAvailable ? t.warning : t.text5 }}
                   />
                   <span
-                    className="flex-1"
-                    style={{ color: stagingAvailable ? t.text2 : t.text4 }}
+                    style={{ flex: 1, color: stagingAvailable ? t.text2 : t.text4 }}
                   >
                     Staging
                   </span>
                   {!stagingAvailable ? (
-                    <span className="text-xs" style={{ color: t.text4 }}>Not configured</span>
+                    <span style={{ fontSize: 12, color: t.text4 }}>Not configured</span>
                   ) : currentEnv === 'staging' ? (
-                    <span className="text-xs" style={{ color: t.warning, fontWeight: 500 }}>Active</span>
+                    <span style={{ fontSize: 12, color: t.warning, fontWeight: 500 }}>Active</span>
                   ) : null}
                 </button>
               </div>
 
               {!stagingAvailable && (
                 <div
-                  className="px-4 py-2 text-xs"
-                  style={{ background: t.bgCard, borderTop: '1px solid ' + t.border, color: t.text4 }}
+                  style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 12, background: t.bgCard, borderTop: '1px solid ' + t.border, color: t.text4 }}
                 >
                   Set SUPABASE_STAGING_URL and SUPABASE_STAGING_KEY in .env to enable staging.
                 </div>
@@ -151,39 +173,45 @@ const EnvironmentSwitcher: React.FC<EnvironmentSwitcherProps> = ({ compact = fal
 
       {/* Confirmation Dialog */}
       {showConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)' }}>
           <div
-            className="rounded-xl max-w-sm w-full mx-4 overflow-hidden"
-            style={{ background: t.bgPanel, boxShadow: t.shadowLg }}
+            style={{ borderRadius: 12, maxWidth: 384, width: '100%', marginLeft: 16, marginRight: 16, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg }}
           >
-            <div className="p-6">
+            <div style={{ padding: 24 }}>
               <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>
                 Switch to {envConfig[showConfirm].label}?
               </h3>
-              <p className="mt-2 text-sm" style={{ color: t.text3 }}>
+              <p style={{ marginTop: 8, fontSize: 14, color: t.text3 }}>
                 The page will reload to connect to the {showConfirm} database.
                 {showConfirm === 'staging' && (
-                  <span className="block mt-2" style={{ color: t.warning, fontWeight: 500 }}>
+                  <span style={{ display: 'block', marginTop: 8, color: t.warning, fontWeight: 500 }}>
                     Changes in staging do not affect production data.
                   </span>
                 )}
               </p>
             </div>
             <div
-              className="flex gap-3 px-6 py-4"
-              style={{ background: t.bgCard, borderTop: '1px solid ' + t.border }}
+              style={{ display: 'flex', gap: 12, paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, background: t.bgCard, borderTop: '1px solid ' + t.border }}
             >
               <button
                 onClick={() => setShowConfirm(null)}
-                className="flex-1 px-4 py-2 text-sm rounded-lg transition-colors"
-                style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
+                className="transition-colors"
+                style={{ flex: 1, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, borderRadius: 8, color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
               >
                 Cancel
               </button>
               <button
                 onClick={confirmSwitch}
-                className="flex-1 px-4 py-2 text-sm text-white rounded-lg transition-colors"
+                className="transition-colors"
                 style={{
+                  flex: 1,
+                  paddingLeft: 16,
+                  paddingRight: 16,
+                  paddingTop: 8,
+                  paddingBottom: 8,
+                  fontSize: 14,
+                  color: '#fff',
+                  borderRadius: 8,
                   background: showConfirm === 'staging' ? t.warning : t.success,
                   fontWeight: 500,
                 }}

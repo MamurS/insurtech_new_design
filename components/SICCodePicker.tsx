@@ -65,18 +65,17 @@ export const SICCodePicker: React.FC<SICCodePickerProps> = ({ sicCode, sicSectio
   const displayValue = sicCode ? formatSICDisplay(sicCode) : '';
 
   return (
-    <div ref={wrapperRef} className={`relative ${className}`}>
+    <div ref={wrapperRef} className={className} style={{ position: 'relative' }}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-2.5 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 outline-none transition-all text-sm cursor-pointer flex items-center justify-between min-h-[42px]"
-        style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
+        style={{ width: '100%', padding: 10, borderRadius: 8, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: 42, background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
       >
         <span style={{ color: displayValue ? t.text1 : t.text4 }}>
           {displayValue || 'Select industry classification...'}
         </span>
-        <div className="flex items-center gap-1 ml-2 flex-shrink-0">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginLeft: 8, flexShrink: 0 }}>
           {sicCode && (
-            <button onClick={handleClear} className="p-0.5 rounded">
+            <button onClick={handleClear} style={{ padding: 2, borderRadius: 4 }}>
               <X size={14} style={{ color: t.text4 }} />
             </button>
           )}
@@ -86,27 +85,25 @@ export const SICCodePicker: React.FC<SICCodePickerProps> = ({ sicCode, sicSectio
 
       {isOpen && (
         <div
-          className="absolute z-50 w-full rounded-lg mt-1 overflow-hidden"
-          style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowMd }}
+          style={{ position: 'absolute', zIndex: 50, width: '100%', borderRadius: 8, marginTop: 4, overflow: 'hidden', background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowMd }}
         >
           {/* Search */}
-          <div className="p-2" style={{ borderBottom: `1px solid ${t.border}` }}>
-            <div className="relative">
-              <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+          <div style={{ padding: 8, borderBottom: `1px solid ${t.border}` }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 10, top: '50%', color: t.text4 }} />
               <input
                 ref={searchRef}
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by code or description..."
-                className="w-full pl-8 pr-3 py-2 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                style={{ border: `1px solid ${t.border}` }}
+                style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 6, fontSize: 14, border: `1px solid ${t.border}`, outline: 'none' }}
               />
             </div>
           </div>
 
           {/* Results */}
-          <div className="max-h-[300px] overflow-y-auto">
+          <div style={{ maxHeight: 300, overflowY: 'auto' }}>
             {filteredCodes ? (
               // Search results mode
               filteredCodes.length > 0 ? (
@@ -114,20 +111,26 @@ export const SICCodePicker: React.FC<SICCodePickerProps> = ({ sicCode, sicSectio
                   <button
                     key={c.code}
                     onClick={() => handleSelect(c.code, c.section)}
-                    className="w-full text-left px-3 py-2 text-sm last:border-0"
                     style={{
+                      width: '100%',
+                      textAlign: 'left',
+                      paddingLeft: 12,
+                      paddingRight: 12,
+                      paddingTop: 8,
+                      paddingBottom: 8,
+                      fontSize: 14,
                       borderBottom: `1px solid ${t.border}`,
                       ...(c.code === sicCode
                         ? { background: t.accent + '18', color: t.accent }
                         : { color: t.text2 }),
                     }}
                   >
-                    <span className="font-mono text-xs mr-2" style={{ color: t.text4 }}>{c.code}</span>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, marginRight: 8, color: t.text4 }}>{c.code}</span>
                     {c.description}
                   </button>
                 ))
               ) : (
-                <div className="px-3 py-6 text-sm text-center" style={{ color: t.text4 }}>
+                <div style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 24, paddingBottom: 24, fontSize: 14, textAlign: 'center', color: t.text4 }}>
                   No codes matching "{search}"
                 </div>
               )
@@ -140,27 +143,32 @@ export const SICCodePicker: React.FC<SICCodePickerProps> = ({ sicCode, sicSectio
                   <div key={section.code}>
                     <button
                       onClick={() => toggleSection(section.code)}
-                      className="w-full text-left px-3 py-2 text-sm font-medium flex items-center gap-2"
-                      style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}` }}
+                      style={{ width: '100%', textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8, background: t.bgCard, borderBottom: `1px solid ${t.border}` }}
                     >
                       {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-                      <span className="font-mono text-xs w-4" style={{ color: t.text4 }}>{section.code}</span>
+                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, width: 16, color: t.text4 }}>{section.code}</span>
                       <span style={{ color: t.text2 }}>{section.title}</span>
-                      <span className="text-xs ml-auto" style={{ color: t.text4 }}>{sectionCodes.length}</span>
+                      <span style={{ fontSize: 12, marginLeft: 'auto', color: t.text4 }}>{sectionCodes.length}</span>
                     </button>
                     {isExpanded && sectionCodes.map(c => (
                       <button
                         key={c.code}
                         onClick={() => handleSelect(c.code, c.section)}
-                        className="w-full text-left pl-10 pr-3 py-1.5 text-sm"
                         style={{
+                          width: '100%',
+                          textAlign: 'left',
+                          paddingLeft: 40,
+                          paddingRight: 12,
+                          paddingTop: 6,
+                          paddingBottom: 6,
+                          fontSize: 14,
                           borderBottom: `1px solid ${t.border}`,
                           ...(c.code === sicCode
                             ? { background: t.accent + '18', color: t.accent }
                             : { color: t.text3 }),
                         }}
                       >
-                        <span className="font-mono text-xs mr-2" style={{ color: t.text4 }}>{c.code}</span>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, marginRight: 8, color: t.text4 }}>{c.code}</span>
                         {c.description}
                       </button>
                     ))}
