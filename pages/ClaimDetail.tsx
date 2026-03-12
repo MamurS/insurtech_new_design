@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClaimTransactionType } from '../types';
@@ -9,6 +8,8 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ArrowLeft, FileText, Plus, Wallet, Loader2, CheckCircle, XCircle, RefreshCw, Settings } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 const ClaimDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,15 +18,6 @@ const ClaimDetail: React.FC = () => {
   const { t } = useTheme();
   const [statusConfirm, setStatusConfirm] = useState<{ isOpen: boolean; status: string; message: string }>({ isOpen: false, status: '', message: '' });
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-  const [hoveredBackBtn, setHoveredBackBtn] = useState(false);
-  const [hoveredCloseBtn, setHoveredCloseBtn] = useState(false);
-  const [hoveredDenyBtn, setHoveredDenyBtn] = useState(false);
-  const [hoveredReopenBtn, setHoveredReopenBtn] = useState(false);
-  const [hoveredCloseBtn2, setHoveredCloseBtn2] = useState(false);
-  const [hoveredDenyBtn2, setHoveredDenyBtn2] = useState(false);
-  const [hoveredAddTransBtn, setHoveredAddTransBtn] = useState(false);
-  const [hoveredCancelBtn, setHoveredCancelBtn] = useState(false);
-  const [hoveredSaveBtn, setHoveredSaveBtn] = useState(false);
 
   // React Query Hooks
   const { data: claim, isLoading: loading, error, refetch } = useClaimDetail(id);
@@ -176,14 +168,9 @@ const ClaimDetail: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 80 }}>
        {/* Header */}
        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-           <button
-             onClick={() => navigate('/claims')}
-             style={{ padding: 8, borderRadius: 8, backgroundColor: hoveredBackBtn ? t.bgInput : t.bgPanel, border: `1px solid ${t.border}` }}
-             onMouseEnter={() => setHoveredBackBtn(true)}
-             onMouseLeave={() => setHoveredBackBtn(false)}
-           >
+           <Button variant="ghost" onClick={() => navigate('/claims')} style={{ padding: 8 }}>
              <ArrowLeft size={20}/>
-           </button>
+           </Button>
            <div>
                <h2 style={{ display: 'flex', alignItems: 'center', gap: 12, color: t.text1, fontSize: 24, fontWeight: 700 }}>
                    {claim.claimNumber}
@@ -203,66 +190,31 @@ const ClaimDetail: React.FC = () => {
             </h3>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {claim.status === 'OPEN' && (
+                    {claim.status === 'OPEN' && (
                     <>
-                        <button
-                            onClick={() => handleStatusChange('CLOSED')}
-                            className="transition-colors"
-                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.success, opacity: hoveredCloseBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                            onMouseEnter={() => setHoveredCloseBtn(true)}
-                            onMouseLeave={() => setHoveredCloseBtn(false)}
-                        >
-                            <CheckCircle size={16} />
+                        <Button variant="primary" icon={<CheckCircle size={16} />} onClick={() => handleStatusChange('CLOSED')} style={{ background: t.success }}>
                             Close Claim
-                        </button>
-                        <button
-                            onClick={() => handleStatusChange('DENIED')}
-                            className="transition-colors"
-                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.danger, opacity: hoveredDenyBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                            onMouseEnter={() => setHoveredDenyBtn(true)}
-                            onMouseLeave={() => setHoveredDenyBtn(false)}
-                        >
-                            <XCircle size={16} />
+                        </Button>
+                        <Button variant="primary" icon={<XCircle size={16} />} onClick={() => handleStatusChange('DENIED')} style={{ background: t.danger }}>
                             Deny Claim
-                        </button>
+                        </Button>
                     </>
                 )}
 
                 {(claim.status === 'CLOSED' || claim.status === 'DENIED') && (
-                    <button
-                        onClick={() => handleStatusChange('REOPENED')}
-                        className="transition-colors"
-                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.warning, opacity: hoveredReopenBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                        onMouseEnter={() => setHoveredReopenBtn(true)}
-                        onMouseLeave={() => setHoveredReopenBtn(false)}
-                    >
-                        <RefreshCw size={16} />
+                    <Button variant="primary" icon={<RefreshCw size={16} />} onClick={() => handleStatusChange('REOPENED')} style={{ background: t.warning }}>
                         Reopen Claim
-                    </button>
+                    </Button>
                 )}
 
                 {claim.status === 'REOPENED' && (
                     <>
-                        <button
-                            onClick={() => handleStatusChange('CLOSED')}
-                            className="transition-colors"
-                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.success, opacity: hoveredCloseBtn2 ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                            onMouseEnter={() => setHoveredCloseBtn2(true)}
-                            onMouseLeave={() => setHoveredCloseBtn2(false)}
-                        >
-                            <CheckCircle size={16} />
+                        <Button variant="primary" icon={<CheckCircle size={16} />} onClick={() => handleStatusChange('CLOSED')} style={{ background: t.success }}>
                             Close Claim
-                        </button>
-                        <button
-                            onClick={() => handleStatusChange('DENIED')}
-                            className="transition-colors"
-                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.danger, opacity: hoveredDenyBtn2 ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                            onMouseEnter={() => setHoveredDenyBtn2(true)}
-                            onMouseLeave={() => setHoveredDenyBtn2(false)}
-                        >
-                            <XCircle size={16} />
+                        </Button>
+                        <Button variant="primary" icon={<XCircle size={16} />} onClick={() => handleStatusChange('DENIED')} style={{ background: t.danger }}>
                             Deny Claim
-                        </button>
+                        </Button>
                     </>
                 )}
             </div>
@@ -300,14 +252,9 @@ const ClaimDetail: React.FC = () => {
                    <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: t.bgInput, borderBottom: `1px solid ${t.border}` }}>
                        <h3 style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8, color: t.text1 }}><Wallet size={18}/> Financial Ledger</h3>
                        {claim.liabilityType === 'ACTIVE' && claim.status !== 'CLOSED' && claim.status !== 'DENIED' && (
-                           <button
-                             onClick={() => setShowTransModal(true)}
-                             style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14, fontWeight: 700, backgroundColor: t.accent, opacity: hoveredAddTransBtn ? 0.85 : 1, color: '#fff', boxShadow: t.shadow }}
-                             onMouseEnter={() => setHoveredAddTransBtn(true)}
-                             onMouseLeave={() => setHoveredAddTransBtn(false)}
-                           >
-                               <Plus size={16}/> Add Transaction
-                           </button>
+                           <Button variant="primary" size="sm" icon={<Plus size={16}/>} onClick={() => setShowTransModal(true)}>
+                               Add Transaction
+                           </Button>
                        )}
                    </div>
 
@@ -393,20 +340,18 @@ const ClaimDetail: React.FC = () => {
                        </div>
                        <div>
                            <label style={{ display: 'block', fontSize: 14, fontWeight: 700, marginBottom: 4, color: t.text1 }}>Amount (100% Gross)</label>
-                           <input
+                           <Input
                                 type="number"
-                                style={{ width: '100%', padding: 8, borderRadius: 4, fontFamily: "'JetBrains Mono', monospace", border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.amount}
-                                onChange={e => setNewTrans({...newTrans, amount: Number(e.target.value)})}
+                                onChange={(val) => setNewTrans({...newTrans, amount: Number(val)})}
                            />
                        </div>
                        <div>
                            <label style={{ display: 'block', fontSize: 14, fontWeight: 700, marginBottom: 4, color: t.text1 }}>Our Share %</label>
-                           <input
+                           <Input
                                 type="number"
-                                style={{ width: '100%', padding: 8, borderRadius: 4, border: `1px solid ${t.border}`, backgroundColor: t.bgInput, color: t.text1 }}
                                 value={newTrans.share}
-                                onChange={e => setNewTrans({...newTrans, share: Number(e.target.value)})}
+                                onChange={(val) => setNewTrans({...newTrans, share: Number(val)})}
                            />
                        </div>
                        <div>
@@ -418,25 +363,12 @@ const ClaimDetail: React.FC = () => {
                            />
                        </div>
                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, paddingTop: 16 }}>
-                           <button
-                                onClick={() => setShowTransModal(false)}
-                                style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 4, color: t.text2, backgroundColor: hoveredCancelBtn ? t.bgInput : 'transparent' }}
-                                onMouseEnter={() => setHoveredCancelBtn(true)}
-                                onMouseLeave={() => setHoveredCancelBtn(false)}
-                                disabled={addTransactionMutation.isPending}
-                            >
-                                Cancel
-                            </button>
-                           <button
-                                onClick={handleAddTransaction}
-                                disabled={addTransactionMutation.isPending}
-                                style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 700, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 8, backgroundColor: t.accent, opacity: hoveredSaveBtn ? 0.85 : 1, color: '#fff' }}
-                                onMouseEnter={() => setHoveredSaveBtn(true)}
-                                onMouseLeave={() => setHoveredSaveBtn(false)}
-                            >
-                                {addTransactionMutation.isPending && <Loader2 className="animate-spin" size={16}/>}
-                                Save
-                            </button>
+                           <Button variant="ghost" onClick={() => setShowTransModal(false)} disabled={addTransactionMutation.isPending}>
+                               Cancel
+                           </Button>
+                           <Button variant="primary" onClick={handleAddTransaction} disabled={addTransactionMutation.isPending} icon={addTransactionMutation.isPending ? <Loader2 className="animate-spin" size={16}/> : undefined}>
+                               Save
+                           </Button>
                        </div>
                    </div>
                </div>
