@@ -14,6 +14,7 @@ import { useAnalyticsSummary, ChannelType, ChannelMetrics, MGAMetrics } from '..
 import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
 
 // =============================================
 // HELPER FUNCTIONS
@@ -320,23 +321,12 @@ const Analytics: React.FC = () => {
   useEffect(() => {
     setHeaderActions(
       <div className="flex items-center gap-2">
-        <button
-          onClick={handleExport}
-          disabled={!data}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
-        >
-          <Download size={14} />
+        <Button variant="primary" size="sm" icon={<Download size={14} />} onClick={handleExport} disabled={!data} style={{ background: t.success, opacity: !data ? 0.5 : 1 }}>
           Export
-        </button>
-        <button
-          onClick={refetch}
-          disabled={loading}
-          className="p-2 rounded-lg disabled:opacity-50"
-          style={{ color: t.text4 }}
-        >
-          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
-        </button>
+        </Button>
+        <Button variant="ghost" size="sm" onClick={refetch} disabled={loading} style={{ padding: 8, border: 'none', opacity: loading ? 0.5 : 1 }}>
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : { color: t.text4 }} />
+        </Button>
       </div>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
@@ -349,13 +339,9 @@ const Analytics: React.FC = () => {
           <AlertCircle className="w-12 h-12 mx-auto mb-4" style={{ color: t.danger }} />
           <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 600 }}>Failed to load analytics</h3>
           <p className="mt-1" style={{ color: t.text4 }}>{error}</p>
-          <button
-            onClick={refetch}
-            className="mt-4 px-4 py-2 rounded-lg"
-            style={{ background: t.accent, color: '#fff' }}
-          >
+          <Button variant="primary" onClick={refetch} style={{ marginTop: 16 }}>
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     );
