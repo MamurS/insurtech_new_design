@@ -298,19 +298,18 @@ const InwardReinsuranceDashboard: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
-      <div className="rounded-xl p-3" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow, borderRadius: 12 }}>
-      <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
+      <div ref={filterRef} className="sticky-filter-blur" style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
+      <div style={{ borderRadius: 12, padding: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
         {/* Search */}
-        <div className="relative flex-1 min-w-[180px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
+        <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+          <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text5 }} />
           <input
             type="text"
             placeholder="Search..."
             value={searchInput}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full pl-8 pr-3 py-2 rounded-lg outline-none"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1, fontSize: 13 }}
+            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1, fontSize: 13 }}
           />
         </div>
 
@@ -352,7 +351,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
         </select>
 
         {/* Date Filter */}
-        <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: '380px' }}>
         <select
           value={dateFilterField}
           onChange={(e) => handleDateFilterChange(e.target.value, dateFrom, dateTo)}
@@ -382,8 +381,7 @@ const InwardReinsuranceDashboard: React.FC = () => {
         {/* Refresh */}
         <button
           onClick={() => { fetchData(); loadStats(); }}
-          className="p-2 rounded-lg"
-          style={{ color: t.text4 }}
+          style={{ padding: 8, borderRadius: 8, color: t.text4 }}
           title="Refresh"
         >
           <RefreshCw size={16} style={loading ? { color: t.accent } : {}} className={loading ? 'animate-spin' : ''} />
@@ -393,30 +391,30 @@ const InwardReinsuranceDashboard: React.FC = () => {
       </div>{/* end sticky filter bar */}
 
       {/* Contracts Table */}
-      <div className="rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow, borderRadius: 12 }}>
+      <div style={{ borderRadius: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
         {loading ? (
-          <div className="flex items-center justify-center h-64">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 256 }}>
             <RefreshCw className="animate-spin" size={32} style={{ color: t.accent }} />
           </div>
         ) : contracts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64" style={{ color: t.text5 }}>
-            <FileText size={48} className="mb-4" style={{ opacity: 0.5 }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 256, color: t.text5 }}>
+            <FileText size={48} style={{ marginBottom: 16, opacity: 0.5 }} />
             <p style={{ fontSize: 15, fontWeight: 500 }}>No contracts found</p>
-            <p className="text-sm">Try adjusting your filters or create new contracts</p>
+            <p style={{ fontSize: 14 }}>Try adjusting your filters or create new contracts</p>
           </div>
         ) : (
           <>
-            <table className="w-full table-fixed">
-              <thead className="sticky z-20" style={{ top: `${filterHeight}px`, background: t.bgApp, boxShadow: t.shadow }}>
+            <table style={{ width: '100%', tableLayout: 'fixed' }}>
+              <thead style={{ position: 'sticky', zIndex: 20, top: `${filterHeight}px`, background: t.bgApp, boxShadow: t.shadow }}>
                 <tr>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Contract #</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide w-24" style={{ color: t.text4 }}>Origin</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Type</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide max-w-[200px]" style={{ color: t.text4 }}>Cedant</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide max-w-[120px]" style={{ color: t.text4 }}>Class</th>
-                  <th className="text-left px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>Period</th>
-                  <th className="text-right px-3 py-3 text-xs font-semibold uppercase tracking-wide w-20" style={{ color: t.text4 }}>Our Share</th>
-                  <th className="text-right px-3 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: t.text4 }}>GWP</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text4 }}>Contract #</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', width: 96, color: t.text4 }}>Origin</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text4 }}>Type</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', maxWidth: 200, color: t.text4 }}>Cedant</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', maxWidth: 120, color: t.text4 }}>Class</th>
+                  <th style={{ textAlign: 'left', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text4 }}>Period</th>
+                  <th style={{ textAlign: 'right', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', width: 80, color: t.text4 }}>Our Share</th>
+                  <th style={{ textAlign: 'right', paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text4 }}>GWP</th>
                   <th className="text-center px-3 py-3 text-xs font-semibold uppercase tracking-wide w-20" style={{ color: t.text4 }}>Status</th>
                   <th className="px-1 py-3 w-10" style={{ background: t.bgApp }}></th>
                 </tr>

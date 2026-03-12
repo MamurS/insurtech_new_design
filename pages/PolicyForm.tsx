@@ -93,7 +93,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ label, originalValue, nat
     return (
         <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
-            <div className="flex" style={{ borderRadius: 8, boxShadow: t.shadow }}>
+            <div style={{ display: 'flex', borderRadius: 8, boxShadow: t.shadow }}>
                 <select
                     value={viewCurrency}
                     onChange={(e) => setViewCurrency(e.target.value)}
@@ -157,9 +157,9 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
   };
 
   return (
-    <div className="relative w-full" ref={wrapperRef}>
+    <div style={{ position: 'relative', width: '100%' }} ref={wrapperRef}>
       <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>{label}</label>
-      <div className="relative">
+      <div style={{ position: 'relative' }}>
         <input
           type="text"
           name={name}
@@ -171,19 +171,18 @@ const SearchableInput: React.FC<SearchableInputProps> = ({ label, name, value, o
           autoComplete="off"
           style={{ width: '100%', padding: '10px 32px 10px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
         />
-        <div className="absolute right-2 top-1/2 -translate-x-1/2 pointer-events-none" style={{ color: t.text5 }}>
+        <div className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', color: t.text5 }}>
           {isOpen ? <Search size={14}/> : <ChevronDown size={14}/>}
         </div>
       </div>
 
       {isOpen && filteredOptions.length > 0 && (
-        <ul className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-100" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
+        <ul style={{ position: 'absolute', zIndex: 50, width: '100%', marginTop: 4, maxHeight: 240, overflowY: 'auto', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filteredOptions.map((opt) => (
             <li
               key={opt}
               onClick={() => handleSelect(opt)}
-              className="px-3 py-2 cursor-pointer"
-              style={{ fontSize: 13, color: t.text2, borderBottom: `1px solid ${t.borderL}` }}
+              style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, cursor: 'pointer', fontSize: 13, color: t.text2, borderBottom: `1px solid ${t.borderL}` }}
               onMouseEnter={(e) => { e.currentTarget.style.background = t.bgHover; e.currentTarget.style.color = t.accent; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = t.text2; }}
             >
@@ -519,7 +518,7 @@ const PolicyForm: React.FC = () => {
   const totalInstallmentsDue = formData.installments?.reduce((acc, curr) => acc + (curr.dueAmount || 0), 0) || 0;
   const totalInstallmentsPaid = formData.installments?.reduce((acc, curr) => acc + (curr.paidAmount || 0), 0) || 0;
 
-  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
+  if (loading) return <div style={{ padding: 32, textAlign: 'center', color: t.text4 }}>Loading...</div>;
 
   const sectionTitleStyle: React.CSSProperties = { fontSize: 15, fontWeight: 600, color: t.text1, marginBottom: 16, paddingBottom: 8, borderBottom: `1px solid ${t.borderL}`, display: 'flex', alignItems: 'center', gap: 8 };
   const labelStyle: React.CSSProperties = { color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' };
@@ -536,32 +535,32 @@ const PolicyForm: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto pb-20">
+    <div style={{ maxWidth: 1280, marginLeft: 'auto', marginRight: 'auto', paddingBottom: 80 }}>
       <form onSubmit={handleSubmit}>
         
         {/* Sticky Header - Use z-index 50 to ensure it is above other content and use negative margins to span width */}
-        <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 backdrop-blur-md flex items-center justify-between z-50 top-0" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-            <div className="flex items-center gap-4">
-                <button type="button" onClick={() => navigate('/')} className="transition-colors" style={{ color: t.text4 }}>
+        <div className="backdrop-blur-md" style={{ position: 'sticky', marginTop: -16, marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 50, top: 0, background: t.bgPanel, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <button type="button" onClick={() => navigate('/')} className="transition-colors" style={{ color: t.text4, background: 'none', border: 'none', cursor: 'pointer' }}>
                     <ArrowLeft size={24} />
                 </button>
                 <div>
                     <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{isEdit ? 'Edit Policy' : 'New Policy Record'}</h2>
-                    <p className="text-xs flex items-center gap-1" style={{ color: t.text4 }}>
+                    <p style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 4, color: t.text4 }}>
                        Ref: {formData.policyNumber} 
-                       <span className="ml-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase" style={{ background: formData.status === PolicyStatus.ACTIVE ? t.successBg : t.warningBg, color: formData.status === PolicyStatus.ACTIVE ? t.success : t.warning }}>
+                       <span style={{ marginLeft: 8, paddingLeft: 8, paddingRight: 8, paddingTop: 2, paddingBottom: 2, borderRadius: 4, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', background: formData.status === PolicyStatus.ACTIVE ? t.successBg : t.warningBg, color: formData.status === PolicyStatus.ACTIVE ? t.success : t.warning }}>
                            {formData.status}
                        </span>
                     </p>
                 </div>
             </div>
             
-            <div className="flex gap-3">
+            <div style={{ display: 'flex', gap: 12 }}>
                 <button
                     type="submit"
                     disabled={!!processingAction}
-                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all disabled:opacity-70"
-                    style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+                    className="transition-all disabled:opacity-70"
+                    style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 24, paddingRight: 24, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 700, borderRadius: 8, background: t.accent, color: '#fff', boxShadow: t.shadow, border: 'none', cursor: 'pointer' }}
                 >
                     {processingAction === 'save' ? <Loader2 className="animate-spin" size={18}/> : <Save size={18} />}
                     Save
@@ -572,21 +571,21 @@ const PolicyForm: React.FC = () => {
         {/* ... Rest of JSX remains identical, just copy it over ... */}
         {/* I am re-pasting the full content below to ensure validity */}
         
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 24 }}>
             
             {/* Left Column (Main Data) */}
-            <div className="xl:col-span-8 space-y-6">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 
                 {/* 1. Channel & Intermediary */}
-                <div className="p-6" style={cardStyle}>
+                <div style={{ ...cardStyle, padding: 24 }}>
                     <h3 style={sectionTitleStyle}><ArrowRightLeft size={18} style={{ color: t.accent }}/> Business Channel & Source</h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 16 }}>
                         {/* Channel Selector */}
                         <div>
                             <label style={labelStyle}>Business Channel</label>
-                            <div className="flex p-1 rounded-lg" style={{ background: t.bgInput }}>
-                                <button type="button" onClick={() => handleChannelChange('Direct')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none' }}>
+                            <div style={{ display: 'flex', padding: 4, borderRadius: 8, background: t.bgInput }}>
+                                <button type="button" onClick={() => handleChannelChange('Direct')} className="transition-all" style={{ flex: 1, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 500, borderRadius: 6, background: formData.channel === 'Direct' ? t.bgPanel : 'transparent', color: formData.channel === 'Direct' ? t.accent : t.text4, boxShadow: formData.channel === 'Direct' ? t.shadow : 'none', border: 'none', cursor: 'pointer' }}>
                                     Direct Insurance
                                 </button>
                                 <button type="button" onClick={() => handleChannelChange('Inward')} className="flex-1 py-2 text-sm font-medium rounded-md transition-all" style={{ background: formData.channel === 'Inward' ? t.bgPanel : 'transparent', color: formData.channel === 'Inward' ? '#9333ea' : t.text4, boxShadow: formData.channel === 'Inward' ? t.shadow : 'none' }}>
