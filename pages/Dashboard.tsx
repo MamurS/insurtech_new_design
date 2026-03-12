@@ -16,6 +16,8 @@ import { usePageHeader } from '../context/PageHeaderContext';
 import { parseSearchString } from '../utils/searchParser';
 import { useTheme } from '../theme/useTheme';
 import SidePanel, { PanelField } from '../components/ui/SidePanel';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 // --- HELPERS ---
 
@@ -655,12 +657,9 @@ const Dashboard: React.FC = () => {
       </>
     );
     setHeaderActions(
-      <button
-        onClick={() => ExcelService.exportPortfolio(sortedRows)}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.success, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'inherit' }}
-      >
-        <Download size={16} /> Export
-      </button>
+      <Button variant="primary" icon={<Download size={16} />} onClick={() => ExcelService.exportPortfolio(sortedRows)} style={{ whiteSpace: 'nowrap', background: t.success }}>
+        Export
+      </Button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
   }, [sortedRows, setHeaderActions, setHeaderLeft, totalCount, totalSumInsured, totalGWP]);
@@ -720,15 +719,13 @@ const Dashboard: React.FC = () => {
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
         {/* Search */}
         <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: t.text4 }} />
-          <input
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: t.text4, zIndex: 1 }} />
+          <Input
             type="text"
             placeholder="Search... (try broker:Howden or class:Fire)"
-            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 12, outline: 'none', fontFamily: 'inherit' }}
             value={searchInput}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onFocus={e => e.target.style.borderColor = t.accent}
-            onBlur={e => e.target.style.borderColor = t.border}
+            onChange={(val) => handleSearchChange(val)}
+            style={{ paddingLeft: 32, fontSize: 12 }}
           />
         </div>
 
@@ -787,15 +784,15 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Refresh */}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => fetchData()}
-          style={{ padding: 8, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer', color: t.text4 }}
           title="Refresh"
-          onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          style={{ padding: 8, border: 'none' }}
         >
           <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={{ color: loading ? t.accent : t.text4 }} />
-        </button>
+        </Button>
       </div>
       </div>
         {/* Header table — inside sticky group, synced with body scroll */}
@@ -997,38 +994,31 @@ const Dashboard: React.FC = () => {
                                     <td style={{ padding: '8px 4px', textAlign: 'center', position: 'relative', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
                                         {row.isDeleted ? (
                                             user?.role === 'Super Admin' && row.source === 'direct' && (
-                                                <button onClick={(e) => handleRestore(e, row)} title="Restore" style={{ padding: 6, color: t.success, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 7 }}>
+                                                <Button variant="success" size="sm" onClick={(e) => handleRestore(e, row)} title="Restore" style={{ padding: 6, border: 'none' }}>
                                                     <RefreshCw size={14}/>
-                                                </button>
+                                                </Button>
                                             )
                                         ) : (
-                                            <>
-                                                <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === `${row.source}-${row.id}` ? null : `${row.source}-${row.id}`); }}
-                                                    style={{ padding: 6, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer' }}
-                                                    onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                            <>\
+                                                <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === `${row.source}-${row.id}` ? null : `${row.source}-${row.id}`); }} style={{ padding: 6, border: 'none' }}>
                                                     <MoreVertical size={16} style={{ color: t.text4 }} />
-                                                </button>
+                                                </Button>
                                                 {openMenuId === `${row.source}-${row.id}` && (
                                                     <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
-                                                        <button onClick={() => { setOpenMenuId(null); handleViewFullDetail(row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                                                          onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                        <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); handleViewFullDetail(row); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                                             <Eye size={14} /> View
-                                                        </button>
-                                                        <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                                                          onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                        </Button>
+                                                        <Button variant="ghost" size="sm" onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, row); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                                             <Edit size={14} /> Edit
-                                                        </button>
+                                                        </Button>
                                                         {row.source === 'direct' && (
                                                             <>
-                                                                <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                                                                  onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                                <Button variant="ghost" size="sm" onClick={(e) => { setOpenMenuId(null); handleWording(e as any, row); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                                                     <FileText size={14} /> Wording
-                                                                </button>
-                                                                <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, row); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', fontSize: 14, color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                                                                  onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                                </Button>
+                                                                <Button variant="danger" size="sm" onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, row); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                                                     <Trash2 size={14} /> Delete
-                                                                </button>
+                                                                </Button>
                                                             </>
                                                         )}
                                                     </div>
@@ -1050,12 +1040,9 @@ const Dashboard: React.FC = () => {
                                         <>
                                             <p>No records found matching your criteria.</p>
                                             {totalCount === 0 && (
-                                                <button
-                                                    onClick={fetchData}
-                                                    style={{ marginTop: 8, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.accent, color: '#fff', fontSize: 13, fontWeight: 500, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-                                                >
-                                                    <RefreshCw size={14} /> Retry
-                                                </button>
+                                                <Button variant="primary" size="sm" onClick={fetchData} icon={<RefreshCw size={14} />} style={{ marginTop: 8 }}>
+                                                    Retry
+                                                </Button>
                                             )}
                                         </>
                                     )}
@@ -1082,18 +1069,12 @@ const Dashboard: React.FC = () => {
         subtitle={selectedRowForPanel?.source === 'direct' ? 'Direct Policy' : selectedRowForPanel?.source === 'inward-foreign' ? 'Inward Foreign' : 'Inward Domestic'}
         footer={
           <>
-            <button
-              onClick={() => { if (selectedRowForPanel) handleViewFullDetail(selectedRowForPanel); }}
-              style={{ flex: 1, padding: '8px 12px', background: t.accent, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-            >
-              <Eye size={14} /> View Full Detail
-            </button>
-            <button
-              onClick={(e) => { if (selectedRowForPanel) handleEdit(e as any, selectedRowForPanel); }}
-              style={{ padding: '8px 12px', background: t.bgInput, color: t.text2, fontSize: 13, fontWeight: 600, borderRadius: 8, border: `1px solid ${t.border}`, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-            >
-              <Edit size={14} /> Edit
-            </button>
+            <Button variant="primary" icon={<Eye size={14} />} onClick={() => { if (selectedRowForPanel) handleViewFullDetail(selectedRowForPanel); }} style={{ flex: 1, justifyContent: 'center' }}>
+              View Full Detail
+            </Button>
+            <Button variant="ghost" icon={<Edit size={14} />} onClick={(e) => { if (selectedRowForPanel) handleEdit(e as any, selectedRowForPanel); }} style={{ justifyContent: 'center' }}>
+              Edit
+            </Button>
           </>
         }
       >
