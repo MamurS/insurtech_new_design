@@ -4,6 +4,8 @@ import { DB } from '../services/db';
 import { BindingAgreement, BordereauxEntry } from '../types';
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import { formatDate } from '../utils/dateUtils';
 import {
   Search, RefreshCw, Download, Plus,
@@ -177,52 +179,48 @@ const BordereauxEntryForm: React.FC<BdxFormProps> = ({ agreementId, entry, onSav
         </div>
         <div>
           <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Period From</label>
-          <input type="date" name="periodFrom" value={form.periodFrom || ''} onChange={handleChange} className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+          <Input type="date" name="periodFrom" value={form.periodFrom || ''} onNativeChange={handleChange} style={{ height: 36 }} />
         </div>
         <div>
           <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Period To</label>
-          <input type="date" name="periodTo" value={form.periodTo || ''} onChange={handleChange} className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+          <Input type="date" name="periodTo" value={form.periodTo || ''} onNativeChange={handleChange} style={{ height: 36 }} />
         </div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
         <div>
           <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Submission Date</label>
-          <input type="date" name="submissionDate" value={form.submissionDate || ''} onChange={handleChange} className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+          <Input type="date" name="submissionDate" value={form.submissionDate || ''} onNativeChange={handleChange} style={{ height: 36 }} />
         </div>
         <div>
           <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Total GWP</label>
-          <input type="number" name="totalGwp" value={form.totalGwp ?? ''} onChange={handleChange} min={0} step="0.01" className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+          <Input type="number" name="totalGwp" value={form.totalGwp ?? ''} onNativeChange={handleChange} style={{ height: 36 }} />
         </div>
         <div>
           <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Total Policies</label>
-          <input type="number" name="totalPolicies" value={form.totalPolicies ?? ''} onChange={handleChange} min={0} className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+          <Input type="number" name="totalPolicies" value={form.totalPolicies ?? ''} onNativeChange={handleChange} style={{ height: 36 }} />
         </div>
       </div>
       {form.bordereauType === 'CLAIMS' && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           <div>
             <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Total Claims Paid</label>
-            <input type="number" name="totalClaimsPaid" value={form.totalClaimsPaid ?? ''} onChange={handleChange} min={0} step="0.01" className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+            <Input type="number" name="totalClaimsPaid" value={form.totalClaimsPaid ?? ''} onNativeChange={handleChange} style={{ height: 36 }} />
           </div>
           <div>
             <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Total Claims Reserved</label>
-            <input type="number" name="totalClaimsReserved" value={form.totalClaimsReserved ?? ''} onChange={handleChange} min={0} step="0.01" className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+            <Input type="number" name="totalClaimsReserved" value={form.totalClaimsReserved ?? ''} onNativeChange={handleChange} style={{ height: 36 }} />
           </div>
         </div>
       )}
       <div>
         <label style={{ ...labelStyle, display: 'block', marginBottom: 4 }}>Notes</label>
-        <input type="text" name="notes" value={form.notes || ''} onChange={handleChange} placeholder="Optional notes" className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" style={{ ...inputStyle, width: '100%', height: 36, paddingLeft: 12, paddingRight: 12 }} />
+        <Input type="text" name="notes" value={form.notes || ''} onNativeChange={handleChange} placeholder="Optional notes" style={{ height: 36 }} />
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-        <button type="button" onClick={onCancel} style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, borderRadius: 8, color: t.text3, background: t.bgPanel, border: `1px solid ${t.borderL}` }}>
-          Cancel
-        </button>
-        <button type="submit" disabled={saving}
-          className="disabled:opacity-50" style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 6, paddingBottom: 6, fontSize: 14, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, background: t.accent, color: '#fff' }}>
-          <Save size={14} />
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
+        <Button type="submit" variant="primary" size="sm" icon={<Save size={14} />} disabled={saving} style={{ opacity: saving ? 0.5 : 1 }}>
           {saving ? 'Saving...' : 'Save'}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -300,15 +298,9 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
             <p style={{ fontSize: 14, color: t.text4 }}>{agreement.mgaName} &middot; {agreement.agreementType.replace('_', ' ')}</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <button onClick={onEdit} style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 4, color: t.accent, border: `1px solid ${t.accent}30` }}>
-              <Edit size={14} /> Edit
-            </button>
-            <button onClick={onDelete} style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 4, color: t.danger, border: `1px solid ${t.danger}30` }}>
-              <Trash2 size={14} /> Delete
-            </button>
-            <button onClick={onClose} style={{ padding: 8, borderRadius: 8, color: t.text5 }}>
-              <X size={20} />
-            </button>
+            <Button variant="ghost" size="sm" icon={<Edit size={14} />} onClick={onEdit}>Edit</Button>
+            <Button variant="danger" size="sm" icon={<Trash2 size={14} />} onClick={onDelete}>Delete</Button>
+            <Button variant="ghost" size="sm" onClick={onClose} style={{ padding: 8, border: 'none' }}><X size={20} /></Button>
           </div>
         </div>
 
@@ -385,12 +377,9 @@ const DetailModal: React.FC<DetailModalProps> = ({ agreement, actualGwp, onClose
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: t.text1 }}>Bordereaux Entries</h3>
-                <button onClick={() => setShowBdxForm(true)}
-                  style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, background: t.accent, color: '#fff' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
-                  <Plus size={14} /> Add Bordereaux
-                </button>
+                <Button variant="primary" size="sm" icon={<Plus size={14} />} onClick={() => setShowBdxForm(true)}>
+                  Add Bordereaux
+                </Button>
               </div>
 
               {showBdxForm && (
@@ -1026,15 +1015,9 @@ const MGADashboard: React.FC = () => {
 
   useEffect(() => {
     setHeaderActions(
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <button onClick={handleExport} disabled={exporting || filteredAgreements.length === 0}
-          className="disabled:opacity-50 disabled:cursor-not-allowed" style={{ display: "flex", alignItems: "center", gap: 6, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 14, fontWeight: 600, borderRadius: 8, whiteSpace: "nowrap", background: t.accent, color: '#fff', boxShadow: t.shadow }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
-          <Download size={14} />
-          Export
-        </button>
-      </div>
+      <Button variant="primary" icon={<Download size={14} />} onClick={handleExport} disabled={exporting || filteredAgreements.length === 0} style={{ opacity: exporting || filteredAgreements.length === 0 ? 0.5 : 1, whiteSpace: 'nowrap' }}>
+        Export
+      </Button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
   }, [exporting, filteredAgreements.length, setHeaderActions, setHeaderLeft]);
@@ -1059,34 +1042,36 @@ const MGADashboard: React.FC = () => {
           <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
             {/* Page Tab Toggle */}
             <div style={{ background: t.bgInput, display: 'flex', padding: 2, borderRadius: 8 }}>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setActivePageTab('agreements')}
-                className="transition-all"
-                style={activePageTab === 'agreements' ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap' as const } : { color: t.text4, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap' as const }}
-                onMouseEnter={(e) => { if (activePageTab !== 'agreements') e.currentTarget.style.color = t.text1; }}
-                onMouseLeave={(e) => { if (activePageTab !== 'agreements') e.currentTarget.style.color = t.text4; }}
+                style={activePageTab === 'agreements'
+                  ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow, whiteSpace: 'nowrap', border: 'none' }
+                  : { color: t.text4, whiteSpace: 'nowrap', border: 'none' }}
               >
                 Agreements
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setActivePageTab('performance')}
-                className="transition-all"
-                style={activePageTab === 'performance' ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap' as const } : { color: t.text4, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap' as const }}
-                onMouseEnter={(e) => { if (activePageTab !== 'performance') e.currentTarget.style.color = t.text1; }}
-                onMouseLeave={(e) => { if (activePageTab !== 'performance') e.currentTarget.style.color = t.text4; }}
+                style={activePageTab === 'performance'
+                  ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow, whiteSpace: 'nowrap', border: 'none' }
+                  : { color: t.text4, whiteSpace: 'nowrap', border: 'none' }}
               >
                 Performance
-              </button>
+              </Button>
             </div>
 
             <div style={{ background: t.border, width: 1, height: 20 }} />
 
             {/* Search */}
             <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-              <Search size={14} style={{ color: t.text5, position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
-              <input type="text" placeholder="Search agreements..." value={searchInput}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                style={{ border: `1px solid ${t.border}`, background: t.bgPanel, color: t.text1, width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, outline: 'none' }} />
+              <Search size={14} style={{ color: t.text5, position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 1 }} />
+              <Input type="text" placeholder="Search agreements..." value={searchInput}
+                onChange={(val) => handleSearchChange(val)}
+                style={{ paddingLeft: 32 }} />
             </div>
 
             {/* Status */}
@@ -1135,24 +1120,16 @@ const MGADashboard: React.FC = () => {
             </div>
 
             {/* Refresh */}
-            <button onClick={loadData}
-              style={{ padding: 8, borderRadius: 8, color: t.text4 }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = t.bgInput)}
-              onMouseLeave={(e) => (e.currentTarget.style.background = '')}
-              title="Refresh">
-              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : {}} />
-            </button>
+            <Button variant="ghost" size="sm" onClick={loadData} title="Refresh" style={{ padding: 8, border: 'none' }}>
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : { color: t.text4 }} />
+            </Button>
 
             <div style={{ width: 1, height: 20, background: t.border }} />
 
             {/* New Agreement */}
-            <button onClick={() => navigate('/mga/new')}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontWeight: 500, fontSize: 14, background: t.accent, color: '#fff' }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
-              <Plus size={16} />
+            <Button variant="primary" icon={<Plus size={16} />} onClick={() => navigate('/mga/new')}>
               New Agreement
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -1233,24 +1210,20 @@ const MGADashboard: React.FC = () => {
                         </td>
                         <td style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, fontSize: 14, whiteSpace: 'nowrap', color: t.text3 }}>{formatDate(ag.expiryDate)}</td>
                         <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', position: 'relative' }} onClick={e => e.stopPropagation()}>
-                          <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === ag.id ? null : ag.id); }}
-                            style={{ padding: 6, borderRadius: 8 }}>
+                          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === ag.id ? null : ag.id); }} style={{ padding: 6, border: 'none' }}>
                             <MoreVertical size={16} style={{ color: t.text4 }} />
-                          </button>
+                          </Button>
                           {openMenuId === ag.id && (
                             <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, borderRadius: 8, paddingTop: 4, paddingBottom: 4, zIndex: 50, minWidth: 120, background: t.bgPanel, boxShadow: t.shadowMd, border: '1px solid ' + t.border }}>
-                              <button onClick={() => { setOpenMenuId(null); setDetailAgreement(ag); }}
-                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
+                              <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); setDetailAgreement(ag); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                 <Eye size={14} /> View
-                              </button>
-                              <button onClick={() => { setOpenMenuId(null); navigate('/mga/edit/' + ag.id); }}
-                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); navigate('/mga/edit/' + ag.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                 <Edit size={14} /> Edit
-                              </button>
-                              <button onClick={() => { setOpenMenuId(null); handleDelete(ag.id); }}
-                                style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.danger }}>
+                              </Button>
+                              <Button variant="danger" size="sm" onClick={() => { setOpenMenuId(null); handleDelete(ag.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                 <Trash2 size={14} /> Delete
-                              </button>
+                              </Button>
                             </div>
                           )}
                         </td>
