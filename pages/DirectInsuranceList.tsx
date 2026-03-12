@@ -15,6 +15,8 @@ import { exportToExcel } from '../services/excelExport';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
 import SidePanel, { PanelField } from '../components/ui/SidePanel';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 const DirectInsuranceList: React.FC = () => {
   const navigate = useNavigate();
@@ -280,12 +282,9 @@ const DirectInsuranceList: React.FC = () => {
       </>
     );
     setHeaderActions(
-      <button
-        onClick={() => handleExport()}
-        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.success, color: '#fff', fontSize: 13, fontWeight: 600, borderRadius: 8, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', fontFamily: 'inherit' }}
-      >
-        <Download size={16} /> Export
-      </button>
+      <Button variant="primary" icon={<Download size={16} />} onClick={() => handleExport()} style={{ whiteSpace: 'nowrap', background: t.success }}>
+        Export
+      </Button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
   }, [policies, stats, setHeaderActions, setHeaderLeft]);
@@ -308,15 +307,13 @@ const DirectInsuranceList: React.FC = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
-            <input
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4, zIndex: 1 }} />
+            <Input
               type="text"
               placeholder="Search..."
               value={searchInput}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              style={{ width: '100%', paddingLeft: 36, paddingRight: 14, paddingTop: 10, paddingBottom: 10, border: `1px solid ${t.border}`, borderRadius: 8, background: t.bgInput, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
-              onFocus={e => e.target.style.borderColor = t.accent}
-              onBlur={e => e.target.style.borderColor = t.border}
+              onChange={(val) => handleSearchChange(val)}
+              style={{ paddingLeft: 36 }}
             />
           </div>
 
@@ -371,26 +368,16 @@ const DirectInsuranceList: React.FC = () => {
           </div>
 
           {/* Refresh */}
-          <button
-            onClick={() => { fetchData(); loadStats(); }}
-            style={{ padding: 8, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer', color: t.text4 }}
-            title="Refresh"
-            onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-          >
+          <Button variant="ghost" size="sm" onClick={() => { fetchData(); loadStats(); }} title="Refresh" style={{ padding: 8, border: 'none' }}>
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={{ color: loading ? t.accent : t.text4 }} />
-          </button>
+          </Button>
 
           <div style={{ width: 1, height: 20, background: t.border }} />
 
           {/* New Policy Button */}
-          <button
-            onClick={handleNewPolicy}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', background: t.accent, color: '#fff', borderRadius: 8, fontWeight: 500, fontSize: 13, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-          >
-            <Plus size={16} />
+          <Button variant="primary" icon={<Plus size={16} />} onClick={handleNewPolicy}>
             New Request
-          </button>
+          </Button>
         </div>
       </div>
       </div>{/* end sticky filter bar */}
@@ -406,13 +393,9 @@ const DirectInsuranceList: React.FC = () => {
             <FileText size={48} style={{ marginBottom: 16, opacity: 0.5 }} />
             <p style={{ fontSize: 13, fontWeight: 500 }}>No policies found</p>
             <p style={{ fontSize: 13 }}>Create your first direct insurance policy</p>
-            <button
-              onClick={handleNewPolicy}
-              style={{ marginTop: 16, padding: '8px 16px', background: t.accent, color: '#fff', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13 }}
-            >
-              <Plus size={16} style={{ display: 'inline', marginRight: 8 }} />
+            <Button variant="primary" icon={<Plus size={16} />} onClick={handleNewPolicy} style={{ marginTop: 16 }}>
               New Request
-            </button>
+            </Button>
           </div>
         ) : (
           <>
@@ -463,26 +446,20 @@ const DirectInsuranceList: React.FC = () => {
                       {getStatusBadge(policy.status)}
                     </td>
                     <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-                      <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === policy.id ? null : policy.id); }}
-                        style={{ padding: 6, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer' }}
-                        onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
-                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                      <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === policy.id ? null : policy.id); }} style={{ padding: 6, border: 'none' }}>
                         <MoreVertical size={16} style={{ color: t.text4 }} />
-                      </button>
+                      </Button>
                       {openMenuId === policy.id && (
                         <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
-                          <button onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Eye size={14} /> View
-                          </button>
-                          <button onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Edit size={14} /> Edit
-                          </button>
-                          <button onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
-                            onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          </Button>
+                          <Button variant="danger" size="sm" onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Trash2 size={14} /> Delete
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </td>
@@ -522,18 +499,12 @@ const DirectInsuranceList: React.FC = () => {
       subtitle={selectedPolicy?.insured_name || ''}
       footer={
         <>
-          <button
-            onClick={() => selectedPolicy && handleViewPolicy(selectedPolicy.id)}
-            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 18px', background: t.accent, color: '#fff', borderRadius: 8, border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 600 }}
-          >
-            <ExternalLink size={14} /> View Full Detail
-          </button>
-          <button
-            onClick={() => selectedPolicy && handleEditPolicy(selectedPolicy.id)}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 18px', background: 'transparent', color: t.text2, borderRadius: 8, border: `1px solid ${t.border}`, cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500 }}
-          >
-            <Edit size={14} /> Edit
-          </button>
+          <Button variant="primary" icon={<ExternalLink size={14} />} onClick={() => selectedPolicy && handleViewPolicy(selectedPolicy.id)} style={{ flex: 1, justifyContent: 'center' }}>
+            View Full Detail
+          </Button>
+          <Button variant="ghost" icon={<Edit size={14} />} onClick={() => selectedPolicy && handleEditPolicy(selectedPolicy.id)} style={{ justifyContent: 'center' }}>
+            Edit
+          </Button>
         </>
       }
     >
