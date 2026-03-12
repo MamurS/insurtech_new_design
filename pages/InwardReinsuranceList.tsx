@@ -434,7 +434,6 @@ const InwardReinsuranceList: React.FC = () => {
           <Button variant="primary" icon={<Plus size={16} />} onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}>
             New Contract
           </Button>
-          </button>
         </div>
       </div>
       </div>{/* end sticky header block */}
