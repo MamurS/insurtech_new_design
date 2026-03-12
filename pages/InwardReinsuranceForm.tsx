@@ -12,6 +12,8 @@ import {
 } from '../types';
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import { EntitySearchInput } from '../components/EntitySearchInput';
 import { formatSICDisplay } from '../data/sicCodes';
 import { DatePickerInput, toISODateString } from '../components/DatePickerInput';
@@ -575,14 +577,9 @@ const InwardReinsuranceForm: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
-          <button
-            type="button"
-            onClick={() => navigate(`/inward-reinsurance/${pathOrigin.toLowerCase()}`)}
-            className="p-2 rounded-lg"
-            style={{ color: t.text4 }}
-          >
+          <Button variant="ghost" onClick={() => navigate(`/inward-reinsurance/${pathOrigin.toLowerCase()}`)} style={{ padding: 8, border: 'none' }}>
             <ArrowLeft size={20} />
-          </button>
+          </Button>
           <h1 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>
             {pathOrigin === 'FOREIGN' ? 'Foreign' : 'Domestic'} Inward Reinsurance
           </h1>
@@ -606,13 +603,9 @@ const InwardReinsuranceForm: React.FC = () => {
               <p className="mt-3 text-sm" style={{ color: t.text3 }}>
                 You can find this file in the root directory of the project.
               </p>
-              <button
-                onClick={() => { setMigrationRequired(false); window.location.reload(); }}
-                className="mt-4 px-4 py-2 rounded-lg text-sm font-medium"
-                style={{ background: t.warning, color: '#fff' }}
-              >
+              <Button variant="primary" onClick={() => { setMigrationRequired(false); window.location.reload(); }} style={{ marginTop: 16, background: t.warning }}>
                 Retry After Running Migration
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -642,14 +635,9 @@ const InwardReinsuranceForm: React.FC = () => {
       {/* Page Header */}
       <div className="px-6 py-4" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate(`/inward-reinsurance/${pathOrigin.toLowerCase()}`)}
-            className="p-1 rounded-lg transition-colors"
-            style={{ color: t.text4 }}
-          >
+          <Button variant="ghost" onClick={() => navigate(`/inward-reinsurance/${pathOrigin.toLowerCase()}`)} style={{ padding: 4, border: 'none' }}>
             <ArrowLeft className="w-5 h-5" />
-          </button>
+          </Button>
           <div>
             <h1 style={{ color: t.text1, fontSize: 24, fontWeight: 600 }}>
               {isEdit ? 'Edit' : 'New'} {pathOrigin === 'FOREIGN' ? 'Foreign' : 'Domestic'} Inward Reinsurance
@@ -712,14 +700,13 @@ const InwardReinsuranceForm: React.FC = () => {
                 </label>
                 <div className="relative">
                   <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
-                  <input
+                  <Input
                     type="text"
                     name="contractNumber"
                     value={formData.contractNumber}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     data-error={!!errors.contractNumber}
                     placeholder="e.g., IR-2026-001"
-                    className={`${inputClass} pl-8`}
                     style={errors.contractNumber ? inputErrorStyle : inputStyle}
                   />
                 </div>
@@ -728,15 +715,14 @@ const InwardReinsuranceForm: React.FC = () => {
 
               <div className="w-28">
                 <label className={labelClass} style={labelStyle}>UW Year</label>
-                <input
+                <Input
                   type="number"
                   name="uwYear"
                   value={formData.uwYear}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   min={2000}
                   max={2100}
                   placeholder="2026"
-                  className={inputClass}
                   style={inputStyle}
                 />
               </div>
@@ -746,7 +732,7 @@ const InwardReinsuranceForm: React.FC = () => {
                 <select
                   name="status"
                   value={formData.status}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   className={selectClass}
                   style={selectStyle}
                 >
@@ -770,25 +756,23 @@ const InwardReinsuranceForm: React.FC = () => {
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <label className={labelClass} style={labelStyle}>Treaty Name</label>
-                  <input
+                  <Input
                     type="text"
                     name="treatyName"
                     value={formData.treatyName}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     placeholder="e.g., Property Quota Share 2026"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Treaty Number</label>
-                  <input
+                  <Input
                     type="text"
                     name="treatyNumber"
                     value={formData.treatyNumber}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     placeholder="e.g., TRT-2026-001"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
@@ -810,14 +794,13 @@ const InwardReinsuranceForm: React.FC = () => {
                   </label>
                   <div className="relative">
                     <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
-                    <input
+                    <Input
                       type="text"
                       name="originalInsuredName"
                       value={formData.originalInsuredName || ''}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       data-error={!!errors.originalInsuredName}
                       placeholder="Company name"
-                      className={`${inputClass} pl-8`}
                       style={errors.originalInsuredName ? inputErrorStyle : inputStyle}
                     />
                   </div>
@@ -828,7 +811,7 @@ const InwardReinsuranceForm: React.FC = () => {
                   <select
                     name="territory"
                     value={formData.territory || ''}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     className={selectClass}
                     style={selectStyle}
                   >
@@ -901,7 +884,7 @@ const InwardReinsuranceForm: React.FC = () => {
                     <select
                       name="cedantCountry"
                       value={formData.cedantCountry || ''}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       className={selectClass}
                       style={selectStyle}
                     >
@@ -923,7 +906,7 @@ const InwardReinsuranceForm: React.FC = () => {
                     <select
                       name="cedantRating"
                       value={(formData as any).cedantRating || ''}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       className={selectClass}
                       style={selectStyle}
                     >
@@ -951,7 +934,7 @@ const InwardReinsuranceForm: React.FC = () => {
                 <select
                   name="typeOfCover"
                   value={formData.typeOfCover}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   data-error={!!errors.typeOfCover}
                   className={selectClass}
                   style={errors.typeOfCover ? { ...selectStyle, border: `1px solid ${t.danger}`, boxShadow: `0 0 0 2px ${t.dangerBg}` } : selectStyle}
@@ -981,7 +964,7 @@ const InwardReinsuranceForm: React.FC = () => {
                 <select
                   name="classOfCover"
                   value={formData.classOfCover}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   data-error={!!errors.classOfCover}
                   className={selectClass}
                   style={errors.classOfCover ? { ...selectStyle, border: `1px solid ${t.danger}`, boxShadow: `0 0 0 2px ${t.dangerBg}` } : selectStyle}
@@ -1009,7 +992,7 @@ const InwardReinsuranceForm: React.FC = () => {
                 <select
                   name="currency"
                   value={formData.currency}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   className={selectClass}
                   style={selectStyle}
                 >
@@ -1050,15 +1033,14 @@ const InwardReinsuranceForm: React.FC = () => {
               </div>
               <div>
                 <label className={labelClass} style={labelStyle}>Gross Premium</label>
-                <input
+                <Input
                   type="number"
                   name="grossPremium"
                   value={formData.grossPremium}
-                  onChange={handleChange}
+                  onNativeChange={handleChange}
                   min={0}
                   step="0.01"
                   placeholder="0.00"
-                  className={inputClass}
                   style={inputStyle}
                 />
               </div>
@@ -1072,17 +1054,16 @@ const InwardReinsuranceForm: React.FC = () => {
                 <div>
                   <label className={labelClass} style={labelStyle}>Our Share %<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
                   <div className="relative">
-                    <input
+                    <Input
                       type="number"
                       name="ourShare"
                       value={formData.ourShare}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       data-error={!!errors.ourShare}
                       min={0}
                       max={100}
                       step="0.01"
                       placeholder="e.g., 5.00"
-                      className={`${inputClass} pr-8`}
                       style={errors.ourShare ? inputErrorStyle : inputStyle}
                     />
                     <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
@@ -1092,16 +1073,15 @@ const InwardReinsuranceForm: React.FC = () => {
                 <div>
                   <label className={labelClass} style={labelStyle}>Ceding Commission %</label>
                   <div className="relative">
-                    <input
+                    <Input
                       type="number"
                       name="commissionPercent"
                       value={formData.commissionPercent}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       min={0}
                       max={100}
                       step="0.01"
                       placeholder="e.g., 25.00"
-                      className={`${inputClass} pr-8`}
                       style={inputStyle}
                     />
                     <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
@@ -1109,15 +1089,14 @@ const InwardReinsuranceForm: React.FC = () => {
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Our Capacity / Line</label>
-                  <input
+                  <Input
                     type="number"
                     name="limitOfLiability"
                     value={formData.limitOfLiability}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={0}
                     step="0.01"
                     placeholder="e.g., 500,000"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
@@ -1126,47 +1105,44 @@ const InwardReinsuranceForm: React.FC = () => {
               <div className="grid grid-cols-4 gap-5">
                 <div>
                   <label className={labelClass} style={labelStyle}>Limit<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
-                  <input
+                  <Input
                     type="number"
                     name="limitOfLiability"
                     value={formData.limitOfLiability}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     data-error={!!errors.limitOfLiability}
                     min={0}
                     step="0.01"
                     placeholder="e.g., 10,000,000"
-                    className={inputClass}
                     style={errors.limitOfLiability ? inputErrorStyle : inputStyle}
                   />
                   <FieldError error={errors.limitOfLiability} />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Excess / Attachment</label>
-                  <input
+                  <Input
                     type="number"
                     name="excessPoint"
                     value={formData.excessPoint}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={0}
                     step="0.01"
                     placeholder="e.g., 5,000,000"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Rate on Line %</label>
                   <div className="relative">
-                    <input
+                    <Input
                       type="number"
                       name="rateOnLine"
                       value={(formData as any).rateOnLine || ''}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       min={0}
                       max={100}
                       step="0.01"
                       placeholder="e.g., 2.50"
-                      className={`${inputClass} pr-8`}
                       style={inputStyle}
                     />
                     <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
@@ -1175,17 +1151,16 @@ const InwardReinsuranceForm: React.FC = () => {
                 <div>
                   <label className={labelClass} style={labelStyle}>Our Share %<span className="ml-0.5" style={{ color: t.danger }}>*</span></label>
                   <div className="relative">
-                    <input
+                    <Input
                       type="number"
                       name="ourShare"
                       value={formData.ourShare}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       data-error={!!errors.ourShare}
                       min={0}
                       max={100}
                       step="0.01"
                       placeholder="e.g., 5.00"
-                      className={`${inputClass} pr-8`}
                       style={errors.ourShare ? inputErrorStyle : inputStyle}
                     />
                     <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
@@ -1206,66 +1181,61 @@ const InwardReinsuranceForm: React.FC = () => {
               <div className="grid grid-cols-3 gap-5">
                 <div>
                   <label className={labelClass} style={labelStyle}>Layer Number</label>
-                  <input
+                  <Input
                     type="number"
                     name="layerNumber"
                     value={formData.layerNumber}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={1}
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Aggregate Limit</label>
-                  <input
+                  <Input
                     type="number"
                     name="aggregateLimit"
                     value={formData.aggregateLimit}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={0}
                     step="0.01"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Aggregate Deductible</label>
-                  <input
+                  <Input
                     type="number"
                     name="aggregateDeductible"
                     value={formData.aggregateDeductible}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={0}
                     step="0.01"
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Number of Reinstatements</label>
-                  <input
+                  <Input
                     type="number"
                     name="reinstatements"
                     value={formData.reinstatements}
-                    onChange={handleChange}
+                    onNativeChange={handleChange}
                     min={0}
-                    className={inputClass}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label className={labelClass} style={labelStyle}>Reinstatement Premium (%)</label>
                   <div className="relative">
-                    <input
+                    <Input
                       type="number"
                       name="reinstatementPremium"
                       value={formData.reinstatementPremium}
-                      onChange={handleChange}
+                      onNativeChange={handleChange}
                       min={0}
                       max={100}
                       step="0.01"
-                      className={`${inputClass} pr-8`}
                       style={inputStyle}
                     />
                     <Percent size={14} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }} />
@@ -1280,7 +1250,7 @@ const InwardReinsuranceForm: React.FC = () => {
             <textarea
               name="notes"
               value={formData.notes || ''}
-              onChange={handleChange}
+              onNativeChange={handleChange}
               rows={4}
               placeholder="Additional notes or comments..."
               className={`${inputClass} h-auto resize-none`}
