@@ -57,16 +57,16 @@ const EntityManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
         <div>
           <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Legal Entities</h2>
-          <p className="text-sm" style={{ color: t.text4 }}>Manage company registry, counterparties, and insureds.</p>
+          <p style={{ color: t.text4, fontSize: 14 }}>Manage company registry, counterparties, and insureds.</p>
         </div>
         <button
           onClick={() => navigate('/entities/new')}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold transition-all"
-          style={{ background: t.accent, color: '#fff', boxShadow: t.shadow }}
+          className="transition-all"
+          style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontWeight: 700, background: t.accent, color: '#fff', boxShadow: t.shadow }}
         >
           <Plus size={18} /> Add Entity
         </button>
@@ -77,39 +77,39 @@ const EntityManager: React.FC = () => {
           display: 'grid',
           gridTemplateColumns: selectedEntityForPanel ? '1fr 360px' : '1fr',
           transition: 'grid-template-columns 0.2s ease',
+          borderRadius: 12,
+          overflow: 'hidden',
         }}
-        className="rounded-xl overflow-hidden"
       >
         {/* Left column: Table */}
-        <div className="overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}`, borderRadius: selectedEntityForPanel ? '12px 0 0 12px' : '12px' }}>
-          <div className="p-4 flex gap-4 items-center" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
-              <div className="relative flex-1 max-w-md">
-                  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text5 }}/>
+        <div style={{ overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}`, borderRadius: selectedEntityForPanel ? '12px 0 0 12px' : '12px' }}>
+          <div style={{ padding: 16, display: 'flex', gap: 16, alignItems: 'center', background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
+              <div style={{ position: 'relative', flex: 1, maxWidth: 448 }}>
+                  <Search size={18} className="-translate-y-1/2" style={{ color: t.text5, position: 'absolute', left: 12, top: '50%' }}/>
                   <input
                       type="text"
                       placeholder="Search by name, INN, or code..."
-                      className="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-2 outline-none text-sm"
-                      style={{ border: `1px solid ${t.border}`, '--tw-ring-color': t.accent } as React.CSSProperties}
+                      style={{ width: '100%', paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.border}` }}
                       value={searchTerm}
                       onChange={e => setSearchTerm(e.target.value)}
                   />
               </div>
-              <div className="text-xs font-medium" style={{ color: t.text4 }}>
+              <div style={{ fontSize: 12, fontWeight: 500, color: t.text4 }}>
                   {filteredEntities.length} Records found
               </div>
           </div>
 
-          <div className="overflow-x-auto" style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}>
-              <table className="w-full text-left text-sm">
-                  <thead className="font-semibold" style={{ background: t.bgInput, color: t.text2, borderBottom: `1px solid ${t.border}`, position: 'sticky', top: 0, zIndex: 1 }}>
+          <div style={{ overflowX: 'auto', maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}>
+              <table style={{ width: '100%', textAlign: 'left', fontSize: 14 }}>
+                  <thead style={{ fontWeight: 600, background: t.bgInput, color: t.text2, borderBottom: `1px solid ${t.border}`, position: 'sticky', top: 0, zIndex: 1 }}>
                       <tr>
-                          <th className="px-6 py-4">Entity Name</th>
-                          <th className="px-6 py-4">Type</th>
-                          <th className="px-6 py-4">Reg Code (INN)</th>
-                          <th className="px-6 py-4">Industry</th>
-                          <th className="px-6 py-4">Country</th>
-                          <th className="px-6 py-4">City</th>
-                          <th className="px-6 py-4 text-center">Actions</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>Entity Name</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>Type</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>Reg Code (INN)</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>Industry</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>Country</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>City</th>
+                          <th style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, textAlign: 'center' }}>Actions</th>
                       </tr>
                   </thead>
                   <tbody style={{ borderColor: t.bgInput } as React.CSSProperties}>
@@ -117,50 +117,51 @@ const EntityManager: React.FC = () => {
                           <tr
                             key={entity.id}
                             onClick={() => handleRowClick(entity)}
-                            className="cursor-pointer transition-colors group"
+                            className="transition-colors group"
                             style={{
+                              cursor: 'pointer',
                               borderBottom: `1px solid ${t.bgInput}`,
                               background: selectedEntityForPanel?.id === entity.id ? t.bgActive : undefined,
                             }}
                           >
-                              <td className="px-6 py-4">
-                                  <div className="font-bold" style={{ color: t.text1 }}>{entity.fullName}</div>
-                                  <div className="text-xs" style={{ color: t.text4 }}>{entity.shortName}</div>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>
+                                  <div style={{ fontWeight: 700, color: t.text1 }}>{entity.fullName}</div>
+                                  <div style={{ fontSize: 12, color: t.text4 }}>{entity.shortName}</div>
                               </td>
-                              <td className="px-6 py-4">
-                                  <span className="px-2 py-1 rounded text-xs font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, color: t.text3 }}>{entity.type}</span>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>
+                                  <span style={{ paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, borderRadius: 4, fontSize: 12, fontWeight: 500, background: t.bgInput, border: `1px solid ${t.border}`, color: t.text3 }}>{entity.type}</span>
                               </td>
-                              <td className="px-6 py-4 font-mono" style={{ color: t.text3 }}>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, fontFamily: "'JetBrains Mono', monospace", color: t.text3 }}>
                                   {entity.regCodeValue}
                               </td>
-                              <td className="px-6 py-4">
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16 }}>
                                   {entity.sicCode ? (
-                                      <span className="px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap" style={{ background: t.bgInput, border: `1px solid ${t.accent}`, color: t.accent }}>
+                                      <span style={{ paddingLeft: 8, paddingRight: 8, paddingTop: 2, paddingBottom: 2, borderRadius: 4, fontSize: 12, fontWeight: 500, whiteSpace: 'nowrap', background: t.bgInput, border: `1px solid ${t.accent}`, color: t.accent }}>
                                           {getSectionForCode(entity.sicCode)?.title || entity.sicSection || '-'}
                                       </span>
                                   ) : (
-                                      <span className="text-xs" style={{ color: t.text5 }}>—</span>
+                                      <span style={{ fontSize: 12, color: t.text5 }}>—</span>
                                   )}
                               </td>
-                              <td className="px-6 py-4" style={{ color: t.text3 }}>
-                                  <div className="flex items-center gap-1"><MapPin size={12}/> {entity.country}</div>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, color: t.text3 }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><MapPin size={12}/> {entity.country}</div>
                               </td>
-                              <td className="px-6 py-4" style={{ color: t.text3 }}>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, color: t.text3 }}>
                                   {entity.city || '-'}
                               </td>
-                              <td className="px-6 py-4 text-center">
-                                  <div className="flex justify-center gap-2">
-                                      <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} className="p-1.5 rounded" style={{ color: t.accent }} title="View"><Eye size={16}/></button>
-                                      <button onClick={(e) => { e.stopPropagation(); navigate(`/entities/edit/${entity.id}`); }} className="p-1.5 rounded" style={{ color: t.accent }} title="Edit"><Edit size={16}/></button>
-                                      <button onClick={(e) => handleDelete(e, entity.id)} className="p-1.5 rounded" style={{ color: t.danger }} title="Delete"><Trash2 size={16}/></button>
+                              <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, textAlign: 'center' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
+                                      <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} style={{ padding: 6, borderRadius: 4, color: t.accent }} title="View"><Eye size={16}/></button>
+                                      <button onClick={(e) => { e.stopPropagation(); navigate(`/entities/edit/${entity.id}`); }} style={{ padding: 6, borderRadius: 4, color: t.accent }} title="Edit"><Edit size={16}/></button>
+                                      <button onClick={(e) => handleDelete(e, entity.id)} style={{ padding: 6, borderRadius: 4, color: t.danger }} title="Delete"><Trash2 size={16}/></button>
                                   </div>
                               </td>
                           </tr>
                       ))}
                       {filteredEntities.length === 0 && (
                           <tr>
-                              <td colSpan={7} className="py-12 text-center" style={{ color: t.text5 }}>
-                                  <Building2 size={48} className="mx-auto mb-4 opacity-20"/>
+                              <td colSpan={7} style={{ paddingTop: 48, paddingBottom: 48, textAlign: 'center', color: t.text5 }}>
+                                  <Building2 size={48} style={{ marginLeft: 'auto', marginRight: 'auto', marginBottom: 16, opacity: 0.2 }}/>
                                   No entities found.
                               </td>
                           </tr>
@@ -184,8 +185,8 @@ const EntityManager: React.FC = () => {
                     setSelectedEntity(selectedEntityForPanel);
                   }
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                style={{ background: t.bgInput, color: t.text1, border: `1px solid ${t.border}` }}
+                className="transition-colors"
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 600, background: t.bgInput, color: t.text1, border: `1px solid ${t.border}` }}
               >
                 <Eye size={14} /> View Full Detail
               </button>
@@ -195,8 +196,8 @@ const EntityManager: React.FC = () => {
                     navigate(`/entities/edit/${selectedEntityForPanel.id}`);
                   }
                 }}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
-                style={{ background: t.accent, color: '#fff' }}
+                className="transition-colors"
+                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 600, background: t.accent, color: '#fff' }}
               >
                 <Edit size={14} /> Edit
               </button>

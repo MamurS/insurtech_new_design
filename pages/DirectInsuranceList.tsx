@@ -303,12 +303,12 @@ const DirectInsuranceList: React.FC = () => {
     <div style={{ display: 'grid', gridTemplateColumns: selectedPolicy ? '1fr 360px' : '1fr', height: '100%', transition: 'grid-template-columns 0.2s' }}>
     <div style={{ overflow: 'auto', minWidth: 0 }}>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30" style={{ background: t.bgApp }}>
+      <div ref={filterRef} style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
       <div style={{ background: t.bgPanel, borderRadius: 10, boxShadow: t.shadow, border: `1px solid ${t.border}`, padding: 12 }}>
-        <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
           {/* Search */}
-          <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+          <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
@@ -345,7 +345,7 @@ const DirectInsuranceList: React.FC = () => {
           </select>
 
           {/* Date Filter */}
-          <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: '380px' }}>
           <select
             value={dateFilterField}
             onChange={(e) => handleDateFilterChange(e.target.value, dateFrom, dateTo)}
@@ -416,8 +416,8 @@ const DirectInsuranceList: React.FC = () => {
           </div>
         ) : (
           <>
-            <table className="w-full">
-              <thead className="sticky z-20" style={{ top: `${filterHeight}px` }}>
+            <table style={{ width: '100%' }}>
+              <thead style={{ position: 'sticky', zIndex: 20, top: `${filterHeight}px` }}>
                 <tr>
                   {['Policy #', 'Insured', 'Country', 'Class', 'Period'].map(label => (
                     <th key={label} style={{ textAlign: 'left', padding: '12px 20px', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', color: t.text3, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>{label}</th>
@@ -432,8 +432,8 @@ const DirectInsuranceList: React.FC = () => {
                   <tr
                     key={policy.id}
                     onClick={() => handleRowClick(policy)}
-                    className="transition-colors cursor-pointer"
-                    style={{ borderBottom: `1px solid ${t.borderS}`, background: selectedPolicy?.id === policy.id ? t.bgActive : 'transparent' }}
+                    className="transition-colors"
+                    style={{ cursor: 'pointer', borderBottom: `1px solid ${t.borderS}`, background: selectedPolicy?.id === policy.id ? t.bgActive : 'transparent' }}
                     onMouseEnter={e => { if (selectedPolicy?.id !== policy.id) e.currentTarget.style.background = t.bgHover; }}
                     onMouseLeave={e => { if (selectedPolicy?.id !== policy.id) e.currentTarget.style.background = 'transparent'; }}
                   >
@@ -441,7 +441,7 @@ const DirectInsuranceList: React.FC = () => {
                       <span style={{ fontWeight: 500, color: t.accent, fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>{policy.policy_number}</span>
                     </td>
                     <td style={{ padding: '14px 20px' }}>
-                      <div className="flex items-center gap-2">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Building2 size={16} style={{ color: t.text4 }} />
                         <span style={{ color: t.text1 }}>{policy.insured_name}</span>
                       </div>
@@ -459,10 +459,10 @@ const DirectInsuranceList: React.FC = () => {
                     <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 500, color: t.text1, fontVariantNumeric: 'tabular-nums', fontSize: 13 }}>
                       {formatCurrency(policy.gross_premium || 0)}
                     </td>
-                    <td className="text-center" style={{ padding: '14px 20px' }}>
+                    <td style={{ textAlign: 'center', padding: '14px 20px' }}>
                       {getStatusBadge(policy.status)}
                     </td>
-                    <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
+                    <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
                       <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === policy.id ? null : policy.id); }}
                         style={{ padding: 6, borderRadius: 7, background: 'transparent', border: 'none', cursor: 'pointer' }}
                         onMouseEnter={e => e.currentTarget.style.background = t.bgHover}
@@ -471,15 +471,15 @@ const DirectInsuranceList: React.FC = () => {
                       </button>
                       {openMenuId === policy.id && (
                         <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, background: t.bgPanel, borderRadius: 10, boxShadow: t.shadowLg, border: `1px solid ${t.borderL}`, padding: 4, zIndex: 50, minWidth: 120 }}>
-                          <button onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                          <button onClick={() => { setOpenMenuId(null); handleViewPolicy(policy.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                             onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Eye size={14} /> View
                           </button>
-                          <button onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                          <button onClick={() => { setOpenMenuId(null); handleEditPolicy(policy.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                             onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Edit size={14} /> Edit
                           </button>
-                          <button onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
+                          <button onClick={() => { setOpenMenuId(null); setDeleteConfirm({ show: true, id: policy.id, number: policy.policy_number }); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.danger, background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 6, fontFamily: 'inherit' }}
                             onMouseEnter={e => e.currentTarget.style.background = t.bgHover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <Trash2 size={14} /> Delete
                           </button>
@@ -491,7 +491,7 @@ const DirectInsuranceList: React.FC = () => {
               </tbody>
             </table>
             {/* Infinite scroll sentinel */}
-            <div ref={sentinelRef} className="h-1" />
+            <div ref={sentinelRef} style={{ height: 4 }} />
             {loadingMore && (
               <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
                 <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />

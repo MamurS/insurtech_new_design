@@ -158,16 +158,16 @@ const SectionCard: React.FC<{
   const { t } = useTheme();
   return (
     <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow }}>
-      <div className="flex items-center gap-3 px-5 py-3.5" style={{ borderBottom: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '12px 12px 0 0' }}>
-        <div className="flex items-center justify-center w-7 h-7 rounded-full" style={{ background: t.accentMuted, color: t.accent, fontSize: 12, fontWeight: 700 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 20, paddingRight: 20, paddingTop: 14, paddingBottom: 14, borderBottom: `1px solid ${t.border}`, background: t.bgInput, borderRadius: '12px 12px 0 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 9999, background: t.accentMuted, color: t.accent, fontSize: 12, fontWeight: 700 }}>
           {number}
         </div>
-        <div className="flex items-center gap-2" style={{ color: t.text2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: t.text2 }}>
           {icon}
-          <h3 className="font-semibold text-sm">{title}</h3>
+          <h3 style={{ fontWeight: 600, fontSize: 14 }}>{title}</h3>
         </div>
       </div>
-      <div className="px-5 py-4 space-y-4">
+      <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 16, paddingBottom: 16, display: 'flex', flexDirection: 'column', gap: 16 }}>
         {children}
       </div>
     </div>
@@ -219,30 +219,29 @@ const SearchableDropdown: React.FC<{
   };
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div style={{ position: 'relative' }} ref={wrapperRef}>
       <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
         {label} {required && <span style={{ color: t.danger }}>*</span>}
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
-          className="flex items-center justify-between"
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         >
           {value ? (
-            <div className="flex items-center justify-between w-full">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
               <span style={{ color: t.text1 }}>{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} style={{ marginLeft: 8, color: t.text4 }}>
                 <X size={14} />
               </button>
             </div>
           ) : (
             <span style={{ color: t.text4 }}>{placeholder || 'Select...'}</span>
           )}
-          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
+          <ChevronDown size={14} style={{ flexShrink: 0, marginLeft: 8, color: t.text4 }} />
         </div>
       ) : (
-        <div className="relative">
+        <div style={{ position: 'relative' }}>
           <input
             ref={inputRef}
             type="text"
@@ -252,35 +251,34 @@ const SearchableDropdown: React.FC<{
             autoComplete="off"
             style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
+          <div className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
+        <ul style={{ position: 'absolute', zIndex: 50, width: '100%', marginTop: 4, maxHeight: 208, overflowY: 'auto', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(opt => (
             <li
               key={opt.id}
               onClick={() => { onSelect(opt.id, opt.label); setIsOpen(false); setSearchTerm(''); }}
-              className="px-3 py-2 cursor-pointer flex items-center gap-2"
-              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: opt.label === value ? t.accentMuted : undefined, color: opt.label === value ? t.accent : t.text1 }}
+              style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: opt.label === value ? t.accentMuted : undefined, color: opt.label === value ? t.accent : t.text1 }}
             >
-              {opt.icon && <span className="shrink-0">{opt.icon}</span>}
-              <div className="min-w-0">
-                <div className="font-medium truncate" style={{ color: t.text1 }}>{opt.label}</div>
-                {opt.sublabel && <div className="truncate" style={{ fontSize: 12, color: t.text4 }}>{opt.sublabel}</div>}
+              {opt.icon && <span style={{ flexShrink: 0 }}>{opt.icon}</span>}
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text1 }}>{opt.label}</div>
+                {opt.sublabel && <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12, color: t.text4 }}>{opt.sublabel}</div>}
               </div>
-              {opt.label === value && <Check size={14} className="shrink-0 ml-auto" style={{ color: t.accent }} />}
+              {opt.label === value && <Check size={14} style={{ flexShrink: 0, marginLeft: 'auto', color: t.accent }} />}
             </li>
           )) : (
-            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>
+            <li style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, textAlign: 'center', fontSize: 13, color: t.text4 }}>
               {loading ? 'Loading...' : 'No results found'}
             </li>
           )}
         </ul>
       )}
-      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
+      {error && <p style={{ fontSize: 12, marginTop: 4, color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -326,54 +324,52 @@ const ProductSearch: React.FC<{
   const handleOpen = () => { setIsOpen(true); setSearchTerm(''); setTimeout(() => inputRef.current?.focus(), 50); };
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div style={{ position: 'relative' }} ref={wrapperRef}>
       <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>
         Type of Insurance Cover <span style={{ color: t.danger }}>*</span>
       </label>
       {!isOpen ? (
         <div
           onClick={handleOpen}
-          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42 }}
-          className="flex items-center justify-between"
+          style={{ width: '100%', padding: '10px 12px', background: t.bgPanel, border: `1px solid ${error ? t.danger : t.border}`, borderRadius: 8, fontSize: 13, cursor: 'pointer', color: t.text1, minHeight: 42, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         >
           {value ? (
-            <div className="flex items-center justify-between w-full">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
               <span style={{ color: t.text1 }}>{value}</span>
-              <button onClick={(e) => { e.stopPropagation(); onClear(); }} className="ml-2" style={{ color: t.text4 }}><X size={14} /></button>
+              <button onClick={(e) => { e.stopPropagation(); onClear(); }} style={{ marginLeft: 8, color: t.text4 }}><X size={14} /></button>
             </div>
           ) : (<span style={{ color: t.text4 }}>Select insurance product...</span>)}
-          <ChevronDown size={14} className="shrink-0 ml-2" style={{ color: t.text4 }} />
+          <ChevronDown size={14} style={{ flexShrink: 0, marginLeft: 8, color: t.text4 }} />
         </div>
       ) : (
-        <div className="relative">
+        <div style={{ position: 'relative' }}>
           <input ref={inputRef} type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Type to filter products..." autoComplete="off"
             style={{ width: '100%', padding: '10px 12px', paddingRight: 32, background: t.bgPanel, border: `1px solid ${t.accent}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: t.text4 }}>
+          <div className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', color: t.text4 }}>
             {loading ? <Loader2 size={14} className="animate-spin" /> : <Search size={14} />}
           </div>
         </div>
       )}
       {isOpen && (
-        <ul className="absolute z-50 w-full mt-1 max-h-52 overflow-y-auto" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
+        <ul style={{ position: 'absolute', zIndex: 50, width: '100%', marginTop: 4, maxHeight: 208, overflowY: 'auto', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, boxShadow: t.shadowLg }}>
           {filtered.length > 0 ? filtered.map(p => (
             <li key={p.id} onClick={() => { onSelect(p); setIsOpen(false); setSearchTerm(''); }}
-              className="px-3 py-2 cursor-pointer"
-              style={{ fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: p.name === value ? t.accentMuted : undefined }}>
-              <div className="flex items-center justify-between">
+              style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, cursor: 'pointer', fontSize: 13, borderBottom: `1px solid ${t.bgInput}`, background: p.name === value ? t.accentMuted : undefined }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <div className="font-medium" style={{ color: t.text1 }}>{p.name}</div>
+                  <div style={{ fontWeight: 500, color: t.text1 }}>{p.name}</div>
                   <div style={{ fontSize: 12, color: t.text4 }}>{p.code} · Classes: {(p.class_codes || []).join(', ')}</div>
                 </div>
-                {p.name === value && <Check size={14} className="shrink-0" style={{ color: t.accent }} />}
+                {p.name === value && <Check size={14} style={{ flexShrink: 0, color: t.accent }} />}
               </div>
             </li>
           )) : (
-            <li className="px-3 py-3 text-center" style={{ fontSize: 13, color: t.text4 }}>{loading ? 'Loading products...' : 'No products found'}</li>
+            <li style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 12, paddingBottom: 12, textAlign: 'center', fontSize: 13, color: t.text4 }}>{loading ? 'Loading products...' : 'No products found'}</li>
           )}
         </ul>
       )}
-      {error && <p className="text-xs mt-1" style={{ color: t.danger }}>{error}</p>}
+      {error && <p style={{ fontSize: 12, marginTop: 4, color: t.danger }}>{error}</p>}
     </div>
   );
 };
@@ -395,7 +391,7 @@ const CurrencyInput: React.FC<{
   }, [value]);
 
   return (
-    <div className="relative flex-1 max-w-xs">
+    <div style={{ position: 'relative', flex: 1, maxWidth: 320 }}>
       <input
         ref={inputRef}
         type="text" inputMode="numeric"
@@ -408,12 +404,11 @@ const CurrencyInput: React.FC<{
         onBlur={() => setLocalValue(value ? fmtNum(value) : '')}
         onWheel={(e) => (e.target as HTMLInputElement).blur()}
         placeholder={placeholder}
-        className={`w-full text-right ${bold ? 'font-bold' : ''}`}
-        style={{ padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
+        style={{ width: '100%', textAlign: 'right', ...(bold ? { fontWeight: 700 } : {}), padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
       />
       <span
-        className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none"
-        style={{ fontSize: 11, fontWeight: bold ? 700 : 500, color: bold ? t.accent : t.text4, background: bold ? t.accentMuted : t.bgHover }}
+        className="-translate-y-1/2"
+        style={{ position: 'absolute', right: 12, top: '50%', paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2, borderRadius: 4, userSelect: 'none', pointerEvents: 'none', fontSize: 11, fontWeight: bold ? 700 : 500, color: bold ? t.accent : t.text4, background: bold ? t.accentMuted : t.bgHover }}
       >
         {currency}
       </span>
@@ -732,7 +727,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
   const sumInsuredFields = form.coverSections?.sumInsured || [];
 
   return (
-    <div className="space-y-5 pb-24">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingBottom: 96 }}>
       {/* ══════ Section 1: Insured Party ══════ */}
       <SectionCard number={1} title="Insured Party" icon={<Users size={16} />}>
         <SearchableDropdown
@@ -741,7 +736,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
           onClear={() => updateForm({ insuredName: '', insuredEntityId: undefined, sector: '', insuredCountry: '' })}
           required placeholder="Search for insured entity..." loading={entitiesLoading} error={errors.insuredName}
         />
-        <div className="grid grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
           <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Sector / Industry</label>
             <input type="text" value={form.sector} onChange={(e) => updateForm({ sector: e.target.value })}
@@ -765,9 +760,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {form.classCodes.length > 0 && (
           <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Class of Insurance</label>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {form.classCodes.map(code => (
-                <span key={code} className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium" style={{ background: t.accentMuted, color: t.accent, border: `1px solid ${t.accentMuted}` }}>
+                <span key={code} style={{ display: 'inline-flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10, paddingTop: 4, paddingBottom: 4, borderRadius: 8, fontSize: 12, fontWeight: 500, background: t.accentMuted, color: t.accent, border: `1px solid ${t.accentMuted}` }}>
                   Class {code} — {INSURANCE_CLASSES[code] || 'Unknown'}
                 </span>
               ))}
@@ -800,7 +795,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
       {/* ══════ Section 4: Sums Insured ══════ */}
       <SectionCard number={4} title="Sums Insured" icon={<DollarSign size={16} />}>
-        <div className="flex items-center gap-4">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Currency</label>
             <select value={form.currency} onChange={(e) => updateForm({ currency: e.target.value })}
@@ -809,41 +804,41 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             </select>
           </div>
           {fxDisplay && (
-            <div className="mt-5 px-3 py-1.5 rounded-lg" style={{ fontSize: 12, color: t.text4, background: t.bgInput, border: `1px solid ${t.border}` }}>
+            <div style={{ marginTop: 20, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 12, color: t.text4, background: t.bgInput, border: `1px solid ${t.border}` }}>
               Exchange rate: {fxDisplay}
             </div>
           )}
         </div>
 
         {sumInsuredFields.length > 0 ? (
-          <div className="space-y-3 mt-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
             {sumInsuredFields.map(field => (
-              <div key={field.key} className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{field.label}</label>
+              <div key={field.key} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <label style={{ width: 192, flexShrink: 0, fontSize: 13, color: t.text2 }}>{field.label}</label>
                   <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[field.key] || 0} onChange={(v) => setAmount(field.key, v)} />
                 </div>
                 {field.toggles?.map(toggle => (
-                  <div key={toggle.key} className="ml-6 space-y-1">
-                    <label className="flex items-center gap-2 cursor-pointer" style={{ fontSize: 13, color: t.text2 }}>
+                  <div key={toggle.key} style={{ marginLeft: 24, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: t.text2 }}>
                       <input type="checkbox" checked={form.sumInsuredToggles[toggle.key] || false}
                         onChange={(e) => setToggle(toggle.key, e.target.checked)}
-                        className="rounded" style={{ borderColor: t.border }} />
+                        style={{ borderRadius: 4, borderColor: t.border }} />
                       {toggle.label}
                     </label>
                     {form.sumInsuredToggles[toggle.key] && (
-                      <div className="flex items-center gap-3 ml-6">
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 24 }}>
                         <span style={{ color: t.text5, fontSize: 12 }}>├</span>
-                        <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{toggle.label}</label>
+                        <label style={{ width: 192, flexShrink: 0, fontSize: 13, color: t.text2 }}>{toggle.label}</label>
                         <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[toggle.key] || 0} onChange={(v) => setAmount(toggle.key, v)} />
                       </div>
                     )}
                   </div>
                 ))}
                 {field.hasSubLimits && field.subLimits?.map(sub => (
-                  <div key={sub.key} className="flex items-center gap-3 ml-6">
+                  <div key={sub.key} style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 24 }}>
                     <span style={{ color: t.text5, fontSize: 12 }}>├</span>
-                    <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>{sub.label}</label>
+                    <label style={{ width: 192, flexShrink: 0, fontSize: 13, color: t.text2 }}>{sub.label}</label>
                     <CurrencyInput currency={form.currency} value={form.sumInsuredAmounts[sub.key] || 0} onChange={(v) => setAmount(sub.key, v)} />
                   </div>
                 ))}
@@ -851,14 +846,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             ))}
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Sum Insured</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <label style={{ width: 192, flexShrink: 0, fontSize: 13, color: t.text2 }}>Sum Insured</label>
             <CurrencyInput currency={form.currency} value={form.totalSumInsured} onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })} />
           </div>
         )}
 
-        <div className="flex items-center gap-3 pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
-          <label className="font-semibold w-48 shrink-0" style={{ fontSize: 13, color: t.text1 }}>Total Sum Insured</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingTop: 12, borderTop: `1px solid ${t.border}` }}>
+          <label style={{ fontWeight: 600, width: 192, flexShrink: 0, fontSize: 13, color: t.text1 }}>Total Sum Insured</label>
           <CurrencyInput currency={form.currency} value={form.totalSumInsured}
             onChange={(v) => updateForm({ totalSumInsured: v, totalSumInsuredManual: true })}
             bold />
@@ -867,15 +862,15 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
       {/* ══════ Section 5: Limit of Liability ══════ */}
       <SectionCard number={5} title="Limit of Liability" icon={<Lock size={16} />}>
-        <div className="flex items-center gap-3">
-          <label className="w-48 shrink-0" style={{ fontSize: 13, color: t.text2 }}>Limit of Liability</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <label style={{ width: 192, flexShrink: 0, fontSize: 13, color: t.text2 }}>Limit of Liability</label>
           <CurrencyInput currency={form.currency} value={form.limitOfLiability} onChange={(v) => updateForm({ limitOfLiability: v })} />
         </div>
       </SectionCard>
 
       {/* ══════ Section 6: Insurance Period ══════ */}
       <SectionCard number={6} title="Insurance Period" icon={<Clock size={16} />}>
-        <div className="grid grid-cols-3 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
           <DatePickerInput label="Inception Date" value={parseDate(form.inceptionDate)}
             onChange={(d) => updateForm({ inceptionDate: toISODateString(d) || '' })} required />
           <DatePickerInput label="Expiry Date" value={parseDate(form.expiryDate)}
@@ -883,67 +878,66 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             minDate={parseDate(form.inceptionDate) || undefined} />
           <div>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Duration</label>
-            <div className="p-2.5 rounded-lg font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
+            <div style={{ padding: 10, borderRadius: 8, fontWeight: 500, background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {durationDays ? `${durationDays} days` : '—'}
             </div>
           </div>
         </div>
-        {errors.inceptionDate && <p className="text-xs" style={{ color: t.danger }}>{errors.inceptionDate}</p>}
-        {errors.expiryDate && <p className="text-xs" style={{ color: t.danger }}>{errors.expiryDate}</p>}
+        {errors.inceptionDate && <p style={{ fontSize: 12, color: t.danger }}>{errors.inceptionDate}</p>}
+        {errors.expiryDate && <p style={{ fontSize: 12, color: t.danger }}>{errors.expiryDate}</p>}
       </SectionCard>
 
       {/* ══════ Section 7: Deductibles ══════ */}
       <SectionCard number={7} title="Deductibles" icon={<Percent size={16} />}>
-        <div className="space-y-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {/* Column headers */}
-          <div className="grid grid-cols-12 gap-3 px-3">
-            <div className="col-span-5 text-xs font-medium" style={{ color: t.text4 }}>Type / Description</div>
-            <div className="col-span-3 text-xs font-medium" style={{ color: t.text4 }}>Percentage</div>
-            <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, paddingLeft: 12, paddingRight: 12 }}>
+            <div style={{ gridColumn: 'span 5', fontSize: 12, fontWeight: 500, color: t.text4 }}>Type / Description</div>
+            <div style={{ gridColumn: 'span 3', fontSize: 12, fontWeight: 500, color: t.text4 }}>Percentage</div>
+            <div style={{ gridColumn: 'span 4', fontSize: 12, fontWeight: 500, color: t.text4 }}>Amount</div>
           </div>
           {form.deductibles.map((ded) => (
-            <div key={ded.id} className="flex items-center gap-2">
-              <div className="flex-1 grid grid-cols-12 gap-3 p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
+            <div key={ded.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, padding: 12, borderRadius: 8, background: t.bgInput, border: `1px solid ${t.border}` }}>
                 {/* Description */}
-                <div className="col-span-5">
+                <div style={{ gridColumn: 'span 5' }}>
                   <input type="text" value={ded.description}
                     onChange={(e) => updateDeductible(ded.id, 'description', e.target.value)}
                     placeholder="e.g. All Perils, Fire, Flood..."
                     style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
                 </div>
                 {/* Percentage */}
-                <div className="col-span-3">
-                  <div className="relative">
+                <div style={{ gridColumn: 'span 3' }}>
+                  <div style={{ position: 'relative' }}>
                     <input type="text" inputMode="numeric"
                       value={ded.percentage || ''}
                       onChange={(e) => updateDeductible(ded.id, 'percentage', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full text-right"
-                      style={{ padding: '8px 32px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
+                      style={{ width: '100%', textAlign: 'right', padding: '8px 32px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="-translate-y-1/2" style={{ position: 'absolute', right: 12, top: '50%', pointerEvents: 'none', fontSize: 12, color: t.text4 }}>%</span>
                   </div>
                 </div>
                 {/* Amount */}
-                <div className="col-span-4">
+                <div style={{ gridColumn: 'span 4' }}>
                   <CurrencyInput currency={form.currency} value={ded.amount} onChange={(v) => updateDeductible(ded.id, 'amount', v)} />
                 </div>
               </div>
               {/* Remove button */}
               {form.deductibles.length > 1 ? (
                 <button onClick={() => removeDeductible(ded.id)}
-                  className="p-1.5 rounded-lg transition-colors shrink-0" style={{ color: t.text4 }}>
+                  className="transition-colors" style={{ padding: 6, borderRadius: 8, flexShrink: 0, color: t.text4 }}>
                   <Trash2 size={14} />
                 </button>
-              ) : <div className="w-8 shrink-0" />}
+              ) : <div style={{ width: 32, flexShrink: 0 }} />}
             </div>
           ))}
         </div>
         <button onClick={addDeductible}
-          className="flex items-center gap-1.5 font-medium mt-1" style={{ fontSize: 13, color: t.accent }}>
+          style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 500, marginTop: 4, fontSize: 13, color: t.accent }}>
           <Plus size={14} /> Add Deductible
         </button>
         {(form.totalSumInsured > 0 || form.limitOfLiability > 0) && (
-          <p className="text-xs mt-1" style={{ color: t.text4 }}>
+          <p style={{ fontSize: 12, marginTop: 4, color: t.text4 }}>
             Auto-calculation basis: {form.totalSumInsured > 0 ? `Total SI ${fmtNum(form.totalSumInsured)}` : `LoL ${fmtNum(form.limitOfLiability)}`} {form.currency}
           </p>
         )}
@@ -953,34 +947,33 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       <SectionCard number={8} title="Insurance Premium" icon={<FileText size={16} />}>
         {/* Sub-premiums (if cover sections have amounts) */}
         {form.subPremiums.length > 0 && (
-          <div className="space-y-2 mb-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
             <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, display: 'block' }}>Sub-Premiums</label>
             {/* Header row */}
-            <div className="grid grid-cols-12 gap-3 px-3">
-              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Cover Section</div>
-              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Rate</div>
-              <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Premium Amount</div>
-              <div className="col-span-1 text-xs font-medium" style={{ color: t.text4 }}>Basis</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, paddingLeft: 12, paddingRight: 12 }}>
+              <div style={{ gridColumn: 'span 4', fontSize: 12, fontWeight: 500, color: t.text4 }}>Cover Section</div>
+              <div style={{ gridColumn: 'span 2', fontSize: 12, fontWeight: 500, color: t.text4 }}>Rate</div>
+              <div style={{ gridColumn: 'span 1' }} />
+              <div style={{ gridColumn: 'span 4', fontSize: 12, fontWeight: 500, color: t.text4 }}>Premium Amount</div>
+              <div style={{ gridColumn: 'span 1', fontSize: 12, fontWeight: 500, color: t.text4 }}>Basis</div>
             </div>
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {form.subPremiums.map(sub => (
-                <div key={sub.key} className="grid grid-cols-12 gap-3 items-center p-2.5 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
-                  <label className="col-span-4 truncate" style={{ fontSize: 13, color: t.text2 }} title={sub.label}>{sub.label}</label>
-                  <div className="col-span-2 relative">
+                <div key={sub.key} style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, alignItems: 'center', padding: 10, borderRadius: 8, background: t.bgInput, border: `1px solid ${t.border}` }}>
+                  <label style={{ gridColumn: 'span 4', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 13, color: t.text2 }} title={sub.label}>{sub.label}</label>
+                  <div style={{ gridColumn: 'span 2', position: 'relative' }}>
                     <input type="text" inputMode="numeric"
                       value={sub.rate || ''}
                       onChange={(e) => updateSubPremium(sub.key, 'rate', parseNum(e.target.value))}
                       placeholder="0"
-                      className="w-full text-right"
-                      style={{ padding: '8px 28px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
+                      style={{ width: '100%', textAlign: 'right', padding: '8px 28px 8px 8px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+                    <span className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', fontSize: 12, color: t.text4 }}>%</span>
                   </div>
-                  <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
-                  <div className="col-span-4">
+                  <span style={{ gridColumn: 'span 1', fontSize: 12, textAlign: 'center', color: t.text5 }}>=</span>
+                  <div style={{ gridColumn: 'span 4' }}>
                     <CurrencyInput currency={form.currency} value={sub.amount} onChange={(v) => updateSubPremium(sub.key, 'amount', v)} />
                   </div>
-                  <span className="col-span-1 text-xs truncate" style={{ color: t.text4 }} title={`of ${fmtNum(sub.basis)}`}>
+                  <span style={{ gridColumn: 'span 1', fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text4 }} title={`of ${fmtNum(sub.basis)}`}>
                     of {fmtNum(sub.basis)}
                   </span>
                 </div>
@@ -990,9 +983,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         )}
 
         {/* Gross Premium */}
-        <div className="grid grid-cols-12 gap-3 items-center">
-          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Gross Premium</label>
-          <div className="col-span-2 relative">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, alignItems: 'center' }}>
+          <label style={{ gridColumn: 'span 4', fontWeight: 600, fontSize: 13, color: t.text1 }}>Gross Premium</label>
+          <div style={{ gridColumn: 'span 2', position: 'relative' }}>
             <input type="text" inputMode="numeric"
               value={form.premiumRate || ''}
               onChange={(e) => {
@@ -1002,12 +995,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                 updateForm({ premiumRate: rate, grossPremium: amount, grossPremiumManual: false });
               }}
               placeholder="0"
-              className="w-full text-right"
-              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
+              style={{ width: '100%', textAlign: 'right', padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
-          <div className="col-span-5">
+          <span style={{ gridColumn: 'span 1', fontSize: 12, textAlign: 'center', color: t.text5 }}>=</span>
+          <div style={{ gridColumn: 'span 5' }}>
             <CurrencyInput currency={form.currency} value={form.grossPremium}
               onChange={(v) => {
                 const basis = form.totalSumInsured || form.limitOfLiability || 0;
@@ -1019,38 +1011,37 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         </div>
 
         {/* Commission */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
-          <label className="col-span-4" style={{ fontSize: 13, color: t.text2 }}>Commission</label>
-          <div className="col-span-2 relative">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, alignItems: 'center', paddingTop: 12, borderTop: `1px solid ${t.border}` }}>
+          <label style={{ gridColumn: 'span 4', fontSize: 13, color: t.text2 }}>Commission</label>
+          <div style={{ gridColumn: 'span 2', position: 'relative' }}>
             <input type="text" inputMode="numeric"
               value={form.commissionPercent || ''}
               onChange={(e) => updateForm({ commissionPercent: parseNum(e.target.value) })}
               placeholder="0"
-              className="w-full text-right"
-              style={{ padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ fontSize: 12, color: t.text4 }}>%</span>
+              style={{ width: '100%', textAlign: 'right', padding: '8px 28px 8px 8px', background: t.bgInput, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
+            <span className="-translate-y-1/2" style={{ position: 'absolute', right: 8, top: '50%', pointerEvents: 'none', fontSize: 12, color: t.text4 }}>%</span>
           </div>
-          <span className="col-span-1 text-xs text-center" style={{ color: t.text5 }}>=</span>
-          <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 rounded-lg text-right" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
+          <span style={{ gridColumn: 'span 1', fontSize: 12, textAlign: 'center', color: t.text5 }}>=</span>
+          <div style={{ gridColumn: 'span 5', position: 'relative' }}>
+            <div style={{ width: '100%', padding: 8, paddingRight: 64, borderRadius: 8, textAlign: 'right', background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
               {fmtNum(form.commissionAmount) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
+            <span className="-translate-y-1/2" style={{ position: 'absolute', right: 12, top: '50%', paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2, borderRadius: 4, userSelect: 'none', pointerEvents: 'none', fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
               {form.currency}
             </span>
           </div>
         </div>
 
         {/* Net Premium */}
-        <div className="grid grid-cols-12 gap-3 items-center pt-3" style={{ borderTop: `1px solid ${t.border}` }}>
-          <label className="col-span-4 font-semibold" style={{ fontSize: 13, color: t.text1 }}>Net Premium</label>
-          <div className="col-span-2" />
-          <span className="col-span-1" />
-          <div className="col-span-5 relative">
-            <div className="w-full p-2 pr-16 rounded-lg text-right font-bold" style={{ background: t.successBg, border: `2px solid ${t.success}`, fontSize: 13, color: t.success }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, alignItems: 'center', paddingTop: 12, borderTop: `1px solid ${t.border}` }}>
+          <label style={{ gridColumn: 'span 4', fontWeight: 600, fontSize: 13, color: t.text1 }}>Net Premium</label>
+          <div style={{ gridColumn: 'span 2' }} />
+          <span style={{ gridColumn: 'span 1' }} />
+          <div style={{ gridColumn: 'span 5', position: 'relative' }}>
+            <div style={{ width: '100%', padding: 8, paddingRight: 64, borderRadius: 8, textAlign: 'right', fontWeight: 700, background: t.successBg, border: `2px solid ${t.success}`, fontSize: 13, color: t.success }}>
               {fmtNum(form.netPremium) || '0'}
             </div>
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 700, color: t.success, background: t.successBg }}>
+            <span className="-translate-y-1/2" style={{ position: 'absolute', right: 12, top: '50%', paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2, borderRadius: 4, userSelect: 'none', pointerEvents: 'none', fontSize: 11, fontWeight: 700, color: t.success, background: t.successBg }}>
               {form.currency}
             </span>
           </div>
@@ -1062,11 +1053,11 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         {/* Payment type toggle */}
         <div>
           <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 8, display: 'block' }}>Payment Type</label>
-          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: `1px solid ${t.border}` }}>
+          <div style={{ display: 'inline-flex', borderRadius: 8, overflow: 'hidden', border: `1px solid ${t.border}` }}>
             <button
               onClick={() => updateForm({ paymentType: 'lump_sum', installments: [] })}
-              className="px-4 py-2 font-medium transition-colors"
-              style={{ fontSize: 13, background: form.paymentType === 'lump_sum' ? t.accent : t.bgPanel, color: form.paymentType === 'lump_sum' ? '#fff' : t.text2 }}
+              className="transition-colors"
+              style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 500, fontSize: 13, background: form.paymentType === 'lump_sum' ? t.accent : t.bgPanel, color: form.paymentType === 'lump_sum' ? '#fff' : t.text2 }}
             >
               Lump Sum
             </button>
@@ -1085,8 +1076,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                   updateForm({ paymentType: 'installments' });
                 }
               }}
-              className="px-4 py-2 font-medium transition-colors"
-              style={{ fontSize: 13, borderLeft: `1px solid ${t.border}`, background: form.paymentType === 'installments' ? t.accent : t.bgPanel, color: form.paymentType === 'installments' ? '#fff' : t.text2 }}
+              className="transition-colors"
+              style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 500, fontSize: 13, borderLeft: `1px solid ${t.border}`, background: form.paymentType === 'installments' ? t.accent : t.bgPanel, color: form.paymentType === 'installments' ? '#fff' : t.text2 }}
             >
               Installments
             </button>
@@ -1094,14 +1085,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
         </div>
 
         {form.paymentType === 'lump_sum' ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
             <div>
               <label style={{ color: t.text3, fontSize: 13, fontWeight: 500, marginBottom: 6, display: 'block' }}>Amount</label>
-              <div className="relative">
-                <div className="w-full p-2.5 pr-16 rounded-lg text-right font-medium" style={{ background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: '100%', padding: 10, paddingRight: 64, borderRadius: 8, textAlign: 'right', fontWeight: 500, background: t.bgInput, border: `1px solid ${t.border}`, fontSize: 13, color: t.text1 }}>
                   {fmtNum(form.grossPremium) || '0'}
                 </div>
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded select-none pointer-events-none" style={{ fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
+                <span className="-translate-y-1/2" style={{ position: 'absolute', right: 12, top: '50%', paddingLeft: 6, paddingRight: 6, paddingTop: 2, paddingBottom: 2, borderRadius: 4, userSelect: 'none', pointerEvents: 'none', fontSize: 11, fontWeight: 500, color: t.text4, background: t.bgHover }}>
                   {form.currency}
                 </span>
               </div>
@@ -1110,29 +1101,29 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
               onChange={(d) => updateForm({ lumpSumDueDate: toISODateString(d) || '' })} />
           </div>
         ) : (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {/* Column headers */}
-            <div className="grid grid-cols-12 gap-3 px-3">
-              <div className="col-span-1" />
-              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Amount</div>
-              <div className="col-span-4 text-xs font-medium" style={{ color: t.text4 }}>Due Date</div>
-              <div className="col-span-2 text-xs font-medium" style={{ color: t.text4 }}>Status</div>
-              <div className="col-span-1" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, paddingLeft: 12, paddingRight: 12 }}>
+              <div style={{ gridColumn: 'span 1' }} />
+              <div style={{ gridColumn: 'span 4', fontSize: 12, fontWeight: 500, color: t.text4 }}>Amount</div>
+              <div style={{ gridColumn: 'span 4', fontSize: 12, fontWeight: 500, color: t.text4 }}>Due Date</div>
+              <div style={{ gridColumn: 'span 2', fontSize: 12, fontWeight: 500, color: t.text4 }}>Status</div>
+              <div style={{ gridColumn: 'span 1' }} />
             </div>
 
             {/* Installment rows */}
             {form.installments.map((inst) => (
-              <div key={inst.id} className="grid grid-cols-12 gap-3 items-center p-3 rounded-lg" style={{ background: t.bgInput, border: `1px solid ${t.border}` }}>
-                <span className="col-span-1 text-xs font-bold text-center" style={{ color: t.text4 }}>#{inst.number}</span>
-                <div className="col-span-4">
+              <div key={inst.id} style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 12, alignItems: 'center', padding: 12, borderRadius: 8, background: t.bgInput, border: `1px solid ${t.border}` }}>
+                <span style={{ gridColumn: 'span 1', fontSize: 12, fontWeight: 700, textAlign: 'center', color: t.text4 }}>#{inst.number}</span>
+                <div style={{ gridColumn: 'span 4' }}>
                   <CurrencyInput currency={form.currency} value={inst.amount}
                     onChange={(v) => updateInstallment(inst.id, 'amount', v)} />
                 </div>
-                <div className="col-span-4">
+                <div style={{ gridColumn: 'span 4' }}>
                   <DatePickerInput value={parseDate(inst.dueDate)}
                     onChange={(d) => updateInstallment(inst.id, 'dueDate', toISODateString(d) || '')} />
                 </div>
-                <div className="col-span-2">
+                <div style={{ gridColumn: 'span 2' }}>
                   <select value={inst.status}
                     onChange={(e) => updateInstallment(inst.id, 'status', e.target.value)}
                     style={{ width: '100%', padding: '8px 12px', background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}>
@@ -1140,9 +1131,9 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
                     <option value="Paid">Paid</option>
                   </select>
                 </div>
-                <div className="col-span-1 flex justify-center">
+                <div style={{ gridColumn: 'span 1', display: 'flex', justifyContent: 'center' }}>
                   <button onClick={() => removeInstallment(inst.id)}
-                    className="p-1.5 rounded-lg transition-colors" style={{ color: t.text4 }}>
+                    className="transition-colors" style={{ padding: 6, borderRadius: 8, color: t.text4 }}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -1150,14 +1141,14 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             ))}
 
             {/* Actions row */}
-            <div className="flex items-center gap-3">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <button onClick={addInstallment}
-                className="flex items-center gap-1.5 font-medium" style={{ fontSize: 13, color: t.accent }}>
+                style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 500, fontSize: 13, color: t.accent }}>
                 <Plus size={14} /> Add Installment
               </button>
               {form.installments.length >= 2 && form.grossPremium > 0 && (
                 <button onClick={splitEqual}
-                  className="flex items-center gap-1.5 font-medium ml-4" style={{ fontSize: 13, color: t.text4 }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 500, marginLeft: 16, fontSize: 13, color: t.text4 }}>
                   Split Equally
                 </button>
               )}
@@ -1165,8 +1156,8 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
 
             {/* Mismatch warning */}
             {installmentMismatch && (
-              <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: t.warningBg, border: `1px solid ${t.warning}`, fontSize: 13, color: t.warning }}>
-                <AlertTriangle size={14} className="shrink-0" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 10, borderRadius: 8, background: t.warningBg, border: `1px solid ${t.warning}`, fontSize: 13, color: t.warning }}>
+                <AlertTriangle size={14} style={{ flexShrink: 0 }} />
                 <span>
                   Installments total <strong>{fmtNum(installmentTotal)} {form.currency}</strong> ≠ Gross Premium <strong>{fmtNum(form.grossPremium)} {form.currency}</strong>
                   {' '}(difference: {fmtNum(Math.abs(installmentTotal - form.grossPremium))})
@@ -1178,22 +1169,22 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
       </SectionCard>
 
       {/* ══════ Sticky Footer ══════ */}
-      <div className="sticky bottom-0 z-50" style={{ background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg, margin: '0 -28px', padding: '0 28px' }}>
-        <div className="px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4" style={{ fontSize: 12, color: t.text4 }}>
+      <div style={{ position: 'sticky', bottom: 0, zIndex: 50, background: t.bgPanel, borderTop: `1px solid ${t.border}`, boxShadow: t.shadowLg, margin: '0 -28px', padding: '0 28px' }}>
+        <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 12, paddingBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, fontSize: 12, color: t.text4 }}>
             {form.productName && <span>Product: {form.productName}</span>}
             {form.totalSumInsured > 0 && <span>SI: {fmtNum(form.totalSumInsured)} {form.currency}</span>}
             {form.grossPremium > 0 && <span>Premium: {fmtNum(form.grossPremium)} {form.currency}</span>}
           </div>
-          <div className="flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <button onClick={onCancel}
-              className="px-4 py-2 font-medium rounded-lg transition-colors"
-              style={{ fontSize: 13, color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}` }}>
+              className="transition-colors"
+              style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontWeight: 500, borderRadius: 8, fontSize: 13, color: t.text2, background: t.bgPanel, border: `1px solid ${t.border}` }}>
               Cancel
             </button>
             <button onClick={handleSave} disabled={saving}
-              className="flex items-center gap-2 px-5 py-2 font-semibold rounded-lg disabled:opacity-50 transition-colors"
-              style={{ fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow }}>
+              className="transition-colors"
+              style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 20, paddingRight: 20, paddingTop: 8, paddingBottom: 8, fontWeight: 600, borderRadius: 8, fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow, opacity: saving ? 0.5 : 1 }}>
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               Save as Draft
             </button>

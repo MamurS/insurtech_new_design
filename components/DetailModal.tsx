@@ -218,26 +218,26 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
     };
     const s = badgeStyles[status] || { background: t.bgCard, color: t.text1 };
     return (
-        <span className="px-3 py-1 rounded-full text-sm" style={{ background: s.background, color: s.color, fontWeight: 500 }}>
+        <span style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, fontSize: 14, background: s.background, color: s.color, fontWeight: 500 }}>
             {status || 'DRAFT'}
         </span>
     );
   };
 
   const renderTerminationModal = () => (
-      <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-          <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-              <div className="p-4 flex items-center gap-3" style={{ background: t.warningBg, borderBottom: `1px solid ${t.warning}40` }}>
-                  <div className="p-2 rounded-full" style={{ background: t.warningBg, color: t.warning }}><AlertTriangle size={20}/></div>
+      <div className="animate-in fade-in zoom-in backdrop-blur-sm" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16, animationDuration: '200ms' }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ borderRadius: 12, width: '100%', maxWidth: 448, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+              <div style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.warningBg, borderBottom: `1px solid ${t.warning}40` }}>
+                  <div style={{ padding: 8, borderRadius: 9999, background: t.warningBg, color: t.warning }}><AlertTriangle size={20}/></div>
                   <h3 style={{ color: t.text1, fontWeight: 700 }}>Early Policy Termination</h3>
               </div>
-              <div className="p-6 space-y-4">
+              <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div>
                       <DatePickerInput label="Termination Date" value={parseDate(terminationData.terminationDate)} onChange={(date) => setTerminationData({...terminationData, terminationDate: toISODateString(date) || ''})}/>
                   </div>
                   <div>
-                      <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Initiated By</label>
-                      <select value={terminationData.initiator} onChange={(e) => setTerminationData({...terminationData, initiator: e.target.value as any})} className="w-full p-2 rounded-lg text-sm" style={{ background: t.bgPanel, borderColor: t.border, border: `1px solid ${t.border}`, color: t.text1 }}>
+                      <label style={{ display: 'block', fontSize: 12, textTransform: 'uppercase', marginBottom: 4, color: t.text4, fontWeight: 700 }}>Initiated By</label>
+                      <select value={terminationData.initiator} onChange={(e) => setTerminationData({...terminationData, initiator: e.target.value as any})} style={{ width: '100%', padding: 8, borderRadius: 8, fontSize: 14, background: t.bgPanel, borderColor: t.border, border: `1px solid ${t.border}`, color: t.text1 }}>
                           <option value="Us">Us (Insurer)</option>
                           <option value="Broker">Broker</option>
                           <option value="Cedant">Cedant / Client</option>
@@ -245,58 +245,58 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                       </select>
                   </div>
                   <div>
-                      <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Termination</label>
-                      <textarea rows={3} value={terminationData.reason} onChange={(e) => setTerminationData({...terminationData, reason: e.target.value})} className="w-full p-2 rounded-lg text-sm resize-none" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}/>
+                      <label style={{ display: 'block', fontSize: 12, textTransform: 'uppercase', marginBottom: 4, color: t.text4, fontWeight: 700 }}>Reason for Termination</label>
+                      <textarea rows={3} value={terminationData.reason} onChange={(e) => setTerminationData({...terminationData, reason: e.target.value})} style={{ width: '100%', padding: 8, borderRadius: 8, fontSize: 14, resize: 'none', background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}/>
                   </div>
               </div>
-              <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                  <button onClick={() => setShowTerminationConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
-                  <button onClick={() => handleStatusChange(PolicyStatus.EARLY_TERMINATION, item as Policy, terminationData)} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Terminate Policy</button>
+              <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', gap: 8, background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+                  <button onClick={() => setShowTerminationConfirm(false)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, color: t.text3, fontWeight: 500 }}>Cancel</button>
+                  <button onClick={() => handleStatusChange(PolicyStatus.EARLY_TERMINATION, item as Policy, terminationData)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Terminate Policy</button>
               </div>
           </div>
       </div>
   );
 
   const renderNTUModal = () => (
-      <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-        <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-            <div className="p-4 flex items-center gap-3" style={{ background: t.bgCard, borderBottom: `1px solid ${t.border}` }}>
-                <div className="p-2 rounded-full" style={{ background: t.bgHover, color: t.text3 }}><XCircle size={20}/></div>
+      <div className="animate-in fade-in zoom-in backdrop-blur-sm" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16, animationDuration: '200ms' }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ borderRadius: 12, width: '100%', maxWidth: 448, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+            <div style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.bgCard, borderBottom: `1px solid ${t.border}` }}>
+                <div style={{ padding: 8, borderRadius: 9999, background: t.bgHover, color: t.text3 }}><XCircle size={20}/></div>
                 <h3 style={{ color: t.text1, fontWeight: 700 }}>Confirm "Not Taken Up"</h3>
             </div>
-            <div className="p-6">
-                <p className="text-sm" style={{ color: t.text3 }}>This means the deal was cancelled by the client/broker before inception.</p>
+            <div style={{ padding: 24 }}>
+                <p style={{ fontSize: 14, color: t.text3 }}>This means the deal was cancelled by the client/broker before inception.</p>
             </div>
-            <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                <button type="button" onClick={() => setShowNTUConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Go Back</button>
-                <button type="button" onClick={() => { setShowNTUConfirm(false); handleStatusChange(PolicyStatus.NTU, item as Policy); }} disabled={isProcessing} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.text2, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Confirm NTU</button>
+            <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', gap: 8, background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+                <button type="button" onClick={() => setShowNTUConfirm(false)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, color: t.text3, fontWeight: 500 }}>Go Back</button>
+                <button type="button" onClick={() => { setShowNTUConfirm(false); handleStatusChange(PolicyStatus.NTU, item as Policy); }} disabled={isProcessing} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.text2, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Confirm NTU</button>
             </div>
         </div>
     </div>
   );
 
   const renderActivateModal = () => (
-    <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-        <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-            <div className="p-4 flex items-center gap-3" style={{ background: t.successBg, borderBottom: `1px solid ${t.success}40` }}>
-                <div className="p-2 rounded-full" style={{ background: t.success + '18', color: t.success }}><CheckCircle size={20}/></div>
+    <div className="animate-in fade-in zoom-in backdrop-blur-sm" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16, animationDuration: '200ms' }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ borderRadius: 12, width: '100%', maxWidth: 448, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+            <div style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.successBg, borderBottom: `1px solid ${t.success}40` }}>
+                <div style={{ padding: 8, borderRadius: 9999, background: t.success + '18', color: t.success }}><CheckCircle size={20}/></div>
                 <h3 style={{ color: t.text1, fontWeight: 700 }}>Bind & Activate Policy</h3>
             </div>
-            <div className="p-6">
+            <div style={{ padding: 24 }}>
                 {!uploadFile && !(item as Policy)?.signedDocument ? (
-                    <div className="rounded-lg p-3 mb-4" style={{ background: t.warningBg, border: `1px solid ${t.warning}40` }}>
-                        <p className="text-sm flex items-center gap-2" style={{ color: t.warning, fontWeight: 500 }}><AlertCircle size={16} /> No signed document uploaded</p>
+                    <div style={{ borderRadius: 8, padding: 12, marginBottom: 16, background: t.warningBg, border: `1px solid ${t.warning}40` }}>
+                        <p style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, color: t.warning, fontWeight: 500 }}><AlertCircle size={16} /> No signed document uploaded</p>
                     </div>
                 ) : (
-                    <div className="rounded-lg p-3 mb-4" style={{ background: t.successBg, border: `1px solid ${t.success}40` }}>
-                        <p className="text-sm flex items-center gap-2" style={{ color: t.success, fontWeight: 500 }}><CheckCircle size={16} /> {uploadFile ? `Document ready: ${uploadFile.name}` : 'Signed document on file'}</p>
+                    <div style={{ borderRadius: 8, padding: 12, marginBottom: 16, background: t.successBg, border: `1px solid ${t.success}40` }}>
+                        <p style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, color: t.success, fontWeight: 500 }}><CheckCircle size={16} /> {uploadFile ? `Document ready: ${uploadFile.name}` : 'Signed document on file'}</p>
                     </div>
                 )}
-                <p className="text-sm" style={{ color: t.text3 }}>This will bind the risk and mark the policy as <strong>Active</strong>.</p>
+                <p style={{ fontSize: 14, color: t.text3 }}>This will bind the risk and mark the policy as <strong>Active</strong>.</p>
             </div>
-            <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                <button type="button" onClick={() => setShowActivateConfirm(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Go Back</button>
-                <button type="button" onClick={() => { setShowActivateConfirm(false); handleStatusChange(PolicyStatus.ACTIVE, item as Policy); }} disabled={isProcessing} className="px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Activate Policy</button>
+            <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', gap: 8, background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+                <button type="button" onClick={() => setShowActivateConfirm(false)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, color: t.text3, fontWeight: 500 }}>Go Back</button>
+                <button type="button" onClick={() => { setShowActivateConfirm(false); handleStatusChange(PolicyStatus.ACTIVE, item as Policy); }} disabled={isProcessing} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Activate Policy</button>
             </div>
         </div>
     </div>
@@ -304,53 +304,53 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
   const renderPolicyDetail = (policy: Policy) => {
     return (
-    <div className="space-y-6 relative">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, position: 'relative' }}>
         {/* Header Badge */}
-        <div className="flex flex-wrap items-center gap-3 mb-4 justify-between">
-            <div className="flex gap-3">
-                <span className="px-3 py-1 rounded-full text-sm" style={{ fontWeight: 700, ...(policy.channel === 'Direct' ? { background: t.accent + '18', color: t.accent } : { background: '#a855f718', color: '#a855f7' }) }}>{policy.channel} Insurance</span>
-                <span className="px-3 py-1 rounded-full text-sm" style={{ background: t.bgCard, color: t.text2, fontWeight: 700 }}>{policy.status}</span>
-                {policy.isDeleted && <span className="px-3 py-1 rounded-full text-sm animate-pulse" style={{ background: t.danger, color: '#fff', fontWeight: 700 }}>DELETED</span>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, marginBottom: 16, justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', gap: 12 }}>
+                <span style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, fontSize: 14, fontWeight: 700, ...(policy.channel === 'Direct' ? { background: t.accent + '18', color: t.accent } : { background: '#a855f718', color: '#a855f7' }) }}>{policy.channel} Insurance</span>
+                <span style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, fontSize: 14, background: t.bgCard, color: t.text2, fontWeight: 700 }}>{policy.status}</span>
+                {policy.isDeleted && <span className="animate-pulse" style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, fontSize: 14, background: t.danger, color: '#fff', fontWeight: 700 }}>DELETED</span>}
             </div>
         </div>
 
         {/* WORKFLOW ACTIONS */}
         {policy.status === PolicyStatus.PENDING && (
-            <div className="rounded-xl p-5 mb-6" style={{ background: t.warningBg, border: `1px solid ${t.warning}40`, boxShadow: t.shadow }}>
-                <h4 className="flex items-center gap-2 mb-3" style={{ color: t.warning, fontWeight: 700 }}><AlertCircle size={18} /> Underwriting Workflow</h4>
-                <div className="p-4 rounded-lg mb-4 flex items-center gap-3" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40` }}>
-                    <label className="cursor-pointer px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgCard, color: t.text2, fontWeight: 500 }}><Upload size={16} /> {uploadFile ? uploadFile.name : "Choose PDF..."}<input type="file" accept=".pdf" className="hidden" onChange={(e) => setUploadFile(e.target.files?.[0] || null)} /></label>
+            <div style={{ borderRadius: 12, padding: 20, marginBottom: 24, background: t.warningBg, border: `1px solid ${t.warning}40`, boxShadow: t.shadow }}>
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: t.warning, fontWeight: 700 }}><AlertCircle size={18} /> Underwriting Workflow</h4>
+                <div style={{ padding: 16, borderRadius: 8, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.bgPanel, border: `1px solid ${t.warning}40` }}>
+                    <label style={{ cursor: 'pointer', paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, background: t.bgCard, color: t.text2, fontWeight: 500 }}><Upload size={16} /> {uploadFile ? uploadFile.name : "Choose PDF..."}<input type="file" accept=".pdf" style={{ display: 'none' }} onChange={(e) => setUploadFile(e.target.files?.[0] || null)} /></label>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <button onClick={() => setShowNTUConfirm(true)} className="w-full py-2.5 rounded-lg text-sm" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2, fontWeight: 700 }}>Mark as NTU</button>
-                    <button onClick={() => setShowActivateConfirm(true)} className="w-full py-2.5 rounded-lg text-sm" style={{ background: t.success, color: '#fff', fontWeight: 700 }}>Bind & Activate</button>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+                    <button onClick={() => setShowNTUConfirm(true)} style={{ width: '100%', paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontSize: 14, background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text2, fontWeight: 700 }}>Mark as NTU</button>
+                    <button onClick={() => setShowActivateConfirm(true)} style={{ width: '100%', paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontSize: 14, background: t.success, color: '#fff', fontWeight: 700 }}>Bind & Activate</button>
                 </div>
             </div>
         )}
 
         {/* EARLY TERMINATION BUTTON */}
         {policy.status === PolicyStatus.ACTIVE && (
-            <div className="rounded-xl p-4 mb-6 flex justify-between items-center relative z-20" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                <div className="text-sm flex items-center gap-2" style={{ color: t.text3 }}><CheckCircle style={{ color: t.success }} size={18} /><span style={{ color: t.text1, fontWeight: 700 }}>Policy is Active.</span></div>
-                <button onClick={() => setShowTerminationConfirm(true)} className="px-4 py-2 rounded-lg text-sm flex items-center gap-2" style={{ background: t.bgPanel, border: `1px solid ${t.warning}40`, color: t.warning, fontWeight: 700 }}><XCircle size={16} /> Early Termination</button>
+            <div style={{ borderRadius: 12, padding: 16, marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 20, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                <div style={{ fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, color: t.text3 }}><CheckCircle style={{ color: t.success }} size={18} /><span style={{ color: t.text1, fontWeight: 700 }}>Policy is Active.</span></div>
+                <button onClick={() => setShowTerminationConfirm(true)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, display: 'flex', alignItems: 'center', gap: 8, background: t.bgPanel, border: `1px solid ${t.warning}40`, color: t.warning, fontWeight: 700 }}><XCircle size={16} /> Early Termination</button>
             </div>
         )}
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-                <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={16}/> Core Information</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <h4 style={{ paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 8, color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Building2 size={16}/> Core Information</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, fontSize: 14 }}>
                     <div><div style={{ color: t.text4 }}>Insured Name</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.insuredName}</div></div>
-                    <div><div style={{ color: t.text4 }}>Ref / Policy No</div><div className="font-mono" style={{ color: t.text1, fontWeight: 500 }}>{policy.policyNumber}</div></div>
+                    <div><div style={{ color: t.text4 }}>Ref / Policy No</div><div style={{ fontFamily: "'JetBrains Mono', monospace", color: t.text1, fontWeight: 500 }}>{policy.policyNumber}</div></div>
                     {policy.secondaryPolicyNumber && <div><div style={{ color: t.text4 }}>Secondary Ref</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.secondaryPolicyNumber}</div></div>}
                     {policy.agreementNumber && <div><div style={{ color: t.text4 }}>Agreement No</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.agreementNumber}</div></div>}
 
-                    {policy.channel === 'Inward' && <div className="col-span-2 p-2 rounded" style={{ background: '#a855f718', border: '1px solid #a855f720' }}><div className="text-xs uppercase" style={{ color: '#a855f7', fontWeight: 700 }}>Cedant</div><div style={{ color: '#a855f7', fontWeight: 500 }}>{policy.cedantName || '-'}</div></div>}
-                    <div className="col-span-2 p-2 rounded" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}><div className="text-xs uppercase" style={{ color: t.text4 }}>Intermediary ({policy.intermediaryType})</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.intermediaryName || 'Direct'}</div></div>
+                    {policy.channel === 'Inward' && <div style={{ gridColumn: 'span 2', padding: 8, borderRadius: 4, background: '#a855f718', border: '1px solid #a855f720' }}><div style={{ fontSize: 12, textTransform: 'uppercase', color: '#a855f7', fontWeight: 700 }}>Cedant</div><div style={{ color: '#a855f7', fontWeight: 500 }}>{policy.cedantName || '-'}</div></div>}
+                    <div style={{ gridColumn: 'span 2', padding: 8, borderRadius: 4, background: t.bgCard, border: `1px solid ${t.border}` }}><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Intermediary ({policy.intermediaryType})</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.intermediaryName || 'Direct'}</div></div>
 
                     {policy.borrower && <div><div style={{ color: t.text4 }}>Borrower</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.borrower}</div></div>}
-                    {policy.insuredAddress && <div className="col-span-2"><div style={{ color: t.text4 }}>Insured Address</div><div className="truncate" style={{ color: t.text1, fontWeight: 500 }}>{policy.insuredAddress}</div></div>}
+                    {policy.insuredAddress && <div style={{ gridColumn: 'span 2' }}><div style={{ color: t.text4 }}>Insured Address</div><div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: t.text1, fontWeight: 500 }}>{policy.insuredAddress}</div></div>}
 
                      <div><div style={{ color: t.text4 }}>Industry</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.industry || '-'}</div></div>
                      <div><div style={{ color: t.text4 }}>Territory</div><div style={{ color: t.text1, fontWeight: 500 }}>{policy.territory}</div></div>
@@ -359,33 +359,33 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 </div>
             </div>
 
-            <div className="space-y-4">
-                 <h4 className="pb-2 flex items-center gap-2" style={{ color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={16}/> Dates & Terms</h4>
-                 <div className="grid grid-cols-2 gap-4 text-sm">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                 <h4 style={{ paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 8, color: t.text1, borderBottom: `1px solid ${t.border}`, fontWeight: 700 }}><Calendar size={16}/> Dates & Terms</h4>
+                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, fontSize: 14 }}>
                     <div><div style={{ color: t.text4 }}>Inception</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.inceptionDate)}</div></div>
                     <div><div style={{ color: t.text4 }}>Expiry</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.expiryDate)}</div></div>
 
                     {policy.dateOfSlip && <div><div style={{ color: t.text4 }}>Date of Slip</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.dateOfSlip)}</div></div>}
                     {policy.accountingDate && <div><div style={{ color: t.text4 }}>Accounting Date</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatDate(policy.accountingDate)}</div></div>}
 
-                    <div className="col-span-2"><div style={{ color: t.text4 }}>Deductible</div><div className="p-2 rounded text-xs" style={{ color: t.text1, background: t.bgCard, fontWeight: 500 }}>{policy.deductible || 'N/A'}</div></div>
+                    <div style={{ gridColumn: 'span 2' }}><div style={{ color: t.text4 }}>Deductible</div><div style={{ padding: 8, borderRadius: 4, fontSize: 12, color: t.text1, background: t.bgCard, fontWeight: 500 }}>{policy.deductible || 'N/A'}</div></div>
                  </div>
             </div>
         </div>
 
         {/* Financials */}
-        <div className="p-6 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-             <h4 className="mb-4 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
-             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+        <div style={{ padding: 24, borderRadius: 12, background: t.bgCard, border: `1px solid ${t.border}` }}>
+             <h4 style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8, color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Financials ({policy.currency})</h4>
+             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, fontSize: 14 }}>
                  <div><div style={{ color: t.text4 }}>Sum Insured</div><div style={{ color: t.text1, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.sumInsured, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Limit of Liability</div><div style={{ color: t.text1, fontWeight: 500 }}>{formatMoney(policy.limitForeignCurrency, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Gross Premium</div><div style={{ color: t.success, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.grossPremium, policy.currency)}</div></div>
                  <div><div style={{ color: t.text4 }}>Net Premium</div><div style={{ color: t.accent, fontWeight: 700, fontSize: 15 }}>{formatMoney(policy.netPremium, policy.currency)}</div></div>
              </div>
              {policy.hasOutwardReinsurance && (
-                 <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
-                     <h5 className="text-xs uppercase mb-2" style={{ color: t.warning, fontWeight: 700 }}>Outward Reinsurance</h5>
-                     <div className="grid grid-cols-2 gap-4 text-sm">
+                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${t.border}` }}>
+                     <h5 style={{ fontSize: 12, textTransform: 'uppercase', marginBottom: 8, color: t.warning, fontWeight: 700 }}>Outward Reinsurance</h5>
+                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, fontSize: 14 }}>
                          <div><div style={{ color: t.text4 }}>Market</div><div style={{ fontWeight: 500 }}>{policy.reinsurers && policy.reinsurers.length > 0 ? 'Panel Placement' : policy.reinsurerName || '-'}</div></div>
                          <div><div style={{ color: t.text4 }}>Ceded Share</div><div style={{ fontWeight: 500 }}>{policy.cededShare}%</div></div>
                      </div>
@@ -412,26 +412,25 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
       if (!Array.isArray(reinsurers)) reinsurers = [];
 
       return (
-      <div className="space-y-6">
-          <div className="flex gap-3 mb-4 items-center">
-              <span className="px-3 py-1 rounded-full text-sm" style={{ background: t.warning + '18', color: t.warning, fontWeight: 700 }}>Reinsurance Slip</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'center' }}>
+              <span style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 4, paddingBottom: 4, borderRadius: 9999, fontSize: 14, background: t.warning + '18', color: t.warning, fontWeight: 700 }}>Reinsurance Slip</span>
               {getSlipStatusBadge(currentStatus)}
           </div>
 
           {/* Slip Workflow Actions */}
-          <div className="rounded-lg p-4 mb-4" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-            <h3 className="mb-3 flex items-center gap-2 text-xs uppercase tracking-wide" style={{ color: t.text1, fontWeight: 700 }}>
+          <div style={{ borderRadius: 8, padding: 16, marginBottom: 16, background: t.bgCard, border: `1px solid ${t.border}` }}>
+            <h3 style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em', color: t.text1, fontWeight: 700 }}>
                 <Settings size={14} />
                 Workflow Actions
             </h3>
 
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {/* DRAFT status */}
                 {(!slip.status || currentStatus === 'DRAFT') && (
                     <button
                         onClick={() => requestSlipStatusChange('PENDING')}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Send size={16} />
                         Submit for Review
@@ -443,16 +442,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('QUOTED')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <FileText size={16} />
                             Quote Received
                         </button>
                         <button
                             onClick={() => handleSlipDecline()}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Decline
@@ -465,16 +462,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('SIGNED', { signed_date: new Date().toISOString().split('T')[0] })}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <CheckCircle size={16} />
                             Accept & Sign
                         </button>
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Not Taken Up
@@ -486,8 +481,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {currentStatus === 'SIGNED' && (
                     <button
                         onClick={() => requestSlipStatusChange('SENT', { sent_date: new Date().toISOString().split('T')[0] })}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.accent, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Send size={16} />
                         Send to Reinsurer
@@ -499,16 +493,14 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                     <>
                         <button
                             onClick={() => requestSlipStatusChange('BOUND', { bound_date: new Date().toISOString().split('T')[0] })}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.success, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <CheckCircle size={16} />
                             Confirm Bound
                         </button>
                         <button
                             onClick={() => requestSlipStatusChange('NTU')}
-                            className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                            style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                            style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                         >
                             <XCircle size={16} />
                             Withdrawn
@@ -520,8 +512,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {currentStatus === 'BOUND' && (
                     <button
                         onClick={() => requestSlipStatusChange('CLOSED', { closed_date: new Date().toISOString().split('T')[0] })}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.text3, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.text3, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <Archive size={16} />
                         Close Slip
@@ -532,8 +523,7 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
                 {['DECLINED', 'NTU', 'CANCELLED'].includes(currentStatus) && (
                     <button
                         onClick={() => requestSlipStatusChange('PENDING')}
-                        className="px-4 py-2 rounded-lg flex items-center gap-2 text-sm"
-                        style={{ background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
+                        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, background: t.warning, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}
                     >
                         <RefreshCw size={16} />
                         Reopen
@@ -542,41 +532,41 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-4 rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                  <h4 className="mb-3 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><FileText size={16}/> Slip Details</h4>
-                  <div className="space-y-3 text-sm">
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Slip Number</div><div className="font-mono" style={{ color: t.accent, fontWeight: 700, fontSize: 15 }}>{slip.slipNumber}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Date</div><div style={{ fontWeight: 500 }}>{formatDate(slip.date)}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Insured Name</div><div style={{ fontWeight: 500 }}>{slip.insuredName}</div></div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24 }}>
+              <div style={{ padding: 16, borderRadius: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                  <h4 style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, color: t.text1, fontWeight: 700 }}><FileText size={16}/> Slip Details</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+                      <div><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Slip Number</div><div style={{ fontFamily: "'JetBrains Mono', monospace", color: t.accent, fontWeight: 700, fontSize: 15 }}>{slip.slipNumber}</div></div>
+                      <div><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Date</div><div style={{ fontWeight: 500 }}>{formatDate(slip.date)}</div></div>
+                      <div><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Insured Name</div><div style={{ fontWeight: 500 }}>{slip.insuredName}</div></div>
                   </div>
               </div>
-              <div className="p-4 rounded-xl" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-                  <h4 className="mb-3 flex items-center gap-2" style={{ color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Values</h4>
-                  <div className="space-y-3 text-sm">
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Limit of Liability</div><div className="font-mono" style={{ fontWeight: 700, fontSize: 15 }}>{formatMoney(slip.limitOfLiability, slip.currency as string)}</div></div>
-                      <div><div className="text-xs uppercase" style={{ color: t.text4 }}>Broker / Reinsurer</div><div style={{ fontWeight: 500 }}>{slip.brokerReinsurer}</div></div>
+              <div style={{ padding: 16, borderRadius: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+                  <h4 style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, color: t.text1, fontWeight: 700 }}><DollarSign size={16}/> Values</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 14 }}>
+                      <div><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Limit of Liability</div><div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 700, fontSize: 15 }}>{formatMoney(slip.limitOfLiability, slip.currency as string)}</div></div>
+                      <div><div style={{ fontSize: 12, textTransform: 'uppercase', color: t.text4 }}>Broker / Reinsurer</div><div style={{ fontWeight: 500 }}>{slip.brokerReinsurer}</div></div>
                   </div>
               </div>
           </div>
 
           {reinsurers.length > 0 && (
-              <div className="p-4 rounded-xl" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-                  <h4 className="mb-3 text-sm" style={{ color: t.text1, fontWeight: 700 }}>Market Panel</h4>
-                  <table className="w-full text-sm text-left">
+              <div style={{ padding: 16, borderRadius: 12, background: t.bgCard, border: `1px solid ${t.border}` }}>
+                  <h4 style={{ marginBottom: 12, fontSize: 14, color: t.text1, fontWeight: 700 }}>Market Panel</h4>
+                  <table style={{ width: '100%', fontSize: 14, textAlign: 'left' }}>
                       <thead>
                           <tr style={{ color: t.text4, borderBottom: `1px solid ${t.border}` }}>
-                              <th className="pb-2">Reinsurer</th>
-                              <th className="pb-2 text-right">Share %</th>
-                              <th className="pb-2 text-right">Comm %</th>
+                              <th style={{ paddingBottom: 8 }}>Reinsurer</th>
+                              <th style={{ paddingBottom: 8, textAlign: 'right' }}>Share %</th>
+                              <th style={{ paddingBottom: 8, textAlign: 'right' }}>Comm %</th>
                           </tr>
                       </thead>
                       <tbody>
                           {reinsurers.map((r: any, i: number) => (
-                              <tr key={i} className="last:border-0" style={{ borderBottom: `1px solid ${t.border}` }}>
-                                  <td className="py-2" style={{ fontWeight: 500 }}>{r.name}</td>
-                                  <td className="py-2 text-right">{r.share}%</td>
-                                  <td className="py-2 text-right">{r.commission}%</td>
+                              <tr key={i} style={{ borderBottom: `1px solid ${t.border}` }}>
+                                  <td style={{ paddingTop: 8, paddingBottom: 8, fontWeight: 500 }}>{r.name}</td>
+                                  <td style={{ paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>{r.share}%</td>
+                                  <td style={{ paddingTop: 8, paddingBottom: 8, textAlign: 'right' }}>{r.commission}%</td>
                               </tr>
                           ))}
                       </tbody>
@@ -588,28 +578,29 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
     } catch (error) {
       console.error('Error rendering slip detail:', error);
       return (
-        <div className="p-4" style={{ color: t.danger }}>
+        <div style={{ padding: 16, color: t.danger }}>
           <p>Error displaying slip details. Please try again.</p>
-          <pre className="text-xs mt-2">{String(error)}</pre>
+          <pre style={{ fontSize: 12, marginTop: 8 }}>{String(error)}</pre>
         </div>
       );
     }
   };
 
   const renderClauseDetail = (clause: Clause) => (
-      <div className="space-y-4">
-          <div className="flex justify-between items-start">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                   <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{clause.title}</h3>
-                  <span className="text-xs px-2 py-0.5 rounded uppercase mt-1 inline-block" style={
-                      clause.category === 'Exclusion' ? { background: t.danger + '18', color: t.danger, fontWeight: 700 } :
+                  <span style={{
+                      fontSize: 12, paddingLeft: 8, paddingRight: 8, paddingTop: 2, paddingBottom: 2, borderRadius: 4, textTransform: 'uppercase', marginTop: 4, display: 'inline-block',
+                      ...(clause.category === 'Exclusion' ? { background: t.danger + '18', color: t.danger, fontWeight: 700 } :
                       clause.category === 'Warranty' ? { background: t.warning + '18', color: t.warning, fontWeight: 700 } :
-                      { background: t.accent + '18', color: t.accent, fontWeight: 700 }
-                  }>{clause.category}</span>
+                      { background: t.accent + '18', color: t.accent, fontWeight: 700 })
+                  }}>{clause.category}</span>
               </div>
-              {clause.isStandard && <span className="text-xs px-2 py-1 rounded" style={{ background: t.success + '18', color: t.success, fontWeight: 700 }}>Standard</span>}
+              {clause.isStandard && <span style={{ fontSize: 12, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, borderRadius: 4, background: t.success + '18', color: t.success, fontWeight: 700 }}>Standard</span>}
           </div>
-          <div className="p-4 rounded-xl font-serif text-sm leading-relaxed whitespace-pre-wrap" style={{ background: t.bgCard, border: `1px solid ${t.border}`, color: t.text1 }}>
+          <div style={{ padding: 16, borderRadius: 12, fontFamily: 'serif', fontSize: 14, lineHeight: 1.625, whiteSpace: 'pre-wrap', background: t.bgCard, border: `1px solid ${t.border}`, color: t.text1 }}>
               {clause.content}
           </div>
       </div>
@@ -621,23 +612,23 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
   const isClause = (i: any): i is Clause => 'title' in i && 'content' in i;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" onClick={onClose}>
-      <div className="rounded-xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200" style={{ background: t.bgPanel, boxShadow: t.shadowLg }} onClick={e => e.stopPropagation()}>
+    <div className="backdrop-blur-sm" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16 }} onClick={onClose}>
+      <div className="animate-in fade-in zoom-in" style={{ borderRadius: 12, width: '100%', maxWidth: 896, maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, animationDuration: '200ms' }} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="p-4 flex justify-between items-center sticky top-0 z-10" style={{ background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
+        <div style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10, background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
            <h3 style={{ color: t.text1, fontSize: 15, fontWeight: 700 }}>{title || 'Details'}</h3>
-           <button onClick={onClose} className="p-1 rounded-full transition-colors" style={{ color: t.text4 }}><X size={20}/></button>
+           <button onClick={onClose} className="transition-colors" style={{ padding: 4, borderRadius: 9999, color: t.text4 }}><X size={20}/></button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6" style={{ background: t.bgPanel }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: 24, background: t.bgPanel }}>
             {isPolicy(item) && renderPolicyDetail(item)}
             {isSlip(item) && renderSlipDetail(item)}
             {isClause(item) && renderClauseDetail(item)}
             {!isPolicy(item) && !isSlip(item) && !isClause(item) && (
-              <div className="p-4">
-                <pre className="text-xs whitespace-pre-wrap" style={{ color: t.text3 }}>
+              <div style={{ padding: 16 }}>
+                <pre style={{ fontSize: 12, whiteSpace: 'pre-wrap', color: t.text3 }}>
                   {JSON.stringify(item, null, 2)}
                 </pre>
               </div>
@@ -645,8 +636,8 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
         </div>
 
         {/* Footer */}
-        <div className="p-4 flex justify-end" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-            <button onClick={onClose} className="px-5 py-2 rounded-lg text-sm transition-colors" style={{ background: t.bgHover, color: t.text1, fontWeight: 700 }}>Close</button>
+        <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+            <button onClick={onClose} className="transition-colors" style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.bgHover, color: t.text1, fontWeight: 700 }}>Close</button>
         </div>
 
         {/* Overlays */}
@@ -667,28 +658,27 @@ export const DetailModal: React.FC<DetailModalProps> = ({ item, onClose, onRefre
 
         {/* Decline Slip Modal */}
         {showDeclineModal && (
-            <div className="absolute inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in zoom-in duration-200" onClick={(e) => e.stopPropagation()}>
-                <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-                    <div className="p-4 flex items-center gap-3" style={{ background: t.dangerBg, borderBottom: `1px solid ${t.danger}40` }}>
-                        <div className="p-2 rounded-full" style={{ background: t.danger + '18', color: t.danger }}><XCircle size={20}/></div>
+            <div className="animate-in fade-in zoom-in backdrop-blur-sm" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16, animationDuration: '200ms' }} onClick={(e) => e.stopPropagation()}>
+                <div style={{ borderRadius: 12, width: '100%', maxWidth: 448, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+                    <div style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.dangerBg, borderBottom: `1px solid ${t.danger}40` }}>
+                        <div style={{ padding: 8, borderRadius: 9999, background: t.danger + '18', color: t.danger }}><XCircle size={20}/></div>
                         <h3 style={{ color: t.text1, fontWeight: 700 }}>Decline Slip</h3>
                     </div>
-                    <div className="p-6 space-y-4">
+                    <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
                         <div>
-                            <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
+                            <label style={{ display: 'block', fontSize: 12, textTransform: 'uppercase', marginBottom: 4, color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
                             <textarea
                                 rows={3}
                                 value={declineReason}
                                 onChange={(e) => setDeclineReason(e.target.value)}
                                 placeholder="Please enter the reason for declining..."
-                                className="w-full p-2 rounded-lg text-sm resize-none"
-                                style={{ background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
+                                style={{ width: '100%', padding: 8, borderRadius: 8, fontSize: 14, resize: 'none', background: t.bgPanel, border: `1px solid ${t.border}`, color: t.text1 }}
                             />
                         </div>
                     </div>
-                    <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
-                        <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
-                        <button onClick={confirmSlipDecline} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
+                    <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', gap: 8, background: t.bgCard, borderTop: `1px solid ${t.border}` }}>
+                        <button onClick={() => setShowDeclineModal(false)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, color: t.text3, fontWeight: 500 }}>Cancel</button>
+                        <button onClick={confirmSlipDecline} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
                     </div>
                 </div>
             </div>

@@ -265,8 +265,8 @@ const SlipsDashboard: React.FC = () => {
     setHeaderActions(
       <button
         onClick={handleExport}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all whitespace-nowrap"
-        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+        className="transition-all"
+        style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', boxShadow: t.shadow }}
       >
         <Download size={16} /> Export
       </button>
@@ -318,11 +318,11 @@ const SlipsDashboard: React.FC = () => {
     const isActive = sortConfig.key === sortKey;
     return (
       <th
-        className="px-4 py-4 cursor-pointer transition-colors group select-none"
+        className="transition-colors group"
         onClick={() => handleSort(sortKey)}
-        style={{ background: 'inherit' }}
+        style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, cursor: 'pointer', userSelect: 'none', background: 'inherit' }}
       >
-        <div className="flex items-center gap-2">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {label}
           <div style={{ color: t.text4 }}>
              {isActive ? (sortConfig.direction === 'asc' ? <ArrowUp size={14}/> : <ArrowDown size={14}/>) : <ArrowUpDown size={14} className="opacity-0 group-hover:opacity-50"/>}
@@ -335,20 +335,20 @@ const SlipsDashboard: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
-      <div className="p-3" style={{ background: t.bgPanel, borderRadius: 12, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
-        <div className="flex flex-wrap items-center gap-3 min-h-[48px] overflow-visible">
+      <div ref={filterRef} className="sticky-filter-blur" style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
+      <div style={{ padding: 12, background: t.bgPanel, borderRadius: 12, boxShadow: t.shadow, border: `1px solid ${t.border}` }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, minHeight: 48, overflow: 'visible' }}>
           {/* Status Tabs - Compact */}
-          <div className="flex p-0.5 rounded-lg overflow-x-auto" style={{ background: t.bgInput }}>
+          <div style={{ display: 'flex', padding: 2, borderRadius: 8, overflowX: 'auto', background: t.bgInput }}>
             {slipStatusTabs.map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setStatusFilter(tab.key)}
-                className="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap"
+                className="transition-all"
                 style={
                   statusFilter === tab.key
-                    ? { background: t.bgPanel, color: t.accent, boxShadow: t.shadow }
-                    : { color: t.text4 }
+                    ? { paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap', background: t.bgPanel, color: t.accent, boxShadow: t.shadow }
+                    : { paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, fontWeight: 500, borderRadius: 6, whiteSpace: 'nowrap', color: t.text4 }
                 }
               >
                 {tab.label}
@@ -356,30 +356,28 @@ const SlipsDashboard: React.FC = () => {
             ))}
           </div>
 
-          <div className="w-px h-5" style={{ background: t.borderL }} />
+          <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* Search */}
-          <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+          <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
-              className="w-full pl-8 pr-3 py-2 rounded-lg outline-none text-sm"
-              style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="w-px h-5" style={{ background: t.borderL }} />
+          <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* Date Filter */}
-          <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: '380px' }}>
           <select
             value={dateFilterField}
             onChange={(e) => { setDateFilterField(e.target.value); setVisibleCount(VISIBLE_INCREMENT); }}
-            className="px-3 py-2 rounded-lg outline-none text-sm"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgPanel, color: t.text1 }}
+            style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgPanel, color: t.text1 }}
           >
             <option value="date">Slip Date</option>
           </select>
@@ -398,21 +396,19 @@ const SlipsDashboard: React.FC = () => {
           {/* Refresh */}
           <button
             onClick={() => fetchData()}
-            className="p-2 rounded-lg"
             title="Refresh"
-            style={{ color: t.text4 }}
+            style={{ padding: 8, borderRadius: 8, color: t.text4 }}
           >
             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
           </button>
 
-          <div className="w-px h-5" style={{ background: t.borderL }} />
+          <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* New Slip Button */}
           <button
             type="button"
             onClick={() => navigate('/slips/new')}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
-            style={{ background: t.accent, color: '#fff' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontWeight: 500, fontSize: 14, background: t.accent, color: '#fff' }}
           >
             <Plus size={16} /> New Slip
           </button>
@@ -425,17 +421,17 @@ const SlipsDashboard: React.FC = () => {
 
       {/* Slips Table */}
       <div style={{ background: t.bgPanel, border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: t.shadow, overflow: 'hidden', minWidth: 0 }}>
-        <table className="w-full text-sm text-left">
-            <thead className="sticky z-20" style={{ background: t.bgApp, boxShadow: t.shadow, top: `${filterHeight}px` }}>
+        <table style={{ width: '100%', fontSize: 14, textAlign: 'left' }}>
+            <thead style={{ position: 'sticky', zIndex: 20, background: t.bgApp, boxShadow: t.shadow, top: `${filterHeight}px` }}>
                 <tr>
-                    <th className="px-4 py-4 w-12">#</th>
-                    <th className="px-4 py-4 w-24">Status</th>
+                    <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 48 }}>#</th>
+                    <th style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, width: 96 }}>Status</th>
                     <SortableHeader label="Slip Number" sortKey="slipNumber" />
                     <SortableHeader label="Date" sortKey="date" />
                     <SortableHeader label="Insured" sortKey="insuredName" />
                     <SortableHeader label="Limit of Liab" sortKey="limitOfLiability" />
                     <SortableHeader label="Broker / Reinsurer" sortKey="brokerReinsurer" />
-                    <th className="px-1 py-3 w-10" style={{ background: t.bgApp }}></th>
+                    <th style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 12, paddingBottom: 12, width: 40, background: t.bgApp }}></th>
                 </tr>
             </thead>
             <tbody>
@@ -443,42 +439,42 @@ const SlipsDashboard: React.FC = () => {
                     <tr
                       key={slip.id}
                       onClick={() => setSelectedSlipForPanel(prev => prev?.id === slip.id ? null : slip)}
-                      className="transition-colors cursor-pointer"
+                      className="transition-colors"
                       style={slip.isDeleted
-                        ? { background: t.bgInput, opacity: 0.6, filter: 'grayscale(1)', cursor: 'not-allowed', borderBottom: `1px solid ${t.border}` }
-                        : { borderBottom: `1px solid ${t.border}`, background: selectedSlipForPanel?.id === slip.id ? t.bgActive : 'transparent' }}
+                        ? { cursor: 'pointer', background: t.bgInput, opacity: 0.6, filter: 'grayscale(1)', borderBottom: `1px solid ${t.border}` }
+                        : { cursor: 'pointer', borderBottom: `1px solid ${t.border}`, background: selectedSlipForPanel?.id === slip.id ? t.bgActive : 'transparent' }}
                     >
-                        <td className="px-4 py-4" style={{ color: t.text4 }}>{index + 1}</td>
-                        <td className="px-4 py-4">
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, color: t.text4 }}>{index + 1}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16 }}>
                             {getStatusBadge((slip.status as any) || 'DRAFT', slip.isDeleted)}
                         </td>
-                        <td className="px-4 py-4 font-mono font-medium" style={{ color: t.warning }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontFamily: "'JetBrains Mono', monospace", fontWeight: 500, color: t.warning }}>
                             {getDisplaySlipNumber(slip)}
                         </td>
-                        <td className="px-4 py-4" style={{ color: t.text3 }}>{formatDate(slip.date)}</td>
-                        <td className="px-4 py-4 font-medium" style={{ color: t.text1 }}>{getDisplayInsured(slip)}</td>
-                        <td className="px-4 py-4 font-mono" style={{ color: t.text2 }}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, color: t.text3 }}>{formatDate(slip.date)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontWeight: 500, color: t.text1 }}>{getDisplayInsured(slip)}</td>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, fontFamily: "'JetBrains Mono', monospace", color: t.text2 }}>
                             {formatMoney(slip.limitOfLiability, slip.currency as string)}
                         </td>
-                        <td className="px-4 py-4" style={{ color: t.text3 }}>{getDisplayBroker(slip)}</td>
-                        <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
+                        <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, color: t.text3 }}>{getDisplayBroker(slip)}</td>
+                        <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
                             <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === slip.id ? null : slip.id); }}
-                                className="p-1.5 rounded-lg">
+                                style={{ padding: 6, borderRadius: 8 }}>
                                 <MoreVertical size={16} style={{ color: t.text4 }} />
                             </button>
                             {openMenuId === slip.id && (
-                                <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-                                    <button onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
+                                <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, borderRadius: 8, paddingTop: 4, paddingBottom: 4, zIndex: 50, minWidth: 120, background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
+                                    <button onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
                                         <Eye size={14} /> View
                                     </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
+                                    <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
                                         <Edit size={14} /> Edit
                                     </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}>
+                                    <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
                                         <FileText size={14} /> Wording
                                     </button>
                                     {!slip.isDeleted && (
-                                        <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger }}>
+                                        <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.danger }}>
                                             <Trash2 size={14} /> Delete
                                         </button>
                                     )}
@@ -491,16 +487,16 @@ const SlipsDashboard: React.FC = () => {
         </table>
 
         {/* Infinite scroll sentinel */}
-        <div ref={sentinelRef} className="h-1" />
+        <div ref={sentinelRef} style={{ height: 4 }} />
         {hasMore && (
-          <div className="flex justify-center py-4">
+          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 16, paddingBottom: 16 }}>
             <RefreshCw size={20} className="animate-spin" style={{ color: t.accent }} />
           </div>
         )}
 
         {!loading && filteredSlips.length === 0 && (
-            <div className="p-12 text-center flex flex-col items-center" style={{ color: t.text4 }}>
-                <FileSpreadsheet size={48} className="mb-4 opacity-20" />
+            <div style={{ padding: 48, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', color: t.text4 }}>
+                <FileSpreadsheet size={48} style={{ marginBottom: 16, opacity: 0.2 }} />
                 <p>No slips found matching your search.</p>
             </div>
         )}
@@ -516,15 +512,13 @@ const SlipsDashboard: React.FC = () => {
           <>
             <button
               onClick={() => { setSelectedSlip(selectedSlipForPanel); }}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
-              style={{ background: t.accent, color: '#fff' }}
+              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.accent, color: '#fff' }}
             >
               <Eye size={14} /> View Full Detail
             </button>
             <button
               onClick={() => navigate(`/slips/edit/${selectedSlipForPanel.id}`)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium"
-              style={{ border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
+              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 500, border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
             >
               <Edit size={14} /> Edit
             </button>

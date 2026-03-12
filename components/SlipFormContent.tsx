@@ -183,12 +183,12 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
     });
   };
 
-  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
+  if (loading) return <div style={{ padding: 32, textAlign: 'center', color: t.text4 }}>Loading...</div>;
 
-  const labelClass = "block text-sm mb-1.5";
+  const labelStyle: React.CSSProperties = { display: 'block', fontSize: 14, marginBottom: 6 };
   const inputStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
-  const inputClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-sm";
-  const selectClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all text-sm";
+  const baseInputStyle: React.CSSProperties = { width: '100%', padding: 10, borderWidth: 1, borderStyle: 'solid', borderRadius: 8, outline: 'none', fontSize: 14, ...inputStyle };
+  const baseSelectStyle: React.CSSProperties = { width: '100%', padding: 10, borderWidth: 1, borderStyle: 'solid', borderRadius: 8, outline: 'none', fontSize: 14, ...inputStyle };
 
   const priorityCurrencies = ['UZS', 'USD', 'EUR'];
   const allCurrencies = Object.values(Currency);
@@ -212,6 +212,8 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
     }
   };
 
+  const buttonSmallStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 4, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 8, fontSize: 14 };
+
   return (
     <div>
       {/* Context Bar */}
@@ -223,23 +225,22 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
         ]}
       />
 
-      <div className="p-6">
+      <div style={{ padding: 24 }}>
         {/* Workflow Actions Section - Only show when editing existing slip */}
         {id && (
-          <div className="rounded-xl p-4 mb-6" style={{ background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
-            <div className="flex items-center gap-2 mb-3">
+          <div style={{ borderRadius: 12, padding: 16, marginBottom: 24, background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               <Settings size={16} style={{ color: t.text4 }} />
               <span style={{ color: t.text2, fontWeight: 600 }}>WORKFLOW ACTIONS</span>
-              <span className="ml-2 px-2 py-1 rounded text-xs" style={{ ...getStatusBadgeStyle(), fontWeight: 500 }}>
+              <span style={{ marginLeft: 8, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, borderRadius: 4, fontSize: 12, ...getStatusBadgeStyle(), fontWeight: 500 }}>
                 {slipStatus}
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {(slipStatus === 'DRAFT' || !slipStatus) && (
                 <button type="button" onClick={() => handleSlipStatusChange('PENDING')}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                  style={{ background: t.accent, color: '#fff' }}>
+                  style={{ ...buttonSmallStyle, background: t.accent, color: '#fff' }}>
                   <Send size={14} /> Submit for Review
                 </button>
               )}
@@ -247,13 +248,11 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               {slipStatus === 'PENDING' && (
                 <>
                   <button type="button" onClick={() => handleSlipStatusChange('QUOTED')}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: '#a855f7', color: '#fff' }}>
+                    style={{ ...buttonSmallStyle, background: '#a855f7', color: '#fff' }}>
                     <FileText size={14} /> Quote Received
                   </button>
                   <button type="button" onClick={handleSlipDecline}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: t.dangerBg, color: t.danger }}>
+                    style={{ ...buttonSmallStyle, background: t.dangerBg, color: t.danger }}>
                     <XCircle size={14} /> Decline
                   </button>
                 </>
@@ -262,13 +261,11 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               {slipStatus === 'QUOTED' && (
                 <>
                   <button type="button" onClick={() => { performStatusChange('SIGNED', { signed_date: new Date().toISOString() }); }}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: '#6366f1', color: '#fff' }}>
+                    style={{ ...buttonSmallStyle, background: '#6366f1', color: '#fff' }}>
                     <CheckCircle size={14} /> Accept & Sign
                   </button>
                   <button type="button" onClick={() => handleSlipStatusChange('NTU')}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: t.warningBg, color: t.warning }}>
+                    style={{ ...buttonSmallStyle, background: t.warningBg, color: t.warning }}>
                     <XCircle size={14} /> Not Taken Up
                   </button>
                 </>
@@ -276,8 +273,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
               {slipStatus === 'SIGNED' && (
                 <button type="button" onClick={() => { performStatusChange('SENT', { sent_date: new Date().toISOString() }); }}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                  style={{ background: '#06b6d4', color: '#fff' }}>
+                  style={{ ...buttonSmallStyle, background: '#06b6d4', color: '#fff' }}>
                   <Send size={14} /> Send to Reinsurer
                 </button>
               )}
@@ -285,13 +281,11 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               {slipStatus === 'SENT' && (
                 <>
                   <button type="button" onClick={() => { performStatusChange('BOUND', { bound_date: new Date().toISOString() }); }}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: t.success, color: '#fff' }}>
+                    style={{ ...buttonSmallStyle, background: t.success, color: '#fff' }}>
                     <CheckCircle size={14} /> Confirm Bound
                   </button>
                   <button type="button" onClick={() => handleSlipStatusChange('NTU')}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                    style={{ background: t.warningBg, color: t.warning }}>
+                    style={{ ...buttonSmallStyle, background: t.warningBg, color: t.warning }}>
                     <XCircle size={14} /> Withdrawn
                   </button>
                 </>
@@ -299,16 +293,14 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
               {slipStatus === 'BOUND' && (
                 <button type="button" onClick={() => { performStatusChange('CLOSED', { closed_date: new Date().toISOString() }); }}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                  style={{ background: t.text3, color: '#fff' }}>
+                  style={{ ...buttonSmallStyle, background: t.text3, color: '#fff' }}>
                   <Archive size={14} /> Close Slip
                 </button>
               )}
 
               {['DECLINED', 'NTU', 'CANCELLED'].includes(slipStatus) && (
                 <button type="button" onClick={() => handleSlipStatusChange('PENDING')}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm"
-                  style={{ background: t.accent + '18', color: t.accent }}>
+                  style={{ ...buttonSmallStyle, background: t.accent + '18', color: t.accent }}>
                   <RefreshCw size={14} /> Reopen
                 </button>
               )}
@@ -316,31 +308,31 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
 
           {/* Info Panel */}
-          <div className="md:col-span-1">
-            <div className="rounded-xl p-6" style={{ background: t.warningBg, borderColor: t.warning + '40', borderWidth: 1, borderStyle: 'solid' }}>
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ background: t.warningBg, color: t.warning }}>
+          <div style={{ gridColumn: 'span 1' }}>
+            <div style={{ borderRadius: 12, padding: 24, background: t.warningBg, borderColor: t.warning + '40', borderWidth: 1, borderStyle: 'solid' }}>
+              <div style={{ width: 48, height: 48, borderRadius: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, background: t.warningBg, color: t.warning }}>
                 <FileSpreadsheet size={24} />
               </div>
-              <h3 className="mb-2" style={{ color: t.warning, fontWeight: 700 }}>Slip Registry</h3>
-              <p className="text-sm leading-relaxed mb-4" style={{ color: t.warning, opacity: 0.8 }}>
+              <h3 style={{ marginBottom: 8, color: t.warning, fontWeight: 700 }}>Slip Registry</h3>
+              <p style={{ fontSize: 14, lineHeight: 1.625, marginBottom: 16, color: t.warning, opacity: 0.8 }}>
                 Register a new Outward Reinsurance Slip. Support for multiple reinsurers (panel) is now enabled.
               </p>
-              <div className="text-xs font-mono p-2 rounded" style={{ background: t.warningBg, color: t.warning }}>
+              <div style={{ fontSize: 12, fontFamily: "'JetBrains Mono', monospace", padding: 8, borderRadius: 4, background: t.warningBg, color: t.warning }}>
                 Current Date: {formatDate(new Date().toISOString())}
               </div>
             </div>
           </div>
 
           {/* Form Fields */}
-          <div className="md:col-span-2 rounded-xl p-6" style={{ background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
-            <h3 className="mb-6 pb-2" style={{ color: t.text1, borderBottom: '1px solid ' + t.border, fontSize: 15, fontWeight: 700 }}>Slip Details</h3>
+          <div style={{ gridColumn: 'span 2', borderRadius: 12, padding: 24, background: t.bgPanel, boxShadow: t.shadow, border: '1px solid ' + t.border }}>
+            <h3 style={{ marginBottom: 24, paddingBottom: 8, color: t.text1, borderBottom: '1px solid ' + t.border, fontSize: 15, fontWeight: 700 }}>Slip Details</h3>
 
-            <div className="space-y-5">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <div>
-                <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><Hash size={14}/> Slip Number</span></label>
+                <label style={{ ...labelStyle, color: t.text3, fontWeight: 500 }}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Hash size={14}/> Slip Number</span></label>
                 <input
                   required
                   type="text"
@@ -348,12 +340,12 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                   value={formData.slipNumber}
                   onChange={handleChange}
                   placeholder="e.g. RE/05/2021/01"
-                  className={`${inputClass} font-mono`}
-                  style={{...inputStyle}}
+                  className="transition-all"
+                  style={{...baseInputStyle, fontFamily: "'JetBrains Mono', monospace"}}
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
                 <div>
                   <DatePickerInput
                     label="Date"
@@ -363,13 +355,13 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                   />
                 </div>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><Activity size={14}/> Status</span></label>
+                  <label style={{ ...labelStyle, color: t.text3, fontWeight: 500 }}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Activity size={14}/> Status</span></label>
                   <select
                     name="status"
                     value={formData.status || 'DRAFT'}
                     onChange={handleChange}
-                    className={inputClass}
-                    style={{...inputStyle}}
+                    className="transition-all"
+                    style={{...baseInputStyle}}
                   >
                     <option value="DRAFT">Draft</option>
                     <option value={PolicyStatus.ACTIVE}>Active / Bound</option>
@@ -393,7 +385,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                   required
                 />
                 {formData.insuredSicCode && (
-                  <div className="mt-1.5 flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs" style={{ background: t.bgCard, border: '1px solid ' + t.border }}>
+                  <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 8, borderRadius: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, fontSize: 12, background: t.bgCard, border: '1px solid ' + t.border }}>
                     <span style={{ color: t.text4 }}>Industry:</span>
                     <span style={{ color: t.text3 }}>{formatSICDisplay(formData.insuredSicCode)}</span>
                   </div>
@@ -401,68 +393,66 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
               </div>
 
               {/* Financials Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4" style={{ borderTop: '1px solid ' + t.border }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20, paddingTop: 16, borderTop: '1px solid ' + t.border }}>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}><span className="flex items-center gap-2"><DollarSign size={14}/> Currency</span></label>
+                  <label style={{ ...labelStyle, color: t.text3, fontWeight: 500 }}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><DollarSign size={14}/> Currency</span></label>
                   <select
                     name="currency"
                     value={formData.currency}
                     onChange={handleChange}
-                    className={selectClass}
-                    style={{...inputStyle}}
+                    className="transition-all"
+                    style={{...baseSelectStyle}}
                   >
                     {sortedCurrencies.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass} style={{ color: t.text3, fontWeight: 500 }}>Limit of Liability</label>
+                  <label style={{ ...labelStyle, color: t.text3, fontWeight: 500 }}>Limit of Liability</label>
                   <input
                     type="number"
                     name="limitOfLiability"
                     value={formData.limitOfLiability || ''}
                     onChange={handleChange}
                     placeholder="0.00"
-                    className={inputClass}
-                    style={{...inputStyle}}
+                    className="transition-all"
+                    style={{...baseInputStyle}}
                   />
                 </div>
               </div>
 
               {/* REINSURERS PANEL */}
-              <div className="pt-4" style={{ borderTop: '1px solid ' + t.border }}>
-                <label className="block text-sm mb-3" style={{ color: t.text1, fontWeight: 700 }}>Reinsurance Market / Panel</label>
-                <div className="rounded-lg overflow-hidden mb-2" style={{ border: '1px solid ' + t.border }}>
-                  <table className="w-full text-sm text-left">
+              <div style={{ paddingTop: 16, borderTop: '1px solid ' + t.border }}>
+                <label style={{ display: 'block', fontSize: 14, marginBottom: 12, color: t.text1, fontWeight: 700 }}>Reinsurance Market / Panel</label>
+                <div style={{ borderRadius: 8, overflow: 'hidden', marginBottom: 8, border: '1px solid ' + t.border }}>
+                  <table style={{ width: '100%', fontSize: 14, textAlign: 'left' }}>
                     <thead style={{ background: t.bgCard, color: t.text2 }}>
                       <tr>
-                        <th className="px-3 py-2 w-1/2">Market Name</th>
-                        <th className="px-3 py-2">Share %</th>
-                        <th className="px-3 py-2 w-10"></th>
+                        <th style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, width: '50%' }}>Market Name</th>
+                        <th style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8 }}>Share %</th>
+                        <th style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, width: 40 }}></th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y" style={{ borderColor: t.border }}>
+                    <tbody style={{ borderColor: t.border }}>
                       {formData.reinsurers?.map((reinsurer, idx) => (
-                        <tr key={reinsurer.id} style={{ borderColor: t.border }}>
-                          <td className="px-3 py-2">
+                        <tr key={reinsurer.id} style={{ borderColor: t.border, borderTopWidth: idx > 0 ? 1 : 0, borderTopStyle: 'solid' }}>
+                          <td style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8 }}>
                             <input
                               type="text"
                               value={reinsurer.name}
                               onChange={(e) => handleReinsurerChange(idx, 'name', e.target.value)}
-                              className="w-full border-none focus:ring-0 text-sm"
                               placeholder="e.g. Swiss Re"
-                              style={{ background: 'transparent', color: t.text1 }}
+                              style={{ width: '100%', border: 'none', fontSize: 14, background: 'transparent', color: t.text1, outline: 'none' }}
                             />
                           </td>
-                          <td className="px-3 py-2">
+                          <td style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8 }}>
                             <input
                               type="number"
                               value={reinsurer.share || ''}
                               onChange={(e) => handleReinsurerChange(idx, 'share', Number(e.target.value))}
-                              className="w-full border-none focus:ring-0 text-sm"
-                              style={{ background: 'transparent', color: t.text1 }}
+                              style={{ width: '100%', border: 'none', fontSize: 14, background: 'transparent', color: t.text1, outline: 'none' }}
                             />
                           </td>
-                          <td className="px-3 py-2 text-center">
+                          <td style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, textAlign: 'center' }}>
                             <button type="button" onClick={() => removeReinsurer(idx)} style={{ color: t.danger }}>
                               <Trash2 size={14}/>
                             </button>
@@ -471,7 +461,7 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                       ))}
                       {(!formData.reinsurers || formData.reinsurers.length === 0) && (
                         <tr>
-                          <td colSpan={3} className="px-3 py-4 text-center text-xs italic" style={{ color: t.text4 }}>
+                          <td colSpan={3} style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 16, paddingBottom: 16, textAlign: 'center', fontSize: 12, fontStyle: 'italic', color: t.text4 }}>
                             No markets added. Click below to add.
                           </td>
                         </tr>
@@ -479,26 +469,26 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
                     </tbody>
                   </table>
                 </div>
-                <button type="button" onClick={addReinsurer} className="text-xs flex items-center gap-1" style={{ color: t.warning, fontWeight: 700 }}>
+                <button type="button" onClick={addReinsurer} style={{ fontSize: 12, display: 'flex', alignItems: 'center', gap: 4, color: t.warning, fontWeight: 700 }}>
                   <Plus size={12}/> Add Market
                 </button>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-6" style={{ borderTop: '1px solid ' + t.border }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12, paddingTop: 24, borderTop: '1px solid ' + t.border }}>
                 <button
                   type="button"
                   onClick={onCancel}
-                  className="px-4 py-2.5 rounded-lg text-sm transition-colors"
-                  style={{ color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
+                  className="transition-colors"
+                  style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontSize: 14, color: t.text2, background: t.bgPanel, border: '1px solid ' + t.borderL, fontWeight: 500 }}
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm transition-colors"
-                  style={{ background: t.warning, color: '#fff', fontWeight: 500 }}
+                  className="transition-colors"
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 24, paddingRight: 24, paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontSize: 14, background: t.warning, color: '#fff', fontWeight: 500 }}
                 >
                   <Save size={16} /> {isEdit ? 'Update Slip' : 'Create Slip'}
                 </button>
@@ -520,28 +510,27 @@ export const SlipFormContent: React.FC<SlipFormContentProps> = ({
 
       {/* Decline Slip Modal */}
       {showDeclineModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="rounded-xl w-full max-w-md overflow-hidden" style={{ background: t.bgPanel, boxShadow: t.shadowLg, border: '1px solid ' + t.border }}>
-            <div className="p-4 flex items-center gap-3" style={{ background: t.dangerBg, borderBottom: '1px solid ' + t.danger + '40' }}>
-              <div className="p-2 rounded-full" style={{ background: t.dangerBg, color: t.danger }}><XCircle size={20}/></div>
+        <div className="backdrop-blur-sm" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', padding: 16 }}>
+          <div style={{ borderRadius: 12, width: '100%', maxWidth: 448, overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadowLg, border: '1px solid ' + t.border }}>
+            <div style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12, background: t.dangerBg, borderBottom: '1px solid ' + t.danger + '40' }}>
+              <div style={{ padding: 8, borderRadius: 9999, background: t.dangerBg, color: t.danger }}><XCircle size={20}/></div>
               <h3 style={{ color: t.text1, fontWeight: 700 }}>Decline Slip</h3>
             </div>
-            <div className="p-6 space-y-4">
+            <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label className="block text-xs uppercase mb-1" style={{ color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
+                <label style={{ display: 'block', fontSize: 12, textTransform: 'uppercase', marginBottom: 4, color: t.text4, fontWeight: 700 }}>Reason for Declining</label>
                 <textarea
                   rows={3}
                   value={declineReason}
                   onChange={(e) => setDeclineReason(e.target.value)}
                   placeholder="Please enter the reason for declining..."
-                  className="w-full p-2 border rounded-lg text-sm resize-none"
-                  style={{ background: t.bgPanel, borderColor: t.border, color: t.text1 }}
+                  style={{ width: '100%', padding: 8, borderWidth: 1, borderStyle: 'solid', borderRadius: 8, fontSize: 14, resize: 'none', background: t.bgPanel, borderColor: t.border, color: t.text1 }}
                 />
               </div>
             </div>
-            <div className="p-4 flex justify-end gap-2" style={{ background: t.bgCard, borderTop: '1px solid ' + t.border }}>
-              <button onClick={() => setShowDeclineModal(false)} className="px-4 py-2 rounded-lg text-sm" style={{ color: t.text3, fontWeight: 500 }}>Cancel</button>
-              <button onClick={confirmSlipDecline} className="px-4 py-2 rounded-lg text-sm" style={{ background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
+            <div style={{ padding: 16, display: 'flex', justifyContent: 'flex-end', gap: 8, background: t.bgCard, borderTop: '1px solid ' + t.border }}>
+              <button onClick={() => setShowDeclineModal(false)} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, color: t.text3, fontWeight: 500 }}>Cancel</button>
+              <button onClick={confirmSlipDecline} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, background: t.danger, color: '#fff', boxShadow: t.shadow, fontWeight: 700 }}>Decline Slip</button>
             </div>
           </div>
         </div>

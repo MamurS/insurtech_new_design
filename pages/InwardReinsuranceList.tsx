@@ -282,15 +282,17 @@ const InwardReinsuranceList: React.FC = () => {
   // Type badge
   const getTypeBadge = (type: string, structure: string) => {
     return (
-      <div className="flex flex-col gap-1">
-        <span className="px-2 py-0.5 rounded" style={{
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span style={{
+          paddingLeft: 8, paddingRight: 8, paddingTop: 2, paddingBottom: 2, borderRadius: 4,
           fontSize: 11, fontWeight: 500,
           color: type === 'FAC' ? t.accent : '#6366f1',
           background: type === 'FAC' ? `${t.accent}18` : 'rgba(99,102,241,0.1)'
         }}>
           {type}
         </span>
-        <span className="px-2 py-0.5 rounded" style={{
+        <span style={{
+          paddingLeft: 8, paddingRight: 8, paddingTop: 2, paddingBottom: 2, borderRadius: 4,
           fontSize: 11,
           color: structure === 'PROPORTIONAL' ? t.success : t.warning,
           background: structure === 'PROPORTIONAL' ? t.successBg : t.warningBg
@@ -315,25 +317,25 @@ const InwardReinsuranceList: React.FC = () => {
     };
     setHeaderLeft(
       <>
-        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <span className="font-medium" style={{ fontSize: 11, color: t.text4 }}>Contracts</span>
-          <span className="font-bold" style={{ fontSize: 13, color: t.text1 }}>{totalCount}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, borderRadius: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <span style={{ fontWeight: 500, fontSize: 11, color: t.text4 }}>Contracts</span>
+          <span style={{ fontWeight: 700, fontSize: 13, color: t.text1 }}>{totalCount}</span>
         </div>
-        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: t.successBg, border: `1px solid ${t.success}33` }}>
-          <span className="font-medium" style={{ fontSize: 11, color: t.success }}>Active</span>
-          <span className="font-bold" style={{ fontSize: 13, color: t.success }}>{activeCount}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, borderRadius: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, background: t.successBg, border: `1px solid ${t.success}33` }}>
+          <span style={{ fontWeight: 500, fontSize: 11, color: t.success }}>Active</span>
+          <span style={{ fontWeight: 700, fontSize: 13, color: t.success }}>{activeCount}</span>
         </div>
-        <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: `${t.accent}15`, border: `1px solid ${t.accent}33` }}>
-          <span className="font-medium" style={{ fontSize: 11, color: t.accent }}>GWP</span>
-          <span className="font-bold" style={{ fontSize: 13, color: t.accent }}>{fmtCompact(totalGWP)}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, borderRadius: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, background: `${t.accent}15`, border: `1px solid ${t.accent}33` }}>
+          <span style={{ fontWeight: 500, fontSize: 11, color: t.accent }}>GWP</span>
+          <span style={{ fontWeight: 700, fontSize: 13, color: t.accent }}>{fmtCompact(totalGWP)}</span>
         </div>
       </>
     );
     setHeaderActions(
       <button
         onClick={() => handleExport()}
-        className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all whitespace-nowrap"
-        style={{ background: t.success, color: '#fff', boxShadow: t.shadow }}
+        className="transition-all"
+        style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', boxShadow: t.shadow }}
       >
         <Download size={16} /> Export
       </button>
@@ -344,19 +346,18 @@ const InwardReinsuranceList: React.FC = () => {
   return (
     <div>
       {/* Sticky filter bar */}
-      <div ref={filterRef} className="sticky top-0 z-30 sticky-filter-blur" style={{ background: t.bgApp }}>
-      <div className="rounded-xl p-3" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-        <div className="flex flex-wrap items-center gap-3">
+      <div ref={filterRef} className="sticky-filter-blur" style={{ position: 'sticky', top: 0, zIndex: 30, background: t.bgApp }}>
+      <div style={{ borderRadius: 12, padding: 12, background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 }}>
           {/* Search */}
-          <div className="relative flex-1 min-w-[180px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
+          <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-              className="w-full pl-8 pr-3 py-2 rounded-lg outline-none text-sm"
-              style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
             />
           </div>
 
@@ -364,8 +365,7 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={typeFilter}
             onChange={(e) => { setTypeFilter(e.target.value as any); setPage(1); }}
-            className="px-3 py-2 rounded-lg outline-none text-sm"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+            style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Types</option>
             <option value="FAC">Facultative</option>
@@ -376,8 +376,7 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={structureFilter}
             onChange={(e) => { setStructureFilter(e.target.value as any); setPage(1); }}
-            className="px-3 py-2 rounded-lg outline-none text-sm"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+            style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Structures</option>
             <option value="PROPORTIONAL">Proportional</option>
@@ -388,8 +387,7 @@ const InwardReinsuranceList: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-            className="px-3 py-2 rounded-lg outline-none text-sm"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+            style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="ALL">All Status</option>
             <option value="DRAFT">Draft</option>
@@ -400,12 +398,11 @@ const InwardReinsuranceList: React.FC = () => {
           </select>
 
           {/* Date Filter */}
-          <div className="flex items-center gap-1.5 flex-shrink-0" style={{ width: '380px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, width: '380px' }}>
           <select
             value={dateFilterField}
             onChange={(e) => { setDateFilterField(e.target.value); setPage(1); }}
-            className="px-3 py-2 rounded-lg outline-none text-sm"
-            style={{ border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+            style={{ paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
           >
             <option value="inceptionDate">Inception</option>
             <option value="expiryDate">Expiry</option>
@@ -431,20 +428,18 @@ const InwardReinsuranceList: React.FC = () => {
           {/* Refresh */}
           <button
             onClick={fetchContracts}
-            className="p-2 rounded-lg"
-            style={{ color: t.text4 }}
+            style={{ padding: 8, borderRadius: 8, color: t.text4 }}
             title="Refresh"
           >
             <RefreshCw size={16} />
           </button>
 
-          <div className="w-px h-5" style={{ background: t.borderL }} />
+          <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* New Contract Button */}
           <button
             onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm"
-            style={{ background: t.accent, color: '#fff' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontWeight: 500, fontSize: 14, background: t.accent, color: '#fff' }}
           >
             <Plus size={16} />
             New Contract
@@ -457,7 +452,7 @@ const InwardReinsuranceList: React.FC = () => {
       <div style={{ minWidth: 0 }}>
       {/* Migration Required Message */}
       {migrationRequired && (
-        <div className="rounded-xl p-6 mt-4" style={{ background: t.warningBg, border: `1px solid ${t.warning}33` }}>
+        <div style={{ borderRadius: 12, padding: 24, marginTop: 16, background: t.warningBg, border: `1px solid ${t.warning}33` }}>
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style={{ background: `${t.warning}25` }}>
               <FileSpreadsheet size={20} style={{ color: t.warning }} />

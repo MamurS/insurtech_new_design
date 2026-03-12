@@ -184,14 +184,11 @@ const SlipForm: React.FC = () => {
     });
   };
 
-  if (loading) return <div className="p-8 text-center" style={{ color: t.text4 }}>Loading...</div>;
+  if (loading) return <div style={{ padding: 32, textAlign: 'center', color: t.text4 }}>Loading...</div>;
 
-  const labelStyle: React.CSSProperties = { color: t.text2 };
-  const inputStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
-  const selectStyle: React.CSSProperties = { backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
-  const labelClass = "block text-sm font-medium mb-1.5";
-  const inputClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-sm";
-  const selectClass = "w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none transition-all text-sm";
+  const labelCStyle: React.CSSProperties = { display: 'block', fontSize: 14, fontWeight: 500, marginBottom: 6, color: t.text2 };
+  const inputCStyle: React.CSSProperties = { width: '100%', padding: 10, borderWidth: 1, borderStyle: 'solid', borderRadius: 8, outline: 'none', fontSize: 14, backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
+  const selectCStyle: React.CSSProperties = { width: '100%', padding: 10, borderWidth: 1, borderStyle: 'solid', borderRadius: 8, outline: 'none', fontSize: 14, backgroundColor: t.bgPanel, borderColor: t.border, color: t.text1 };
 
   // Priority Currencies Sort
   const priorityCurrencies = ['UZS', 'USD', 'EUR'];
@@ -202,34 +199,34 @@ const SlipForm: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto pb-20">
+    <div style={{ maxWidth: 896, marginLeft: 'auto', marginRight: 'auto', paddingBottom: 80 }}>
       <form onSubmit={handleSubmit}>
          {/* Sticky Header - Use negative margin to span full width over layout padding */}
-         <div className="sticky -mt-4 -mx-4 md:-mt-8 md:-mx-8 px-4 md:px-8 py-4 mb-6 backdrop-blur-md flex items-center justify-between z-40" style={{ backgroundColor: t.bgInput, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
-            <div className="flex items-center gap-4">
+         <div className="backdrop-blur-md" style={{ position: 'sticky', marginTop: -16, marginLeft: -16, marginRight: -16, paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 40, backgroundColor: t.bgInput, borderBottom: `1px solid ${t.border}`, boxShadow: t.shadow }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <button type="button" onClick={() => navigate('/slips')} className="transition-colors" style={{ color: t.text4 }}>
                     <ArrowLeft size={24} />
                 </button>
                 <div>
                     <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>{isEdit ? 'Edit Slip' : 'New Slip Record'}</h2>
-                    <p className="text-xs" style={{ color: t.text4 }}>
+                    <p style={{ fontSize: 12, color: t.text4 }}>
                        Outward Reinsurance Registry
                     </p>
                 </div>
             </div>
-            <div className="flex gap-3">
+            <div style={{ display: 'flex', gap: 12 }}>
                  <button
                     type="button"
                     onClick={() => navigate('/slips')}
-                    className="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
-                    style={{ color: t.text2 }}
+                    className="transition-colors"
+                    style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 500, borderRadius: 8, color: t.text2 }}
                 >
                     Cancel
                 </button>
                 <button
                     type="submit"
-                    className="flex items-center gap-2 px-6 py-2 text-sm font-bold rounded-lg transition-all"
-                    style={{ backgroundColor: t.warning, color: '#fff', boxShadow: t.shadow }}
+                    className="transition-all"
+                    style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 24, paddingRight: 24, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 700, borderRadius: 8, backgroundColor: t.warning, color: '#fff', boxShadow: t.shadow }}
                 >
                     <Save size={18} /> Save Slip
                 </button>
@@ -238,11 +235,13 @@ const SlipForm: React.FC = () => {
 
         {/* Workflow Actions Section - Only show when editing existing slip */}
         {id && (
-            <div className="rounded-xl p-4 mb-6" style={{ backgroundColor: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.borderL}` }}>
-                <div className="flex items-center gap-2 mb-3">
+            <div style={{ borderRadius: 12, padding: 16, marginBottom: 24, backgroundColor: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.borderL}` }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                     <Settings size={16} style={{ color: t.text4 }} />
-                    <span className="font-semibold" style={{ color: t.text1 }}>WORKFLOW ACTIONS</span>
-                    <span className="ml-2 px-2 py-1 rounded text-xs font-medium" style={
+                    <span style={{ fontWeight: 600, color: t.text1 }}>WORKFLOW ACTIONS</span>
+                    <span style={{
+                        marginLeft: 8, paddingLeft: 8, paddingRight: 8, paddingTop: 4, paddingBottom: 4, borderRadius: 4, fontSize: 12, fontWeight: 500,
+                        ...(
                         slipStatus === 'DRAFT' ? { backgroundColor: t.bgInput, color: t.text1 } :
                         slipStatus === 'PENDING' ? { backgroundColor: t.accent + '22', color: t.accent } :
                         slipStatus === 'QUOTED' ? { backgroundColor: t.accent + '22', color: t.accent } :
@@ -253,7 +252,8 @@ const SlipForm: React.FC = () => {
                         slipStatus === 'DECLINED' ? { backgroundColor: t.dangerBg, color: t.danger } :
                         slipStatus === 'NTU' ? { backgroundColor: t.warningBg, color: t.warning } :
                         { backgroundColor: t.bgInput, color: t.text1 }
-                    }>
+                    )
+                    }}>
                         {slipStatus}
                     </span>
                 </div>
@@ -353,7 +353,7 @@ const SlipForm: React.FC = () => {
                 
                 <div className="space-y-5">
                     <div>
-                        <label className={labelClass}><span className="flex items-center gap-2"><Hash size={14}/> Slip Number</span></label>
+                        <label style={labelCStyle}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Hash size={14}/> Slip Number</span></label>
                         <input 
                             required
                             type="text" 
@@ -361,7 +361,8 @@ const SlipForm: React.FC = () => {
                             value={formData.slipNumber} 
                             onChange={handleChange}
                             placeholder="e.g. RE/05/2021/01"
-                            className={`${inputClass} font-mono`}
+                            style={{...inputCStyle, fontFamily: 'monospace'}}
+                            className="focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
                         />
                     </div>
 
@@ -375,12 +376,13 @@ const SlipForm: React.FC = () => {
                              />
                         </div>
                         <div>
-                            <label className={labelClass}><span className="flex items-center gap-2"><Activity size={14}/> Status</span></label>
+                            <label style={labelCStyle}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><Activity size={14}/> Status</span></label>
                             <select 
                                 name="status" 
                                 value={formData.status || 'DRAFT'} 
                                 onChange={handleChange} 
-                                className={inputClass}
+                                style={inputCStyle}
+                                className="focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
                             >
                                 <option value="DRAFT">Draft</option>
                                 <option value={PolicyStatus.ACTIVE}>Active / Bound</option>
@@ -419,25 +421,27 @@ const SlipForm: React.FC = () => {
                     {/* Financials Section */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-4" style={{ borderTop: `1px solid ${t.border}` }}>
                         <div>
-                            <label className={labelClass}><span className="flex items-center gap-2"><DollarSign size={14}/> Currency</span></label>
+                            <label style={labelCStyle}><span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><DollarSign size={14}/> Currency</span></label>
                             <select 
                                 name="currency" 
                                 value={formData.currency} 
                                 onChange={handleChange} 
-                                className={selectClass}
+                                style={selectCStyle}
+                                className="focus:ring-2 focus:ring-amber-500 transition-all"
                             >
                                 {sortedCurrencies.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className={labelClass}>Limit of Liability</label>
+                            <label style={labelCStyle}>Limit of Liability</label>
                             <input 
                                 type="number" 
                                 name="limitOfLiability" 
                                 value={formData.limitOfLiability || ''} 
                                 onChange={handleChange}
                                 placeholder="0.00"
-                                className={inputClass}
+                                style={inputCStyle}
+                                className="focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all"
                             />
                         </div>
                     </div>
