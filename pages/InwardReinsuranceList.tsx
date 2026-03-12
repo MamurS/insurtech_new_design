@@ -15,6 +15,8 @@ import { CompactDateFilter } from '../components/CompactDateFilter';
 import { toISODateString } from '../components/DatePickerInput';
 import { useTheme } from '../theme/useTheme';
 import SidePanel, { PanelField } from '../components/ui/SidePanel';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 const InwardReinsuranceList: React.FC = () => {
   const navigate = useNavigate();
@@ -332,13 +334,9 @@ const InwardReinsuranceList: React.FC = () => {
       </>
     );
     setHeaderActions(
-      <button
-        onClick={() => handleExport()}
-        className="transition-all"
-        style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', boxShadow: t.shadow }}
-      >
-        <Download size={16} /> Export
-      </button>
+      <Button variant="primary" icon={<Download size={16} />} onClick={() => handleExport()} style={{ whiteSpace: 'nowrap', background: t.success }}>
+        Export
+      </Button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
   }, [contracts, totalCount, setHeaderActions, setHeaderLeft]);
@@ -351,13 +349,13 @@ const InwardReinsuranceList: React.FC = () => {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
-            <input
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4, zIndex: 1 }} />
+            <Input
               type="text"
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
+              onChange={(val) => { setSearchTerm(val); setPage(1); }}
+              style={{ paddingLeft: 32 }}
             />
           </div>
 
@@ -426,23 +424,16 @@ const InwardReinsuranceList: React.FC = () => {
           </div>
 
           {/* Refresh */}
-          <button
-            onClick={fetchContracts}
-            style={{ padding: 8, borderRadius: 8, color: t.text4 }}
-            title="Refresh"
-          >
-            <RefreshCw size={16} />
-          </button>
+          <Button variant="ghost" size="sm" onClick={fetchContracts} title="Refresh" style={{ padding: 8, border: 'none' }}>
+            <RefreshCw size={16} style={{ color: t.text4 }} />
+          </Button>
 
           <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* New Contract Button */}
-          <button
-            onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontWeight: 500, fontSize: 14, background: t.accent, color: '#fff' }}
-          >
-            <Plus size={16} />
+          <Button variant="primary" icon={<Plus size={16} />} onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}>
             New Contract
+          </Button>
           </button>
         </div>
       </div>
@@ -471,13 +462,9 @@ const InwardReinsuranceList: React.FC = () => {
               <p className="mt-3 text-sm" style={{ color: `${t.warning}cc` }}>
                 You can find this file in the root directory of the project. Copy its contents and execute it in the Supabase Dashboard SQL Editor.
               </p>
-              <button
-                onClick={() => { setMigrationRequired(false); fetchContracts(); }}
-                className="mt-4 px-4 py-2 rounded-lg text-sm font-medium"
-                style={{ background: t.warning, color: '#fff' }}
-              >
+              <Button variant="primary" size="sm" onClick={() => { setMigrationRequired(false); fetchContracts(); }} style={{ marginTop: 16, background: t.warning }}>
                 Retry After Running Migration
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -492,13 +479,9 @@ const InwardReinsuranceList: React.FC = () => {
           <div className="p-12 text-center">
             <FileSpreadsheet size={48} className="mx-auto mb-4" style={{ color: t.text5 }} />
             <p style={{ color: t.text4 }}>No contracts found</p>
-            <button
-              onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)}
-              className="mt-4 font-medium"
-              style={{ color: t.accent }}
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/new`)} style={{ marginTop: 16, color: t.accent, border: 'none' }}>
               Create your first contract
-            </button>
+            </Button>
           </div>
         ) : (
             <table className="w-full">
@@ -560,27 +543,20 @@ const InwardReinsuranceList: React.FC = () => {
                       {getStatusBadge(contract.status)}
                     </td>
                     <td className="px-1 py-2 text-center w-10 relative" onClick={(e) => e.stopPropagation()}>
-                      <button onClick={(e) => { e.stopPropagation(); setActionMenuOpen(actionMenuOpen === contract.id ? null : contract.id); }}
-                        className="p-1.5 rounded-lg">
+                      <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setActionMenuOpen(actionMenuOpen === contract.id ? null : contract.id); }} style={{ padding: 6, border: 'none' }}>
                         <MoreVertical size={16} style={{ color: t.text4 }} />
-                      </button>
+                      </Button>
                       {actionMenuOpen === contract.id && (
                         <div className="absolute right-0 top-full mt-1 rounded-lg py-1 z-50 min-w-[120px]" style={{ background: t.bgPanel, border: `1px solid ${t.border}`, boxShadow: t.shadowLg }}>
-                          <button onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${contract.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
+                          <Button variant="ghost" size="sm" onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${contract.id}`); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Eye size={14} /> View
-                          </button>
-                          <button onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${contract.id}`); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.text2 }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = t.bgHover)}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => { setActionMenuOpen(null); navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${contract.id}`); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Edit size={14} /> Edit
-                          </button>
-                          <button onClick={() => { setActionMenuOpen(null); setDeleteConfirm({ isOpen: true, id: contract.id, number: contract.contractNumber }); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm" style={{ color: t.danger }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = t.dangerBg)}
-                            onMouseLeave={(e) => (e.currentTarget.style.background = '')}>
+                          </Button>
+                          <Button variant="danger" size="sm" onClick={() => { setActionMenuOpen(null); setDeleteConfirm({ isOpen: true, id: contract.id, number: contract.contractNumber }); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                             <Trash2 size={14} /> Delete
-                          </button>
+                          </Button>
                         </div>
                       )}
                     </td>
@@ -597,25 +573,15 @@ const InwardReinsuranceList: React.FC = () => {
               Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, totalCount)} of {totalCount} contracts
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ color: t.text2 }}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ padding: 4, border: 'none' }}>
                 <ChevronLeft size={20} />
-              </button>
+              </Button>
               <span className="text-sm" style={{ color: t.text2 }}>
                 Page {page} of {totalPages}
               </span>
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="p-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ color: t.text2 }}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ padding: 4, border: 'none' }}>
                 <ChevronRight size={20} />
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -631,28 +597,12 @@ const InwardReinsuranceList: React.FC = () => {
         subtitle={selectedContract?.cedantName || ''}
         footer={
           <>
-            <button
-              onClick={() => {
-                if (selectedContract) {
-                  navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${selectedContract.id}`);
-                }
-              }}
-              style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.bgInput, color: t.text1, border: `1px solid ${t.border}`, cursor: 'pointer' }}
-            >
-              <Eye size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+            <Button variant="ghost" icon={<Eye size={14} />} onClick={() => { if (selectedContract) navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/view/${selectedContract.id}`); }} style={{ flex: 1, justifyContent: 'center' }}>
               View Full Detail
-            </button>
-            <button
-              onClick={() => {
-                if (selectedContract) {
-                  navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${selectedContract.id}`);
-                }
-              }}
-              style={{ flex: 1, padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: t.accent, color: '#fff', border: 'none', cursor: 'pointer' }}
-            >
-              <Edit size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6 }} />
+            </Button>
+            <Button variant="primary" icon={<Edit size={14} />} onClick={() => { if (selectedContract) navigate(`/inward-reinsurance/${origin === 'FOREIGN' ? 'foreign' : 'domestic'}/edit/${selectedContract.id}`); }} style={{ flex: 1, justifyContent: 'center' }}>
               Edit
-            </button>
+            </Button>
           </>
         }
       >
