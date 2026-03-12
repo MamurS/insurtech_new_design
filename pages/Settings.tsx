@@ -1,9 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { DB } from '../services/db';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ContextBar } from '../components/ContextBar';
 import EnvironmentSwitcher from '../components/EnvironmentSwitcher';
@@ -195,17 +196,14 @@ const Settings: React.FC = () => {
             <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Settings & Tools</h2>
             <p style={{ color: t.text3 }}>Configure application preferences and manage data.</p>
         </div>
-        <button
+        <Button
+            variant="primary"
+            icon={saveStatus === 'saved' ? <Check size={20} /> : <Save size={20} />}
             onClick={handleSave}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-all text-white"
-            style={{
-              background: saveStatus === 'saved' ? t.success : t.accent,
-              boxShadow: t.shadow,
-            }}
+            style={{ background: saveStatus === 'saved' ? t.success : t.accent }}
         >
-            {saveStatus === 'saved' ? <Check size={20} /> : <Save size={20} />}
             {saveStatus === 'saved' ? 'Saved' : 'Save Changes'}
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,12 +218,11 @@ const Settings: React.FC = () => {
                     <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Company Name</label>
                     <div className="relative">
                         <Building size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: t.text4 }} />
-                        <input
+                        <Input
                             type="text"
                             value={settings.companyName}
-                            onChange={(e) => handleChange('companyName', e.target.value)}
-                            className="w-full pl-10 p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                            style={inputStyle}
+                            onChange={(val) => handleChange('companyName', val)}
+                            style={{ paddingLeft: 36 }}
                         />
                     </div>
                 </div>
@@ -282,24 +279,18 @@ const Settings: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Default Commission %</label>
-                        <input
+                        <Input
                             type="number"
-                            step="0.1"
                             value={settings.defaultCommission}
-                            onChange={(e) => handleChange('defaultCommission', parseFloat(e.target.value))}
-                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                            style={inputStyle}
+                            onChange={(val) => handleChange('defaultCommission', parseFloat(val))}
                         />
                     </div>
                     <div>
                         <label className="block text-sm font-medium mb-1" style={{ color: t.text2 }}>Default Tax %</label>
-                        <input
+                        <Input
                             type="number"
-                            step="0.1"
                             value={settings.defaultTax}
-                            onChange={(e) => handleChange('defaultTax', parseFloat(e.target.value))}
-                            className="w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                            style={inputStyle}
+                            onChange={(val) => handleChange('defaultTax', parseFloat(val))}
                         />
                     </div>
                 </div>
@@ -340,17 +331,17 @@ const Settings: React.FC = () => {
                         <option value="120">2 hours</option>
                         <option value="240">4 hours</option>
                     </select>
-                    <button
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        icon={<Save size={16} />}
                         onClick={() => {
                             localStorage.setItem(USER_TIMEOUT_KEY, userTimeout);
                             toast.success('Session timeout preference saved');
                         }}
-                        className="flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium"
-                        style={{ background: t.accent }}
                     >
-                        <Save size={16} />
                         Save
-                    </button>
+                    </Button>
                 </div>
                 <p className="text-xs" style={{ color: t.text4 }}>
                     {userTimeout === 'default'
@@ -374,9 +365,9 @@ const Settings: React.FC = () => {
                         </div>
                         <h4 className="font-bold" style={{ color: t.text1 }}>Backup Data</h4>
                         <p className="text-xs mb-4 mt-1" style={{ color: t.text3 }}>Export all policies, slips, and settings to a JSON file.</p>
-                        <button onClick={handleBackup} className="w-full py-2 text-sm font-medium rounded transition-colors" style={{ color: t.accent, background: `${t.accent}18` }}>
+                        <Button variant="ghost" onClick={handleBackup} style={{ width: '100%', justifyContent: 'center', border: 'none', color: t.accent, background: `${t.accent}18` }}>
                             Download Backup
-                        </button>
+                        </Button>
                     </div>
 
                     {/* Restore */}
