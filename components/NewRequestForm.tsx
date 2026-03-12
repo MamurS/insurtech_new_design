@@ -404,7 +404,7 @@ const CurrencyInput: React.FC<{
         onBlur={() => setLocalValue(value ? fmtNum(value) : '')}
         onWheel={(e) => (e.target as HTMLInputElement).blur()}
         placeholder={placeholder}
-        style={{ width: '100%', textAlign: 'right', ...(bold ? { fontWeight: 700 } : {}), padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
+        style={{ width: '100%', textAlign: 'right', fontWeight: bold ? 700 : undefined, padding: '8px 64px 8px 8px', background: bold ? t.accentMuted : t.bgInput, border: bold ? `2px solid ${t.accentMuted}` : `1px solid ${t.border}`, borderRadius: 8, color: t.text1, fontSize: 13, outline: 'none', fontFamily: 'inherit' }}
       />
       <span
         className="-translate-y-1/2"
@@ -1184,7 +1184,7 @@ export const NewRequestForm: React.FC<NewRequestFormProps> = ({ onSave, onCancel
             </button>
             <button onClick={handleSave} disabled={saving}
               className="transition-colors"
-              style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 20, paddingRight: 20, paddingTop: 8, paddingBottom: 8, fontWeight: 600, borderRadius: 8, fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow, opacity: saving ? 0.5 : 1 }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 20, paddingRight: 20, paddingTop: 8, paddingBottom: 8, fontWeight: 600, borderRadius: 8, opacity: saving ? 0.5 : 1, fontSize: 13, color: '#fff', background: t.accent, boxShadow: t.shadow }}>
               {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
               Save as Draft
             </button>
