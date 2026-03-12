@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DB } from '../services/db';
@@ -9,6 +8,8 @@ import SidePanel, { PanelField } from '../components/ui/SidePanel';
 import { Plus, Search, Building2, MapPin, Eye, Edit, Trash2 } from 'lucide-react';
 import { getSectionForCode } from '../data/sicCodes';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 const EntityManager: React.FC = () => {
   const navigate = useNavigate();
@@ -63,13 +64,9 @@ const EntityManager: React.FC = () => {
           <h2 style={{ color: t.text1, fontSize: 24, fontWeight: 700 }}>Legal Entities</h2>
           <p style={{ color: t.text4, fontSize: 14 }}>Manage company registry, counterparties, and insureds.</p>
         </div>
-        <button
-          onClick={() => navigate('/entities/new')}
-          className="transition-all"
-          style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 20, paddingRight: 20, paddingTop: 10, paddingBottom: 10, borderRadius: 8, fontWeight: 700, background: t.accent, color: '#fff', boxShadow: t.shadow }}
-        >
-          <Plus size={18} /> Add Entity
-        </button>
+        <Button variant="primary" icon={<Plus size={18} />} onClick={() => navigate('/entities/new')}>
+          Add Entity
+        </Button>
       </div>
 
       <div
@@ -85,13 +82,13 @@ const EntityManager: React.FC = () => {
         <div style={{ overflow: 'hidden', background: t.bgPanel, boxShadow: t.shadow, border: `1px solid ${t.border}`, borderRadius: selectedEntityForPanel ? '12px 0 0 12px' : '12px' }}>
           <div style={{ padding: 16, display: 'flex', gap: 16, alignItems: 'center', background: t.bgPanel, borderBottom: `1px solid ${t.border}` }}>
               <div style={{ position: 'relative', flex: 1, maxWidth: 448 }}>
-                  <Search size={18} className="-translate-y-1/2" style={{ color: t.text5, position: 'absolute', left: 12, top: '50%' }}/>
-                  <input
+                  <Search size={18} className="-translate-y-1/2" style={{ color: t.text5, position: 'absolute', left: 12, top: '50%', zIndex: 1 }}/>
+                  <Input
                       type="text"
                       placeholder="Search by name, INN, or code..."
-                      style={{ width: '100%', paddingLeft: 40, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.border}` }}
                       value={searchTerm}
-                      onChange={e => setSearchTerm(e.target.value)}
+                      onChange={(val) => setSearchTerm(val)}
+                      style={{ paddingLeft: 40 }}
                   />
               </div>
               <div style={{ fontSize: 12, fontWeight: 500, color: t.text4 }}>
@@ -150,10 +147,10 @@ const EntityManager: React.FC = () => {
                                   {entity.city || '-'}
                               </td>
                               <td style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16, paddingBottom: 16, textAlign: 'center' }}>
-                                  <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
-                                      <button onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} style={{ padding: 6, borderRadius: 4, color: t.accent }} title="View"><Eye size={16}/></button>
-                                      <button onClick={(e) => { e.stopPropagation(); navigate(`/entities/edit/${entity.id}`); }} style={{ padding: 6, borderRadius: 4, color: t.accent }} title="Edit"><Edit size={16}/></button>
-                                      <button onClick={(e) => handleDelete(e, entity.id)} style={{ padding: 6, borderRadius: 4, color: t.danger }} title="Delete"><Trash2 size={16}/></button>
+                                  <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                                      <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedEntity(entity); }} title="View" style={{ padding: 6, border: 'none', color: t.accent }}><Eye size={16}/></Button>
+                                      <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/entities/edit/${entity.id}`); }} title="Edit" style={{ padding: 6, border: 'none', color: t.accent }}><Edit size={16}/></Button>
+                                      <Button variant="ghost" size="sm" onClick={(e) => handleDelete(e, entity.id)} title="Delete" style={{ padding: 6, border: 'none', color: t.danger }}><Trash2 size={16}/></Button>
                                   </div>
                               </td>
                           </tr>
@@ -179,28 +176,12 @@ const EntityManager: React.FC = () => {
           subtitle={selectedEntityForPanel?.shortName}
           footer={
             <>
-              <button
-                onClick={() => {
-                  if (selectedEntityForPanel) {
-                    setSelectedEntity(selectedEntityForPanel);
-                  }
-                }}
-                className="transition-colors"
-                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 600, background: t.bgInput, color: t.text1, border: `1px solid ${t.border}` }}
-              >
-                <Eye size={14} /> View Full Detail
-              </button>
-              <button
-                onClick={() => {
-                  if (selectedEntityForPanel) {
-                    navigate(`/entities/edit/${selectedEntityForPanel.id}`);
-                  }
-                }}
-                className="transition-colors"
-                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 600, background: t.accent, color: '#fff' }}
-              >
-                <Edit size={14} /> Edit
-              </button>
+              <Button variant="ghost" icon={<Eye size={14} />} onClick={() => { if (selectedEntityForPanel) setSelectedEntity(selectedEntityForPanel); }} style={{ flex: 1, justifyContent: 'center' }}>
+                View Full Detail
+              </Button>
+              <Button variant="primary" icon={<Edit size={14} />} onClick={() => { if (selectedEntityForPanel) navigate(`/entities/edit/${selectedEntityForPanel.id}`); }} style={{ flex: 1, justifyContent: 'center' }}>
+                Edit
+              </Button>
             </>
           }
         >
