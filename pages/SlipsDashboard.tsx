@@ -12,6 +12,8 @@ import SidePanel, { PanelField } from '../components/ui/SidePanel';
 import { Search, Edit, Trash2, Plus, FileSpreadsheet, ArrowUp, ArrowDown, ArrowUpDown, Download, FileText, CheckCircle, AlertCircle, XCircle, AlertTriangle, MoreVertical, Eye, RefreshCw } from 'lucide-react';
 import { usePageHeader } from '../context/PageHeaderContext';
 import { useTheme } from '../theme/useTheme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 // Detect shifted column data from legacy CSV import:
 // insuredName got a numeric ID, brokerReinsurer got the actual insured name.
@@ -263,13 +265,9 @@ const SlipsDashboard: React.FC = () => {
   // Export button in page header
   useEffect(() => {
     setHeaderActions(
-      <button
-        onClick={handleExport}
-        className="transition-all"
-        style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, fontSize: 14, fontWeight: 600, borderRadius: 8, whiteSpace: 'nowrap', background: t.success, color: '#fff', boxShadow: t.shadow }}
-      >
-        <Download size={16} /> Export
-      </button>
+      <Button variant="primary" icon={<Download size={16} />} onClick={handleExport} style={{ whiteSpace: 'nowrap', background: t.success }}>
+        Export
+      </Button>
     );
     return () => { setHeaderActions(null); setHeaderLeft(null); };
   }, [sortedSlips, setHeaderActions, setHeaderLeft, t]);
@@ -360,13 +358,13 @@ const SlipsDashboard: React.FC = () => {
 
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 180 }}>
-            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4 }} />
-            <input
+            <Search size={14} className="-translate-y-1/2" style={{ position: 'absolute', left: 12, top: '50%', color: t.text4, zIndex: 1 }} />
+            <Input
               type="text"
               placeholder="Search..."
-              style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, outline: 'none', fontSize: 14, border: `1px solid ${t.borderL}`, background: t.bgInput, color: t.text1 }}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(val) => setSearchTerm(val)}
+              style={{ paddingLeft: 32 }}
             />
           </div>
 
@@ -394,24 +392,16 @@ const SlipsDashboard: React.FC = () => {
           </div>
 
           {/* Refresh */}
-          <button
-            onClick={() => fetchData()}
-            title="Refresh"
-            style={{ padding: 8, borderRadius: 8, color: t.text4 }}
-          >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : undefined} />
-          </button>
+          <Button variant="ghost" size="sm" onClick={() => fetchData()} title="Refresh" style={{ padding: 8, border: 'none' }}>
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} style={loading ? { color: t.accent } : { color: t.text4 }} />
+          </Button>
 
           <div style={{ width: 1, height: 20, background: t.borderL }} />
 
           {/* New Slip Button */}
-          <button
-            type="button"
-            onClick={() => navigate('/slips/new')}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontWeight: 500, fontSize: 14, background: t.accent, color: '#fff' }}
-          >
-            <Plus size={16} /> New Slip
-          </button>
+          <Button variant="primary" icon={<Plus size={16} />} onClick={() => navigate('/slips/new')}>
+            New Slip
+          </Button>
         </div>
       </div>
       </div>{/* end sticky filter bar */}
@@ -458,25 +448,24 @@ const SlipsDashboard: React.FC = () => {
                         </td>
                         <td style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 16, paddingBottom: 16, color: t.text3 }}>{getDisplayBroker(slip)}</td>
                         <td style={{ paddingLeft: 4, paddingRight: 4, paddingTop: 8, paddingBottom: 8, textAlign: 'center', width: 40, position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-                            <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === slip.id ? null : slip.id); }}
-                                style={{ padding: 6, borderRadius: 8 }}>
+                            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === slip.id ? null : slip.id); }} style={{ padding: 6, border: 'none' }}>
                                 <MoreVertical size={16} style={{ color: t.text4 }} />
-                            </button>
+                            </Button>
                             {openMenuId === slip.id && (
                                 <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, borderRadius: 8, paddingTop: 4, paddingBottom: 4, zIndex: 50, minWidth: 120, background: t.bgPanel, boxShadow: t.shadowLg, border: `1px solid ${t.border}` }}>
-                                    <button onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
+                                    <Button variant="ghost" size="sm" onClick={() => { setOpenMenuId(null); setSelectedSlip(slip); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                         <Eye size={14} /> View
-                                    </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={(e) => { setOpenMenuId(null); handleEdit(e as any, slip.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                         <Edit size={14} /> Edit
-                                    </button>
-                                    <button onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.text2 }}>
+                                    </Button>
+                                    <Button variant="ghost" size="sm" onClick={(e) => { setOpenMenuId(null); handleWording(e as any, slip.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                         <FileText size={14} /> Wording
-                                    </button>
+                                    </Button>
                                     {!slip.isDeleted && (
-                                        <button onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, fontSize: 14, color: t.danger }}>
+                                        <Button variant="danger" size="sm" onClick={(e) => { setOpenMenuId(null); initiateDelete(e as any, slip.id); }} style={{ width: '100%', justifyContent: 'flex-start', border: 'none', borderRadius: 6, fontSize: 14 }}>
                                             <Trash2 size={14} /> Delete
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             )}
@@ -510,18 +499,12 @@ const SlipsDashboard: React.FC = () => {
         subtitle="Slip Summary"
         footer={selectedSlipForPanel ? (
           <>
-            <button
-              onClick={() => { setSelectedSlip(selectedSlipForPanel); }}
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 500, background: t.accent, color: '#fff' }}
-            >
-              <Eye size={14} /> View Full Detail
-            </button>
-            <button
-              onClick={() => navigate(`/slips/edit/${selectedSlipForPanel.id}`)}
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingLeft: 12, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, fontSize: 14, fontWeight: 500, border: `1px solid ${t.border}`, background: t.bgInput, color: t.text1 }}
-            >
-              <Edit size={14} /> Edit
-            </button>
+            <Button variant="primary" icon={<Eye size={14} />} onClick={() => { setSelectedSlip(selectedSlipForPanel); }} style={{ flex: 1, justifyContent: 'center' }}>
+              View Full Detail
+            </Button>
+            <Button variant="ghost" icon={<Edit size={14} />} onClick={() => navigate(`/slips/edit/${selectedSlipForPanel.id}`)} style={{ flex: 1, justifyContent: 'center' }}>
+              Edit
+            </Button>
           </>
         ) : undefined}
       >
